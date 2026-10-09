@@ -1,0 +1,252 @@
+[
+  {
+    "outcome_id": "SYN-trade-stop",
+    "recommendation_id": "SYN-stop",
+    "schema_version": "1.0.0",
+    "synthetic": true,
+    "evaluated_at": "2026-10-09T20:17:33Z",
+    "evaluator_version": "SYN-hand-evaluation-v1",
+    "observation_dataset": "SYN-future-v1",
+    "supersedes_outcome_id": null,
+    "status": "closed",
+    "reason": "stop",
+    "assumptions_version": "SYN-fill-v1",
+    "fills": [
+      {
+        "side": "BUY",
+        "at": "2025-08-07T04:00:00Z",
+        "price": "102.00",
+        "quantity": 1,
+        "role": "entry"
+      },
+      {
+        "side": "SELL",
+        "at": "2025-08-08T04:00:00Z",
+        "price": "98.00",
+        "quantity": 1,
+        "role": "exit"
+      }
+    ],
+    "gross_pnl": "-4.00",
+    "estimated_costs": "0.20",
+    "net_pnl": "-4.20",
+    "net_proceeds": null,
+    "sensitivity_net_pnl": null
+  },
+  {
+    "outcome_id": "SYN-trade-target",
+    "recommendation_id": "SYN-target",
+    "schema_version": "1.0.0",
+    "synthetic": true,
+    "evaluated_at": "2026-10-09T20:17:33Z",
+    "evaluator_version": "SYN-hand-evaluation-v1",
+    "observation_dataset": "SYN-future-v1",
+    "supersedes_outcome_id": null,
+    "status": "closed",
+    "reason": "target",
+    "assumptions_version": "SYN-fill-v1",
+    "fills": [
+      {
+        "side": "BUY",
+        "at": "2025-08-07T04:00:00Z",
+        "price": "102.00",
+        "quantity": 1,
+        "role": "entry"
+      },
+      {
+        "side": "SELL",
+        "at": "2025-08-08T04:00:00Z",
+        "price": "110.00",
+        "quantity": 1,
+        "role": "exit"
+      }
+    ],
+    "gross_pnl": "8.00",
+    "estimated_costs": "0.20",
+    "net_pnl": "7.80",
+    "net_proceeds": null,
+    "sensitivity_net_pnl": null
+  },
+  {
+    "outcome_id": "SYN-trade-no-entry",
+    "recommendation_id": "SYN-no-entry",
+    "schema_version": "1.0.0",
+    "synthetic": true,
+    "evaluated_at": "2026-10-09T20:17:33Z",
+    "evaluator_version": "SYN-hand-evaluation-v1",
+    "observation_dataset": "SYN-future-v1",
+    "supersedes_outcome_id": null,
+    "status": "no_entry",
+    "reason": "entry_expired",
+    "assumptions_version": "SYN-fill-v1",
+    "fills": [],
+    "gross_pnl": null,
+    "estimated_costs": "0.00",
+    "net_pnl": null,
+    "net_proceeds": null,
+    "sensitivity_net_pnl": null
+  },
+  {
+    "outcome_id": "SYN-trade-time-expiry",
+    "recommendation_id": "SYN-time-expiry",
+    "schema_version": "1.0.0",
+    "synthetic": true,
+    "evaluated_at": "2026-10-09T20:17:33Z",
+    "evaluator_version": "SYN-hand-evaluation-v1",
+    "observation_dataset": "SYN-future-v1",
+    "supersedes_outcome_id": null,
+    "status": "closed",
+    "reason": "maximum_holding_expired",
+    "assumptions_version": "SYN-fill-v1",
+    "fills": [
+      {
+        "side": "BUY",
+        "at": "2025-08-07T04:00:00Z",
+        "price": "102.00",
+        "quantity": 1,
+        "role": "entry"
+      },
+      {
+        "side": "SELL",
+        "at": "2025-08-08T10:00:00Z",
+        "price": "103.00",
+        "quantity": 1,
+        "role": "exit"
+      }
+    ],
+    "gross_pnl": "1.00",
+    "estimated_costs": "0.20",
+    "net_pnl": "0.80",
+    "net_proceeds": null,
+    "sensitivity_net_pnl": null
+  },
+  {
+    "outcome_id": "SYN-trade-ambiguous",
+    "recommendation_id": "SYN-ambiguous",
+    "schema_version": "1.0.0",
+    "synthetic": true,
+    "evaluated_at": "2026-10-09T20:17:33Z",
+    "evaluator_version": "SYN-hand-evaluation-v1",
+    "observation_dataset": "SYN-future-v1",
+    "supersedes_outcome_id": null,
+    "status": "ambiguous",
+    "reason": "stop_target_order_unknown",
+    "assumptions_version": "SYN-fill-v1",
+    "fills": [
+      {
+        "side": "BUY",
+        "at": "2025-08-07T04:00:00Z",
+        "price": "102.00",
+        "quantity": 1,
+        "role": "entry"
+      }
+    ],
+    "gross_pnl": null,
+    "estimated_costs": "0.10",
+    "net_pnl": null,
+    "net_proceeds": null,
+    "sensitivity_net_pnl": {
+      "stop_first": "-4.20",
+      "target_first": "7.80"
+    }
+  },
+  {
+    "outcome_id": "SYN-trade-gap",
+    "recommendation_id": "SYN-gap",
+    "schema_version": "1.0.0",
+    "synthetic": true,
+    "evaluated_at": "2026-10-09T20:17:33Z",
+    "evaluator_version": "SYN-hand-evaluation-v1",
+    "observation_dataset": "SYN-future-v1",
+    "supersedes_outcome_id": null,
+    "status": "closed",
+    "reason": "gap_stop",
+    "assumptions_version": "SYN-fill-v1",
+    "fills": [
+      {
+        "side": "BUY",
+        "at": "2025-08-07T03:45:00Z",
+        "price": "104.00",
+        "quantity": 1,
+        "role": "entry"
+      },
+      {
+        "side": "SELL",
+        "at": "2025-08-08T03:45:00Z",
+        "price": "95.00",
+        "quantity": 1,
+        "role": "exit"
+      }
+    ],
+    "gross_pnl": "-9.00",
+    "estimated_costs": "0.20",
+    "net_pnl": "-9.20",
+    "net_proceeds": null,
+    "sensitivity_net_pnl": null
+  },
+  {
+    "outcome_id": "SYN-trade-sell",
+    "recommendation_id": "SYN-sell",
+    "schema_version": "1.0.0",
+    "synthetic": true,
+    "evaluated_at": "2026-10-09T20:17:33Z",
+    "evaluator_version": "SYN-hand-evaluation-v1",
+    "observation_dataset": "SYN-future-v1",
+    "supersedes_outcome_id": null,
+    "status": "closed",
+    "reason": "holding_exit",
+    "assumptions_version": "SYN-fill-v1",
+    "fills": [
+      {
+        "side": "SELL",
+        "at": "2025-08-07T03:45:00Z",
+        "price": "100.00",
+        "quantity": 1,
+        "role": "holding_exit"
+      }
+    ],
+    "gross_pnl": null,
+    "estimated_costs": "0.10",
+    "net_pnl": null,
+    "net_proceeds": "99.90",
+    "sensitivity_net_pnl": null
+  },
+  {
+    "outcome_id": "SYN-trade-wait",
+    "recommendation_id": "SYN-wait",
+    "schema_version": "1.0.0",
+    "synthetic": true,
+    "evaluated_at": "2026-10-09T20:17:33Z",
+    "evaluator_version": "SYN-hand-evaluation-v1",
+    "observation_dataset": "SYN-future-v1",
+    "supersedes_outcome_id": null,
+    "status": "not_applicable",
+    "reason": "non_actionable",
+    "assumptions_version": "SYN-fill-v1",
+    "fills": [],
+    "gross_pnl": null,
+    "estimated_costs": "0.00",
+    "net_pnl": null,
+    "net_proceeds": null,
+    "sensitivity_net_pnl": null
+  },
+  {
+    "outcome_id": "SYN-trade-insufficient",
+    "recommendation_id": "SYN-insufficient",
+    "schema_version": "1.0.0",
+    "synthetic": true,
+    "evaluated_at": "2026-10-09T20:17:33Z",
+    "evaluator_version": "SYN-hand-evaluation-v1",
+    "observation_dataset": "SYN-future-v1",
+    "supersedes_outcome_id": null,
+    "status": "not_applicable",
+    "reason": "non_actionable",
+    "assumptions_version": "SYN-fill-v1",
+    "fills": [],
+    "gross_pnl": null,
+    "estimated_costs": "0.00",
+    "net_pnl": null,
+    "net_proceeds": null,
+    "sensitivity_net_pnl": null
+  }
+]

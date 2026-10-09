@@ -1,0 +1,983 @@
+[
+  {
+    "recommendation_id": "SYN-stop",
+    "schema_version": "1.0.0",
+    "synthetic": true,
+    "mode": "synthetic",
+    "run_id": "SYN-run-20250806",
+    "instrument": {
+      "instrument_id": "SYN-INSTR-stop",
+      "symbol": "FICTION-STOP",
+      "exchange": "SYNTHETIC_NSE",
+      "series": "EQ",
+      "isin": null,
+      "currency": "INR",
+      "exchange_timezone": "Asia/Kolkata"
+    },
+    "strategy": {
+      "id": "SYN-breakout",
+      "version": "v1",
+      "config_version": "SYN-config-v1"
+    },
+    "horizon": {
+      "profile": "swing",
+      "forecast_end_at": "2025-08-11T10:00:00Z"
+    },
+    "information_cutoff_at": "2025-08-06T10:05:00Z",
+    "generated_at": "2026-10-09T20:17:33Z",
+    "decision_available_at": "2025-08-06T10:06:00Z",
+    "earliest_executable_entry_at": "2025-08-07T03:45:00Z",
+    "action": "BUY",
+    "position_effect": "OPEN_LONG",
+    "holding": null,
+    "execution": {
+      "entry": {
+        "type": "buy_stop",
+        "trigger_price": "102.00",
+        "condition": "Enter on first eligible price at or above 102.00."
+      },
+      "entry_expires_at": "2025-08-08T10:00:00Z",
+      "stop": {
+        "price": "98.00",
+        "condition": "Exit if executable price is at or below 98.00 after entry."
+      },
+      "targets": [
+        {
+          "price": "110.00",
+          "exit_fraction": "1"
+        }
+      ],
+      "max_holding_sessions": 3,
+      "time_exit": "close_of_last_holding_session",
+      "quantity": 1,
+      "assumptions_version": "SYN-fill-v1"
+    },
+    "forecast": {
+      "direction": "up",
+      "reference_price": "100.00",
+      "reference_at": "2025-08-06T10:00:00Z",
+      "end_at": "2025-08-11T10:00:00Z",
+      "definition_version": "SYN-direction-v1"
+    },
+    "evidence": [
+      {
+        "evidence_id": "SYN-price-stop",
+        "kind": "closed_candles",
+        "source_ref": "fixture://prices/stop",
+        "source_version": "v1",
+        "locator": "6 Aug closed candle and prior-window feature fixture",
+        "published_at": "2025-08-06T10:00:00Z",
+        "available_at": "2025-08-06T10:01:00Z",
+        "fetched_at": "2026-10-09T20:17:33Z",
+        "availability_basis": "fictional_fixture",
+        "summary": "Fictional close 100.00; prior breakout level 102.00; required warm-up present."
+      },
+      {
+        "evidence_id": "SYN-filing-stop",
+        "kind": "filing",
+        "source_ref": "fixture://filings/stop",
+        "source_version": "v1",
+        "locator": "section 1",
+        "published_at": "2025-08-06T07:55:00Z",
+        "available_at": "2025-08-06T08:00:00Z",
+        "fetched_at": "2026-10-09T20:17:33Z",
+        "availability_basis": "fictional_fixture",
+        "summary": "Fictional issuer reports unchanged operations; no known material contradiction."
+      }
+    ],
+    "missing_evidence": [
+      {
+        "requirement": "optional news archive",
+        "reason": "Fictional news coverage is unavailable; this price-only fixture does not require it.",
+        "blocking": false
+      }
+    ],
+    "rationale": {
+      "summary": "Illustrative conditional breakout; not an implemented indicator result.",
+      "evidence_ids": [
+        "SYN-price-stop",
+        "SYN-filing-stop"
+      ],
+      "contradictions": [],
+      "invalidation": "Before entry, cancel on a newly available material thesis contradiction; after entry use the frozen stop."
+    },
+    "versions": {
+      "dataset": "SYN-cutoff-v1",
+      "code": "SYN-hand-authored-v1",
+      "model": null,
+      "prompt": null
+    },
+    "risk_context": {
+      "status": "not_assessed",
+      "reason": "One share is an arithmetic demonstration, not approved capital sizing."
+    },
+    "revises_id": null,
+    "revision_reason": null
+  },
+  {
+    "recommendation_id": "SYN-target",
+    "schema_version": "1.0.0",
+    "synthetic": true,
+    "mode": "synthetic",
+    "run_id": "SYN-run-20250806",
+    "instrument": {
+      "instrument_id": "SYN-INSTR-target",
+      "symbol": "FICTION-TARGET",
+      "exchange": "SYNTHETIC_NSE",
+      "series": "EQ",
+      "isin": null,
+      "currency": "INR",
+      "exchange_timezone": "Asia/Kolkata"
+    },
+    "strategy": {
+      "id": "SYN-breakout",
+      "version": "v1",
+      "config_version": "SYN-config-v1"
+    },
+    "horizon": {
+      "profile": "swing",
+      "forecast_end_at": "2025-08-11T10:00:00Z"
+    },
+    "information_cutoff_at": "2025-08-06T10:05:00Z",
+    "generated_at": "2026-10-09T20:17:33Z",
+    "decision_available_at": "2025-08-06T10:06:00Z",
+    "earliest_executable_entry_at": "2025-08-07T03:45:00Z",
+    "action": "BUY",
+    "position_effect": "OPEN_LONG",
+    "holding": null,
+    "execution": {
+      "entry": {
+        "type": "buy_stop",
+        "trigger_price": "102.00",
+        "condition": "Enter on first eligible price at or above 102.00."
+      },
+      "entry_expires_at": "2025-08-08T10:00:00Z",
+      "stop": {
+        "price": "98.00",
+        "condition": "Exit if executable price is at or below 98.00 after entry."
+      },
+      "targets": [
+        {
+          "price": "110.00",
+          "exit_fraction": "1"
+        }
+      ],
+      "max_holding_sessions": 3,
+      "time_exit": "close_of_last_holding_session",
+      "quantity": 1,
+      "assumptions_version": "SYN-fill-v1"
+    },
+    "forecast": {
+      "direction": "up",
+      "reference_price": "100.00",
+      "reference_at": "2025-08-06T10:00:00Z",
+      "end_at": "2025-08-11T10:00:00Z",
+      "definition_version": "SYN-direction-v1"
+    },
+    "evidence": [
+      {
+        "evidence_id": "SYN-price-target",
+        "kind": "closed_candles",
+        "source_ref": "fixture://prices/target",
+        "source_version": "v1",
+        "locator": "6 Aug closed candle and prior-window feature fixture",
+        "published_at": "2025-08-06T10:00:00Z",
+        "available_at": "2025-08-06T10:01:00Z",
+        "fetched_at": "2026-10-09T20:17:33Z",
+        "availability_basis": "fictional_fixture",
+        "summary": "Fictional close 100.00; prior breakout level 102.00; required warm-up present."
+      },
+      {
+        "evidence_id": "SYN-filing-target",
+        "kind": "filing",
+        "source_ref": "fixture://filings/target",
+        "source_version": "v1",
+        "locator": "section 1",
+        "published_at": "2025-08-06T07:55:00Z",
+        "available_at": "2025-08-06T08:00:00Z",
+        "fetched_at": "2026-10-09T20:17:33Z",
+        "availability_basis": "fictional_fixture",
+        "summary": "Fictional issuer reports unchanged operations; no known material contradiction."
+      }
+    ],
+    "missing_evidence": [
+      {
+        "requirement": "optional news archive",
+        "reason": "Fictional news coverage is unavailable; this price-only fixture does not require it.",
+        "blocking": false
+      }
+    ],
+    "rationale": {
+      "summary": "Illustrative conditional breakout; not an implemented indicator result.",
+      "evidence_ids": [
+        "SYN-price-target",
+        "SYN-filing-target"
+      ],
+      "contradictions": [],
+      "invalidation": "Before entry, cancel on a newly available material thesis contradiction; after entry use the frozen stop."
+    },
+    "versions": {
+      "dataset": "SYN-cutoff-v1",
+      "code": "SYN-hand-authored-v1",
+      "model": null,
+      "prompt": null
+    },
+    "risk_context": {
+      "status": "not_assessed",
+      "reason": "One share is an arithmetic demonstration, not approved capital sizing."
+    },
+    "revises_id": null,
+    "revision_reason": null
+  },
+  {
+    "recommendation_id": "SYN-no-entry",
+    "schema_version": "1.0.0",
+    "synthetic": true,
+    "mode": "synthetic",
+    "run_id": "SYN-run-20250806",
+    "instrument": {
+      "instrument_id": "SYN-INSTR-no-entry",
+      "symbol": "FICTION-NO-ENTRY",
+      "exchange": "SYNTHETIC_NSE",
+      "series": "EQ",
+      "isin": null,
+      "currency": "INR",
+      "exchange_timezone": "Asia/Kolkata"
+    },
+    "strategy": {
+      "id": "SYN-breakout",
+      "version": "v1",
+      "config_version": "SYN-config-v1"
+    },
+    "horizon": {
+      "profile": "swing",
+      "forecast_end_at": "2025-08-11T10:00:00Z"
+    },
+    "information_cutoff_at": "2025-08-06T10:05:00Z",
+    "generated_at": "2026-10-09T20:17:33Z",
+    "decision_available_at": "2025-08-06T10:06:00Z",
+    "earliest_executable_entry_at": "2025-08-07T03:45:00Z",
+    "action": "BUY",
+    "position_effect": "OPEN_LONG",
+    "holding": null,
+    "execution": {
+      "entry": {
+        "type": "buy_stop",
+        "trigger_price": "102.00",
+        "condition": "Enter on first eligible price at or above 102.00."
+      },
+      "entry_expires_at": "2025-08-08T10:00:00Z",
+      "stop": {
+        "price": "98.00",
+        "condition": "Exit if executable price is at or below 98.00 after entry."
+      },
+      "targets": [
+        {
+          "price": "110.00",
+          "exit_fraction": "1"
+        }
+      ],
+      "max_holding_sessions": 3,
+      "time_exit": "close_of_last_holding_session",
+      "quantity": 1,
+      "assumptions_version": "SYN-fill-v1"
+    },
+    "forecast": {
+      "direction": "up",
+      "reference_price": "100.00",
+      "reference_at": "2025-08-06T10:00:00Z",
+      "end_at": "2025-08-11T10:00:00Z",
+      "definition_version": "SYN-direction-v1"
+    },
+    "evidence": [
+      {
+        "evidence_id": "SYN-price-no-entry",
+        "kind": "closed_candles",
+        "source_ref": "fixture://prices/no-entry",
+        "source_version": "v1",
+        "locator": "6 Aug closed candle and prior-window feature fixture",
+        "published_at": "2025-08-06T10:00:00Z",
+        "available_at": "2025-08-06T10:01:00Z",
+        "fetched_at": "2026-10-09T20:17:33Z",
+        "availability_basis": "fictional_fixture",
+        "summary": "Fictional close 100.00; prior breakout level 102.00; required warm-up present."
+      },
+      {
+        "evidence_id": "SYN-filing-no-entry",
+        "kind": "filing",
+        "source_ref": "fixture://filings/no-entry",
+        "source_version": "v1",
+        "locator": "section 1",
+        "published_at": "2025-08-06T07:55:00Z",
+        "available_at": "2025-08-06T08:00:00Z",
+        "fetched_at": "2026-10-09T20:17:33Z",
+        "availability_basis": "fictional_fixture",
+        "summary": "Fictional issuer reports unchanged operations; no known material contradiction."
+      }
+    ],
+    "missing_evidence": [
+      {
+        "requirement": "optional news archive",
+        "reason": "Fictional news coverage is unavailable; this price-only fixture does not require it.",
+        "blocking": false
+      }
+    ],
+    "rationale": {
+      "summary": "Illustrative conditional breakout; not an implemented indicator result.",
+      "evidence_ids": [
+        "SYN-price-no-entry",
+        "SYN-filing-no-entry"
+      ],
+      "contradictions": [],
+      "invalidation": "Before entry, cancel on a newly available material thesis contradiction; after entry use the frozen stop."
+    },
+    "versions": {
+      "dataset": "SYN-cutoff-v1",
+      "code": "SYN-hand-authored-v1",
+      "model": null,
+      "prompt": null
+    },
+    "risk_context": {
+      "status": "not_assessed",
+      "reason": "One share is an arithmetic demonstration, not approved capital sizing."
+    },
+    "revises_id": null,
+    "revision_reason": null
+  },
+  {
+    "recommendation_id": "SYN-time-expiry",
+    "schema_version": "1.0.0",
+    "synthetic": true,
+    "mode": "synthetic",
+    "run_id": "SYN-run-20250806",
+    "instrument": {
+      "instrument_id": "SYN-INSTR-time-expiry",
+      "symbol": "FICTION-TIME-EXPIRY",
+      "exchange": "SYNTHETIC_NSE",
+      "series": "EQ",
+      "isin": null,
+      "currency": "INR",
+      "exchange_timezone": "Asia/Kolkata"
+    },
+    "strategy": {
+      "id": "SYN-breakout",
+      "version": "v1",
+      "config_version": "SYN-config-v1"
+    },
+    "horizon": {
+      "profile": "swing",
+      "forecast_end_at": "2025-08-11T10:00:00Z"
+    },
+    "information_cutoff_at": "2025-08-06T10:05:00Z",
+    "generated_at": "2026-10-09T20:17:33Z",
+    "decision_available_at": "2025-08-06T10:06:00Z",
+    "earliest_executable_entry_at": "2025-08-07T03:45:00Z",
+    "action": "BUY",
+    "position_effect": "OPEN_LONG",
+    "holding": null,
+    "execution": {
+      "entry": {
+        "type": "buy_stop",
+        "trigger_price": "102.00",
+        "condition": "Enter on first eligible price at or above 102.00."
+      },
+      "entry_expires_at": "2025-08-08T10:00:00Z",
+      "stop": {
+        "price": "98.00",
+        "condition": "Exit if executable price is at or below 98.00 after entry."
+      },
+      "targets": [
+        {
+          "price": "110.00",
+          "exit_fraction": "1"
+        }
+      ],
+      "max_holding_sessions": 2,
+      "time_exit": "close_of_last_holding_session",
+      "quantity": 1,
+      "assumptions_version": "SYN-fill-v1"
+    },
+    "forecast": {
+      "direction": "up",
+      "reference_price": "100.00",
+      "reference_at": "2025-08-06T10:00:00Z",
+      "end_at": "2025-08-11T10:00:00Z",
+      "definition_version": "SYN-direction-v1"
+    },
+    "evidence": [
+      {
+        "evidence_id": "SYN-price-time-expiry",
+        "kind": "closed_candles",
+        "source_ref": "fixture://prices/time-expiry",
+        "source_version": "v1",
+        "locator": "6 Aug closed candle and prior-window feature fixture",
+        "published_at": "2025-08-06T10:00:00Z",
+        "available_at": "2025-08-06T10:01:00Z",
+        "fetched_at": "2026-10-09T20:17:33Z",
+        "availability_basis": "fictional_fixture",
+        "summary": "Fictional close 100.00; prior breakout level 102.00; required warm-up present."
+      },
+      {
+        "evidence_id": "SYN-filing-time-expiry",
+        "kind": "filing",
+        "source_ref": "fixture://filings/time-expiry",
+        "source_version": "v1",
+        "locator": "section 1",
+        "published_at": "2025-08-06T07:55:00Z",
+        "available_at": "2025-08-06T08:00:00Z",
+        "fetched_at": "2026-10-09T20:17:33Z",
+        "availability_basis": "fictional_fixture",
+        "summary": "Fictional issuer reports unchanged operations; no known material contradiction."
+      }
+    ],
+    "missing_evidence": [
+      {
+        "requirement": "optional news archive",
+        "reason": "Fictional news coverage is unavailable; this price-only fixture does not require it.",
+        "blocking": false
+      }
+    ],
+    "rationale": {
+      "summary": "Illustrative conditional breakout; not an implemented indicator result.",
+      "evidence_ids": [
+        "SYN-price-time-expiry",
+        "SYN-filing-time-expiry"
+      ],
+      "contradictions": [],
+      "invalidation": "Before entry, cancel on a newly available material thesis contradiction; after entry use the frozen stop."
+    },
+    "versions": {
+      "dataset": "SYN-cutoff-v1",
+      "code": "SYN-hand-authored-v1",
+      "model": null,
+      "prompt": null
+    },
+    "risk_context": {
+      "status": "not_assessed",
+      "reason": "One share is an arithmetic demonstration, not approved capital sizing."
+    },
+    "revises_id": null,
+    "revision_reason": null
+  },
+  {
+    "recommendation_id": "SYN-ambiguous",
+    "schema_version": "1.0.0",
+    "synthetic": true,
+    "mode": "synthetic",
+    "run_id": "SYN-run-20250806",
+    "instrument": {
+      "instrument_id": "SYN-INSTR-ambiguous",
+      "symbol": "FICTION-AMBIGUOUS",
+      "exchange": "SYNTHETIC_NSE",
+      "series": "EQ",
+      "isin": null,
+      "currency": "INR",
+      "exchange_timezone": "Asia/Kolkata"
+    },
+    "strategy": {
+      "id": "SYN-breakout",
+      "version": "v1",
+      "config_version": "SYN-config-v1"
+    },
+    "horizon": {
+      "profile": "swing",
+      "forecast_end_at": "2025-08-11T10:00:00Z"
+    },
+    "information_cutoff_at": "2025-08-06T10:05:00Z",
+    "generated_at": "2026-10-09T20:17:33Z",
+    "decision_available_at": "2025-08-06T10:06:00Z",
+    "earliest_executable_entry_at": "2025-08-07T03:45:00Z",
+    "action": "BUY",
+    "position_effect": "OPEN_LONG",
+    "holding": null,
+    "execution": {
+      "entry": {
+        "type": "buy_stop",
+        "trigger_price": "102.00",
+        "condition": "Enter on first eligible price at or above 102.00."
+      },
+      "entry_expires_at": "2025-08-08T10:00:00Z",
+      "stop": {
+        "price": "98.00",
+        "condition": "Exit if executable price is at or below 98.00 after entry."
+      },
+      "targets": [
+        {
+          "price": "110.00",
+          "exit_fraction": "1"
+        }
+      ],
+      "max_holding_sessions": 3,
+      "time_exit": "close_of_last_holding_session",
+      "quantity": 1,
+      "assumptions_version": "SYN-fill-v1"
+    },
+    "forecast": {
+      "direction": "up",
+      "reference_price": "100.00",
+      "reference_at": "2025-08-06T10:00:00Z",
+      "end_at": "2025-08-11T10:00:00Z",
+      "definition_version": "SYN-direction-v1"
+    },
+    "evidence": [
+      {
+        "evidence_id": "SYN-price-ambiguous",
+        "kind": "closed_candles",
+        "source_ref": "fixture://prices/ambiguous",
+        "source_version": "v1",
+        "locator": "6 Aug closed candle and prior-window feature fixture",
+        "published_at": "2025-08-06T10:00:00Z",
+        "available_at": "2025-08-06T10:01:00Z",
+        "fetched_at": "2026-10-09T20:17:33Z",
+        "availability_basis": "fictional_fixture",
+        "summary": "Fictional close 100.00; prior breakout level 102.00; required warm-up present."
+      },
+      {
+        "evidence_id": "SYN-filing-ambiguous",
+        "kind": "filing",
+        "source_ref": "fixture://filings/ambiguous",
+        "source_version": "v1",
+        "locator": "section 1",
+        "published_at": "2025-08-06T07:55:00Z",
+        "available_at": "2025-08-06T08:00:00Z",
+        "fetched_at": "2026-10-09T20:17:33Z",
+        "availability_basis": "fictional_fixture",
+        "summary": "Fictional issuer reports unchanged operations; no known material contradiction."
+      }
+    ],
+    "missing_evidence": [
+      {
+        "requirement": "optional news archive",
+        "reason": "Fictional news coverage is unavailable; this price-only fixture does not require it.",
+        "blocking": false
+      }
+    ],
+    "rationale": {
+      "summary": "Illustrative conditional breakout; not an implemented indicator result.",
+      "evidence_ids": [
+        "SYN-price-ambiguous",
+        "SYN-filing-ambiguous"
+      ],
+      "contradictions": [],
+      "invalidation": "Before entry, cancel on a newly available material thesis contradiction; after entry use the frozen stop."
+    },
+    "versions": {
+      "dataset": "SYN-cutoff-v1",
+      "code": "SYN-hand-authored-v1",
+      "model": null,
+      "prompt": null
+    },
+    "risk_context": {
+      "status": "not_assessed",
+      "reason": "One share is an arithmetic demonstration, not approved capital sizing."
+    },
+    "revises_id": null,
+    "revision_reason": null
+  },
+  {
+    "recommendation_id": "SYN-gap",
+    "schema_version": "1.0.0",
+    "synthetic": true,
+    "mode": "synthetic",
+    "run_id": "SYN-run-20250806",
+    "instrument": {
+      "instrument_id": "SYN-INSTR-gap",
+      "symbol": "FICTION-GAP",
+      "exchange": "SYNTHETIC_NSE",
+      "series": "EQ",
+      "isin": null,
+      "currency": "INR",
+      "exchange_timezone": "Asia/Kolkata"
+    },
+    "strategy": {
+      "id": "SYN-breakout",
+      "version": "v1",
+      "config_version": "SYN-config-v1"
+    },
+    "horizon": {
+      "profile": "swing",
+      "forecast_end_at": "2025-08-11T10:00:00Z"
+    },
+    "information_cutoff_at": "2025-08-06T10:05:00Z",
+    "generated_at": "2026-10-09T20:17:33Z",
+    "decision_available_at": "2025-08-06T10:06:00Z",
+    "earliest_executable_entry_at": "2025-08-07T03:45:00Z",
+    "action": "BUY",
+    "position_effect": "OPEN_LONG",
+    "holding": null,
+    "execution": {
+      "entry": {
+        "type": "buy_stop",
+        "trigger_price": "102.00",
+        "condition": "Enter on first eligible price at or above 102.00."
+      },
+      "entry_expires_at": "2025-08-08T10:00:00Z",
+      "stop": {
+        "price": "98.00",
+        "condition": "Exit if executable price is at or below 98.00 after entry."
+      },
+      "targets": [
+        {
+          "price": "110.00",
+          "exit_fraction": "1"
+        }
+      ],
+      "max_holding_sessions": 3,
+      "time_exit": "close_of_last_holding_session",
+      "quantity": 1,
+      "assumptions_version": "SYN-fill-v1"
+    },
+    "forecast": {
+      "direction": "up",
+      "reference_price": "100.00",
+      "reference_at": "2025-08-06T10:00:00Z",
+      "end_at": "2025-08-11T10:00:00Z",
+      "definition_version": "SYN-direction-v1"
+    },
+    "evidence": [
+      {
+        "evidence_id": "SYN-price-gap",
+        "kind": "closed_candles",
+        "source_ref": "fixture://prices/gap",
+        "source_version": "v1",
+        "locator": "6 Aug closed candle and prior-window feature fixture",
+        "published_at": "2025-08-06T10:00:00Z",
+        "available_at": "2025-08-06T10:01:00Z",
+        "fetched_at": "2026-10-09T20:17:33Z",
+        "availability_basis": "fictional_fixture",
+        "summary": "Fictional close 100.00; prior breakout level 102.00; required warm-up present."
+      },
+      {
+        "evidence_id": "SYN-filing-gap",
+        "kind": "filing",
+        "source_ref": "fixture://filings/gap",
+        "source_version": "v1",
+        "locator": "section 1",
+        "published_at": "2025-08-06T07:55:00Z",
+        "available_at": "2025-08-06T08:00:00Z",
+        "fetched_at": "2026-10-09T20:17:33Z",
+        "availability_basis": "fictional_fixture",
+        "summary": "Fictional issuer reports unchanged operations; no known material contradiction."
+      }
+    ],
+    "missing_evidence": [
+      {
+        "requirement": "optional news archive",
+        "reason": "Fictional news coverage is unavailable; this price-only fixture does not require it.",
+        "blocking": false
+      }
+    ],
+    "rationale": {
+      "summary": "Illustrative conditional breakout; not an implemented indicator result.",
+      "evidence_ids": [
+        "SYN-price-gap",
+        "SYN-filing-gap"
+      ],
+      "contradictions": [],
+      "invalidation": "Before entry, cancel on a newly available material thesis contradiction; after entry use the frozen stop."
+    },
+    "versions": {
+      "dataset": "SYN-cutoff-v1",
+      "code": "SYN-hand-authored-v1",
+      "model": null,
+      "prompt": null
+    },
+    "risk_context": {
+      "status": "not_assessed",
+      "reason": "One share is an arithmetic demonstration, not approved capital sizing."
+    },
+    "revises_id": null,
+    "revision_reason": null
+  },
+  {
+    "recommendation_id": "SYN-sell",
+    "schema_version": "1.0.0",
+    "synthetic": true,
+    "mode": "synthetic",
+    "run_id": "SYN-run-20250806",
+    "instrument": {
+      "instrument_id": "SYN-INSTR-sell",
+      "symbol": "FICTION-SELL",
+      "exchange": "SYNTHETIC_NSE",
+      "series": "EQ",
+      "isin": null,
+      "currency": "INR",
+      "exchange_timezone": "Asia/Kolkata"
+    },
+    "strategy": {
+      "id": "SYN-holding-exit",
+      "version": "v1",
+      "config_version": "SYN-config-v1"
+    },
+    "horizon": {
+      "profile": "swing",
+      "forecast_end_at": "2025-08-11T10:00:00Z"
+    },
+    "information_cutoff_at": "2025-08-06T10:05:00Z",
+    "generated_at": "2026-10-09T20:17:33Z",
+    "decision_available_at": "2025-08-06T10:06:00Z",
+    "earliest_executable_entry_at": "2025-08-07T03:45:00Z",
+    "action": "SELL",
+    "position_effect": "CLOSE_LONG",
+    "holding": {
+      "holding_ref": "SYN-existing-holding",
+      "available_quantity": 1
+    },
+    "execution": {
+      "entry": {
+        "type": "market_at_next_open",
+        "trigger_price": null,
+        "condition": "Sell the existing one-share holding at next eligible open."
+      },
+      "entry_expires_at": "2025-08-08T10:00:00Z",
+      "stop": null,
+      "targets": [],
+      "max_holding_sessions": 0,
+      "time_exit": "not_applicable",
+      "quantity": 1,
+      "assumptions_version": "SYN-fill-v1"
+    },
+    "forecast": {
+      "direction": "down",
+      "reference_price": "100.00",
+      "reference_at": "2025-08-06T10:00:00Z",
+      "end_at": "2025-08-11T10:00:00Z",
+      "definition_version": "SYN-direction-v1"
+    },
+    "evidence": [
+      {
+        "evidence_id": "SYN-price-sell",
+        "kind": "closed_candles",
+        "source_ref": "fixture://prices/sell",
+        "source_version": "v1",
+        "locator": "6 Aug closed candle and prior-window feature fixture",
+        "published_at": "2025-08-06T10:00:00Z",
+        "available_at": "2025-08-06T10:01:00Z",
+        "fetched_at": "2026-10-09T20:17:33Z",
+        "availability_basis": "fictional_fixture",
+        "summary": "Fictional close 100.00; synthetic holding-exit rule is satisfied."
+      },
+      {
+        "evidence_id": "SYN-filing-sell",
+        "kind": "filing",
+        "source_ref": "fixture://filings/sell",
+        "source_version": "v1",
+        "locator": "section 1",
+        "published_at": "2025-08-06T07:55:00Z",
+        "available_at": "2025-08-06T08:00:00Z",
+        "fetched_at": "2026-10-09T20:17:33Z",
+        "availability_basis": "fictional_fixture",
+        "summary": "Fictional issuer reports unchanged operations; no known material contradiction."
+      }
+    ],
+    "missing_evidence": [
+      {
+        "requirement": "optional news archive",
+        "reason": "Fictional news coverage is unavailable; this price-only fixture does not require it.",
+        "blocking": false
+      }
+    ],
+    "rationale": {
+      "summary": "Fictional holding review suggests exit; no short sale.",
+      "evidence_ids": [
+        "SYN-price-sell",
+        "SYN-filing-sell"
+      ],
+      "contradictions": [],
+      "invalidation": "Before entry, cancel on a newly available material thesis contradiction; after entry use the frozen stop."
+    },
+    "versions": {
+      "dataset": "SYN-cutoff-v1",
+      "code": "SYN-hand-authored-v1",
+      "model": null,
+      "prompt": null
+    },
+    "risk_context": {
+      "status": "not_assessed",
+      "reason": "One share is an arithmetic demonstration, not approved capital sizing."
+    },
+    "revises_id": null,
+    "revision_reason": null
+  },
+  {
+    "recommendation_id": "SYN-wait",
+    "schema_version": "1.0.0",
+    "synthetic": true,
+    "mode": "synthetic",
+    "run_id": "SYN-run-20250806",
+    "instrument": {
+      "instrument_id": "SYN-INSTR-wait",
+      "symbol": "FICTION-WAIT",
+      "exchange": "SYNTHETIC_NSE",
+      "series": "EQ",
+      "isin": null,
+      "currency": "INR",
+      "exchange_timezone": "Asia/Kolkata"
+    },
+    "strategy": {
+      "id": "SYN-breakout",
+      "version": "v1",
+      "config_version": "SYN-config-v1"
+    },
+    "horizon": {
+      "profile": "swing",
+      "forecast_end_at": "2025-08-11T10:00:00Z"
+    },
+    "information_cutoff_at": "2025-08-06T10:05:00Z",
+    "generated_at": "2026-10-09T20:17:33Z",
+    "decision_available_at": "2025-08-06T10:06:00Z",
+    "earliest_executable_entry_at": null,
+    "action": "WAIT",
+    "position_effect": "NONE",
+    "holding": null,
+    "execution": null,
+    "forecast": null,
+    "evidence": [
+      {
+        "evidence_id": "SYN-price-wait",
+        "kind": "closed_candles",
+        "source_ref": "fixture://prices/wait",
+        "source_version": "v1",
+        "locator": "6 Aug closed candle and prior-window feature fixture",
+        "published_at": "2025-08-06T10:00:00Z",
+        "available_at": "2025-08-06T10:01:00Z",
+        "fetched_at": "2026-10-09T20:17:33Z",
+        "availability_basis": "fictional_fixture",
+        "summary": "Fictional close 100.00; required warm-up present; qualifying setup absent."
+      },
+      {
+        "evidence_id": "SYN-filing-wait",
+        "kind": "filing",
+        "source_ref": "fixture://filings/wait",
+        "source_version": "v1",
+        "locator": "section 1",
+        "published_at": "2025-08-06T07:55:00Z",
+        "available_at": "2025-08-06T08:00:00Z",
+        "fetched_at": "2026-10-09T20:17:33Z",
+        "availability_basis": "fictional_fixture",
+        "summary": "Fictional issuer reports unchanged operations; no known material contradiction."
+      }
+    ],
+    "missing_evidence": [
+      {
+        "requirement": "optional news archive",
+        "reason": "Fictional news coverage is unavailable; this price-only fixture does not require it.",
+        "blocking": false
+      }
+    ],
+    "rationale": {
+      "summary": "Required evidence present, but setup fails the illustrative policy.",
+      "evidence_ids": [
+        "SYN-price-wait",
+        "SYN-filing-wait"
+      ],
+      "contradictions": [],
+      "invalidation": "Reassess only in a newly generated recommendation."
+    },
+    "versions": {
+      "dataset": "SYN-cutoff-v1",
+      "code": "SYN-hand-authored-v1",
+      "model": null,
+      "prompt": null
+    },
+    "risk_context": {
+      "status": "not_assessed",
+      "reason": "One share is an arithmetic demonstration, not approved capital sizing."
+    },
+    "revises_id": null,
+    "revision_reason": null
+  },
+  {
+    "recommendation_id": "SYN-insufficient",
+    "schema_version": "1.0.0",
+    "synthetic": true,
+    "mode": "synthetic",
+    "run_id": "SYN-run-20250806",
+    "instrument": {
+      "instrument_id": "SYN-INSTR-insufficient",
+      "symbol": "FICTION-INSUFFICIENT",
+      "exchange": "SYNTHETIC_NSE",
+      "series": "EQ",
+      "isin": null,
+      "currency": "INR",
+      "exchange_timezone": "Asia/Kolkata"
+    },
+    "strategy": {
+      "id": "SYN-breakout",
+      "version": "v1",
+      "config_version": "SYN-config-v1"
+    },
+    "horizon": {
+      "profile": "swing",
+      "forecast_end_at": "2025-08-11T10:00:00Z"
+    },
+    "information_cutoff_at": "2025-08-06T10:05:00Z",
+    "generated_at": "2026-10-09T20:17:33Z",
+    "decision_available_at": "2025-08-06T10:06:00Z",
+    "earliest_executable_entry_at": null,
+    "action": "INSUFFICIENT_EVIDENCE",
+    "position_effect": "NONE",
+    "holding": null,
+    "execution": null,
+    "forecast": null,
+    "evidence": [
+      {
+        "evidence_id": "SYN-price-insufficient",
+        "kind": "closed_candles",
+        "source_ref": "fixture://prices/insufficient",
+        "source_version": "v1",
+        "locator": "6 Aug closed candle and prior-window feature fixture",
+        "published_at": "2025-08-06T10:00:00Z",
+        "available_at": "2025-08-06T10:01:00Z",
+        "fetched_at": "2026-10-09T20:17:33Z",
+        "availability_basis": "fictional_fixture",
+        "summary": "Fictional close 100.00 only; required prior warm-up candles absent."
+      },
+      {
+        "evidence_id": "SYN-filing-insufficient",
+        "kind": "filing",
+        "source_ref": "fixture://filings/insufficient",
+        "source_version": "v1",
+        "locator": "section 1",
+        "published_at": "2025-08-06T07:55:00Z",
+        "available_at": "2025-08-06T08:00:00Z",
+        "fetched_at": "2026-10-09T20:17:33Z",
+        "availability_basis": "fictional_fixture",
+        "summary": "Fictional issuer reports unchanged operations; no known material contradiction."
+      }
+    ],
+    "missing_evidence": [
+      {
+        "requirement": "optional news archive",
+        "reason": "Fictional news coverage is unavailable; this price-only fixture does not require it.",
+        "blocking": false
+      },
+      {
+        "requirement": "closed candle warm-up",
+        "reason": "Required pre-cutoff observations missing.",
+        "blocking": true
+      }
+    ],
+    "rationale": {
+      "summary": "Required warm-up history is unavailable at cutoff; abstain.",
+      "evidence_ids": [
+        "SYN-price-insufficient",
+        "SYN-filing-insufficient"
+      ],
+      "contradictions": [],
+      "invalidation": "Reassess only in a newly generated recommendation."
+    },
+    "versions": {
+      "dataset": "SYN-cutoff-v1",
+      "code": "SYN-hand-authored-v1",
+      "model": null,
+      "prompt": null
+    },
+    "risk_context": {
+      "status": "not_assessed",
+      "reason": "One share is an arithmetic demonstration, not approved capital sizing."
+    },
+    "revises_id": null,
+    "revision_reason": null
+  }
+]

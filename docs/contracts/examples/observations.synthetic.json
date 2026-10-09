@@ -1,0 +1,211 @@
+{
+  "synthetic": true,
+  "dataset_id": "SYN-future-v1",
+  "calendar_sessions": [
+    "2025-08-07",
+    "2025-08-08",
+    "2025-08-11"
+  ],
+  "price_basis": "raw",
+  "coverage_assumption": "Complete fictional sessions, no outages or corporate actions. Points establish continuous paths between timestamps except overnight opening gaps. Bars establish ranges only, not intrabar order. In time-expiry, points refine the first bar.",
+  "scenarios": [
+    {
+      "recommendation_id": "SYN-stop",
+      "observations": [
+        {
+          "kind": "point",
+          "at": "2025-08-07T03:45:00Z",
+          "price": "101.00"
+        },
+        {
+          "kind": "point",
+          "at": "2025-08-07T04:00:00Z",
+          "price": "102.00"
+        },
+        {
+          "kind": "point",
+          "at": "2025-08-08T04:00:00Z",
+          "price": "98.00"
+        },
+        {
+          "kind": "point",
+          "at": "2025-08-11T10:00:00Z",
+          "price": "112.00"
+        }
+      ]
+    },
+    {
+      "recommendation_id": "SYN-target",
+      "observations": [
+        {
+          "kind": "point",
+          "at": "2025-08-07T03:45:00Z",
+          "price": "101.00"
+        },
+        {
+          "kind": "point",
+          "at": "2025-08-07T04:00:00Z",
+          "price": "102.00"
+        },
+        {
+          "kind": "point",
+          "at": "2025-08-08T04:00:00Z",
+          "price": "110.00"
+        },
+        {
+          "kind": "point",
+          "at": "2025-08-11T10:00:00Z",
+          "price": "108.00"
+        }
+      ]
+    },
+    {
+      "recommendation_id": "SYN-no-entry",
+      "observations": [
+        {
+          "kind": "bar",
+          "start_at": "2025-08-07T03:45:00Z",
+          "end_at": "2025-08-07T10:00:00Z",
+          "open": "100.00",
+          "high": "101.00",
+          "low": "99.00",
+          "close": "100.50"
+        },
+        {
+          "kind": "bar",
+          "start_at": "2025-08-08T03:45:00Z",
+          "end_at": "2025-08-08T10:00:00Z",
+          "open": "100.50",
+          "high": "101.50",
+          "low": "99.50",
+          "close": "101.00"
+        },
+        {
+          "kind": "point",
+          "at": "2025-08-11T10:00:00Z",
+          "price": "112.00"
+        }
+      ]
+    },
+    {
+      "recommendation_id": "SYN-time-expiry",
+      "observations": [
+        {
+          "kind": "point",
+          "at": "2025-08-07T03:45:00Z",
+          "price": "101.00"
+        },
+        {
+          "kind": "point",
+          "at": "2025-08-07T04:00:00Z",
+          "price": "102.00"
+        },
+        {
+          "kind": "bar",
+          "start_at": "2025-08-07T03:45:00Z",
+          "end_at": "2025-08-07T10:00:00Z",
+          "open": "101.00",
+          "high": "104.00",
+          "low": "100.00",
+          "close": "103.00"
+        },
+        {
+          "kind": "bar",
+          "start_at": "2025-08-08T03:45:00Z",
+          "end_at": "2025-08-08T10:00:00Z",
+          "open": "103.00",
+          "high": "105.00",
+          "low": "100.00",
+          "close": "103.00"
+        },
+        {
+          "kind": "point",
+          "at": "2025-08-11T10:00:00Z",
+          "price": "104.00"
+        }
+      ]
+    },
+    {
+      "recommendation_id": "SYN-ambiguous",
+      "observations": [
+        {
+          "kind": "point",
+          "at": "2025-08-07T03:45:00Z",
+          "price": "101.00"
+        },
+        {
+          "kind": "point",
+          "at": "2025-08-07T04:00:00Z",
+          "price": "102.00"
+        },
+        {
+          "kind": "point",
+          "at": "2025-08-07T10:00:00Z",
+          "price": "103.00"
+        },
+        {
+          "kind": "bar",
+          "start_at": "2025-08-08T03:45:00Z",
+          "end_at": "2025-08-08T10:00:00Z",
+          "open": "103.00",
+          "high": "111.00",
+          "low": "97.00",
+          "close": "105.00"
+        },
+        {
+          "kind": "point",
+          "at": "2025-08-11T10:00:00Z",
+          "price": "106.00"
+        }
+      ]
+    },
+    {
+      "recommendation_id": "SYN-gap",
+      "observations": [
+        {
+          "kind": "point",
+          "at": "2025-08-07T03:45:00Z",
+          "price": "104.00"
+        },
+        {
+          "kind": "point",
+          "at": "2025-08-07T10:00:00Z",
+          "price": "103.00"
+        },
+        {
+          "kind": "point",
+          "at": "2025-08-08T03:45:00Z",
+          "price": "95.00"
+        },
+        {
+          "kind": "point",
+          "at": "2025-08-11T10:00:00Z",
+          "price": "96.00"
+        }
+      ]
+    },
+    {
+      "recommendation_id": "SYN-sell",
+      "observations": [
+        {
+          "kind": "point",
+          "at": "2025-08-07T03:45:00Z",
+          "price": "100.00"
+        },
+        {
+          "kind": "point",
+          "at": "2025-08-11T10:00:00Z",
+          "price": "94.00"
+        }
+      ]
+    },
+    {
+      "recommendation_id": "SYN-wait",
+      "observations": []
+    },
+    {
+      "recommendation_id": "SYN-insufficient",
+      "observations": []
+    }
+  ]
+}
