@@ -1,0 +1,196 @@
+{
+  "synthetic": true,
+  "fixture_version": "STK-EVAL-1",
+  "description": "Separate evaluator inputs, not recommendations, fills produced by a replay engine, or a strategy experiment. Original STK-001 files are unchanged.",
+  "evaluation_as_of": "2026-10-10T00:00:00Z",
+  "additional_fictional_session_for_deadline_only": "2025-08-12",
+  "round_trips": [
+    {
+      "id": "cost-flips-gain",
+      "entry": "100.00",
+      "exit": "100.05",
+      "quantity": 2,
+      "entry_fees": "0.10",
+      "exit_fees": "0.10",
+      "expected_gross": "0.10",
+      "expected_net": "-0.10",
+      "expected_invested": "200.10"
+    },
+    {
+      "id": "net-breakeven",
+      "entry": "100.00",
+      "exit": "100.20",
+      "quantity": 1,
+      "entry_fees": "0.10",
+      "exit_fees": "0.10",
+      "expected_gross": "0.20",
+      "expected_net": "0.00",
+      "expected_invested": "100.10"
+    }
+  ],
+  "unresolved_cases": [
+    {
+      "id": "open-position",
+      "action": "BUY",
+      "forecast_status": "pending",
+      "direction": null,
+      "target_status": "pending",
+      "target": null,
+      "entry": true,
+      "trade_status": "open",
+      "reason": "awaiting_exit",
+      "target_first": null,
+      "net": null,
+      "forecast_due": true,
+      "target_due": true,
+      "entry_due": true,
+      "trade_due": true
+    },
+    {
+      "id": "unelapsed-entry",
+      "action": "BUY",
+      "forecast_status": "pending",
+      "direction": null,
+      "target_status": "pending",
+      "target": null,
+      "entry": null,
+      "trade_status": "pending",
+      "reason": "awaiting_entry",
+      "target_first": null,
+      "net": null,
+      "forecast_due": false,
+      "target_due": false,
+      "entry_due": false,
+      "trade_due": false
+    },
+    {
+      "id": "missing-prices",
+      "action": "BUY",
+      "forecast_status": "invalid_data",
+      "direction": null,
+      "target_status": "invalid_data",
+      "target": null,
+      "entry": null,
+      "trade_status": "invalid_data",
+      "reason": "missing_observations",
+      "target_first": null,
+      "net": null,
+      "forecast_due": true,
+      "target_due": true,
+      "entry_due": true,
+      "trade_due": false
+    },
+    {
+      "id": "unknown-order",
+      "action": "BUY",
+      "forecast_status": "matured",
+      "direction": true,
+      "target_status": "matured",
+      "target": true,
+      "entry": true,
+      "trade_status": "ambiguous",
+      "reason": "stop_target_order_unknown",
+      "target_first": null,
+      "net": null,
+      "forecast_due": true,
+      "target_due": true,
+      "entry_due": true,
+      "trade_due": true
+    },
+    {
+      "id": "expired-untriggered",
+      "action": "BUY",
+      "forecast_status": "matured",
+      "direction": false,
+      "target_status": "matured",
+      "target": false,
+      "entry": false,
+      "trade_status": "no_entry",
+      "reason": "entry_expired",
+      "target_first": null,
+      "net": null,
+      "forecast_due": true,
+      "target_due": true,
+      "entry_due": true,
+      "trade_due": false
+    },
+    {
+      "id": "missing-outcome",
+      "action": "BUY",
+      "forecast_status": "missing",
+      "direction": null,
+      "target_status": "missing",
+      "target": null,
+      "entry": null,
+      "trade_status": "missing",
+      "reason": "missing_outcome_record",
+      "target_first": null,
+      "net": null,
+      "forecast_due": true,
+      "target_due": true,
+      "entry_due": true,
+      "trade_due": false
+    }
+  ],
+  "equity_curve": [
+    {
+      "at": "2025-01-01T10:00:00Z",
+      "cash": "500.00",
+      "positions": [
+        {
+          "quantity": "5",
+          "mark": "100.00"
+        }
+      ],
+      "external_flow": "0.00",
+      "expected_equity": "1000.00"
+    },
+    {
+      "at": "2025-01-02T10:00:00Z",
+      "cash": "1000.00",
+      "positions": [
+        {
+          "quantity": "5",
+          "mark": "140.00"
+        }
+      ],
+      "external_flow": "500.00",
+      "expected_equity": "1700.00"
+    },
+    {
+      "at": "2025-01-03T10:00:00Z",
+      "cash": "800.00",
+      "positions": [
+        {
+          "quantity": "5",
+          "mark": "72.00"
+        }
+      ],
+      "external_flow": "-200.00",
+      "expected_equity": "1160.00"
+    },
+    {
+      "at": "2025-01-06T10:00:00Z",
+      "cash": "800.00",
+      "positions": [
+        {
+          "quantity": "5",
+          "mark": "95.20"
+        }
+      ],
+      "external_flow": "0.00",
+      "expected_equity": "1276.00"
+    }
+  ],
+  "equity_expected": {
+    "wealth_index": [
+      "1",
+      "1.2",
+      "0.96",
+      "1.056"
+    ],
+    "time_weighted_return": "0.056",
+    "maximum_drawdown": "0.20",
+    "cash_profit": "-24.00"
+  }
+}
