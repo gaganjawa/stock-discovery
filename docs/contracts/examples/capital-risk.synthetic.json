@@ -1,0 +1,20 @@
+{
+  "synthetic": true,
+  "policy_id": "SYN-RISK-1",
+  "approval_state": "synthetic_only",
+  "live_enabled": false,
+  "horizon": "swing",
+  "currency": "INR",
+  "contributions": [{"month":"2025-01","posted":"50000"},{"month":"2025-02","posted":"0"},{"month":"2025-03","posted":"30000"}],
+  "suggested_monthly_contribution": "50000",
+  "sizing": {
+    "approved_ceiling":"100000", "period_base":"100000", "active_equity":"100000",
+    "per_trade_fraction":"0.0025", "combined_fraction":"0.005", "existing_and_pending_risk":"300",
+    "spendable_cash":"2500", "entry":"100", "protective_exit":"95",
+    "entry_variable_fee":"0.10", "exit_variable_fee":"0.10", "entry_fixed_fee":"1", "exit_fixed_fee":"1",
+    "instrument_fraction":"0.10", "sector_fraction":"0.25", "gross_fraction":"0.80",
+    "instrument_exposure":"0", "sector_exposure":"23000", "gross_exposure":"70000"
+  },
+  "expected": {"posted_contributions":"80000", "risk_quantity":38, "cash_quantity":24, "instrument_quantity":100, "sector_quantity":20, "gross_quantity":100, "quantity":20, "entry_cash":"2003", "planned_loss":"106"},
+  "monthly_loss": {"opening_equity":"100000", "frozen_base":"100000", "limit_fraction":"0.01", "observations":[{"equity":"98800","net_flows":"0"},{"equity":"148800","net_flows":"50000"},{"equity":"128800","net_flows":"30000"}], "expected_pnl":"-1200", "expected_loss":"1200", "expected_breach":true}
+}
