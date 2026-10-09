@@ -119,8 +119,8 @@ Epic: E01 · Target: v0.1 · Status: In Progress · Owner: Codex · Depends on: 
 
 **Acceptance:** A frozen example defines information cutoff, horizon, entry, stop, targets, expiry and separate forecast/trade outcomes.
 
-- [ ] **STK-001** — Define recommendation schema and work through 6 Aug 2025 using illustrative data; include buy/sell/wait and insufficient evidence. **[Review/Test]** · Priority: P1 — High
-  - Owner: Codex. Contract and 9 synthetic scenarios validated; commit/push pending. Evidence: [STK-001 record](STK-001.md).
+- [x] **STK-001** — Define recommendation schema and work through 6 Aug 2025 using illustrative data; include buy/sell/wait and insufficient evidence. **[Done]** · Priority: P1 — High
+  - Owner: Codex. Done 10 Oct 2026. Contract and 9 synthetic scenarios validated; implementation commit `6417dba` pushed and verified. Hosted board version 3 published successfully. Blocker: none. Actual effort: not time-tracked (observed resumed work window approximately 10 minutes). Evidence: [STK-001 record](STK-001.md).
 - [ ] **STK-002** — Define accuracy denominators, net expectancy, drawdown, benchmarks and promotion criteria before testing. **[Backlog]** · Priority: P1 — High
 - [ ] **STK-003** — Record scope and configurable capital/risk rules; distinguish exit of a holding from short selling and allow skipped contributions. **[Backlog]** · Priority: P1 — High
 
