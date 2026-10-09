@@ -115,7 +115,7 @@ Each task below has a concrete output. Acceptance applies to the parent story. D
 
 ### S01 — Recommendation and evaluation contract
 
-Epic: E01 · Target: v0.1 · Status: In Progress · Owner: Codex · Depends on: -
+Epic: E01 · Target: v0.1 · Status: Done · Owner: Codex · Depends on: -
 
 **Acceptance:** A frozen example defines information cutoff, horizon, entry, stop, targets, expiry and separate forecast/trade outcomes.
 
@@ -123,8 +123,8 @@ Epic: E01 · Target: v0.1 · Status: In Progress · Owner: Codex · Depends on: 
   - Owner: Codex. Done 10 Oct 2026. Contract and 9 synthetic scenarios validated; implementation commit `6417dba` pushed and verified. Hosted board version 3 published successfully. Blocker: none. Actual effort: not time-tracked (observed resumed work window approximately 10 minutes). Evidence: [STK-001 record](STK-001.md).
 - [x] **STK-002** — Define accuracy denominators, net expectancy, drawdown, benchmarks and promotion criteria before testing. **[Done]** · Priority: P1 — High
   - Owner: Codex. Done 10 Oct 2026. Both validators and diff review passed; implementation commit `1143d4a` pushed and remote verified. Hosted board Done save confirmed. Blocker: none. Actual effort: not time-tracked. EP-1 remains proposed policy. Evidence: [STK-002 record](STK-002.md).
-- [ ] **STK-003** — Record scope and configurable capital/risk rules; distinguish exit of a holding from short selling and allow skipped contributions. **[Review/Test]** · Priority: P1 — High
-  - Owner: Codex. Contract and synthetic risk checks implemented; commit/push pending. Evidence: [STK-003 record](STK-003.md).
+- [x] **STK-003** — Record scope and configurable capital/risk rules; distinguish exit of a holding from short selling and allow skipped contributions. **[Done]** · Priority: P1 — High
+  - Owner: Codex. Done 10 Oct 2026. All three validators pass; implementation commit `d15c00a` pushed and remote verified; hosted board Done save confirmed. No live risk profile approved. Blocker: none. Actual effort: not time-tracked. Next ticket requires user confirmation. Evidence: [STK-003 record](STK-003.md).
 
 ### S02 — Market data rights and broker feasibility
 
