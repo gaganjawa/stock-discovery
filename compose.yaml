@@ -1,0 +1,45 @@
+services:
+  database:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-stock_discovery}
+      POSTGRES_USER: ${POSTGRES_USER:-stock_discovery}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change-me-for-local-use}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    environment:
+      DATABASE_URL: postgresql://$${POSTGRES_USER:-stock_discovery}:$${POSTGRES_PASSWORD:-change-me-for-local-use}@database:5432/$${POSTGRES_DB:-stock_discovery}
+    ports:
+      - "${API_PORT:-8000}:8000"
+    depends_on:
+      database:
+        condition: service_healthy
+
+  worker:
+    build:
+      context: .
+      dockerfile: worker/Dockerfile
+    environment:
+      DATABASE_URL: postgresql://$${POSTGRES_USER:-stock_discovery}:$${POSTGRES_PASSWORD:-change-me-for-local-use}@database:5432/$${POSTGRES_DB:-stock_discovery}
+    depends_on:
+      database:
+        condition: service_healthy
+
+  web:
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+    ports:
+      - "${WEB_PORT:-5173}:80"
+    depends_on:
+      - api

@@ -4,11 +4,12 @@ Private Indian equity research: discover stocks using news, fundamentals, techni
 
 Agreed architecture: React + TypeScript + Lightweight Charts, FastAPI, one scheduled Python worker, PostgreSQL, shared Python analysis for historical and live modes, and Docker Compose. An existing LLM supports grounded research; predictive ML experiments come later. No initial microservices, Kubernetes or Redis.
 
-Current ticket: **STK-003 — Scope and configurable capital/risk rules**, P1, v0.1. **Done**: contract and synthetic checks committed and pushed; hosted board updated. [Delivery evidence](docs/STK-003.md). STK-001 and STK-002 are complete. No live risk profile is approved. Application/replay implementation has not started; the next ticket requires user confirmation.
+Current ticket: **STK-010 — Repository and application setup**, P1, v0.1. **Review/Test**: a local React/TypeScript shell, FastAPI API, scheduled Python worker, shared analysis package, migration scaffold, PostgreSQL service and Docker Compose have been added with synthetic data only. STK-011 navigation and all later application features remain unstarted.
 
 - [Recommendation contract](docs/contracts/recommendation-contract.md)
 - [Evaluation contract](docs/contracts/evaluation-contract.md)
 - [Capital and risk contract](docs/contracts/capital-risk-contract.md)
+- [STK-010 delivery record](docs/STK-010.md)
 - [Synthetic JSON examples](docs/contracts/examples/)
 - [Working Kanban plan](docs/stock-platform-kanban-plan.md)
 - [Original supplied plan](docs/reference/stock-platform-kanban-plan.md)

@@ -148,11 +148,12 @@ Epic: E01 · Target: v0.1 · Status: Backlog · Owner: Unassigned · Depends on:
 
 ### S04 — Application skeleton
 
-Epic: E02 · Target: v0.1 · Status: Backlog · Owner: Unassigned · Depends on: S01
+Epic: E02 · Target: v0.1 · Status: In Progress · Owner: Codex · Depends on: S01
 
 **Acceptance:** UI, API, worker and database run locally with synthetic data and reproducible builds.
 
-- [ ] **STK-010** — Create one repository with React/TypeScript UI, FastAPI API, Python worker, shared analysis package and migrations. **[Backlog]** · Priority: P1 — High
+- [ ] **STK-010** — Create one repository with React/TypeScript UI, FastAPI API, Python worker, shared analysis package and migrations. **[Review/Test]** · Priority: P1 — High
+  - Owner: Codex. Review/Test 10 Oct 2026. Synthetic API and worker tests pass; the worker one-shot cycle, API HTTP endpoints, frontend production build, Compose structure and prior contract validators pass. Commit and remote verification are pending before Done. Evidence: [STK-010 record](STK-010.md).
 - [ ] **STK-011** — Build navigation for Dashboard, Research, Replay, Portfolio and IPO with explicit empty/demo states. **[Backlog]** · Priority: P1 — High
 - [ ] **STK-012** — Configure CI, relevant smoke tests, pinned dependencies and secret-free environment templates. **[Backlog]** · Priority: P1 — High
 

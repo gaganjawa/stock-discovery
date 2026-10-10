@@ -1,0 +1,7 @@
+:root { color: #f4f7fb; background: #101827; font-family: Inter, system-ui, sans-serif; }
+body { margin: 0; min-width: 320px; }
+main { max-width: 680px; margin: 14vh auto; padding: 2rem; }
+h1 { font-size: clamp(2.5rem, 8vw, 4.5rem); margin: .25rem 0 1rem; }
+p { font-size: 1.1rem; line-height: 1.65; }
+.eyebrow { color: #7dd3fc; font-size: .78rem; font-weight: 700; letter-spacing: .12em; }
+.muted { color: #a8b3c7; }
