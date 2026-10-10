@@ -33,6 +33,7 @@ jobs:
           python scripts/validate_capital_risk_examples.py
           python -m pytest backend/tests worker/tests -q
           python -m worker.main --once
+          python -m unittest discover -s scripts -p "test_smoke_compose.py"
       - name: Build UI from lockfile
         working-directory: frontend
         run: |

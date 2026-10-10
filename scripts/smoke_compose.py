@@ -1,4 +1,5 @@
 """Smoke-check the running synthetic Compose stack; no external services used."""
+import http.client
 import json
 import os
 import subprocess
@@ -17,7 +18,7 @@ def read_url(url):
         try:
             with urllib.request.urlopen(url, timeout=3) as response:
                 return response.read().decode()
-        except (urllib.error.URLError, TimeoutError):
+        except (urllib.error.URLError, TimeoutError, ConnectionError, http.client.RemoteDisconnected):
             if time.monotonic() >= deadline:
                 raise
             time.sleep(1)
