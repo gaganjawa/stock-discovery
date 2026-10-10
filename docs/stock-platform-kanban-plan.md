@@ -166,7 +166,8 @@ Epic: E02 · Target: v0.1 · Status: Backlog · Owner: Unassigned · Depends on:
 
 **Acceptance:** The same engine can use a historical or live clock; decisions preserve source and version information.
 
-- [ ] **STK-013** — Create PostgreSQL schema for instruments, candles, documents, facts, decisions, runs, holdings and contribution ledger. **[Review/Test]** · Priority: P1 — High
+- [x] **STK-013** — Create PostgreSQL schema for instruments, candles, documents, facts, decisions, runs, holdings and contribution ledger. **[Done]** · Priority: P1 — High
+  - Owner: Codex. Completed 11 Oct 2026. Implementation `539f055` pushed; PostgreSQL constraints, unchanged fixture round trips, upgrade/downgrade/re-upgrade and failed-migration rollback passed in CI. Hosted board update delegated to the user. Evidence: [STK-013](STK-013.md).
 - [ ] **STK-014** — Define market-data, document and account adapters with explicit availability timestamps and historical/live clock interfaces. **[Backlog]** · Priority: P1 — High
 - [ ] **STK-015** — Make decisions immutable; store source, dataset, code, strategy, prompt and model versions, with linked corrections. **[Backlog]** · Priority: P1 — High
 

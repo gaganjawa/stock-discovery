@@ -4,7 +4,7 @@ Private Indian equity research: discover stocks using news, fundamentals, techni
 
 Agreed architecture: React + TypeScript + Lightweight Charts, FastAPI, one scheduled Python worker, PostgreSQL, shared Python analysis for historical and live modes, and Docker Compose. An existing LLM supports grounded research; predictive ML experiments come later. No initial microservices, Kubernetes or Redis.
 
-Current ticket: **STK-013 — PostgreSQL schema and migrations**, P1, v0.1. In validation. [Delivery evidence](docs/STK-013.md). STK-014 remains unstarted.
+Current ticket: **STK-013 — PostgreSQL schema and migrations**, P1, v0.1. **Done**: PostgreSQL schema and migration lifecycle validated in CI. [Delivery evidence](docs/STK-013.md). STK-014 remains unstarted.
 
 - [Recommendation contract](docs/contracts/recommendation-contract.md)
 - [Evaluation contract](docs/contracts/evaluation-contract.md)
