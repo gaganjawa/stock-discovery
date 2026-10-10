@@ -44,6 +44,12 @@ jobs:
           docker compose config --quiet
           docker compose up --build -d
           python scripts/smoke_compose.py
+      - name: Verify migrations in disposable PostgreSQL database
+        env:
+          STK_TEST_DATABASE_URL: postgresql://stock_discovery:change-me-for-local-use@127.0.0.1:5432/stk013_test
+        run: |
+          docker compose exec -T database createdb -U stock_discovery stk013_test
+          python scripts/validate_migrations.py
       - name: Container diagnostics
         if: failure()
         run: docker compose logs --no-color --tail=100
