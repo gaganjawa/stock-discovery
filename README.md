@@ -4,7 +4,7 @@ Private Indian equity research: discover stocks using news, fundamentals, techni
 
 Agreed architecture: React + TypeScript + Lightweight Charts, FastAPI, one scheduled Python worker, PostgreSQL, shared Python analysis for historical and live modes, and Docker Compose. An existing LLM supports grounded research; predictive ML experiments come later. No initial microservices, Kubernetes or Redis.
 
-Current ticket: **STK-010 — Repository and application setup**, P1, v0.1. **Done**: the local React/TypeScript shell, FastAPI API, scheduled Python worker, shared analysis package, migration scaffold, PostgreSQL service and Docker Compose are committed and pushed with synthetic data only. STK-011 navigation and all later application features remain unstarted.
+Current ticket: **STK-011 — Navigation and empty states**, P1, v0.1. Five navigable sections and fictional preview states are implemented. [Delivery evidence](docs/STK-011.md). STK-012 remains unstarted.
 
 - [Recommendation contract](docs/contracts/recommendation-contract.md)
 - [Evaluation contract](docs/contracts/evaluation-contract.md)
@@ -25,3 +25,13 @@ python3 scripts/validate_capital_risk_examples.py
 ```
 
 All example instruments, market data, holdings and costs are synthetic. The supplied planning documents are preserved as references; their budgets are planning assumptions, not account data or activated settings.
+
+Run the UI locally (Node 20.19+ or 22.12+):
+
+```sh
+cd frontend
+npm ci
+npm run dev -- --host 127.0.0.1
+```
+
+Open the URL printed by Vite (normally http://127.0.0.1:5173). Use the sidebar to explore five sections and toggle fictional examples. No API or database is required for this preview.
