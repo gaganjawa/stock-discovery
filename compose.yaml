@@ -13,17 +13,34 @@ services:
       timeout: 5s
       retries: 10
 
+  migrate:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-stock_discovery}:${POSTGRES_PASSWORD:-change-me-for-local-use}@database:5432/${POSTGRES_DB:-stock_discovery}
+    command: ["python", "-m", "alembic", "-c", "/app/backend/alembic.ini", "upgrade", "head"]
+    depends_on:
+      database:
+        condition: service_healthy
+
   api:
     build:
       context: .
       dockerfile: backend/Dockerfile
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER:-stock_discovery}:${POSTGRES_PASSWORD:-change-me-for-local-use}@database:5432/${POSTGRES_DB:-stock_discovery}
+      AUTH_TOKEN: ${AUTH_TOKEN:-}
+      COOKIE_SECURE: ${COOKIE_SECURE:-true}
+      APP_ORIGIN: ${APP_ORIGIN:-http://127.0.0.1:5173}
+      CODE_VERSION: ${CODE_VERSION:-local-unversioned}
     ports:
       - "127.0.0.1:${API_PORT:-8000}:8000"
     depends_on:
       database:
         condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
 
   worker:
     build:
@@ -34,6 +51,8 @@ services:
     depends_on:
       database:
         condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
 
   web:
     build:

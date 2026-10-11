@@ -3,13 +3,15 @@ import http.client
 import json
 import os
 import subprocess
+import shutil
 import time
 import urllib.error
 import urllib.request
 
 
 def compose(*args):
-    return subprocess.check_output(['docker', 'compose', *args], text=True)
+    command = ['docker-compose'] if shutil.which('docker-compose') else ['docker','compose']
+    return subprocess.check_output([*command,*args],text=True)
 
 
 def read_url(url):

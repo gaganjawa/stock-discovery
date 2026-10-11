@@ -485,3 +485,7 @@ Reviewed 9 October 2026. Recheck prices and terms before activation. Official pa
 | 2026-10-09 | Planning baseline 1 | Created 10 epics, 30 stories and 90 tasks; added provider sourcing, rights gates, budget and private release sequence. No implementation marked complete. |
 
 | 2026-10-09 | Priority revision | Added explicit P0–P3 policy and priorities to all 90 tasks. Preserved status, dependencies and estimates. |
+
+## Work checkpoint — 11 Oct 2026
+
+Owner requested separate completed/WIP commits and a pause. See [work handoff](WORK-HANDOFF.md). STK-016–018/033/043–045 remain WIP or awaiting release verification; STK-004–009 retain source/procurement/audit blockers. No new feature is marked Done before private-release acceptance. Hosted board untouched.

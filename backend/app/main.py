@@ -14,3 +14,7 @@ def healthcheck() -> dict[str, str]:
 def demo_recommendation() -> dict[str, object]:
     """A deterministic demo response; it is not investment advice or a live signal."""
     return synthetic_recommendation(AnalysisMode.HISTORICAL)
+
+
+from .research import router
+app.include_router(router)

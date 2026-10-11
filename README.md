@@ -4,7 +4,7 @@ Private Indian equity research: discover stocks using news, fundamentals, techni
 
 Agreed architecture: React + TypeScript + Lightweight Charts, FastAPI, one scheduled Python worker, PostgreSQL, shared Python analysis for historical and live modes, and Docker Compose. An existing LLM supports grounded research; predictive ML experiments come later. No initial microservices, Kubernetes or Redis.
 
-Current ticket: **STK-013 — PostgreSQL schema and migrations**, P1, v0.1. **Done**: PostgreSQL schema and migration lifecycle validated in CI. [Delivery evidence](docs/STK-013.md). STK-014 remains unstarted.
+Current checkpoint: synthetic M1–M3 implementation committed; authenticated UI/worker/release work saved separately as WIP. **v0.2 is not released.** See [work handoff and verification status](docs/WORK-HANDOFF.md) for implemented tickets, remaining gates and local preview instructions.
 
 - [Recommendation contract](docs/contracts/recommendation-contract.md)
 - [Evaluation contract](docs/contracts/evaluation-contract.md)
@@ -34,4 +34,4 @@ npm ci
 npm run dev -- --host 127.0.0.1
 ```
 
-Open the URL printed by Vite (normally http://127.0.0.1:5173). Use the sidebar to explore five sections and toggle fictional examples. No API or database is required for this preview.
+Open the URL printed by Vite (normally http://127.0.0.1:5173). Use the sidebar to explore five sections and toggle fictional examples. The functional preview now requires the API, PostgreSQL, migrations and owner authentication; use the Compose instructions in the work handoff.
