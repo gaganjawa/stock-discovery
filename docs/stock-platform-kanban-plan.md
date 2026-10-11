@@ -239,8 +239,10 @@ Epic: E04 · Target: v0.2 · Status: Backlog · Owner: Unassigned · Depends on:
 
 **Acceptance:** A deterministic strategy emits entry/stop/target/expiry or wait with traceable rules.
 
-- [ ] **STK-031** — Implement a frozen EMA plus relative-volume plus breakout baseline and explicit timing/exit rules. **[Backlog]** · Priority: P2 — Medium
-- [ ] **STK-032** — Implement sizing using chosen active capital, cash, stop distance and exposure constraints; flag gaps and rounding. **[Backlog]** · Priority: P2 — Medium
+- [ ] **STK-031** — Implement a frozen EMA plus relative-volume plus breakout baseline and explicit timing/exit rules. **[Ready for Release]** · Priority: P2 — Medium
+  - Evidence: [M2 strategy](M2-strategy.md). Synthetic strategy and reference sizing verified; release pending.
+- [ ] **STK-032** — Implement sizing using chosen active capital, cash, stop distance and exposure constraints; flag gaps and rounding. **[Ready for Release]** · Priority: P2 — Medium
+  - Evidence: [M2 strategy](M2-strategy.md). Synthetic strategy and reference sizing verified; release pending.
 - [ ] **STK-033** — Build recommendation card showing triggered rules, chart, invalidation and version; no invented confidence probability. **[Backlog]** · Priority: P2 — Medium
 
 ### S12 — Ichimoku and additional strategies
