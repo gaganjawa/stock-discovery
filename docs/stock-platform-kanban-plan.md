@@ -207,7 +207,8 @@ Epic: E03 · Target: v0.2 · Status: Backlog · Owner: Unassigned · Depends on:
   - Evidence: [STK-022](STK-022.md). Synthetic ingestion verified; real provider access blocked.
 - [ ] **STK-023** — Validate timestamps, OHLC, volume, duplicates, gaps and split/dividend treatment against independently checked samples. **[Ready for Release]** · Priority: P2 — Medium
   - Evidence: [STK-023](STK-023.md). Synthetic quality gates verified; independent real samples unavailable.
-- [ ] **STK-024** — Freeze dataset manifest and chronological development/test windows; record missing periods and permitted retention. **[Backlog]** · Priority: P2 — Medium
+- [ ] **STK-024** — Freeze dataset manifest and chronological development/test windows; record missing periods and permitted retention. **[Ready for Release]** · Priority: P2 — Medium
+  - Evidence: [STK-024](STK-024.md). Frozen synthetic manifest/windows; no real-data rights inferred.
 
 ### S09 — Read-only Upstox and Zerodha
 

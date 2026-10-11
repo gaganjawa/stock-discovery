@@ -35,3 +35,13 @@ def test_quality_rejects_zero_volume_late_bars_and_action_windows():
     action=CorporateAction('div','SYN-ALPHA','dividend',c.starts_at,Decimal(1),d.calendar.provenance)
     assert 'corporate_action_in_feature_window' in replace(d,actions=(action,)).quality('SYN-ALPHA',cutoff,30)
     with pytest.raises(ValueError): replace(d,candles=(*d.candles,c))
+
+
+def test_frozen_windows_have_overlap_gaps():
+    from stock_discovery_analysis.dataset import chronological_windows
+    split=chronological_windows(100)
+    assert split['development']==[0,60]
+    assert split['validation']==[65,80]
+    assert split['test']==[85,100]
+    assert demo_dataset().manifest()['chronological_windows']==split
+    with pytest.raises(ValueError): chronological_windows(5)

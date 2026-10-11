@@ -30,6 +30,7 @@ class Dataset:
     candles: tuple[Candle, ...]
     label: str = 'SYNTHETIC DEMO — no profitability inference'
     rights_ref: str = 'synthetic-only'
+    split_version: str = 'chronological-60-20-20-gap5-v1'
 
     def __post_init__(self):
         ids={i.instrument_id for i in self.instruments}
@@ -76,6 +77,8 @@ class Dataset:
                 'adjustment_basis':'raw-v1','candle_count':len(self.candles),
                 'source_versions':sorted({c.provenance.source_version for c in self.candles}),
                 'coverage':'fictional calendar/universe only; no historical news or real constituent coverage',
+                'chronological_windows':chronological_windows(len(self.calendar.sessions)),
+                'retention':'synthetic fixtures may be retained; real data disabled',
                 'payload':asdict(self)}
 
 
@@ -107,3 +110,16 @@ def demo_dataset() -> Dataset:
         tuple(SymbolMapping(i.instrument_id,'SYNTHETIC_NSE:EQ',i.instrument_id,known,None,p) for i in instruments),
         tuple(Membership(i.instrument_id,known,'listed',p) for i in instruments),
         Calendar('fictional-weekdays-v1',tuple(sessions),p),(),tuple(bars))
+
+
+def chronological_windows(count: int, gap: int = 5) -> dict:
+    """Half-open session indices; five-session labels cannot cross boundaries."""
+    if count < 30 or gap < 1: raise ValueError('insufficient sessions or invalid gap')
+    train_end=count*3//5
+    validation_end=count*4//5
+    if train_end+gap>=validation_end or validation_end+gap>=count:
+        raise ValueError('no evaluation samples after overlap gap')
+    return {'development':[0,train_end], 'validation':[train_end+gap,validation_end],
+            'test':[validation_end+gap,count], 'gap_sessions':gap,
+            'maximum_label_horizon_sessions':gap,
+            'status':'synthetic software-validation only; no strategy promotion'}
