@@ -4,7 +4,7 @@ Private Indian equity research: discover stocks using news, fundamentals, techni
 
 Agreed architecture: React + TypeScript + Lightweight Charts, FastAPI, one scheduled Python worker, PostgreSQL, shared Python analysis for historical and live modes, and Docker Compose. An existing LLM supports grounded research; predictive ML experiments come later. No initial microservices, Kubernetes or Redis.
 
-Current checkpoint: synthetic M1–M3 implementation committed; authenticated UI/worker/release work saved separately as WIP. **v0.2 is not released.** See [work handoff and verification status](docs/WORK-HANDOFF.md) for implemented tickets, remaining gates and local preview instructions.
+Current checkpoint: synthetic preview verification passes; private release readiness is **PARTIAL**. **v0.1/v0.2 have not been tagged or privately deployed.** See [STK-018 release acceptance and recovery runbook](docs/STK-018.md) for gates, risks and release notes, and [work handoff](docs/WORK-HANDOFF.md) for local preview instructions.
 
 - [Recommendation contract](docs/contracts/recommendation-contract.md)
 - [Evaluation contract](docs/contracts/evaluation-contract.md)

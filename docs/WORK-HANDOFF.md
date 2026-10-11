@@ -1,5 +1,7 @@
 # Stock Discovery — work checkpoint
 
+Current release decision: **PARTIAL**. See [STK-018 acceptance, release notes and recovery/rollback runbook](STK-018.md). Local synthetic preview verification passes; private deployment and formal release gates remain open.
+
 ## Verification update — 12 Oct 2026
 
 - Replay root cause: global table margins/borders reached Lightweight Charts internal table. With an unconstrained autoSize host this formed a resize feedback loop: measured chart height grew 48px per two frames, moving the reveal button continuously. No animations or DOM replacement were observed during measurement. Fixed a 340px chart host and scoped table styles to application tables; added geometry assertions without changing timeouts or forcing clicks. Replay fix: `17e4300`.
@@ -8,7 +10,7 @@
 - Full Compose source rebuild passed; migration exited 0, database healthy, API/UI/worker smoke passed. Running worker completed a queued synthetic scan for three instruments. API and worker run as UID/GID 10001; worker now receives CODE_VERSION.
 - Authentication now rejects non-ASCII invalid credentials with 401 rather than raising a server error. Tests cover expiry, tampering, key rotation, fail-closed configuration and cookie origin protection. Local access key is ignored, owner-only (0600), and absent from tracked files.
 - Backup was restored into a new disposable database with matching hashes for every research table; disposable restore database removed and services restarted. The verification dump is a temporary local artifact, not an operational backup policy.
-- GitHub CI for the final push must be confirmed in the delivery response; the old WIP baseline `002ddf0` had failed CI.
+- GitHub CI passed for `067860fd16b3ee26d207e4bd67d47935a448d4d4`: [verified run](https://github.com/gaganjawa/stock-discovery/actions/runs/38176118150). The old WIP baseline `002ddf0` had failed CI.
 
 Remaining release limits: synthetic-only scope; real source rights/imports, full corporate actions, market benchmark/EP-1 acceptance and full notice audit remain unresolved. Before external deployment, configure HTTPS/secure cookies, strong database credentials and a separate least-privilege runtime database role (Compose currently shares the bootstrap owner), login abuse controls, and encrypted off-host backups with retention/restore procedures. Nginx retains its standard root master/non-root worker model. No release tag, external deployment, live feed, broker orders or Kanban changes were made. These verification results do not imply full release readiness.
 
