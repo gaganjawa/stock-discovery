@@ -226,9 +226,12 @@ Epic: E04 · Target: v0.2 · Status: Backlog · Owner: Unassigned · Depends on:
 
 **Acceptance:** Values match reference fixtures and only use closed, available candles with sufficient warm-up.
 
-- [ ] **STK-028** — Implement SMA/EMA, crossovers, relative volume and liquidity features. **[Backlog]** · Priority: P2 — Medium
-- [ ] **STK-029** — Implement ATR, prior-window support/resistance and breakout levels without future bars. **[Backlog]** · Priority: P2 — Medium
-- [ ] **STK-030** — Verify indicator fixtures, missing data and adjustment conventions; expose calculated values for inspection. **[Backlog]** · Priority: P2 — Medium
+- [ ] **STK-028** — Implement SMA/EMA, crossovers, relative volume and liquidity features. **[Ready for Release]** · Priority: P2 — Medium
+  - Evidence: [M2 indicators](M2-indicators.md). Synthetic numerical references pass; private release pending.
+- [ ] **STK-029** — Implement ATR, prior-window support/resistance and breakout levels without future bars. **[Ready for Release]** · Priority: P2 — Medium
+  - Evidence: [M2 indicators](M2-indicators.md). Synthetic numerical references pass; private release pending.
+- [ ] **STK-030** — Verify indicator fixtures, missing data and adjustment conventions; expose calculated values for inspection. **[Ready for Release]** · Priority: P2 — Medium
+  - Evidence: [M2 indicators](M2-indicators.md). Synthetic numerical references pass; private release pending.
 
 ### S11 — First swing strategy
 

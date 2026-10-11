@@ -18,6 +18,7 @@ def main():
     if psycopg.conninfo.conninfo_to_dict(url).get('dbname') != 'stk013_test':
         raise ValueError('Only the disposable stk013_test database is allowed')
     os.environ['DATABASE_URL'] = url
+    os.environ['PYTHONPATH'] = os.pathsep.join(str(ROOT / part) for part in ('backend','shared','worker'))
     config = Config(str(ROOT / 'backend/alembic.ini'))
     command.upgrade(config, 'head')
     command.upgrade(config, 'head')
