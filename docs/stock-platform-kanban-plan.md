@@ -203,7 +203,8 @@ Epic: E03 · Target: v0.2 · Status: Backlog · Owner: Unassigned · Depends on:
 
 **Acceptance:** A permitted, reproducible daily dataset passes quality checks; bad data blocks recommendations.
 
-- [ ] **STK-022** — Implement resumable, rate-limited historical import with idempotent writes and provenance. **[Backlog]** · Priority: P2 — Medium
+- [ ] **STK-022** — Implement resumable, rate-limited historical import with idempotent writes and provenance. **[Ready for Release]** · Priority: P2 — Medium
+  - Evidence: [STK-022](STK-022.md). Synthetic ingestion verified; real provider access blocked.
 - [ ] **STK-023** — Validate timestamps, OHLC, volume, duplicates, gaps and split/dividend treatment against independently checked samples. **[Backlog]** · Priority: P2 — Medium
 - [ ] **STK-024** — Freeze dataset manifest and chronological development/test windows; record missing periods and permitted retention. **[Backlog]** · Priority: P2 — Medium
 

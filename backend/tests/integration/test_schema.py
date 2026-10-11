@@ -109,7 +109,7 @@ def test_candle_revisions_and_constraints(db):
         'verified_archive','raw','v1',100,110,%s,105,1000)'''
     db.execute(insert,('bar1','v1','2025-08-06 10:01Z',90))
     db.execute(insert,('bar2','v2','2025-08-07 10:01Z',91))
-    assert db.execute("SELECT candle_id FROM research.candles WHERE available_at <= '2025-08-06 12:00Z'").fetchall() == [('bar1',)]
+    assert db.execute("SELECT candle_id FROM research.candles WHERE instrument_id='SYN-I' AND available_at <= '2025-08-06 12:00Z'").fetchall() == [('bar1',)]
     with pytest.raises(psycopg.errors.UniqueViolation), db.transaction():
         db.execute(insert,('bar3','v1','2025-08-06 10:01Z',90))
     with pytest.raises(psycopg.errors.CheckViolation), db.transaction():
