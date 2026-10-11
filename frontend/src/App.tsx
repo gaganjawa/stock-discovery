@@ -15,7 +15,7 @@ const fmt=(n:unknown)=>n===null||n===undefined?'Not available':Number.isFinite(N
 function Chart({bars}:{bars:Bar[]}){
  const ref=useRef<HTMLDivElement>(null)
  useEffect(()=>{if(!ref.current)return;const c=createChart(ref.current,{height:340,autoSize:true,layout:{background:{type:ColorType.Solid,color:'#101922'},textColor:'#aec1cf',attributionLogo:true},grid:{vertLines:{color:'#1e2c36'},horzLines:{color:'#1e2c36'}}});c.addSeries(CandlestickSeries,{upColor:'#91dfbf',downColor:'#ec9a92',borderVisible:false}).setData(bars);c.timeScale().fitContent();return()=>c.remove()},[bars])
- return <><div ref={ref} aria-label={`Daily candlestick chart, ${bars.length} fictional candles`}/><p className="attribution">Charts by <a href="https://www.tradingview.com/" target="_blank" rel="noreferrer">TradingView</a> · Lightweight Charts™. Copyright © 2025 TradingView, Inc.</p></>
+ return <><div className="candle-chart" ref={ref} aria-label={`Daily candlestick chart, ${bars.length} fictional candles`}/><p className="attribution">Charts by <a href="https://www.tradingview.com/" target="_blank" rel="noreferrer">TradingView</a> · Lightweight Charts™. Copyright © 2025 TradingView, Inc.</p></>
 }
 export function App(){
  const [page,setPage]=useState('Dashboard'),[signed,setSigned]=useState(false),[token,setToken]=useState(''),[error,setError]=useState(''),[busy,setBusy]=useState(false)

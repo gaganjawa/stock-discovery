@@ -20,6 +20,19 @@ test('authenticated synthetic freeze, reveal, scorecard and future placeholders'
  expect(frozen.trade).toBeUndefined()
  await expect(page.getByRole('heading',{name:'Prices known at the cutoff'})).toBeVisible()
  await expect(page.locator('canvas').first()).toBeVisible()
+ // A chart ResizeObserver must not grow its own host or move the reveal control.
+ const layout=await page.locator('.candle-chart').evaluate(async host=>{
+  const button=host.parentElement!.querySelector('button')!;
+  const samples=[];
+  for(let i=0;i<6;i++){
+   await new Promise<void>(resolve=>requestAnimationFrame(()=>requestAnimationFrame(()=>resolve())));
+   samples.push({height:host.getBoundingClientRect().height,y:button.getBoundingClientRect().top+window.scrollY});
+  }
+  return {samples,tableMargin:getComputedStyle(host.querySelector('table')!).marginTop};
+ });
+ expect(layout.tableMargin).toBe('0px');
+ expect(layout.samples.every(s=>Math.abs(s.height-340)<1)).toBeTruthy();
+ expect(Math.max(...layout.samples.map(s=>s.y))-Math.min(...layout.samples.map(s=>s.y))).toBeLessThan(1);
  await page.getByRole('button',{name:'Reveal future prices and outcome'}).click()
  await expect(page.getByRole('heading',{name:'Subsequent prices revealed'})).toBeVisible()
  await page.screenshot({path:'test-results/replay.png',fullPage:true})
