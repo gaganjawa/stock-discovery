@@ -16,6 +16,11 @@ def ingest(conn, dataset: Dataset, *, page_size: int = 100, page_delay: float = 
     if not 1<=page_size<=10000 or page_delay<0: raise ValueError('invalid ingestion limits')
     version=dataset.version
     with conn.transaction():
+        existing=conn.execute('SELECT manifest FROM research.datasets WHERE dataset_version=%s',(version,)).fetchone()
+        if existing:
+            if existing[0]!=json.loads(canonical(dataset.manifest())): raise ValueError('dataset version collision')
+            return version
+    with conn.transaction():
         for inst in dataset.instruments:
             values=(inst.instrument_id,inst.isin,inst.exchange,inst.series,inst.synthetic)
             conn.execute('''INSERT INTO research.instruments(instrument_id,isin,exchange,series,synthetic)

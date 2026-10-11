@@ -20,4 +20,4 @@ def test_ingestion_is_idempotent_and_pins_manifest():
         assert len(manifest['payload']['mappings'])==3
         with pytest.raises(psycopg.errors.CheckViolation),db.transaction():
             db.execute('UPDATE research.datasets SET manifest=manifest')
-        with pytest.raises(ValueError): ingest(db,d,page_size=100)
+        assert ingest(db,d,page_size=100)==version

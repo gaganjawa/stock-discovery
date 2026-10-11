@@ -9,3 +9,9 @@ STK-042: synthetic chronological windows and insufficient-promotion-evidence gat
 Validation: six hand-calculated daily replay tests, one original-metric parity test, two strategy tests and six PostgreSQL integration cases pass. Migration upgrade/downgrade/re-upgrade and atomic failure rollback pass. No real trading, providers or paid API calls.
 
 Status: STK-037–040 Ready for Release for synthetic scope. STK-041/042 partial; outstanding items above prevent claiming the full v0.2 acceptance scope is complete.
+
+## Validated checkpoint — 11 Oct 2026
+
+Added a separate, predeclared synthetic single-position portfolio evaluator. It reserves capital at the signal, excludes overlapping candidates, revalidates cash/risk, and leaves ambiguous admitted paths undefined. It reports return, drawdown, traded notional and closing-mark exposure (explicitly not calendar-weighted exposure). Mixed dataset/code/strategy cohorts are not pooled. Added grouped horizon/strategy/regime reports, unclassified synthetic-sector disclosure and descriptive Wilson intervals. These are software-validation statistics, not signal confidence or real experiment acceptance.
+
+Four focused portfolio/report/contract-parity tests and two ingestion/service PostgreSQL checks passed at this checkpoint. Completed manifests now support idempotent reuse regardless of requested import page size; partially imported pages still enforce their recorded chunk configuration. Full real-market benchmark and EP-1 acceptance remain blocked. STK-041/042 remain partial for the full planned scope.

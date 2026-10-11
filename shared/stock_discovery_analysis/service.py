@@ -7,6 +7,8 @@ from .dataset import Dataset,canonical,from_payload
 from .strategy import analyze
 from .replay import simulate,dt
 from .evaluation import summarize,portfolio
+from .portfolio import replay_portfolio
+from .reports import validation_report
 
 
 def json_value(value): return json.loads(canonical(value))
@@ -69,9 +71,10 @@ def scorecard(conn):
     records=conn.execute('''SELECT d.payload,o.payload FROM research.decisions d LEFT JOIN LATERAL
         (SELECT payload FROM research.trade_outcomes WHERE recommendation_id=d.recommendation_id
          ORDER BY evaluated_at DESC,outcome_id DESC LIMIT 1) o ON true ORDER BY d.generated_at,d.recommendation_id''').fetchall()
-    rows=[]; detail=[]
+    rows=[]; detail=[]; portfolio_records=[]
     for r,o in records:
         t=o['trade'] if o else {}; f=o['forecast'] if o else {}
+        portfolio_records.append((read_frozen(conn,r['recommendation_id']),o))
         closed=t.get('status')=='closed'; buy=r['action']=='BUY'
         entered=bool(t.get('fills')) if o else None
         if t.get('status') not in ('closed','open','ambiguous','no_entry'): entered=None
@@ -87,7 +90,8 @@ def scorecard(conn):
         detail.append({'recommendation_id':r['recommendation_id'],'status':t.get('status','missing'),
                        'portfolio':portfolio(curve),'exclusions':o.get('exclusions',[]) if o else ['not_evaluated']})
     return json_value({**summarize(rows),'eligibility':rows,'isolated_trade_portfolios':detail,
-        'portfolio':{'time_weighted_return':None,'maximum_drawdown':None,'reason':'independent_replays_have_no_shared_capital_ledger'},
+        'portfolio':replay_portfolio(portfolio_records),
+        'validation_report':validation_report(rows,[a for a,_ in portfolio_records]),
         'benchmark':{'return':None,'reason':'no_permitted_comparable_benchmark'},'cash_benchmark_return':'0',
         'promotion':{'status':'insufficient_evidence','reason':'synthetic software tests; EP-1 requires at least 30 complete months and approved policy'},
         'label':'SYNTHETIC DEMO — no profitability inference'})
