@@ -123,3 +123,20 @@ def chronological_windows(count: int, gap: int = 5) -> dict:
             'test':[validation_end+gap,count], 'gap_sessions':gap,
             'maximum_label_horizon_sessions':gap,
             'status':'synthetic software-validation only; no strategy promotion'}
+
+
+def from_payload(payload: dict) -> Dataset:
+    def timestamp(v): return datetime.fromisoformat(v.replace('Z','+00:00'))
+    def provenance(p):
+        return Provenance(p['source_ref'],p['source_version'],timestamp(p['published_at']),
+                          timestamp(p['available_at']),timestamp(p['fetched_at']),p['availability_basis'])
+    cal=payload['calendar']
+    return Dataset(tuple(Instrument(**i) for i in payload['instruments']),
+        tuple(SymbolMapping(m['instrument_id'],m['namespace'],m['symbol'],timestamp(m['valid_from']),
+                            timestamp(m['valid_to']) if m['valid_to'] else None,provenance(m['provenance'])) for m in payload['mappings']),
+        tuple(Membership(m['instrument_id'],timestamp(m['effective_at']),m['state'],provenance(m['provenance'])) for m in payload['memberships']),
+        Calendar(cal['version'],tuple(Session(timestamp(s['opens_at']),timestamp(s['closes_at'])) for s in cal['sessions']),provenance(cal['provenance'])),
+        tuple(CorporateAction(a['action_id'],a['instrument_id'],a['kind'],timestamp(a['effective_at']),Decimal(a['value']),provenance(a['provenance'])) for a in payload['actions']),
+        tuple(Candle(c['instrument_id'],timestamp(c['starts_at']),timestamp(c['ends_at']),
+                     *(Decimal(c[k]) for k in ('open','high','low','close')),c['volume'],provenance(c['provenance']),c['adjustment_version']) for c in payload['candles']),
+        payload['label'],payload['rights_ref'],payload['split_version'])

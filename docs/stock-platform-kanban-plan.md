@@ -261,9 +261,12 @@ Epic: E05 · Target: v0.2 · Status: Backlog · Owner: Unassigned · Depends on:
 
 **Acceptance:** Analysis sees only then-available information, freezes its recommendation and follows original execution rules.
 
-- [ ] **STK-037** — Implement replay clock/event loop with future-read guards, closed-bar signals and earliest realistic entry timing. **[Backlog]** · Priority: P2 — Medium
-- [ ] **STK-038** — Simulate entry, expiry, exits, cash, liquidity limits and gaps; flag bars where stop/target order is unknowable. **[Backlog]** · Priority: P2 — Medium
-- [ ] **STK-039** — Add date-effective brokerage, statutory charges and slippage assumptions; verify profit, loss, no-entry and ambiguous cases manually. **[Backlog]** · Priority: P2 — Medium
+- [ ] **STK-037** — Implement replay clock/event loop with future-read guards, closed-bar signals and earliest realistic entry timing. **[Ready for Release]** · Priority: P2 — Medium
+  - Evidence: [M3 replay](M3-replay.md). Synthetic daily simulation and persisted freeze/reveal verified.
+- [ ] **STK-038** — Simulate entry, expiry, exits, cash, liquidity limits and gaps; flag bars where stop/target order is unknowable. **[Ready for Release]** · Priority: P2 — Medium
+  - Evidence: [M3 replay](M3-replay.md). Synthetic daily simulation and persisted freeze/reveal verified.
+- [ ] **STK-039** — Add date-effective brokerage, statutory charges and slippage assumptions; verify profit, loss, no-entry and ambiguous cases manually. **[Ready for Release]** · Priority: P2 — Medium
+  - Evidence: [M3 replay](M3-replay.md). Synthetic daily simulation and persisted freeze/reveal verified.
 
 ### S14 — Accuracy and performance scorecard
 
@@ -271,9 +274,12 @@ Epic: E05 · Target: v0.2 · Status: Backlog · Owner: Unassigned · Depends on:
 
 **Acceptance:** All recommendations remain visible; forecast accuracy and trade performance have explicit separate denominators.
 
-- [ ] **STK-040** — Implement directional and target-before-stop labels with open, expired, no-entry, invalid-data and ambiguous states. **[Backlog]** · Priority: P2 — Medium
+- [ ] **STK-040** — Implement directional and target-before-stop labels with open, expired, no-entry, invalid-data and ambiguous states. **[Ready for Release]** · Priority: P2 — Medium
+  - Evidence: [M3 replay](M3-replay.md). Synthetic daily simulation and persisted freeze/reveal verified.
 - [ ] **STK-041** — Calculate counts, accuracy, net expectancy, drawdown, turnover, exposure and suitable buy-and-hold/no-trade baselines. **[Backlog]** · Priority: P2 — Medium
+  - Partial implementation; remaining portfolio/reporting acceptance gaps: [M3 replay](M3-replay.md).
 - [ ] **STK-042** — Add chronological validation with overlap-aware gaps and reports by horizon, sector, regime and sample size; report uncertainty. **[Backlog]** · Priority: P2 — Medium
+  - Partial implementation; remaining portfolio/reporting acceptance gaps: [M3 replay](M3-replay.md).
 
 ### S15 — Historical replay screen
 

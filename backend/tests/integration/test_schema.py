@@ -60,9 +60,9 @@ def test_original_nine_scenarios_roundtrip(db):
             db.execute(f'''INSERT INTO research.{name}_outcomes VALUES (%s,%s,%s,%s,%s,%s,%s,%s)''',
                 (o['outcome_id'],o['recommendation_id'],o['evaluated_at'],o['evaluator_version'],
                  o['observation_dataset'],o['status'],o['supersedes_outcome_id'],Jsonb(o)))
-        actual = dict(db.execute(f'SELECT outcome_id,payload FROM research.{name}_outcomes'))
+        actual = dict(db.execute(f'SELECT outcome_id,payload FROM research.{name}_outcomes WHERE outcome_id = ANY(%s)', ([o['outcome_id'] for o in outcomes],)))
         assert actual == {o['outcome_id']:o for o in outcomes}
-    assert dict(db.execute('SELECT recommendation_id,payload FROM research.decisions')) == {r['recommendation_id']:r for r in recommendations}
+    assert dict(db.execute('SELECT recommendation_id,payload FROM research.decisions WHERE recommendation_id = ANY(%s)', ([r['recommendation_id'] for r in recommendations],))) == {r['recommendation_id']:r for r in recommendations}
     with pytest.raises(psycopg.errors.CheckViolation), db.transaction():
         db.execute("UPDATE research.decisions SET position_effect='OPEN_SHORT' WHERE action='SELL'")
     with pytest.raises(psycopg.errors.CheckViolation), db.transaction():

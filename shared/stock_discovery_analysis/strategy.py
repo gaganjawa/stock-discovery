@@ -6,7 +6,7 @@ from .dataset import Dataset, canonical
 from .indicators import features
 from .risk import demo_profile, sizing
 
-STRATEGY_VERSION='ema-breakout-1.0.0'
+STRATEGY_VERSION='ema-breakout-1.0.1'
 CONFIG_VERSION='SYN-EMA10-30-RVOL20-1.5-ATR14-2R-v1'
 
 
@@ -41,7 +41,7 @@ def analyze(dataset: Dataset, instrument_id: str, cutoff: datetime, *, code_vers
             if not risk['quantity']: action='WAIT'
             else:
                 execution={'entry':{'type':'buy_stop','trigger_price':str(entry),'condition':f'Next-session breakout; fill cap INR {entry_cap}; synthetic only'},
-                    'entry_expires_at':stamp(future[1].closes_at),
+                    'entry_expires_at':stamp(future[2].opens_at),
                     'stop':{'price':str(stop),'condition':'Protective stop after entry; gaps can exceed planned loss'},
                     'targets':[{'price':str(target),'exit_fraction':'1'}], 'max_holding_sessions':3,
                     'time_exit':'close_of_last_holding_session','quantity':risk['quantity'],
