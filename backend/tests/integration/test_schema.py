@@ -67,8 +67,39 @@ def test_original_nine_scenarios_roundtrip(db):
         db.execute("UPDATE research.decisions SET position_effect='OPEN_SHORT' WHERE action='SELL'")
     with pytest.raises(psycopg.errors.CheckViolation), db.transaction():
         db.execute("UPDATE research.decisions SET payload=jsonb_set(payload,'{action}','null') WHERE recommendation_id='SYN-stop'")
-    with pytest.raises(psycopg.errors.ForeignKeyViolation), db.transaction():
+    with pytest.raises(psycopg.errors.CheckViolation), db.transaction():
         db.execute("UPDATE research.decisions SET revises_id='SYN-target',revision_reason='test' WHERE recommendation_id='SYN-stop'")
+
+
+    original = next(r for r in recommendations if r['recommendation_id'] == 'SYN-stop')
+    correction = dict(original, recommendation_id='SYN-stop-correction',
+                      revises_id='SYN-stop', revision_reason='synthetic correction test')
+    def append(payload, instrument=None):
+        db.execute("""INSERT INTO research.decisions
+            SELECT %s,COALESCE(%s,instrument_id),run_id,schema_version,information_cutoff_at,
+                   generated_at,decision_available_at,action,position_effect,holding_id,
+                   %s,%s,%s FROM research.decisions WHERE recommendation_id='SYN-stop'""",
+                   (payload['recommendation_id'], instrument, payload['revises_id'],
+                    payload['revision_reason'], Jsonb(payload)))
+    append(correction)
+    assert db.execute("SELECT revises_id FROM research.decisions WHERE recommendation_id='SYN-stop-correction'").fetchone()[0] == 'SYN-stop'
+    invalid = dict(correction, recommendation_id='SYN-invalid', versions=dict(correction['versions'], dataset='wrong'))
+    with pytest.raises(psycopg.errors.CheckViolation), db.transaction():
+        append(invalid)
+    cross = dict(correction, recommendation_id='SYN-cross',
+                 instrument=next(r['instrument'] for r in recommendations if r['recommendation_id']=='SYN-target'))
+    with pytest.raises(psycopg.errors.ForeignKeyViolation), db.transaction():
+        append(cross, cross['instrument']['instrument_id'])
+
+    for table in ('decisions', 'forecast_outcomes', 'trade_outcomes'):
+        with pytest.raises(psycopg.errors.CheckViolation), db.transaction():
+            db.execute(f'DELETE FROM research.{table}')
+        with pytest.raises(psycopg.errors.CheckViolation), db.transaction():
+            db.execute(f'UPDATE research.{table} SET payload=payload')
+    with pytest.raises(psycopg.errors.CheckViolation), db.transaction():
+        db.execute("UPDATE research.runs SET dataset_version='changed'")
+    with pytest.raises(psycopg.errors.CheckViolation), db.transaction():
+        db.execute("DELETE FROM research.runs")
 
 
 def test_candle_revisions_and_constraints(db):
