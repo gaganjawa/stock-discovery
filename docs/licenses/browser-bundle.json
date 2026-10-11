@@ -1,0 +1,10 @@
+{
+  "method": "Vite production module graph, write:false; includes resolved tree-shaken modules",
+  "packages": [
+    "fancy-canvas",
+    "lightweight-charts",
+    "react",
+    "react-dom",
+    "scheduler"
+  ]
+}

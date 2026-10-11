@@ -1,0 +1,8 @@
+{
+  "backend/Dockerfile": "d5cf0b43973a6b539af0922a6c60598c13804acf2f01553aa555000712154f12",
+  "backend/requirements.txt": "06ced372a4bf0914bec1c808d98892a1a4c8663428f348818df5f580f5bb8cad",
+  "compose.yaml": "b713f0ddfa34c71fc21898c40edc7c4c226b2fd37f21fb1a2968ff270cec937e",
+  "frontend/Dockerfile": "0ead1af1f4f72a6158839ddb9fbb0688caafc015ed69601c837e9cb61ab6b0f9",
+  "frontend/package-lock.json": "c52eca85071a159b1533b8a8ac61284c80114c0f45f00f0535aeaa8926732179",
+  "worker/Dockerfile": "0a811f5dceada22dab70dad212394715e2693b098f5a165aa69488403f76432e"
+}

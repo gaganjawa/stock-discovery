@@ -1,0 +1,20 @@
+[
+  {
+    "file": "fancy-canvas-2.1.0-LICENSE.txt",
+    "source": "https://github.com/tradingview/fancy-canvas/blob/2.1.0/LICENSE",
+    "blob_sha": "b12ed6dceb5310a7deb6b32bdf85c638458e52bd",
+    "ref": "2.1.0"
+  },
+  {
+    "file": "lightweight-charts-5.2.0-NOTICE.txt",
+    "source": "https://github.com/tradingview/lightweight-charts/blob/v5.2.0/NOTICE",
+    "blob_sha": "37971d0b7b5ec7110b759e73301c8fede45db174",
+    "ref": "v5.2.0"
+  },
+  {
+    "file": "tslib-embedded-LICENSE.txt",
+    "source": "https://github.com/microsoft/tslib/blob/main/LICENSE.txt",
+    "blob_sha": "bfe6430cb0d83f34f5ed859d118dd3dc8ec1f7e8",
+    "ref": "main"
+  }
+]

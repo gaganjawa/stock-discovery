@@ -1,0 +1,688 @@
+[
+  {
+    "bundled_libraries": [],
+    "classifiers": [],
+    "direct": true,
+    "installed_linux": true,
+    "installed_local": true,
+    "license": "MIT",
+    "notice_files": [
+      "alembic-1.16.5.dist-info/licenses/LICENSE"
+    ],
+    "package": "alembic",
+    "source": [
+      "Homepage, https://alembic.sqlalchemy.org",
+      "Documentation, https://alembic.sqlalchemy.org/en/latest/",
+      "Changelog, https://alembic.sqlalchemy.org/en/latest/changelog.html",
+      "Source, https://github.com/sqlalchemy/alembic/",
+      "Issue Tracker, https://github.com/sqlalchemy/alembic/issues/"
+    ],
+    "version": "1.16.5"
+  },
+  {
+    "bundled_libraries": [],
+    "classifiers": [],
+    "direct": false,
+    "installed_linux": true,
+    "installed_local": true,
+    "license": "MIT",
+    "notice_files": [
+      "annotated_doc-0.0.5.dist-info/licenses/LICENSE"
+    ],
+    "package": "annotated-doc",
+    "source": [
+      "Homepage, https://github.com/fastapi/annotated-doc",
+      "Documentation, https://github.com/fastapi/annotated-doc",
+      "Repository, https://github.com/fastapi/annotated-doc",
+      "Issues, https://github.com/fastapi/annotated-doc/issues",
+      "Changelog, https://github.com/fastapi/annotated-doc/release-notes.md"
+    ],
+    "version": "0.0.5"
+  },
+  {
+    "bundled_libraries": [],
+    "classifiers": [
+      "License :: OSI Approved :: MIT License"
+    ],
+    "direct": false,
+    "installed_linux": true,
+    "installed_local": true,
+    "license": "MIT",
+    "notice_files": [
+      "annotated_types-0.8.0.dist-info/licenses/LICENSE"
+    ],
+    "package": "annotated-types",
+    "source": [
+      "Homepage, https://github.com/annotated-types/annotated-types",
+      "Source, https://github.com/annotated-types/annotated-types",
+      "Changelog, https://github.com/annotated-types/annotated-types/releases"
+    ],
+    "version": "0.8.0"
+  },
+  {
+    "bundled_libraries": [],
+    "classifiers": [],
+    "direct": false,
+    "installed_linux": true,
+    "installed_local": true,
+    "license": "MIT",
+    "notice_files": [
+      "anyio-4.15.1.dist-info/licenses/LICENSE"
+    ],
+    "package": "anyio",
+    "source": [
+      "Documentation, https://anyio.readthedocs.io/en/latest/",
+      "Changelog, https://anyio.readthedocs.io/en/stable/versionhistory.html",
+      "Source code, https://github.com/agronholm/anyio",
+      "Issue tracker, https://github.com/agronholm/anyio/issues"
+    ],
+    "version": "4.15.1"
+  },
+  {
+    "bundled_libraries": [],
+    "classifiers": [
+      "License :: OSI Approved :: Mozilla Public License 2.0 (MPL 2.0)"
+    ],
+    "direct": false,
+    "installed_linux": true,
+    "installed_local": true,
+    "license": "MPL-2.0",
+    "notice_files": [
+      "certifi-2026.7.22.dist-info/licenses/LICENSE"
+    ],
+    "package": "certifi",
+    "source": [
+      "Source, https://github.com/certifi/python-certifi"
+    ],
+    "version": "2026.7.22"
+  },
+  {
+    "bundled_libraries": [],
+    "classifiers": [],
+    "direct": false,
+    "installed_linux": true,
+    "installed_local": true,
+    "license": "BSD-3-Clause",
+    "notice_files": [
+      "click-8.5.0.dist-info/licenses/LICENSE.txt"
+    ],
+    "package": "click",
+    "source": [
+      "Changes, https://click.palletsprojects.com/page/changes/",
+      "Chat, https://discord.gg/pallets",
+      "Documentation, https://click.palletsprojects.com/",
+      "Donate, https://palletsprojects.com/donate",
+      "Source, https://github.com/pallets/click/"
+    ],
+    "version": "8.5.0"
+  },
+  {
+    "direct": false,
+    "installed_linux": false,
+    "installed_local": false,
+    "issue": "Not installed on inspected Linux/macOS; conditional lock entry; review before enabling platform",
+    "license": "UNKNOWN",
+    "package": "colorama",
+    "source": "https://pypi.org/project/colorama/0.4.6/",
+    "version": "0.4.6"
+  },
+  {
+    "bundled_libraries": [],
+    "classifiers": [],
+    "direct": true,
+    "installed_linux": true,
+    "installed_local": true,
+    "license": "MIT",
+    "notice_files": [
+      "fastapi-0.128.8.dist-info/licenses/LICENSE"
+    ],
+    "package": "fastapi",
+    "source": [
+      "Homepage, https://github.com/fastapi/fastapi",
+      "Documentation, https://fastapi.tiangolo.com/",
+      "Repository, https://github.com/fastapi/fastapi",
+      "Issues, https://github.com/fastapi/fastapi/issues",
+      "Changelog, https://fastapi.tiangolo.com/release-notes/"
+    ],
+    "version": "0.128.8"
+  },
+  {
+    "bundled_libraries": [],
+    "classifiers": [],
+    "direct": false,
+    "installed_linux": true,
+    "installed_local": false,
+    "license": "MIT AND PSF-2.0",
+    "notice_files": [
+      "greenlet-3.5.6.dist-info/licenses/LICENSE",
+      "greenlet-3.5.6.dist-info/licenses/LICENSE.PSF"
+    ],
+    "package": "greenlet",
+    "source": [
+      "Homepage, https://greenlet.readthedocs.io",
+      "Documentation, https://greenlet.readthedocs.io",
+      "Repository, https://github.com/python-greenlet/greenlet",
+      "Issues, https://github.com/python-greenlet/greenlet/issues",
+      "Changelog, https://greenlet.readthedocs.io/en/latest/changes.html"
+    ],
+    "version": "3.5.6"
+  },
+  {
+    "bundled_libraries": [],
+    "classifiers": [
+      "License :: OSI Approved :: MIT License"
+    ],
+    "direct": false,
+    "installed_linux": true,
+    "installed_local": true,
+    "license": "MIT",
+    "notice_files": [
+      "h11-0.16.0.dist-info/licenses/LICENSE.txt"
+    ],
+    "package": "h11",
+    "source": [
+      "https://github.com/python-hyper/h11"
+    ],
+    "version": "0.16.0"
+  },
+  {
+    "bundled_libraries": [],
+    "classifiers": [
+      "License :: OSI Approved :: BSD License"
+    ],
+    "direct": false,
+    "installed_linux": true,
+    "installed_local": true,
+    "license": "BSD-3-Clause",
+    "notice_files": [
+      "httpcore-1.0.9.dist-info/licenses/LICENSE.md"
+    ],
+    "package": "httpcore",
+    "source": [
+      "Documentation, https://www.encode.io/httpcore",
+      "Homepage, https://www.encode.io/httpcore/",
+      "Source, https://github.com/encode/httpcore"
+    ],
+    "version": "1.0.9"
+  },
+  {
+    "bundled_libraries": [],
+    "classifiers": [],
+    "direct": false,
+    "installed_linux": true,
+    "installed_local": true,
+    "license": "MIT",
+    "notice_files": [
+      "httptools-0.9.0.dist-info/licenses/LICENSE",
+      "httptools-0.9.0.dist-info/licenses/vendor/http-parser/LICENSE-MIT",
+      "httptools-0.9.0.dist-info/licenses/vendor/llhttp/LICENSE"
+    ],
+    "package": "httptools",
+    "source": [
+      "Homepage, https://github.com/MagicStack/httptools"
+    ],
+    "version": "0.9.0"
+  },
+  {
+    "bundled_libraries": [],
+    "classifiers": [
+      "License :: OSI Approved :: BSD License"
+    ],
+    "direct": true,
+    "installed_linux": true,
+    "installed_local": true,
+    "license": "BSD-3-Clause",
+    "notice_files": [
+      "httpx-0.28.1.dist-info/licenses/LICENSE.md"
+    ],
+    "package": "httpx",
+    "source": [
+      "Changelog, https://github.com/encode/httpx/blob/master/CHANGELOG.md",
+      "Documentation, https://www.python-httpx.org",
+      "Homepage, https://github.com/encode/httpx",
+      "Source, https://github.com/encode/httpx"
+    ],
+    "version": "0.28.1"
+  },
+  {
+    "bundled_libraries": [],
+    "classifiers": [],
+    "direct": false,
+    "installed_linux": true,
+    "installed_local": true,
+    "license": "BSD-3-Clause",
+    "notice_files": [
+      "idna-3.20.dist-info/licenses/LICENSE.md"
+    ],
+    "package": "idna",
+    "source": [
+      "Changelog, https://github.com/kjd/idna/blob/master/HISTORY.md",
+      "Issue tracker, https://github.com/kjd/idna/issues",
+      "Source, https://github.com/kjd/idna"
+    ],
+    "version": "3.20"
+  },
+  {
+    "bundled_libraries": [],
+    "classifiers": [],
+    "direct": false,
+    "installed_linux": true,
+    "installed_local": true,
+    "license": "MIT",
+    "notice_files": [
+      "iniconfig-2.3.1.dist-info/licenses/LICENSE"
+    ],
+    "package": "iniconfig",
+    "source": [
+      "Homepage, https://github.com/pytest-dev/iniconfig"
+    ],
+    "version": "2.3.1"
+  },
+  {
+    "bundled_libraries": [],
+    "classifiers": [],
+    "direct": false,
+    "installed_linux": true,
+    "installed_local": true,
+    "license": "MIT",
+    "notice_files": [
+      "mako-1.4.3.dist-info/licenses/LICENSE"
+    ],
+    "package": "mako",
+    "source": [
+      "Homepage, https://www.makotemplates.org/",
+      "Documentation, https://docs.makotemplates.org",
+      "Issue Tracker, https://github.com/sqlalchemy/mako"
+    ],
+    "version": "1.4.3"
+  },
+  {
+    "bundled_libraries": [],
+    "classifiers": [],
+    "direct": false,
+    "installed_linux": true,
+    "installed_local": true,
+    "license": "BSD-3-Clause",
+    "notice_files": [
+      "markupsafe-3.0.4.dist-info/licenses/LICENSE.txt"
+    ],
+    "package": "markupsafe",
+    "source": [
+      "Donate, https://palletsprojects.com/donate",
+      "Documentation, https://markupsafe.palletsprojects.com/",
+      "Changes, https://markupsafe.palletsprojects.com/page/changes/",
+      "Source, https://github.com/pallets/markupsafe/",
+      "Chat, https://discord.gg/pallets"
+    ],
+    "version": "3.0.4"
+  },
+  {
+    "bundled_libraries": [],
+    "classifiers": [],
+    "direct": false,
+    "installed_linux": true,
+    "installed_local": true,
+    "license": "Apache-2.0 OR BSD-2-Clause",
+    "notice_files": [
+      "packaging-26.3.dist-info/licenses/LICENSE",
+      "packaging-26.3.dist-info/licenses/LICENSE.APACHE",
+      "packaging-26.3.dist-info/licenses/LICENSE.BSD"
+    ],
+    "package": "packaging",
+    "source": [
+      "Documentation, https://packaging.pypa.io/",
+      "Source, https://github.com/pypa/packaging"
+    ],
+    "version": "26.3"
+  },
+  {
+    "bundled_libraries": [],
+    "classifiers": [
+      "License :: OSI Approved :: MIT License"
+    ],
+    "direct": false,
+    "installed_linux": true,
+    "installed_local": true,
+    "license": "MIT",
+    "notice_files": [
+      "pluggy-1.6.0.dist-info/licenses/LICENSE"
+    ],
+    "package": "pluggy",
+    "source": [
+      null
+    ],
+    "version": "1.6.0"
+  },
+  {
+    "bundled_libraries": [],
+    "classifiers": [
+      "License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)"
+    ],
+    "direct": true,
+    "installed_linux": true,
+    "installed_local": true,
+    "license": "GNU Lesser General Public License v3 (LGPLv3)",
+    "notice_files": [
+      "psycopg-3.2.10.dist-info/licenses/LICENSE.txt"
+    ],
+    "package": "psycopg",
+    "source": [
+      "Homepage, https://psycopg.org/",
+      "Documentation, https://psycopg.org/psycopg3/docs/",
+      "Changes, https://psycopg.org/psycopg3/docs/news.html",
+      "Code, https://github.com/psycopg/psycopg",
+      "Issue Tracker, https://github.com/psycopg/psycopg/issues",
+      "Download, https://pypi.org/project/psycopg/",
+      "Funding, https://github.com/sponsors/dvarrazzo"
+    ],
+    "version": "3.2.10"
+  },
+  {
+    "bundled_libraries": [
+      "psycopg_binary.libs/libcom_err-057ba42b.so.2.1",
+      "psycopg_binary.libs/libcrypto-7ef32fd2.so.3",
+      "psycopg_binary.libs/libgssapi_krb5-fec99a71.so.2.2",
+      "psycopg_binary.libs/libk5crypto-47ac5e52.so.3.1",
+      "psycopg_binary.libs/libkeyutils-19c64d08.so.1.5",
+      "psycopg_binary.libs/libkrb5-90a0ef7c.so.3.3",
+      "psycopg_binary.libs/libkrb5support-73f3f43d.so.0.1",
+      "psycopg_binary.libs/liblber-f7e377dc.so.2.0.200",
+      "psycopg_binary.libs/libldap-4f8549cd.so.2.0.200",
+      "psycopg_binary.libs/libpcre-6b975b27.so.1.2.0",
+      "psycopg_binary.libs/libpq-5cd0b3cc.so.5.17",
+      "psycopg_binary.libs/libsasl2-68c9cb0a.so.3.0.0",
+      "psycopg_binary.libs/libselinux-ae24b712.so.1",
+      "psycopg_binary.libs/libssl-47e19448.so.3"
+    ],
+    "classifiers": [
+      "License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)"
+    ],
+    "direct": false,
+    "installed_linux": true,
+    "installed_local": true,
+    "license": "GNU Lesser General Public License v3 (LGPLv3)",
+    "notice_files": [
+      "psycopg_binary-3.2.10.dist-info/licenses/LICENSE.txt"
+    ],
+    "package": "psycopg-binary",
+    "source": [
+      "Homepage, https://psycopg.org/",
+      "Documentation, https://psycopg.org/psycopg3/docs/",
+      "Changes, https://psycopg.org/psycopg3/docs/news.html",
+      "Code, https://github.com/psycopg/psycopg",
+      "Issue Tracker, https://github.com/psycopg/psycopg/issues",
+      "Download, https://pypi.org/project/psycopg-binary/",
+      "Funding, https://github.com/sponsors/dvarrazzo"
+    ],
+    "version": "3.2.10"
+  },
+  {
+    "bundled_libraries": [],
+    "classifiers": [],
+    "direct": false,
+    "installed_linux": true,
+    "installed_local": true,
+    "license": "MIT",
+    "notice_files": [
+      "pydantic-2.14.0.dist-info/licenses/LICENSE"
+    ],
+    "package": "pydantic",
+    "source": [
+      "Homepage, https://github.com/pydantic/pydantic",
+      "Documentation, https://pydantic.dev/docs/validation/latest/get-started/",
+      "Funding, https://github.com/sponsors/samuelcolvin",
+      "Source, https://github.com/pydantic/pydantic",
+      "Changelog, https://pydantic.dev/docs/validation/latest/get-started/changelog/"
+    ],
+    "version": "2.14.0"
+  },
+  {
+    "bundled_libraries": [],
+    "classifiers": [],
+    "direct": false,
+    "installed_linux": true,
+    "installed_local": true,
+    "license": "MIT",
+    "notice_files": [
+      "pydantic_core-2.50.0.dist-info/licenses/LICENSE"
+    ],
+    "package": "pydantic-core",
+    "source": [
+      "Funding, https://github.com/sponsors/samuelcolvin",
+      "Homepage, https://github.com/pydantic",
+      "Source, https://github.com/pydantic/pydantic/tree/main/pydantic-core"
+    ],
+    "version": "2.50.0"
+  },
+  {
+    "bundled_libraries": [],
+    "classifiers": [
+      "License :: OSI Approved :: MIT License"
+    ],
+    "direct": true,
+    "installed_linux": true,
+    "installed_local": true,
+    "license": "MIT",
+    "notice_files": [
+      "pytest-8.3.5.dist-info/LICENSE"
+    ],
+    "package": "pytest",
+    "source": [
+      "Changelog, https://docs.pytest.org/en/stable/changelog.html",
+      "Contact, https://docs.pytest.org/en/stable/contact.html",
+      "Funding, https://docs.pytest.org/en/stable/sponsor.html",
+      "Homepage, https://docs.pytest.org/en/latest/",
+      "Source, https://github.com/pytest-dev/pytest",
+      "Tracker, https://github.com/pytest-dev/pytest/issues"
+    ],
+    "version": "8.3.5"
+  },
+  {
+    "bundled_libraries": [],
+    "classifiers": [],
+    "direct": false,
+    "installed_linux": true,
+    "installed_local": true,
+    "license": "BSD-3-Clause",
+    "notice_files": [
+      "python_dotenv-1.2.4.dist-info/licenses/LICENSE"
+    ],
+    "package": "python-dotenv",
+    "source": [
+      "Source, https://github.com/theskumar/python-dotenv"
+    ],
+    "version": "1.2.4"
+  },
+  {
+    "bundled_libraries": [],
+    "classifiers": [
+      "License :: OSI Approved :: MIT License"
+    ],
+    "direct": false,
+    "installed_linux": true,
+    "installed_local": true,
+    "license": "MIT",
+    "notice_files": [
+      "pyyaml-6.0.3.dist-info/licenses/LICENSE"
+    ],
+    "package": "pyyaml",
+    "source": [
+      "Bug Tracker, https://github.com/yaml/pyyaml/issues",
+      "CI, https://github.com/yaml/pyyaml/actions",
+      "Documentation, https://pyyaml.org/wiki/PyYAMLDocumentation",
+      "Mailing lists, http://lists.sourceforge.net/lists/listinfo/yaml-core",
+      "Source Code, https://github.com/yaml/pyyaml"
+    ],
+    "version": "6.0.3"
+  },
+  {
+    "bundled_libraries": [],
+    "classifiers": [],
+    "direct": false,
+    "installed_linux": true,
+    "installed_local": true,
+    "license": "MIT",
+    "notice_files": [
+      "sqlalchemy-2.0.43.dist-info/licenses/LICENSE"
+    ],
+    "package": "sqlalchemy",
+    "source": [
+      "Documentation, https://docs.sqlalchemy.org",
+      "Issue Tracker, https://github.com/sqlalchemy/sqlalchemy/"
+    ],
+    "version": "2.0.43"
+  },
+  {
+    "bundled_libraries": [],
+    "classifiers": [],
+    "direct": false,
+    "installed_linux": true,
+    "installed_local": true,
+    "license": "BSD-3-Clause",
+    "notice_files": [
+      "starlette-0.52.1.dist-info/licenses/LICENSE.md"
+    ],
+    "package": "starlette",
+    "source": [
+      "Homepage, https://github.com/Kludex/starlette",
+      "Documentation, https://starlette.dev/",
+      "Changelog, https://starlette.dev/release-notes/",
+      "Funding, https://github.com/sponsors/Kludex",
+      "Source, https://github.com/Kludex/starlette"
+    ],
+    "version": "0.52.1"
+  },
+  {
+    "bundled_libraries": [],
+    "classifiers": [],
+    "direct": false,
+    "installed_linux": true,
+    "installed_local": true,
+    "license": "PSF-2.0",
+    "notice_files": [
+      "typing_extensions-4.16.0.dist-info/licenses/LICENSE"
+    ],
+    "package": "typing-extensions",
+    "source": [
+      "Bug Tracker, https://github.com/python/typing_extensions/issues",
+      "Changes, https://github.com/python/typing_extensions/blob/main/CHANGELOG.md",
+      "Documentation, https://typing-extensions.readthedocs.io/",
+      "Home, https://github.com/python/typing_extensions",
+      "Q & A, https://github.com/python/typing/discussions",
+      "Repository, https://github.com/python/typing_extensions"
+    ],
+    "version": "4.16.0"
+  },
+  {
+    "bundled_libraries": [],
+    "classifiers": [],
+    "direct": false,
+    "installed_linux": true,
+    "installed_local": true,
+    "license": "MIT",
+    "notice_files": [
+      "typing_inspection-0.4.4.dist-info/licenses/LICENSE"
+    ],
+    "package": "typing-inspection",
+    "source": [
+      "Homepage, https://github.com/pydantic/typing-inspection",
+      "Documentation, https://pydantic.github.io/typing-inspection/dev/",
+      "Source, https://github.com/pydantic/typing-inspection",
+      "Changelog, https://github.com/pydantic/typing-inspection/blob/main/HISTORY.md"
+    ],
+    "version": "0.4.4"
+  },
+  {
+    "direct": false,
+    "installed_linux": false,
+    "installed_local": false,
+    "issue": "Not installed on inspected Linux/macOS; conditional lock entry; review before enabling platform",
+    "license": "UNKNOWN",
+    "package": "tzdata",
+    "source": "https://pypi.org/project/tzdata/2026.5/",
+    "version": "2026.5"
+  },
+  {
+    "bundled_libraries": [],
+    "classifiers": [
+      "License :: OSI Approved :: BSD License"
+    ],
+    "direct": true,
+    "installed_linux": true,
+    "installed_local": true,
+    "license": "BSD-3-Clause",
+    "notice_files": [
+      "uvicorn-0.34.0.dist-info/licenses/LICENSE.md"
+    ],
+    "package": "uvicorn",
+    "source": [
+      "Changelog, https://github.com/encode/uvicorn/blob/master/CHANGELOG.md",
+      "Funding, https://github.com/sponsors/encode",
+      "Homepage, https://www.uvicorn.org/",
+      "Source, https://github.com/encode/uvicorn"
+    ],
+    "version": "0.34.0"
+  },
+  {
+    "bundled_libraries": [],
+    "classifiers": [
+      "License :: OSI Approved :: Apache Software License",
+      "License :: OSI Approved :: MIT License"
+    ],
+    "direct": false,
+    "installed_linux": true,
+    "installed_local": true,
+    "license": "MIT License",
+    "notice_files": [
+      "uvloop-0.23.0.dist-info/licenses/LICENSE-APACHE",
+      "uvloop-0.23.0.dist-info/licenses/LICENSE-MIT"
+    ],
+    "package": "uvloop",
+    "source": [
+      "github, https://github.com/MagicStack/uvloop"
+    ],
+    "version": "0.23.0"
+  },
+  {
+    "bundled_libraries": [],
+    "classifiers": [
+      "License :: OSI Approved :: MIT License"
+    ],
+    "direct": false,
+    "installed_linux": true,
+    "installed_local": true,
+    "license": "MIT",
+    "notice_files": [
+      "watchfiles-1.3.0.dist-info/licenses/LICENSE"
+    ],
+    "package": "watchfiles",
+    "source": [
+      "Changelog, https://github.com/samuelcolvin/watchfiles/releases",
+      "Documentation, https://watchfiles.helpmanual.io",
+      "Funding, https://github.com/sponsors/samuelcolvin",
+      "Homepage, https://github.com/samuelcolvin/watchfiles",
+      "Source, https://github.com/samuelcolvin/watchfiles"
+    ],
+    "version": "1.3.0"
+  },
+  {
+    "bundled_libraries": [],
+    "classifiers": [],
+    "direct": false,
+    "installed_linux": true,
+    "installed_local": true,
+    "license": "BSD-3-Clause",
+    "notice_files": [
+      "websockets-17.2.dist-info/licenses/LICENSE"
+    ],
+    "package": "websockets",
+    "source": [
+      "Homepage, https://github.com/python-websockets/websockets",
+      "Changelog, https://websockets.readthedocs.io/en/stable/project/changelog.html",
+      "Documentation, https://websockets.readthedocs.io/",
+      "Funding, https://tidelift.com/subscription/pkg/pypi-websockets?utm_source=pypi-websockets&utm_medium=referral&utm_campaign=readme",
+      "Tracker, https://github.com/python-websockets/websockets/issues"
+    ],
+    "version": "17.2"
+  }
+]

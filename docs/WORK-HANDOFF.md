@@ -1,6 +1,6 @@
 # Stock Discovery — work checkpoint
 
-Current release decision: **PARTIAL**. See [STK-018 acceptance, release notes and recovery/rollback runbook](STK-018.md). Local synthetic preview verification passes; private deployment and formal release gates remain open.
+Current release decision: **PARTIAL**. [STK-009 software audit](STK-009.md) records dependency inventory, corrected browser notices and remaining native/platform licence evidence gaps. See [STK-018 acceptance, release notes and recovery/rollback runbook](STK-018.md). Local synthetic preview verification passes; private deployment and formal release gates remain open.
 
 ## Verification update — 12 Oct 2026
 

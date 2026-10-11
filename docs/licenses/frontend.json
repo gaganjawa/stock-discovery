@@ -1,0 +1,1991 @@
+[
+  {
+    "direct": false,
+    "evidence": "node_modules/@babel/code-frame/package.json",
+    "installed": true,
+    "integrity": "sha512-Aup7aUOfpbAUg2ROOJN6Iw5f9DMBlzu0mIkm/malLQFN/YQgO48wCj0Kxa3sEHJvPVFg7siR+qRInwXd2qhQKw==",
+    "issue": null,
+    "license": "MIT",
+    "notice_files": [
+      "frontend/node_modules/@babel/code-frame/LICENSE"
+    ],
+    "package": "@babel/code-frame",
+    "repository": {
+      "directory": "packages/babel-code-frame",
+      "type": "git",
+      "url": "https://github.com/babel/babel.git"
+    },
+    "source": "https://registry.npmjs.org/@babel/code-frame/-/code-frame-7.29.7.tgz",
+    "version": "7.29.7"
+  },
+  {
+    "direct": false,
+    "evidence": "node_modules/@babel/compat-data/package.json",
+    "installed": true,
+    "integrity": "sha512-locTkQyKvwIEgBzVrn8693ebc97F2U8ZHjbXwDXJ5Fn2TCpNwTlKcaKLkdHop5c/icOFE7qt7Q9JC5hnKNa6Gg==",
+    "issue": null,
+    "license": "MIT",
+    "notice_files": [
+      "frontend/node_modules/@babel/compat-data/LICENSE"
+    ],
+    "package": "@babel/compat-data",
+    "repository": {
+      "directory": "packages/babel-compat-data",
+      "type": "git",
+      "url": "https://github.com/babel/babel.git"
+    },
+    "source": "https://registry.npmjs.org/@babel/compat-data/-/compat-data-7.29.7.tgz",
+    "version": "7.29.7"
+  },
+  {
+    "direct": false,
+    "evidence": "node_modules/@babel/core/package.json",
+    "installed": true,
+    "integrity": "sha512-RgHBCvtjbOK2gXSNBNIkNoEc9qoVEtau3hj8gEqKQuL3HZAibKarWFEI3Lfm6EYKkLalOh8eSrj9b+ch9H/VBA==",
+    "issue": null,
+    "license": "MIT",
+    "notice_files": [
+      "frontend/node_modules/@babel/core/LICENSE"
+    ],
+    "package": "@babel/core",
+    "repository": {
+      "directory": "packages/babel-core",
+      "type": "git",
+      "url": "https://github.com/babel/babel.git"
+    },
+    "source": "https://registry.npmjs.org/@babel/core/-/core-7.29.7.tgz",
+    "version": "7.29.7"
+  },
+  {
+    "direct": false,
+    "evidence": "node_modules/@babel/generator/package.json",
+    "installed": true,
+    "integrity": "sha512-gZbepsdh3WDtgZKWL+vTPh71LSBrm/Y4/QDZBVCcYfmeTEEuoOYwlSy+G1StfJg+/Zy550u/3TATbm7qDbbMtg==",
+    "issue": null,
+    "license": "MIT",
+    "notice_files": [
+      "frontend/node_modules/@babel/generator/LICENSE"
+    ],
+    "package": "@babel/generator",
+    "repository": {
+      "directory": "packages/babel-generator",
+      "type": "git",
+      "url": "https://github.com/babel/babel.git"
+    },
+    "source": "https://registry.npmjs.org/@babel/generator/-/generator-7.29.8.tgz",
+    "version": "7.29.8"
+  },
+  {
+    "direct": false,
+    "evidence": "node_modules/@babel/helper-compilation-targets/package.json",
+    "installed": true,
+    "integrity": "sha512-wem6WaBj4NaVYVdNhLPPVacES6ZJ+KBBfSkTMD3YZxbP3rm3Di85tJU5ljaUNhaOynt+Aj0xruhYuzQBt8n71g==",
+    "issue": null,
+    "license": "MIT",
+    "notice_files": [
+      "frontend/node_modules/@babel/helper-compilation-targets/LICENSE"
+    ],
+    "package": "@babel/helper-compilation-targets",
+    "repository": {
+      "directory": "packages/babel-helper-compilation-targets",
+      "type": "git",
+      "url": "https://github.com/babel/babel.git"
+    },
+    "source": "https://registry.npmjs.org/@babel/helper-compilation-targets/-/helper-compilation-targets-7.29.7.tgz",
+    "version": "7.29.7"
+  },
+  {
+    "direct": false,
+    "evidence": "node_modules/@babel/helper-globals/package.json",
+    "installed": true,
+    "integrity": "sha512-3nQVUAtvkKH9zahfWgw96Jc/uFOmjACE1kQz82E2lqWmHBgjzbNlsC22nuQTfahmWeQtTq5nQ/4Nnd2A1wj4zA==",
+    "issue": null,
+    "license": "MIT",
+    "notice_files": [
+      "frontend/node_modules/@babel/helper-globals/LICENSE"
+    ],
+    "package": "@babel/helper-globals",
+    "repository": {
+      "directory": "packages/babel-helper-globals",
+      "type": "git",
+      "url": "https://github.com/babel/babel.git"
+    },
+    "source": "https://registry.npmjs.org/@babel/helper-globals/-/helper-globals-7.29.7.tgz",
+    "version": "7.29.7"
+  },
+  {
+    "direct": false,
+    "evidence": "node_modules/@babel/helper-module-imports/package.json",
+    "installed": true,
+    "integrity": "sha512-ejHwrQQYcm9xnTivShn2IDOlIzInN34AXskvq9QicvCtEzq1Vzclu/tKF8Jq1Cg8JG2GL6/EmjgsCT7lXepE3g==",
+    "issue": null,
+    "license": "MIT",
+    "notice_files": [
+      "frontend/node_modules/@babel/helper-module-imports/LICENSE"
+    ],
+    "package": "@babel/helper-module-imports",
+    "repository": {
+      "directory": "packages/babel-helper-module-imports",
+      "type": "git",
+      "url": "https://github.com/babel/babel.git"
+    },
+    "source": "https://registry.npmjs.org/@babel/helper-module-imports/-/helper-module-imports-7.29.7.tgz",
+    "version": "7.29.7"
+  },
+  {
+    "direct": false,
+    "evidence": "node_modules/@babel/helper-module-transforms/package.json",
+    "installed": true,
+    "integrity": "sha512-UPUVSyXbOh627KiCIGQSgwWzGeBKLkaJ9PJEdrngIwMSzxLR4jS4+f1f1jb7VzBbg8nFLaYotvVPFCTqdrmTAg==",
+    "issue": null,
+    "license": "MIT",
+    "notice_files": [
+      "frontend/node_modules/@babel/helper-module-transforms/LICENSE"
+    ],
+    "package": "@babel/helper-module-transforms",
+    "repository": {
+      "directory": "packages/babel-helper-module-transforms",
+      "type": "git",
+      "url": "https://github.com/babel/babel.git"
+    },
+    "source": "https://registry.npmjs.org/@babel/helper-module-transforms/-/helper-module-transforms-7.29.7.tgz",
+    "version": "7.29.7"
+  },
+  {
+    "direct": false,
+    "evidence": "node_modules/@babel/helper-plugin-utils/package.json",
+    "installed": true,
+    "integrity": "sha512-G7sHYigPY17oO5SYWnfD/0MTBwVR781S/JI643e/JhUYgVgWE/61SoW3NH9KWUKyKq5LVh3npif99Wkt6j86Jw==",
+    "issue": null,
+    "license": "MIT",
+    "notice_files": [
+      "frontend/node_modules/@babel/helper-plugin-utils/LICENSE"
+    ],
+    "package": "@babel/helper-plugin-utils",
+    "repository": {
+      "directory": "packages/babel-helper-plugin-utils",
+      "type": "git",
+      "url": "https://github.com/babel/babel.git"
+    },
+    "source": "https://registry.npmjs.org/@babel/helper-plugin-utils/-/helper-plugin-utils-7.29.7.tgz",
+    "version": "7.29.7"
+  },
+  {
+    "direct": false,
+    "evidence": "node_modules/@babel/helper-string-parser/package.json",
+    "installed": true,
+    "integrity": "sha512-Pb5ijPrZ89GDH8223L4UP8i6QApWxs04RbPQJTeWDV0/keR2E36MeKnyr6LYmUUvqRRI+Iv87SuF1W6ErINzYw==",
+    "issue": null,
+    "license": "MIT",
+    "notice_files": [
+      "frontend/node_modules/@babel/helper-string-parser/LICENSE"
+    ],
+    "package": "@babel/helper-string-parser",
+    "repository": {
+      "directory": "packages/babel-helper-string-parser",
+      "type": "git",
+      "url": "https://github.com/babel/babel.git"
+    },
+    "source": "https://registry.npmjs.org/@babel/helper-string-parser/-/helper-string-parser-7.29.7.tgz",
+    "version": "7.29.7"
+  },
+  {
+    "direct": false,
+    "evidence": "node_modules/@babel/helper-validator-identifier/package.json",
+    "installed": true,
+    "integrity": "sha512-qehxGkRj55h/ff8EMaJ+cYhyaKlHIxqYDn682wQD7RNp9UujOQsHog2uS0r2vzr4pW+sXf90NeeayjcNaX3fFg==",
+    "issue": null,
+    "license": "MIT",
+    "notice_files": [
+      "frontend/node_modules/@babel/helper-validator-identifier/LICENSE"
+    ],
+    "package": "@babel/helper-validator-identifier",
+    "repository": {
+      "directory": "packages/babel-helper-validator-identifier",
+      "type": "git",
+      "url": "https://github.com/babel/babel.git"
+    },
+    "source": "https://registry.npmjs.org/@babel/helper-validator-identifier/-/helper-validator-identifier-7.29.7.tgz",
+    "version": "7.29.7"
+  },
+  {
+    "direct": false,
+    "evidence": "node_modules/@babel/helper-validator-option/package.json",
+    "installed": true,
+    "integrity": "sha512-N9ZErrD+yW5geCDtBqnOoxmR8+tNKiGuxKlDpuJxfsqpa2dFcexaziGAE/qoHLiDDreVNMupxGmSoNlyvsA3gw==",
+    "issue": null,
+    "license": "MIT",
+    "notice_files": [
+      "frontend/node_modules/@babel/helper-validator-option/LICENSE"
+    ],
+    "package": "@babel/helper-validator-option",
+    "repository": {
+      "directory": "packages/babel-helper-validator-option",
+      "type": "git",
+      "url": "https://github.com/babel/babel.git"
+    },
+    "source": "https://registry.npmjs.org/@babel/helper-validator-option/-/helper-validator-option-7.29.7.tgz",
+    "version": "7.29.7"
+  },
+  {
+    "direct": false,
+    "evidence": "node_modules/@babel/helpers/package.json",
+    "installed": true,
+    "integrity": "sha512-EMCx3AGZ3WfAl6ht7AyQoPm2Lh+BGYEMdc4Q6Hf7uSCDOZFuLq44qNwL+iaim8VlyYhRAo4X43+weadK8ZB4Yg==",
+    "issue": null,
+    "license": "MIT",
+    "notice_files": [
+      "frontend/node_modules/@babel/helpers/LICENSE"
+    ],
+    "package": "@babel/helpers",
+    "repository": {
+      "directory": "packages/babel-helpers",
+      "type": "git",
+      "url": "https://github.com/babel/babel.git"
+    },
+    "source": "https://registry.npmjs.org/@babel/helpers/-/helpers-7.29.10.tgz",
+    "version": "7.29.10"
+  },
+  {
+    "direct": false,
+    "evidence": "node_modules/@babel/parser/package.json",
+    "installed": true,
+    "integrity": "sha512-CjXrNHTnvqBVqHgdBysY3vk2T8tpJHb5/RMeHJBTyVa9xgugCB0CJTx/3oO8RV2QRQP391RWpB7D6hLjm8V9uA==",
+    "issue": null,
+    "license": "MIT",
+    "notice_files": [
+      "frontend/node_modules/@babel/parser/LICENSE"
+    ],
+    "package": "@babel/parser",
+    "repository": {
+      "directory": "packages/babel-parser",
+      "type": "git",
+      "url": "https://github.com/babel/babel.git"
+    },
+    "source": "https://registry.npmjs.org/@babel/parser/-/parser-7.29.9.tgz",
+    "version": "7.29.9"
+  },
+  {
+    "direct": false,
+    "evidence": "node_modules/@babel/plugin-transform-react-jsx-self/package.json",
+    "installed": true,
+    "integrity": "sha512-TL0hMc9xzy86VD31nUiwzd5otRAcyEPcsegCxolO0PvcXuH1v0kECe/UIznYFihpkvU5wg/jk4v0TTEFfm53fw==",
+    "issue": null,
+    "license": "MIT",
+    "notice_files": [
+      "frontend/node_modules/@babel/plugin-transform-react-jsx-self/LICENSE"
+    ],
+    "package": "@babel/plugin-transform-react-jsx-self",
+    "repository": {
+      "directory": "packages/babel-plugin-transform-react-jsx-self",
+      "type": "git",
+      "url": "https://github.com/babel/babel.git"
+    },
+    "source": "https://registry.npmjs.org/@babel/plugin-transform-react-jsx-self/-/plugin-transform-react-jsx-self-7.29.7.tgz",
+    "version": "7.29.7"
+  },
+  {
+    "direct": false,
+    "evidence": "node_modules/@babel/plugin-transform-react-jsx-source/package.json",
+    "installed": true,
+    "integrity": "sha512-06IyK09H3wi4cGbhDBwp5gUGo0IKtnYa8tyTiephirPCK6fbobVGiXMMI5zLQ4aKEYP3wZ3ArU44o+8KMrSG/Q==",
+    "issue": null,
+    "license": "MIT",
+    "notice_files": [
+      "frontend/node_modules/@babel/plugin-transform-react-jsx-source/LICENSE"
+    ],
+    "package": "@babel/plugin-transform-react-jsx-source",
+    "repository": {
+      "directory": "packages/babel-plugin-transform-react-jsx-source",
+      "type": "git",
+      "url": "https://github.com/babel/babel.git"
+    },
+    "source": "https://registry.npmjs.org/@babel/plugin-transform-react-jsx-source/-/plugin-transform-react-jsx-source-7.29.7.tgz",
+    "version": "7.29.7"
+  },
+  {
+    "direct": false,
+    "evidence": "node_modules/@babel/template/package.json",
+    "installed": true,
+    "integrity": "sha512-puq+Gf35oI24FeN11LkoUQFqv9uwNeWpxXZi/Ji3rRIoKAzKnxRaZ+Gkj0vKS9ZCiTESfng1N9LyOyXvo+m+Gg==",
+    "issue": null,
+    "license": "MIT",
+    "notice_files": [
+      "frontend/node_modules/@babel/template/LICENSE"
+    ],
+    "package": "@babel/template",
+    "repository": {
+      "directory": "packages/babel-template",
+      "type": "git",
+      "url": "https://github.com/babel/babel.git"
+    },
+    "source": "https://registry.npmjs.org/@babel/template/-/template-7.29.7.tgz",
+    "version": "7.29.7"
+  },
+  {
+    "direct": false,
+    "evidence": "node_modules/@babel/traverse/package.json",
+    "installed": true,
+    "integrity": "sha512-B3lYAs2nkKskbgQ1nfy8Ma9ao9Q1rntTAQHrzzyDuj+TSO+X3le6PfWwqDvodsb+OumE10eMFfuMCTQSQ5iuIQ==",
+    "issue": null,
+    "license": "MIT",
+    "notice_files": [
+      "frontend/node_modules/@babel/traverse/LICENSE"
+    ],
+    "package": "@babel/traverse",
+    "repository": {
+      "directory": "packages/babel-traverse",
+      "type": "git",
+      "url": "https://github.com/babel/babel.git"
+    },
+    "source": "https://registry.npmjs.org/@babel/traverse/-/traverse-7.29.10.tgz",
+    "version": "7.29.10"
+  },
+  {
+    "direct": false,
+    "evidence": "node_modules/@babel/types/package.json",
+    "installed": true,
+    "integrity": "sha512-Vj1jF3cPfxg7OAfoI7QnVKLoILlm2JF9pnVHrX8qx7AHMiYWT+NDAA7jChlNgRS4WTLc/fD1lXLmPixluj+3Gg==",
+    "issue": null,
+    "license": "MIT",
+    "notice_files": [
+      "frontend/node_modules/@babel/types/LICENSE"
+    ],
+    "package": "@babel/types",
+    "repository": {
+      "directory": "packages/babel-types",
+      "type": "git",
+      "url": "https://github.com/babel/babel.git"
+    },
+    "source": "https://registry.npmjs.org/@babel/types/-/types-7.29.8.tgz",
+    "version": "7.29.8"
+  },
+  {
+    "direct": false,
+    "evidence": "frontend/package-lock.json",
+    "installed": false,
+    "integrity": "sha512-XExcO+dvLKvVtNTibSTBej1NCAbaGhWn9Ww1ZPx80qsahhPFe/8jgWP0IchNe0F3HwkU7n8ejhH8bjonqht8mQ==",
+    "issue": "No installed licence text",
+    "license": "MIT",
+    "notice_files": [],
+    "package": "@esbuild/aix-ppc64",
+    "repository": null,
+    "source": "https://registry.npmjs.org/@esbuild/aix-ppc64/-/aix-ppc64-0.28.2.tgz",
+    "version": "0.28.2"
+  },
+  {
+    "direct": false,
+    "evidence": "frontend/package-lock.json",
+    "installed": false,
+    "integrity": "sha512-kXXoiPVVGQcnIYGOeaovwOURpniDBpSq4A03qkQ+BMQqtGG6HYap3xne9C1O1yo4TR3qxlCX5IqqmX6fFo2Lqg==",
+    "issue": "No installed licence text",
+    "license": "MIT",
+    "notice_files": [],
+    "package": "@esbuild/android-arm",
+    "repository": null,
+    "source": "https://registry.npmjs.org/@esbuild/android-arm/-/android-arm-0.28.2.tgz",
+    "version": "0.28.2"
+  },
+  {
+    "direct": false,
+    "evidence": "frontend/package-lock.json",
+    "installed": false,
+    "integrity": "sha512-5YfKeeI8qWfBZIX+u2xZC3Zlb3Os/gLS2sbEKM+I4ZOcsWmHS2WLysCcQZDAFRslDUU5Oiq44gf6PYN1vGwG5A==",
+    "issue": "No installed licence text",
+    "license": "MIT",
+    "notice_files": [],
+    "package": "@esbuild/android-arm64",
+    "repository": null,
+    "source": "https://registry.npmjs.org/@esbuild/android-arm64/-/android-arm64-0.28.2.tgz",
+    "version": "0.28.2"
+  },
+  {
+    "direct": false,
+    "evidence": "frontend/package-lock.json",
+    "installed": false,
+    "integrity": "sha512-O387ite7SzUyCcy3JQX4P4bLtEA7bLLkx+esve5JHnyYfNTxcVpXZo9jhdB0lTKN44gztELTdU7nS8Nr16Fs1Q==",
+    "issue": "No installed licence text",
+    "license": "MIT",
+    "notice_files": [],
+    "package": "@esbuild/android-x64",
+    "repository": null,
+    "source": "https://registry.npmjs.org/@esbuild/android-x64/-/android-x64-0.28.2.tgz",
+    "version": "0.28.2"
+  },
+  {
+    "direct": false,
+    "evidence": "node_modules/@esbuild/darwin-arm64/package.json",
+    "installed": true,
+    "integrity": "sha512-n4KqkOQrraxHJcgjM1RvwbigfQKIKJVpM7xp+KsxiyUSrRdIXnt73VhrPAx0fV44hgfmIVKjxMN9J1t5jySVkw==",
+    "issue": "No installed licence text",
+    "license": "MIT",
+    "notice_files": [],
+    "package": "@esbuild/darwin-arm64",
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/evanw/esbuild.git"
+    },
+    "source": "https://registry.npmjs.org/@esbuild/darwin-arm64/-/darwin-arm64-0.28.2.tgz",
+    "version": "0.28.2"
+  },
+  {
+    "direct": false,
+    "evidence": "frontend/package-lock.json",
+    "installed": false,
+    "integrity": "sha512-uq6suIWYP37qzGddBKPw5QEQPi6HiLGsO7UmkpfyaYNQ3D+rN6w6WfwH+nuqcGXWvawGwxOEroO4YGnFh95azw==",
+    "issue": "No installed licence text",
+    "license": "MIT",
+    "notice_files": [],
+    "package": "@esbuild/darwin-x64",
+    "repository": null,
+    "source": "https://registry.npmjs.org/@esbuild/darwin-x64/-/darwin-x64-0.28.2.tgz",
+    "version": "0.28.2"
+  },
+  {
+    "direct": false,
+    "evidence": "frontend/package-lock.json",
+    "installed": false,
+    "integrity": "sha512-n+I0BTSRIoy+d6RPKnEVwql5UwBJolytvY4mAOIEJorKlqgPII8ix6slVVrfZ5Tnj7glIZvloylbB/EJPMWEXw==",
+    "issue": "No installed licence text",
+    "license": "MIT",
+    "notice_files": [],
+    "package": "@esbuild/freebsd-arm64",
+    "repository": null,
+    "source": "https://registry.npmjs.org/@esbuild/freebsd-arm64/-/freebsd-arm64-0.28.2.tgz",
+    "version": "0.28.2"
+  },
+  {
+    "direct": false,
+    "evidence": "frontend/package-lock.json",
+    "installed": false,
+    "integrity": "sha512-78XJTJkvPs0kz2w61301PJjXl4g7q3JqiYMZ/M/yVI73EHBrCRTgkhu9oqG7vPqq+a/yadEW8aD+agKlk5xrmg==",
+    "issue": "No installed licence text",
+    "license": "MIT",
+    "notice_files": [],
+    "package": "@esbuild/freebsd-x64",
+    "repository": null,
+    "source": "https://registry.npmjs.org/@esbuild/freebsd-x64/-/freebsd-x64-0.28.2.tgz",
+    "version": "0.28.2"
+  },
+  {
+    "direct": false,
+    "evidence": "frontend/package-lock.json",
+    "installed": false,
+    "integrity": "sha512-XlDnu2q5yoqems+xay6wSAcg9DDD7K9RLKZEBOMZm3ckNpJBvOX20tSfby8KfrrhINDyv9V2YVZKY/SpoGJI8w==",
+    "issue": "No installed licence text",
+    "license": "MIT",
+    "notice_files": [],
+    "package": "@esbuild/linux-arm",
+    "repository": null,
+    "source": "https://registry.npmjs.org/@esbuild/linux-arm/-/linux-arm-0.28.2.tgz",
+    "version": "0.28.2"
+  },
+  {
+    "direct": false,
+    "evidence": "frontend/package-lock.json",
+    "installed": false,
+    "integrity": "sha512-pW4AC0P3it8c7do9MVM4p51FzHzdM/TZrerurgRcHJ2WTa1VQ1CIq18xncfpBJw4ojkiZZrKW2yIBWBP92j6Ug==",
+    "issue": "No installed licence text",
+    "license": "MIT",
+    "notice_files": [],
+    "package": "@esbuild/linux-arm64",
+    "repository": null,
+    "source": "https://registry.npmjs.org/@esbuild/linux-arm64/-/linux-arm64-0.28.2.tgz",
+    "version": "0.28.2"
+  },
+  {
+    "direct": false,
+    "evidence": "frontend/package-lock.json",
+    "installed": false,
+    "integrity": "sha512-CYbnj78HsIeA+DhgUKgFCfvNsTHFhMMrinUrMZpDXJXKN8T3XViTZ/+wtHeVxEWY8ewSzTFN+nRmSwO2tZaLUQ==",
+    "issue": "No installed licence text",
+    "license": "MIT",
+    "notice_files": [],
+    "package": "@esbuild/linux-ia32",
+    "repository": null,
+    "source": "https://registry.npmjs.org/@esbuild/linux-ia32/-/linux-ia32-0.28.2.tgz",
+    "version": "0.28.2"
+  },
+  {
+    "direct": false,
+    "evidence": "frontend/package-lock.json",
+    "installed": false,
+    "integrity": "sha512-buwkd8nsph4R+ajRvw0qM5Hja/TXQow3ptzWO2EbG/cqcIkHloRrdlBtQlshyYGTNFvfkfJ5tpPLVkY4DtsPfQ==",
+    "issue": "No installed licence text",
+    "license": "MIT",
+    "notice_files": [],
+    "package": "@esbuild/linux-loong64",
+    "repository": null,
+    "source": "https://registry.npmjs.org/@esbuild/linux-loong64/-/linux-loong64-0.28.2.tgz",
+    "version": "0.28.2"
+  },
+  {
+    "direct": false,
+    "evidence": "frontend/package-lock.json",
+    "installed": false,
+    "integrity": "sha512-ZVykbDyk7519VwiNb9Lcj9m8XM6v5V9uKPvrEMkkEedVewf+0itkhahp4HDpgERXhwLRpWFypsGbG/J8s0QjJA==",
+    "issue": "No installed licence text",
+    "license": "MIT",
+    "notice_files": [],
+    "package": "@esbuild/linux-mips64el",
+    "repository": null,
+    "source": "https://registry.npmjs.org/@esbuild/linux-mips64el/-/linux-mips64el-0.28.2.tgz",
+    "version": "0.28.2"
+  },
+  {
+    "direct": false,
+    "evidence": "frontend/package-lock.json",
+    "installed": false,
+    "integrity": "sha512-CAXl+Dtd9UUuJd8pKKdwh6MLm3MUMiqMPmhZ3tTSXPqfyQ3vDl6R5hZdZ/kYojK4ofXtdfSv1tFq8XzWx3heNQ==",
+    "issue": "No installed licence text",
+    "license": "MIT",
+    "notice_files": [],
+    "package": "@esbuild/linux-ppc64",
+    "repository": null,
+    "source": "https://registry.npmjs.org/@esbuild/linux-ppc64/-/linux-ppc64-0.28.2.tgz",
+    "version": "0.28.2"
+  },
+  {
+    "direct": false,
+    "evidence": "frontend/package-lock.json",
+    "installed": false,
+    "integrity": "sha512-GeXCej4IQtU1B+QlDV8W/RRvbzI3O/Stss+/bCXv4lZls5WGRtu2a+3JkA3i4qIUlMXpcHebWpF8AkJhATowuA==",
+    "issue": "No installed licence text",
+    "license": "MIT",
+    "notice_files": [],
+    "package": "@esbuild/linux-riscv64",
+    "repository": null,
+    "source": "https://registry.npmjs.org/@esbuild/linux-riscv64/-/linux-riscv64-0.28.2.tgz",
+    "version": "0.28.2"
+  },
+  {
+    "direct": false,
+    "evidence": "frontend/package-lock.json",
+    "installed": false,
+    "integrity": "sha512-3H1weTYZPxt/WOhByszQZybS9w5lKzUn1FDMsgEChbHWQwHYQQRfBxgCcZvPhjHfKyJjIievvMmEUawJrdY9Dg==",
+    "issue": "No installed licence text",
+    "license": "MIT",
+    "notice_files": [],
+    "package": "@esbuild/linux-s390x",
+    "repository": null,
+    "source": "https://registry.npmjs.org/@esbuild/linux-s390x/-/linux-s390x-0.28.2.tgz",
+    "version": "0.28.2"
+  },
+  {
+    "direct": false,
+    "evidence": "frontend/package-lock.json",
+    "installed": false,
+    "integrity": "sha512-4xTZr1FUmSoQW4XIWmit3tzQrUTZM+N3P0XV8xROKYF50XfI7xeO90+1bZvNwxIufQ9hDQVRJH5YhgPVF8A/HQ==",
+    "issue": "No installed licence text",
+    "license": "MIT",
+    "notice_files": [],
+    "package": "@esbuild/linux-x64",
+    "repository": null,
+    "source": "https://registry.npmjs.org/@esbuild/linux-x64/-/linux-x64-0.28.2.tgz",
+    "version": "0.28.2"
+  },
+  {
+    "direct": false,
+    "evidence": "frontend/package-lock.json",
+    "installed": false,
+    "integrity": "sha512-sSATRjPeDBg3pdgHoQfoYBob11Kk1FGa9lui5RIHZCoCkJa9QKlvl3/vKz2usCmYYjs7ymJR/2Nnsqe+Hjt5nw==",
+    "issue": "No installed licence text",
+    "license": "MIT",
+    "notice_files": [],
+    "package": "@esbuild/netbsd-arm64",
+    "repository": null,
+    "source": "https://registry.npmjs.org/@esbuild/netbsd-arm64/-/netbsd-arm64-0.28.2.tgz",
+    "version": "0.28.2"
+  },
+  {
+    "direct": false,
+    "evidence": "frontend/package-lock.json",
+    "installed": false,
+    "integrity": "sha512-lqnzCV+mM0gIADaKihiCg6ifgfU2L3h5E33rNQBN1Y4MaVGnzryzmvvf7UHxprpQdE8hpqLolJ9Rl+SkIRDpyw==",
+    "issue": "No installed licence text",
+    "license": "MIT",
+    "notice_files": [],
+    "package": "@esbuild/netbsd-x64",
+    "repository": null,
+    "source": "https://registry.npmjs.org/@esbuild/netbsd-x64/-/netbsd-x64-0.28.2.tgz",
+    "version": "0.28.2"
+  },
+  {
+    "direct": false,
+    "evidence": "frontend/package-lock.json",
+    "installed": false,
+    "integrity": "sha512-AL2qJILH7lNjrDmCQDvdxMfAUIv8KMNZOvrwAQ8i8//ntL9FflhOyMJ8OZSMBb8/AWXe3/5v5S20y3zCoZWKoQ==",
+    "issue": "No installed licence text",
+    "license": "MIT",
+    "notice_files": [],
+    "package": "@esbuild/openbsd-arm64",
+    "repository": null,
+    "source": "https://registry.npmjs.org/@esbuild/openbsd-arm64/-/openbsd-arm64-0.28.2.tgz",
+    "version": "0.28.2"
+  },
+  {
+    "direct": false,
+    "evidence": "frontend/package-lock.json",
+    "installed": false,
+    "integrity": "sha512-QtiuPytchRyC4rwUKhexJdQKvDuZ6hWloi3igqPQNUJCS1/v9EiO3UTOXR6A3FoMo4fnAKbWJdqaIwhOzh8qEw==",
+    "issue": "No installed licence text",
+    "license": "MIT",
+    "notice_files": [],
+    "package": "@esbuild/openbsd-x64",
+    "repository": null,
+    "source": "https://registry.npmjs.org/@esbuild/openbsd-x64/-/openbsd-x64-0.28.2.tgz",
+    "version": "0.28.2"
+  },
+  {
+    "direct": false,
+    "evidence": "frontend/package-lock.json",
+    "installed": false,
+    "integrity": "sha512-WkhYDmpTjLvGlScA1rwjRUmhl4k8oXR3cIbtqWmELgU/dFeHHlEllxDvdWcNJV9rbzCexB5vz8gtNewWLgCT7Q==",
+    "issue": "No installed licence text",
+    "license": "MIT",
+    "notice_files": [],
+    "package": "@esbuild/openharmony-arm64",
+    "repository": null,
+    "source": "https://registry.npmjs.org/@esbuild/openharmony-arm64/-/openharmony-arm64-0.28.2.tgz",
+    "version": "0.28.2"
+  },
+  {
+    "direct": false,
+    "evidence": "frontend/package-lock.json",
+    "installed": false,
+    "integrity": "sha512-GPMSkTOtMnv2U2F8gxe4Io6qmVs+YKyp832Etqqxr0hFngmXQ3rzwytelm3GIn7T4VviRUlf3sOgBOiTdvaf7g==",
+    "issue": "No installed licence text",
+    "license": "MIT",
+    "notice_files": [],
+    "package": "@esbuild/sunos-x64",
+    "repository": null,
+    "source": "https://registry.npmjs.org/@esbuild/sunos-x64/-/sunos-x64-0.28.2.tgz",
+    "version": "0.28.2"
+  },
+  {
+    "direct": false,
+    "evidence": "frontend/package-lock.json",
+    "installed": false,
+    "integrity": "sha512-PIhhEkE9uPBleRBrQEJpUn7MBnibZzbGzYWPmY3x+YoVg/95zbjB4CxPPOQ8l5tYYM4mMaCthF8/1DIfBQQyWQ==",
+    "issue": "No installed licence text",
+    "license": "MIT",
+    "notice_files": [],
+    "package": "@esbuild/win32-arm64",
+    "repository": null,
+    "source": "https://registry.npmjs.org/@esbuild/win32-arm64/-/win32-arm64-0.28.2.tgz",
+    "version": "0.28.2"
+  },
+  {
+    "direct": false,
+    "evidence": "frontend/package-lock.json",
+    "installed": false,
+    "integrity": "sha512-YmJbfTlvU7Sdn9BB+4PRES4oB6pxgS37MAONj+hBr/cpXS1aBPKXxNnDbu+QCWPj0o9dgyxeq79g6c5P8KeuYA==",
+    "issue": "No installed licence text",
+    "license": "MIT",
+    "notice_files": [],
+    "package": "@esbuild/win32-ia32",
+    "repository": null,
+    "source": "https://registry.npmjs.org/@esbuild/win32-ia32/-/win32-ia32-0.28.2.tgz",
+    "version": "0.28.2"
+  },
+  {
+    "direct": false,
+    "evidence": "frontend/package-lock.json",
+    "installed": false,
+    "integrity": "sha512-5ebpxr3nWMzrL/rnUI755Jkuee0bHL/Gq0WTF9lvcpv73wAp5eu8MfBUgWK9bhWvZjj7yX8etf/8tI8Ney695g==",
+    "issue": "No installed licence text",
+    "license": "MIT",
+    "notice_files": [],
+    "package": "@esbuild/win32-x64",
+    "repository": null,
+    "source": "https://registry.npmjs.org/@esbuild/win32-x64/-/win32-x64-0.28.2.tgz",
+    "version": "0.28.2"
+  },
+  {
+    "direct": false,
+    "evidence": "node_modules/@jridgewell/gen-mapping/package.json",
+    "installed": true,
+    "integrity": "sha512-2kkt/7niJ6MgEPxF0bYdQ6etZaA+fQvDcLKckhy1yIQOzaoKjBBjSj63/aLVjYE3qhRt5dvM+uUyfCg6UKCBbA==",
+    "issue": null,
+    "license": "MIT",
+    "notice_files": [
+      "frontend/node_modules/@jridgewell/gen-mapping/LICENSE"
+    ],
+    "package": "@jridgewell/gen-mapping",
+    "repository": {
+      "directory": "packages/gen-mapping",
+      "type": "git",
+      "url": "git+https://github.com/jridgewell/sourcemaps.git"
+    },
+    "source": "https://registry.npmjs.org/@jridgewell/gen-mapping/-/gen-mapping-0.3.13.tgz",
+    "version": "0.3.13"
+  },
+  {
+    "direct": false,
+    "evidence": "node_modules/@jridgewell/remapping/package.json",
+    "installed": true,
+    "integrity": "sha512-LI9u/+laYG4Ds1TDKSJW2YPrIlcVYOwi2fUC6xB43lueCjgxV4lffOCZCtYFiH6TNOX+tQKXx97T4IKHbhyHEQ==",
+    "issue": null,
+    "license": "MIT",
+    "notice_files": [
+      "frontend/node_modules/@jridgewell/remapping/LICENSE"
+    ],
+    "package": "@jridgewell/remapping",
+    "repository": {
+      "directory": "packages/remapping",
+      "type": "git",
+      "url": "git+https://github.com/jridgewell/sourcemaps.git"
+    },
+    "source": "https://registry.npmjs.org/@jridgewell/remapping/-/remapping-2.3.5.tgz",
+    "version": "2.3.5"
+  },
+  {
+    "direct": false,
+    "evidence": "node_modules/@jridgewell/resolve-uri/package.json",
+    "installed": true,
+    "integrity": "sha512-bRISgCIjP20/tbWSPWMEi54QVPRZExkuD9lJL+UIxUKtwVJA8wW1Trb1jMs1RFXo1CBTNZ/5hpC9QvmKWdopKw==",
+    "issue": null,
+    "license": "MIT",
+    "notice_files": [
+      "frontend/node_modules/@jridgewell/resolve-uri/LICENSE"
+    ],
+    "package": "@jridgewell/resolve-uri",
+    "repository": "https://github.com/jridgewell/resolve-uri",
+    "source": "https://registry.npmjs.org/@jridgewell/resolve-uri/-/resolve-uri-3.1.2.tgz",
+    "version": "3.1.2"
+  },
+  {
+    "direct": false,
+    "evidence": "node_modules/@jridgewell/sourcemap-codec/package.json",
+    "installed": true,
+    "integrity": "sha512-T7jf+5zgsZHwNJ4lvQ7/aezbyk0nNX+zJVWpmHA7VYsEx7a7qr5Rg5IbtJFqkgze5Y2sruq1RUY8Q837Od7iFw==",
+    "issue": null,
+    "license": "MIT",
+    "notice_files": [
+      "frontend/node_modules/@jridgewell/sourcemap-codec/LICENSE"
+    ],
+    "package": "@jridgewell/sourcemap-codec",
+    "repository": {
+      "directory": "packages/sourcemap-codec",
+      "type": "git",
+      "url": "git+https://github.com/jridgewell/sourcemaps.git"
+    },
+    "source": "https://registry.npmjs.org/@jridgewell/sourcemap-codec/-/sourcemap-codec-1.6.0.tgz",
+    "version": "1.6.0"
+  },
+  {
+    "direct": false,
+    "evidence": "node_modules/@jridgewell/trace-mapping/package.json",
+    "installed": true,
+    "integrity": "sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==",
+    "issue": null,
+    "license": "MIT",
+    "notice_files": [
+      "frontend/node_modules/@jridgewell/trace-mapping/LICENSE"
+    ],
+    "package": "@jridgewell/trace-mapping",
+    "repository": {
+      "directory": "packages/trace-mapping",
+      "type": "git",
+      "url": "git+https://github.com/jridgewell/sourcemaps.git"
+    },
+    "source": "https://registry.npmjs.org/@jridgewell/trace-mapping/-/trace-mapping-0.3.31.tgz",
+    "version": "0.3.31"
+  },
+  {
+    "direct": false,
+    "evidence": "frontend/package-lock.json",
+    "installed": false,
+    "integrity": "sha512-oTXEIha4SsuXdTA4Iyskj0kpdx2yVXdhd75c2v3xGrHFfVMsbhTPZU/nMPL4sWKo4pBHm3aucLaqGlF696dTyQ==",
+    "issue": "No installed licence text",
+    "license": "MIT",
+    "notice_files": [],
+    "package": "@napi-rs/lzma-linux-x64-gnu",
+    "repository": null,
+    "source": "https://registry.npmjs.org/@napi-rs/lzma-linux-x64-gnu/-/lzma-linux-x64-gnu-1.5.1.tgz",
+    "version": "1.5.1"
+  },
+  {
+    "direct": true,
+    "evidence": "node_modules/@playwright/test/package.json",
+    "installed": true,
+    "integrity": "sha512-vSMYtL/zOcFpvJCW71Q/OEGQb7KYBPAdKh35WNSkaZA75JlAO8ED8UN6GUNTm3drWomcbcqRPFqQbLae8yBTdg==",
+    "issue": null,
+    "license": "Apache-2.0",
+    "notice_files": [
+      "frontend/node_modules/@playwright/test/LICENSE",
+      "frontend/node_modules/@playwright/test/NOTICE"
+    ],
+    "package": "@playwright/test",
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/microsoft/playwright.git"
+    },
+    "source": "https://registry.npmjs.org/@playwright/test/-/test-1.56.1.tgz",
+    "version": "1.56.1"
+  },
+  {
+    "direct": false,
+    "evidence": "node_modules/@rolldown/pluginutils/package.json",
+    "installed": true,
+    "integrity": "sha512-LyAREkZHP5pMom7c24meKmJCdhf2hEyvam2q0unr3or9ydwDL+DJ8chTF6Av/RFPb3rH8UFBdMzO5MxTZW97oA==",
+    "issue": null,
+    "license": "MIT",
+    "notice_files": [
+      "frontend/node_modules/@rolldown/pluginutils/LICENSE"
+    ],
+    "package": "@rolldown/pluginutils",
+    "repository": {
+      "directory": "packages/pluginutils",
+      "type": "git",
+      "url": "git+https://github.com/rolldown/rolldown.git"
+    },
+    "source": "https://registry.npmjs.org/@rolldown/pluginutils/-/pluginutils-1.0.0-beta.34.tgz",
+    "version": "1.0.0-beta.34"
+  },
+  {
+    "direct": false,
+    "evidence": "frontend/package-lock.json",
+    "installed": false,
+    "integrity": "sha512-a31GFbL70GlGUGhn8goVjRLtdDG1urLCJFWLZ7JcxdHK9pPvCohLFtYLgJDdNbtrNZSrJl1u9bK05ISsSC2EpA==",
+    "issue": "No installed licence text",
+    "license": "MIT",
+    "notice_files": [],
+    "package": "@rollup/rollup-android-arm-eabi",
+    "repository": null,
+    "source": "https://registry.npmjs.org/@rollup/rollup-android-arm-eabi/-/rollup-android-arm-eabi-4.64.3.tgz",
+    "version": "4.64.3"
+  },
+  {
+    "direct": false,
+    "evidence": "frontend/package-lock.json",
+    "installed": false,
+    "integrity": "sha512-IRv757RLiPGlNxAX5JXU0eiUlUPvKiwFRbkqLd+gywptLK4uSEg1qkl6en6r0cXMazSnWUWOBABv+QfuLV3n5Q==",
+    "issue": "No installed licence text",
+    "license": "MIT",
+    "notice_files": [],
+    "package": "@rollup/rollup-android-arm64",
+    "repository": null,
+    "source": "https://registry.npmjs.org/@rollup/rollup-android-arm64/-/rollup-android-arm64-4.64.3.tgz",
+    "version": "4.64.3"
+  },
+  {
+    "direct": false,
+    "evidence": "node_modules/@rollup/rollup-darwin-arm64/package.json",
+    "installed": true,
+    "integrity": "sha512-UkzI35Fnz6+MJNATdnjnZ3TpdG/rXab8h7oDOD9R0zDVIFmuuYrvgUj8V8mh+A//+LR4TlEQo4ZW4RhyRtWv3A==",
+    "issue": "No installed licence text",
+    "license": "MIT",
+    "notice_files": [],
+    "package": "@rollup/rollup-darwin-arm64",
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/rollup/rollup.git"
+    },
+    "source": "https://registry.npmjs.org/@rollup/rollup-darwin-arm64/-/rollup-darwin-arm64-4.64.3.tgz",
+    "version": "4.64.3"
+  },
+  {
+    "direct": false,
+    "evidence": "frontend/package-lock.json",
+    "installed": false,
+    "integrity": "sha512-C3AyMtAnKQ/jSkZ0chIoWbPXRbFz8JnPLhl1ULecEhcaOGkT19xt7KmO8BulQxt9S/XideHRXvsVQUbGj4JCOg==",
+    "issue": "No installed licence text",
+    "license": "MIT",
+    "notice_files": [],
+    "package": "@rollup/rollup-darwin-x64",
+    "repository": null,
+    "source": "https://registry.npmjs.org/@rollup/rollup-darwin-x64/-/rollup-darwin-x64-4.64.3.tgz",
+    "version": "4.64.3"
+  },
+  {
+    "direct": false,
+    "evidence": "frontend/package-lock.json",
+    "installed": false,
+    "integrity": "sha512-M8yAdBMyHh14JLeXDNGvEkljzuHdcoLBQ399O4Fp4nvX51lueuEY/5U2G9Ci0D6/bQlBp/3JLiBQH55STwwbwg==",
+    "issue": "No installed licence text",
+    "license": "MIT",
+    "notice_files": [],
+    "package": "@rollup/rollup-freebsd-arm64",
+    "repository": null,
+    "source": "https://registry.npmjs.org/@rollup/rollup-freebsd-arm64/-/rollup-freebsd-arm64-4.64.3.tgz",
+    "version": "4.64.3"
+  },
+  {
+    "direct": false,
+    "evidence": "frontend/package-lock.json",
+    "installed": false,
+    "integrity": "sha512-WQjuOKGh2FN98ZK6i0uM6M6YqnPEds85p3oRkrxiEeTQo/p7RpuU8c9MwQ88LfgwVAzohumlzbQQSikz4Zw9rw==",
+    "issue": "No installed licence text",
+    "license": "MIT",
+    "notice_files": [],
+    "package": "@rollup/rollup-freebsd-x64",
+    "repository": null,
+    "source": "https://registry.npmjs.org/@rollup/rollup-freebsd-x64/-/rollup-freebsd-x64-4.64.3.tgz",
+    "version": "4.64.3"
+  },
+  {
+    "direct": false,
+    "evidence": "frontend/package-lock.json",
+    "installed": false,
+    "integrity": "sha512-5tDLZG5s9WyVKoEHgwos6FpKrgpotl61EYeHSLSVkQzMzTsaClwEr8mok9rm3y734zjiGInG4dfw/56ebWVvEQ==",
+    "issue": "No installed licence text",
+    "license": "MIT",
+    "notice_files": [],
+    "package": "@rollup/rollup-linux-arm-gnueabihf",
+    "repository": null,
+    "source": "https://registry.npmjs.org/@rollup/rollup-linux-arm-gnueabihf/-/rollup-linux-arm-gnueabihf-4.64.3.tgz",
+    "version": "4.64.3"
+  },
+  {
+    "direct": false,
+    "evidence": "frontend/package-lock.json",
+    "installed": false,
+    "integrity": "sha512-Mh5KbLeplM2HX6lQI18jsxSsqvPW8d+Hyk8HtY6Zl93woMitRSCZ92rBEzq6v8bfZGlpyMgj4P/sKW4KCjhH3A==",
+    "issue": "No installed licence text",
+    "license": "MIT",
+    "notice_files": [],
+    "package": "@rollup/rollup-linux-arm-musleabihf",
+    "repository": null,
+    "source": "https://registry.npmjs.org/@rollup/rollup-linux-arm-musleabihf/-/rollup-linux-arm-musleabihf-4.64.3.tgz",
+    "version": "4.64.3"
+  },
+  {
+    "direct": false,
+    "evidence": "frontend/package-lock.json",
+    "installed": false,
+    "integrity": "sha512-QZrrwHnznTv6y4iiHtCqDN+ZsF4qNFQObMOLgPrbxhh9O5o4rgoUe5OnkqG/ceCObMrAjhQt+eQ6HSDzBFgVMw==",
+    "issue": "No installed licence text",
+    "license": "MIT",
+    "notice_files": [],
+    "package": "@rollup/rollup-linux-arm64-gnu",
+    "repository": null,
+    "source": "https://registry.npmjs.org/@rollup/rollup-linux-arm64-gnu/-/rollup-linux-arm64-gnu-4.64.3.tgz",
+    "version": "4.64.3"
+  },
+  {
+    "direct": false,
+    "evidence": "frontend/package-lock.json",
+    "installed": false,
+    "integrity": "sha512-4vLehpXSwlkltnvk5ETB+Hz+d3xayZS3NamZ5Vq4bSo+IUoIALovEJF1YgWPMjHwN7R5o/R4BpP9h3q8EK1xAA==",
+    "issue": "No installed licence text",
+    "license": "MIT",
+    "notice_files": [],
+    "package": "@rollup/rollup-linux-arm64-musl",
+    "repository": null,
+    "source": "https://registry.npmjs.org/@rollup/rollup-linux-arm64-musl/-/rollup-linux-arm64-musl-4.64.3.tgz",
+    "version": "4.64.3"
+  },
+  {
+    "direct": false,
+    "evidence": "frontend/package-lock.json",
+    "installed": false,
+    "integrity": "sha512-SEN7TTTOdXJKZmsWKOnQeVfgy3Dje/08ISXWwFhTggQ3SxjuIaChvmOB5ZDZqJNlBjaXrV6nAHraqEAvdLGqcw==",
+    "issue": "No installed licence text",
+    "license": "MIT",
+    "notice_files": [],
+    "package": "@rollup/rollup-linux-loong64-gnu",
+    "repository": null,
+    "source": "https://registry.npmjs.org/@rollup/rollup-linux-loong64-gnu/-/rollup-linux-loong64-gnu-4.64.3.tgz",
+    "version": "4.64.3"
+  },
+  {
+    "direct": false,
+    "evidence": "frontend/package-lock.json",
+    "installed": false,
+    "integrity": "sha512-1LDsQMRMCEdGF9Dih5qyh6fF1LK3NnA+pAtE2+9AgZwUdXyd19TOBVC9crSB63iZBHR4vOG7h8gN/LcUH3J7xw==",
+    "issue": "No installed licence text",
+    "license": "MIT",
+    "notice_files": [],
+    "package": "@rollup/rollup-linux-loong64-musl",
+    "repository": null,
+    "source": "https://registry.npmjs.org/@rollup/rollup-linux-loong64-musl/-/rollup-linux-loong64-musl-4.64.3.tgz",
+    "version": "4.64.3"
+  },
+  {
+    "direct": false,
+    "evidence": "frontend/package-lock.json",
+    "installed": false,
+    "integrity": "sha512-v3D2tAfRriqGOi+5Ac5CiYbBo2NXtLVxJlludTvUZRj502lVMFeVIuvvWbz4qCrotn3e3Uvpvh7FcMpG2QxxXQ==",
+    "issue": "No installed licence text",
+    "license": "MIT",
+    "notice_files": [],
+    "package": "@rollup/rollup-linux-ppc64-gnu",
+    "repository": null,
+    "source": "https://registry.npmjs.org/@rollup/rollup-linux-ppc64-gnu/-/rollup-linux-ppc64-gnu-4.64.3.tgz",
+    "version": "4.64.3"
+  },
+  {
+    "direct": false,
+    "evidence": "frontend/package-lock.json",
+    "installed": false,
+    "integrity": "sha512-db5q6dP189V2+JkMpsXBl8ym6bC0x8ydZ47fUJZ9YdM6T2OF5uqNzX9HaAZHRP/lqjA9bJeNwi0qw1/2/37dUA==",
+    "issue": "No installed licence text",
+    "license": "MIT",
+    "notice_files": [],
+    "package": "@rollup/rollup-linux-ppc64-musl",
+    "repository": null,
+    "source": "https://registry.npmjs.org/@rollup/rollup-linux-ppc64-musl/-/rollup-linux-ppc64-musl-4.64.3.tgz",
+    "version": "4.64.3"
+  },
+  {
+    "direct": false,
+    "evidence": "frontend/package-lock.json",
+    "installed": false,
+    "integrity": "sha512-nArAVDmrL5ix9UoipcKEsYJw4kMUQCIPYRWuYF2POOC7jd9rmN95d/48ewsYFC/OdtwEx6VYYWYxrp8FbMOU2Q==",
+    "issue": "No installed licence text",
+    "license": "MIT",
+    "notice_files": [],
+    "package": "@rollup/rollup-linux-riscv64-gnu",
+    "repository": null,
+    "source": "https://registry.npmjs.org/@rollup/rollup-linux-riscv64-gnu/-/rollup-linux-riscv64-gnu-4.64.3.tgz",
+    "version": "4.64.3"
+  },
+  {
+    "direct": false,
+    "evidence": "frontend/package-lock.json",
+    "installed": false,
+    "integrity": "sha512-2dc7LElu7EVSvpQT8epNnBLa02wlqilNYqHN0FA/RaKqCr9U9ZFYQ0Eh4sfgSzLneLDuJsJRjcezR/l2UyYGXA==",
+    "issue": "No installed licence text",
+    "license": "MIT",
+    "notice_files": [],
+    "package": "@rollup/rollup-linux-riscv64-musl",
+    "repository": null,
+    "source": "https://registry.npmjs.org/@rollup/rollup-linux-riscv64-musl/-/rollup-linux-riscv64-musl-4.64.3.tgz",
+    "version": "4.64.3"
+  },
+  {
+    "direct": false,
+    "evidence": "frontend/package-lock.json",
+    "installed": false,
+    "integrity": "sha512-9PYq2IEzSwXcvQLERcT9LKXRzw8J05GFTbJHA2anJR2WmlRjA1esgXVYhanp+bmjKsDVoZeU2L7Z2pRClLcZTw==",
+    "issue": "No installed licence text",
+    "license": "MIT",
+    "notice_files": [],
+    "package": "@rollup/rollup-linux-s390x-gnu",
+    "repository": null,
+    "source": "https://registry.npmjs.org/@rollup/rollup-linux-s390x-gnu/-/rollup-linux-s390x-gnu-4.64.3.tgz",
+    "version": "4.64.3"
+  },
+  {
+    "direct": false,
+    "evidence": "frontend/package-lock.json",
+    "installed": false,
+    "integrity": "sha512-vMh+mt0cw1BHldd8cqaU6A5s1W4EUKl6+8MRsv86mj954L4xyruKD7qPXMUI2icImadAZARK10h0onaGTLmCVg==",
+    "issue": "No installed licence text",
+    "license": "MIT",
+    "notice_files": [],
+    "package": "@rollup/rollup-linux-x64-gnu",
+    "repository": null,
+    "source": "https://registry.npmjs.org/@rollup/rollup-linux-x64-gnu/-/rollup-linux-x64-gnu-4.64.3.tgz",
+    "version": "4.64.3"
+  },
+  {
+    "direct": false,
+    "evidence": "frontend/package-lock.json",
+    "installed": false,
+    "integrity": "sha512-PpiKU+sWbqDGc0U0su8oXiyeyqm0UQjmaaPKHktX+DaLe6YKJwW2YVD0f2AXHdVvblZbRqpwRVClWP2F5HCqrQ==",
+    "issue": "No installed licence text",
+    "license": "MIT",
+    "notice_files": [],
+    "package": "@rollup/rollup-linux-x64-musl",
+    "repository": null,
+    "source": "https://registry.npmjs.org/@rollup/rollup-linux-x64-musl/-/rollup-linux-x64-musl-4.64.3.tgz",
+    "version": "4.64.3"
+  },
+  {
+    "direct": false,
+    "evidence": "frontend/package-lock.json",
+    "installed": false,
+    "integrity": "sha512-/3enY/AmaIt8IS0fWjX4ztYVPBqkj49cQTy/hCryhBFaEzDfJwwEolq9sxvyWAM2qmsmVuPdeRg5JXSrmeqvJg==",
+    "issue": "No installed licence text",
+    "license": "MIT",
+    "notice_files": [],
+    "package": "@rollup/rollup-openbsd-x64",
+    "repository": null,
+    "source": "https://registry.npmjs.org/@rollup/rollup-openbsd-x64/-/rollup-openbsd-x64-4.64.3.tgz",
+    "version": "4.64.3"
+  },
+  {
+    "direct": false,
+    "evidence": "frontend/package-lock.json",
+    "installed": false,
+    "integrity": "sha512-zsEP/QDuet52hhwvi5T1VPg0/Tkms0m3zkVv7CPsznvhdO4pL4oJTMz26EJsiCe18OeLKPgpTu3XVO3C1eq3ew==",
+    "issue": "No installed licence text",
+    "license": "MIT",
+    "notice_files": [],
+    "package": "@rollup/rollup-openharmony-arm64",
+    "repository": null,
+    "source": "https://registry.npmjs.org/@rollup/rollup-openharmony-arm64/-/rollup-openharmony-arm64-4.64.3.tgz",
+    "version": "4.64.3"
+  },
+  {
+    "direct": false,
+    "evidence": "frontend/package-lock.json",
+    "installed": false,
+    "integrity": "sha512-4ESknW4Db+kqvazVOfsReYJaHxcIsOqcgwjKV2J1tG5Bn4RVf5ocTQKSGuq2HWBJcOLuyim8IWX8DuH6nKmELA==",
+    "issue": "No installed licence text",
+    "license": "MIT",
+    "notice_files": [],
+    "package": "@rollup/rollup-win32-arm64-msvc",
+    "repository": null,
+    "source": "https://registry.npmjs.org/@rollup/rollup-win32-arm64-msvc/-/rollup-win32-arm64-msvc-4.64.3.tgz",
+    "version": "4.64.3"
+  },
+  {
+    "direct": false,
+    "evidence": "frontend/package-lock.json",
+    "installed": false,
+    "integrity": "sha512-3B8VCQyIyv7FQxYYhb3HpR3bIpronR20txjMSffSoz/sm/DDs3/49CFpEueOsvq9qW9sWoI/6pi6mtciD9NXFg==",
+    "issue": "No installed licence text",
+    "license": "MIT",
+    "notice_files": [],
+    "package": "@rollup/rollup-win32-ia32-msvc",
+    "repository": null,
+    "source": "https://registry.npmjs.org/@rollup/rollup-win32-ia32-msvc/-/rollup-win32-ia32-msvc-4.64.3.tgz",
+    "version": "4.64.3"
+  },
+  {
+    "direct": false,
+    "evidence": "frontend/package-lock.json",
+    "installed": false,
+    "integrity": "sha512-YOoDkKh2oQxOxRB5D9AR8sj3qpMShpmyTkjojiBjMGigz3caV7UvCnXWWUQC0TBmrZ5zuHe2pWl8S+cMfvXzRg==",
+    "issue": "No installed licence text",
+    "license": "MIT",
+    "notice_files": [],
+    "package": "@rollup/rollup-win32-x64-gnu",
+    "repository": null,
+    "source": "https://registry.npmjs.org/@rollup/rollup-win32-x64-gnu/-/rollup-win32-x64-gnu-4.64.3.tgz",
+    "version": "4.64.3"
+  },
+  {
+    "direct": false,
+    "evidence": "frontend/package-lock.json",
+    "installed": false,
+    "integrity": "sha512-qTv4bG+eKJKifzxNJevMUh8L6CjJrz9/Kn1IbP2F5bo0tBzNIR7HMg4vni6XmDzcKUl00lHHY+J5ZgjbGiujOQ==",
+    "issue": "No installed licence text",
+    "license": "MIT",
+    "notice_files": [],
+    "package": "@rollup/rollup-win32-x64-msvc",
+    "repository": null,
+    "source": "https://registry.npmjs.org/@rollup/rollup-win32-x64-msvc/-/rollup-win32-x64-msvc-4.64.3.tgz",
+    "version": "4.64.3"
+  },
+  {
+    "direct": false,
+    "evidence": "node_modules/@types/babel__core/package.json",
+    "installed": true,
+    "integrity": "sha512-qoQprZvz5wQFJwMDqeseRXWv3rqMvhgpbXFfVyWhbx9X47POIA6i/+dXefEmZKoAgOaTdaIgNSMqMIU61yRyzA==",
+    "issue": null,
+    "license": "MIT",
+    "notice_files": [
+      "frontend/node_modules/@types/babel__core/LICENSE"
+    ],
+    "package": "@types/babel__core",
+    "repository": {
+      "directory": "types/babel__core",
+      "type": "git",
+      "url": "https://github.com/DefinitelyTyped/DefinitelyTyped.git"
+    },
+    "source": "https://registry.npmjs.org/@types/babel__core/-/babel__core-7.20.5.tgz",
+    "version": "7.20.5"
+  },
+  {
+    "direct": false,
+    "evidence": "node_modules/@types/babel__generator/package.json",
+    "installed": true,
+    "integrity": "sha512-ufFd2Xi92OAVPYsy+P4n7/U7e68fex0+Ee8gSG9KX7eo084CWiQ4sdxktvdl0bOPupXtVJPY19zk6EwWqUQ8lg==",
+    "issue": null,
+    "license": "MIT",
+    "notice_files": [
+      "frontend/node_modules/@types/babel__generator/LICENSE"
+    ],
+    "package": "@types/babel__generator",
+    "repository": {
+      "directory": "types/babel__generator",
+      "type": "git",
+      "url": "https://github.com/DefinitelyTyped/DefinitelyTyped.git"
+    },
+    "source": "https://registry.npmjs.org/@types/babel__generator/-/babel__generator-7.27.0.tgz",
+    "version": "7.27.0"
+  },
+  {
+    "direct": false,
+    "evidence": "node_modules/@types/babel__template/package.json",
+    "installed": true,
+    "integrity": "sha512-h/NUaSyG5EyxBIp8YRxo4RMe2/qQgvyowRwVMzhYhBCONbW8PUsg4lkFMrhgZhUe5z3L3MiLDuvyJ/CaPa2A8A==",
+    "issue": null,
+    "license": "MIT",
+    "notice_files": [
+      "frontend/node_modules/@types/babel__template/LICENSE"
+    ],
+    "package": "@types/babel__template",
+    "repository": {
+      "directory": "types/babel__template",
+      "type": "git",
+      "url": "https://github.com/DefinitelyTyped/DefinitelyTyped.git"
+    },
+    "source": "https://registry.npmjs.org/@types/babel__template/-/babel__template-7.4.4.tgz",
+    "version": "7.4.4"
+  },
+  {
+    "direct": false,
+    "evidence": "node_modules/@types/babel__traverse/package.json",
+    "installed": true,
+    "integrity": "sha512-8PvcXf70gTDZBgt9ptxJ8elBeBjcLOAcOtoO/mPJjtji1+CdGbHgm77om1GrsPxsiE+uXIpNSK64UYaIwQXd4Q==",
+    "issue": null,
+    "license": "MIT",
+    "notice_files": [
+      "frontend/node_modules/@types/babel__traverse/LICENSE"
+    ],
+    "package": "@types/babel__traverse",
+    "repository": {
+      "directory": "types/babel__traverse",
+      "type": "git",
+      "url": "https://github.com/DefinitelyTyped/DefinitelyTyped.git"
+    },
+    "source": "https://registry.npmjs.org/@types/babel__traverse/-/babel__traverse-7.28.0.tgz",
+    "version": "7.28.0"
+  },
+  {
+    "direct": false,
+    "evidence": "node_modules/@types/estree/package.json",
+    "installed": true,
+    "integrity": "sha512-GhdPgy1el4/ImP05X05Uw4cw2/M93BCUmnEvWZNStlCzEKME4Fkk+YpoA5OiHNQmoS7Cafb8Xa3Pya8m1Qrzeg==",
+    "issue": null,
+    "license": "MIT",
+    "notice_files": [
+      "frontend/node_modules/@types/estree/LICENSE"
+    ],
+    "package": "@types/estree",
+    "repository": {
+      "directory": "types/estree",
+      "type": "git",
+      "url": "https://github.com/DefinitelyTyped/DefinitelyTyped.git"
+    },
+    "source": "https://registry.npmjs.org/@types/estree/-/estree-1.0.9.tgz",
+    "version": "1.0.9"
+  },
+  {
+    "direct": true,
+    "evidence": "node_modules/@types/react/package.json",
+    "installed": true,
+    "integrity": "sha512-cMoR+FoAf/Jyq6+Df2/Z41jISvGZZ2eTlnsaJRptmZ76Caldwy1odD4xTr/gNV9VLj0AWgg/nmkevIyUfIIq5w==",
+    "issue": null,
+    "license": "MIT",
+    "notice_files": [
+      "frontend/node_modules/@types/react/LICENSE"
+    ],
+    "package": "@types/react",
+    "repository": {
+      "directory": "types/react",
+      "type": "git",
+      "url": "https://github.com/DefinitelyTyped/DefinitelyTyped.git"
+    },
+    "source": "https://registry.npmjs.org/@types/react/-/react-19.1.12.tgz",
+    "version": "19.1.12"
+  },
+  {
+    "direct": true,
+    "evidence": "node_modules/@types/react-dom/package.json",
+    "installed": true,
+    "integrity": "sha512-qXRuZaOsAdXKFyOhRBg6Lqqc0yay13vN7KrIg4L7N4aaHN68ma9OK3NE1BoDFgFOTfM7zg+3/8+2n8rLUH3OKQ==",
+    "issue": null,
+    "license": "MIT",
+    "notice_files": [
+      "frontend/node_modules/@types/react-dom/LICENSE"
+    ],
+    "package": "@types/react-dom",
+    "repository": {
+      "directory": "types/react-dom",
+      "type": "git",
+      "url": "https://github.com/DefinitelyTyped/DefinitelyTyped.git"
+    },
+    "source": "https://registry.npmjs.org/@types/react-dom/-/react-dom-19.1.9.tgz",
+    "version": "19.1.9"
+  },
+  {
+    "direct": true,
+    "evidence": "node_modules/@vitejs/plugin-react/package.json",
+    "installed": true,
+    "integrity": "sha512-tmyFgixPZCx2+e6VO9TNITWcCQl8+Nl/E8YbAyPVv85QCc7/A3JrdfG2A8gIzvVhWuzMOVrFW1aReaNxrI6tbw==",
+    "issue": null,
+    "license": "MIT",
+    "notice_files": [
+      "frontend/node_modules/@vitejs/plugin-react/LICENSE"
+    ],
+    "package": "@vitejs/plugin-react",
+    "repository": {
+      "directory": "packages/plugin-react",
+      "type": "git",
+      "url": "git+https://github.com/vitejs/vite-plugin-react.git"
+    },
+    "source": "https://registry.npmjs.org/@vitejs/plugin-react/-/plugin-react-5.0.2.tgz",
+    "version": "5.0.2"
+  },
+  {
+    "direct": false,
+    "evidence": "node_modules/baseline-browser-mapping/package.json",
+    "installed": true,
+    "integrity": "sha512-br0LOmjJqr6Rt4AEkadbcNf67Zpo7EPwKsWbjnRrJIa1QYFHQBqM4C7F2WTbV8ahTEcg1Eo+Y0aWjjORInYFyA==",
+    "issue": null,
+    "license": "Apache-2.0",
+    "notice_files": [
+      "frontend/node_modules/baseline-browser-mapping/LICENSE.txt"
+    ],
+    "package": "baseline-browser-mapping",
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/web-platform-dx/baseline-browser-mapping.git"
+    },
+    "source": "https://registry.npmjs.org/baseline-browser-mapping/-/baseline-browser-mapping-2.11.28.tgz",
+    "version": "2.11.28"
+  },
+  {
+    "direct": false,
+    "evidence": "node_modules/browserslist/package.json",
+    "installed": true,
+    "integrity": "sha512-1R4kiYKXGViqEN0CnoDrXc1StD9niAwu+j2dukWzrD4bJgsD4lDmEp0CRbc6E/vYJIfTHwPmwyaKtVSudICdPA==",
+    "issue": null,
+    "license": "MIT",
+    "notice_files": [
+      "frontend/node_modules/browserslist/LICENSE"
+    ],
+    "package": "browserslist",
+    "repository": "browserslist/browserslist",
+    "source": "https://registry.npmjs.org/browserslist/-/browserslist-4.29.3.tgz",
+    "version": "4.29.3"
+  },
+  {
+    "direct": false,
+    "evidence": "node_modules/caniuse-lite/package.json",
+    "installed": true,
+    "integrity": "sha512-uDybUEyfgbyJJ93J1vikTylBX31AkdVYeVPeffMQpf8XN7hSfr0oZOn4VFOIMNvtU5+rHvC5Udg2TgtJKHm23Q==",
+    "issue": null,
+    "license": "CC-BY-4.0",
+    "notice_files": [
+      "frontend/node_modules/caniuse-lite/LICENSE"
+    ],
+    "package": "caniuse-lite",
+    "repository": "browserslist/caniuse-lite",
+    "source": "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001815.tgz",
+    "version": "1.0.30001815"
+  },
+  {
+    "direct": false,
+    "evidence": "node_modules/convert-source-map/package.json",
+    "installed": true,
+    "integrity": "sha512-Kvp459HrV2FEJ1CAsi1Ku+MY3kasH19TFykTz2xWmMeq6bk2NU3XXvfJ+Q61m0xktWwt+1HSYf3JZsTms3aRJg==",
+    "issue": null,
+    "license": "MIT",
+    "notice_files": [
+      "frontend/node_modules/convert-source-map/LICENSE"
+    ],
+    "package": "convert-source-map",
+    "repository": {
+      "type": "git",
+      "url": "git://github.com/thlorenz/convert-source-map.git"
+    },
+    "source": "https://registry.npmjs.org/convert-source-map/-/convert-source-map-2.0.0.tgz",
+    "version": "2.0.0"
+  },
+  {
+    "direct": false,
+    "evidence": "node_modules/csstype/package.json",
+    "installed": true,
+    "integrity": "sha512-z1HGKcYy2xA8AGQfwrn0PAy+PB7X/GSj3UVJW9qKyn43xWa+gl5nXmU4qqLMRzWVLFC8KusUX8T/0kCiOYpAIQ==",
+    "issue": null,
+    "license": "MIT",
+    "notice_files": [
+      "frontend/node_modules/csstype/LICENSE"
+    ],
+    "package": "csstype",
+    "repository": "https://github.com/frenic/csstype",
+    "source": "https://registry.npmjs.org/csstype/-/csstype-3.2.3.tgz",
+    "version": "3.2.3"
+  },
+  {
+    "direct": false,
+    "evidence": "node_modules/debug/package.json",
+    "installed": true,
+    "integrity": "sha512-RGwwWnwQvkVfavKVt22FGLw+xYSdzARwm0ru6DhTVA3umU5hZc28V3kO4stgYryrTlLpuvgI9GiijltAjNbcqA==",
+    "issue": null,
+    "license": "MIT",
+    "notice_files": [
+      "frontend/node_modules/debug/LICENSE"
+    ],
+    "package": "debug",
+    "repository": {
+      "type": "git",
+      "url": "git://github.com/debug-js/debug.git"
+    },
+    "source": "https://registry.npmjs.org/debug/-/debug-4.4.3.tgz",
+    "version": "4.4.3"
+  },
+  {
+    "direct": false,
+    "evidence": "node_modules/electron-to-chromium/package.json",
+    "installed": true,
+    "integrity": "sha512-cVvk1YBSj6571VmV6hdJTqj94Y79xSu8cj6Y9t6ae4Y4431z8/7EJFvu3rVp90xhfuv9BpPKUmaLfTo4+FOGBg==",
+    "issue": null,
+    "license": "ISC",
+    "notice_files": [
+      "frontend/node_modules/electron-to-chromium/LICENSE"
+    ],
+    "package": "electron-to-chromium",
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/Kilian/electron-to-chromium.git"
+    },
+    "source": "https://registry.npmjs.org/electron-to-chromium/-/electron-to-chromium-1.5.452.tgz",
+    "version": "1.5.452"
+  },
+  {
+    "direct": false,
+    "evidence": "node_modules/esbuild/package.json",
+    "installed": true,
+    "integrity": "sha512-HKVLS8dvII+xoKW9kmqxbRKrnWEXfJJr/FZhhJmiqIB0e053QNYFqOBouTMO/k5sID4MvCiUCvv8b9M4h32wIA==",
+    "issue": null,
+    "license": "MIT",
+    "notice_files": [
+      "frontend/node_modules/esbuild/LICENSE.md"
+    ],
+    "package": "esbuild",
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/evanw/esbuild.git"
+    },
+    "source": "https://registry.npmjs.org/esbuild/-/esbuild-0.28.2.tgz",
+    "version": "0.28.2"
+  },
+  {
+    "direct": false,
+    "evidence": "node_modules/escalade/package.json",
+    "installed": true,
+    "integrity": "sha512-WUj2qlxaQtO4g6Pq5c29GTcWGDyd8itL8zTlipgECz3JesAiiOKotd8JU6otB3PACgG6xkJUyVhboMS+bje/jA==",
+    "issue": null,
+    "license": "MIT",
+    "notice_files": [
+      "frontend/node_modules/escalade/license"
+    ],
+    "package": "escalade",
+    "repository": "lukeed/escalade",
+    "source": "https://registry.npmjs.org/escalade/-/escalade-3.2.0.tgz",
+    "version": "3.2.0"
+  },
+  {
+    "direct": false,
+    "evidence": "node_modules/fancy-canvas/package.json",
+    "installed": true,
+    "integrity": "sha512-nifxXJ95JNLFR2NgRV4/MxVP45G9909wJTEKz5fg/TZS20JJZA6hfgRVh/bC9bwl2zBtBNcYPjiBE4njQHVBwQ==",
+    "issue": "No installed licence text",
+    "license": "MIT",
+    "notice_files": [],
+    "package": "fancy-canvas",
+    "repository": null,
+    "source": "https://registry.npmjs.org/fancy-canvas/-/fancy-canvas-2.1.0.tgz",
+    "version": "2.1.0"
+  },
+  {
+    "direct": false,
+    "evidence": "node_modules/fdir/package.json",
+    "installed": true,
+    "integrity": "sha512-tIbYtZbucOs0BRGqPJkshJUYdL+SDH7dVM8gjy+ERp3WAUjLEFJE+02kanyHtwjWOnwrKYBiwAmM0p4kLJAnXg==",
+    "issue": null,
+    "license": "MIT",
+    "notice_files": [
+      "frontend/node_modules/fdir/LICENSE"
+    ],
+    "package": "fdir",
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/thecodrr/fdir.git"
+    },
+    "source": "https://registry.npmjs.org/fdir/-/fdir-6.5.0.tgz",
+    "version": "6.5.0"
+  },
+  {
+    "direct": false,
+    "evidence": "node_modules/fsevents/package.json",
+    "installed": true,
+    "integrity": "sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw==",
+    "issue": null,
+    "license": "MIT",
+    "notice_files": [
+      "frontend/node_modules/fsevents/LICENSE"
+    ],
+    "package": "fsevents",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/fsevents/fsevents.git"
+    },
+    "source": "https://registry.npmjs.org/fsevents/-/fsevents-2.3.3.tgz",
+    "version": "2.3.3"
+  },
+  {
+    "direct": false,
+    "evidence": "node_modules/gensync/package.json",
+    "installed": true,
+    "integrity": "sha512-3hN7NaskYvMDLQY55gnW3NQ+mesEAepTqlg+VEbj7zzqEMBVNhzcGYYeqFo/TlYz6eQiFcp1HcsCZO+nGgS8zg==",
+    "issue": null,
+    "license": "MIT",
+    "notice_files": [
+      "frontend/node_modules/gensync/LICENSE"
+    ],
+    "package": "gensync",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/loganfsmyth/gensync.git"
+    },
+    "source": "https://registry.npmjs.org/gensync/-/gensync-1.0.0-beta.2.tgz",
+    "version": "1.0.0-beta.2"
+  },
+  {
+    "direct": false,
+    "evidence": "node_modules/js-tokens/package.json",
+    "installed": true,
+    "integrity": "sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==",
+    "issue": null,
+    "license": "MIT",
+    "notice_files": [
+      "frontend/node_modules/js-tokens/LICENSE"
+    ],
+    "package": "js-tokens",
+    "repository": "lydell/js-tokens",
+    "source": "https://registry.npmjs.org/js-tokens/-/js-tokens-4.0.0.tgz",
+    "version": "4.0.0"
+  },
+  {
+    "direct": false,
+    "evidence": "node_modules/jsesc/package.json",
+    "installed": true,
+    "integrity": "sha512-/sM3dO2FOzXjKQhJuo0Q173wf2KOo8t4I8vHy6lF9poUp7bKT0/NHE8fPX23PwfhnykfqnC2xRxOnVw5XuGIaA==",
+    "issue": null,
+    "license": "MIT",
+    "notice_files": [
+      "frontend/node_modules/jsesc/LICENSE-MIT.txt"
+    ],
+    "package": "jsesc",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/mathiasbynens/jsesc.git"
+    },
+    "source": "https://registry.npmjs.org/jsesc/-/jsesc-3.1.0.tgz",
+    "version": "3.1.0"
+  },
+  {
+    "direct": false,
+    "evidence": "node_modules/json5/package.json",
+    "installed": true,
+    "integrity": "sha512-XmOWe7eyHYH14cLdVPoyg+GOH3rYX++KpzrylJwSW98t3Nk+U8XOl8FWKOgwtzdb8lXGf6zYwDUzeHMWfxasyg==",
+    "issue": null,
+    "license": "MIT",
+    "notice_files": [
+      "frontend/node_modules/json5/LICENSE.md"
+    ],
+    "package": "json5",
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/json5/json5.git"
+    },
+    "source": "https://registry.npmjs.org/json5/-/json5-2.2.3.tgz",
+    "version": "2.2.3"
+  },
+  {
+    "direct": true,
+    "evidence": "node_modules/lightweight-charts/package.json",
+    "installed": true,
+    "integrity": "sha512-ey3Vas8UhV06ni+LT9TA1nEe4y8So4Mi6CL/oarNHFMyTktz/xy8e8+oh04Q//eO3t6etvFXgayz2fClyFQb5w==",
+    "issue": null,
+    "license": "Apache-2.0",
+    "notice_files": [
+      "frontend/node_modules/lightweight-charts/LICENSE"
+    ],
+    "package": "lightweight-charts",
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/tradingview/lightweight-charts.git"
+    },
+    "source": "https://registry.npmjs.org/lightweight-charts/-/lightweight-charts-5.2.0.tgz",
+    "version": "5.2.0"
+  },
+  {
+    "direct": false,
+    "evidence": "node_modules/lru-cache/package.json",
+    "installed": true,
+    "integrity": "sha512-KpNARQA3Iwv+jTA0utUVVbrh+Jlrr1Fv0e56GGzAFOXN7dk/FviaDW8LHmK52DlcH4WP2n6gI8vN1aesBFgo9w==",
+    "issue": null,
+    "license": "ISC",
+    "notice_files": [
+      "frontend/node_modules/lru-cache/LICENSE"
+    ],
+    "package": "lru-cache",
+    "repository": "git://github.com/isaacs/node-lru-cache.git",
+    "source": "https://registry.npmjs.org/lru-cache/-/lru-cache-5.1.1.tgz",
+    "version": "5.1.1"
+  },
+  {
+    "direct": false,
+    "evidence": "node_modules/ms/package.json",
+    "installed": true,
+    "integrity": "sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==",
+    "issue": null,
+    "license": "MIT",
+    "notice_files": [
+      "frontend/node_modules/ms/license.md"
+    ],
+    "package": "ms",
+    "repository": "vercel/ms",
+    "source": "https://registry.npmjs.org/ms/-/ms-2.1.3.tgz",
+    "version": "2.1.3"
+  },
+  {
+    "direct": false,
+    "evidence": "node_modules/nanoid/package.json",
+    "installed": true,
+    "integrity": "sha512-uKdg2G3GNCKQn9byYOpxbGqrT2fGO5KRt5J/8b3pok8rT6qxGWF6hxMyJiEYtAf+FVyYuD9hRaDqX5uPFYJ4ZQ==",
+    "issue": null,
+    "license": "MIT",
+    "notice_files": [
+      "frontend/node_modules/nanoid/LICENSE"
+    ],
+    "package": "nanoid",
+    "repository": "ai/nanoid",
+    "source": "https://registry.npmjs.org/nanoid/-/nanoid-3.3.20.tgz",
+    "version": "3.3.20"
+  },
+  {
+    "direct": false,
+    "evidence": "node_modules/node-releases/package.json",
+    "installed": true,
+    "integrity": "sha512-BdiKAgbfRlvfMq/XzO/AF9NPmaA8a+YpLAyAFTVFBj3gARrAIfWvNq7Q7NE4se3KgFu0KkrvQMxTS0XVnsGzHg==",
+    "issue": null,
+    "license": "MIT",
+    "notice_files": [
+      "frontend/node_modules/node-releases/LICENSE"
+    ],
+    "package": "node-releases",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/chicoxyzzy/node-releases.git"
+    },
+    "source": "https://registry.npmjs.org/node-releases/-/node-releases-2.0.58.tgz",
+    "version": "2.0.58"
+  },
+  {
+    "direct": false,
+    "evidence": "node_modules/picocolors/package.json",
+    "installed": true,
+    "integrity": "sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA==",
+    "issue": null,
+    "license": "ISC",
+    "notice_files": [
+      "frontend/node_modules/picocolors/LICENSE"
+    ],
+    "package": "picocolors",
+    "repository": "alexeyraspopov/picocolors",
+    "source": "https://registry.npmjs.org/picocolors/-/picocolors-1.1.1.tgz",
+    "version": "1.1.1"
+  },
+  {
+    "direct": false,
+    "evidence": "node_modules/picomatch/package.json",
+    "installed": true,
+    "integrity": "sha512-qcJu88Q2IWqJsDD529JKMdwGm/dvInW4HvQnRwiH9JtihJvzGOscDtHE3x1pBKeUOTysQ8kVmLnJ2kJu7yhcGA==",
+    "issue": null,
+    "license": "MIT",
+    "notice_files": [
+      "frontend/node_modules/picomatch/LICENSE"
+    ],
+    "package": "picomatch",
+    "repository": "micromatch/picomatch",
+    "source": "https://registry.npmjs.org/picomatch/-/picomatch-4.0.7.tgz",
+    "version": "4.0.7"
+  },
+  {
+    "direct": false,
+    "evidence": "node_modules/playwright/package.json",
+    "installed": true,
+    "integrity": "sha512-aFi5B0WovBHTEvpM3DzXTUaeN6eN0qWnTkKx4NQaH4Wvcmc153PdaY2UBdSYKaGYw+UyWXSVyxDUg5DoPEttjw==",
+    "issue": null,
+    "license": "Apache-2.0",
+    "notice_files": [
+      "frontend/node_modules/playwright/LICENSE",
+      "frontend/node_modules/playwright/NOTICE"
+    ],
+    "package": "playwright",
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/microsoft/playwright.git"
+    },
+    "source": "https://registry.npmjs.org/playwright/-/playwright-1.56.1.tgz",
+    "version": "1.56.1"
+  },
+  {
+    "direct": false,
+    "evidence": "node_modules/playwright-core/package.json",
+    "installed": true,
+    "integrity": "sha512-hutraynyn31F+Bifme+Ps9Vq59hKuUCz7H1kDOcBs+2oGguKkWTU50bBWrtz34OUWmIwpBTWDxaRPXrIXkgvmQ==",
+    "issue": null,
+    "license": "Apache-2.0",
+    "notice_files": [
+      "frontend/node_modules/playwright-core/LICENSE",
+      "frontend/node_modules/playwright-core/NOTICE"
+    ],
+    "package": "playwright-core",
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/microsoft/playwright.git"
+    },
+    "source": "https://registry.npmjs.org/playwright-core/-/playwright-core-1.56.1.tgz",
+    "version": "1.56.1"
+  },
+  {
+    "direct": false,
+    "evidence": "node_modules/playwright/node_modules/fsevents/package.json",
+    "installed": true,
+    "integrity": "sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==",
+    "issue": null,
+    "license": "MIT",
+    "notice_files": [
+      "frontend/node_modules/playwright/node_modules/fsevents/LICENSE"
+    ],
+    "package": "fsevents",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/fsevents/fsevents.git"
+    },
+    "source": "https://registry.npmjs.org/fsevents/-/fsevents-2.3.2.tgz",
+    "version": "2.3.2"
+  },
+  {
+    "direct": false,
+    "evidence": "node_modules/postcss/package.json",
+    "installed": true,
+    "integrity": "sha512-49cGhUbXj8Qenv0iTMxA1cFBzxXoctpC9Ujd77t1WcbJIr6nF/eI7g/8MgxrYldFRuAXvja7xQRwavoW7kgrxQ==",
+    "issue": null,
+    "license": "MIT",
+    "notice_files": [
+      "frontend/node_modules/postcss/LICENSE"
+    ],
+    "package": "postcss",
+    "repository": "postcss/postcss",
+    "source": "https://registry.npmjs.org/postcss/-/postcss-8.5.29.tgz",
+    "version": "8.5.29"
+  },
+  {
+    "direct": true,
+    "evidence": "node_modules/react/package.json",
+    "installed": true,
+    "integrity": "sha512-w8nqGImo45dmMIfljjMwOGtbmC/mk4CMYhWIicdSflH91J9TyCyczcPFXJzrZ/ZXcgGRFeP6BU0BEJTw6tZdfQ==",
+    "issue": null,
+    "license": "MIT",
+    "notice_files": [
+      "frontend/node_modules/react/LICENSE"
+    ],
+    "package": "react",
+    "repository": {
+      "directory": "packages/react",
+      "type": "git",
+      "url": "https://github.com/facebook/react.git"
+    },
+    "source": "https://registry.npmjs.org/react/-/react-19.1.1.tgz",
+    "version": "19.1.1"
+  },
+  {
+    "direct": true,
+    "evidence": "node_modules/react-dom/package.json",
+    "installed": true,
+    "integrity": "sha512-Dlq/5LAZgF0Gaz6yiqZCf6VCcZs1ghAJyrsu84Q/GT0gV+mCxbfmKNoGRKBYMJ8IEdGPqu49YWXD02GCknEDkw==",
+    "issue": null,
+    "license": "MIT",
+    "notice_files": [
+      "frontend/node_modules/react-dom/LICENSE"
+    ],
+    "package": "react-dom",
+    "repository": {
+      "directory": "packages/react-dom",
+      "type": "git",
+      "url": "https://github.com/facebook/react.git"
+    },
+    "source": "https://registry.npmjs.org/react-dom/-/react-dom-19.1.1.tgz",
+    "version": "19.1.1"
+  },
+  {
+    "direct": false,
+    "evidence": "node_modules/react-refresh/package.json",
+    "installed": true,
+    "integrity": "sha512-z6F7K9bV85EfseRCp2bzrpyQ0Gkw1uLoCel9XBVWPg/TjRj94SkJzUTGfOa4bs7iJvBWtQG0Wq7wnI0syw3EBQ==",
+    "issue": null,
+    "license": "MIT",
+    "notice_files": [
+      "frontend/node_modules/react-refresh/LICENSE"
+    ],
+    "package": "react-refresh",
+    "repository": {
+      "directory": "packages/react",
+      "type": "git",
+      "url": "https://github.com/facebook/react.git"
+    },
+    "source": "https://registry.npmjs.org/react-refresh/-/react-refresh-0.17.0.tgz",
+    "version": "0.17.0"
+  },
+  {
+    "direct": false,
+    "evidence": "node_modules/rollup/package.json",
+    "installed": true,
+    "integrity": "sha512-iIMWbptLYsZdGTJMH8ngApXdsCatE6bCMv2eqGIfGE1++kwh7TCWBdWKK0FKC0yx++196vGK5VdagzRXSLMa8A==",
+    "issue": null,
+    "license": "MIT",
+    "notice_files": [
+      "frontend/node_modules/rollup/LICENSE.md"
+    ],
+    "package": "rollup",
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/rollup/rollup.git"
+    },
+    "source": "https://registry.npmjs.org/rollup/-/rollup-4.64.3.tgz",
+    "version": "4.64.3"
+  },
+  {
+    "direct": false,
+    "evidence": "node_modules/scheduler/package.json",
+    "installed": true,
+    "integrity": "sha512-NlHwttCI/l5gCPR3D1nNXtWABUmBwvZpEQiD4IXSbIDq8BzLIK/7Ir5gTFSGZDUu37K5cMNp0hFtzO38sC7gWA==",
+    "issue": null,
+    "license": "MIT",
+    "notice_files": [
+      "frontend/node_modules/scheduler/LICENSE"
+    ],
+    "package": "scheduler",
+    "repository": {
+      "directory": "packages/scheduler",
+      "type": "git",
+      "url": "https://github.com/facebook/react.git"
+    },
+    "source": "https://registry.npmjs.org/scheduler/-/scheduler-0.26.0.tgz",
+    "version": "0.26.0"
+  },
+  {
+    "direct": false,
+    "evidence": "node_modules/semver/package.json",
+    "installed": true,
+    "integrity": "sha512-BR7VvDCVHO+q2xBEWskxS6DJE1qRnb7DxzUrogb71CWoSficBxYsiAGd+Kl0mmq/MprG9yArRkyrQxTO6XjMzA==",
+    "issue": null,
+    "license": "ISC",
+    "notice_files": [
+      "frontend/node_modules/semver/LICENSE"
+    ],
+    "package": "semver",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/npm/node-semver.git"
+    },
+    "source": "https://registry.npmjs.org/semver/-/semver-6.3.1.tgz",
+    "version": "6.3.1"
+  },
+  {
+    "direct": false,
+    "evidence": "node_modules/source-map-js/package.json",
+    "installed": true,
+    "integrity": "sha512-KGj/8Y43x35aZVDtt+J4mK1hoLGHULMYfSkODJNQjNDC3oW1PqPoxMwo0pLUsWM/UEGzON/NxeHywEfNXNP3Vw==",
+    "issue": null,
+    "license": "BSD-3-Clause",
+    "notice_files": [
+      "frontend/node_modules/source-map-js/LICENSE"
+    ],
+    "package": "source-map-js",
+    "repository": "7rulnik/source-map-js",
+    "source": "https://registry.npmjs.org/source-map-js/-/source-map-js-1.2.2.tgz",
+    "version": "1.2.2"
+  },
+  {
+    "direct": false,
+    "evidence": "node_modules/tinyglobby/package.json",
+    "installed": true,
+    "integrity": "sha512-wXR/dYpcqKmfWpEdZjiKJOwCNFndD0DMnrW/cYjVGttEkBfVgcLFHoNrlj47mjOVic9yyNu65alsgF4NQyTa2g==",
+    "issue": null,
+    "license": "MIT",
+    "notice_files": [
+      "frontend/node_modules/tinyglobby/LICENSE"
+    ],
+    "package": "tinyglobby",
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/SuperchupuDev/tinyglobby.git"
+    },
+    "source": "https://registry.npmjs.org/tinyglobby/-/tinyglobby-0.2.17.tgz",
+    "version": "0.2.17"
+  },
+  {
+    "direct": true,
+    "evidence": "node_modules/typescript/package.json",
+    "installed": true,
+    "integrity": "sha512-CWBzXQrc/qOkhidw1OzBTQuYRbfyxDXJMVJ1XNwUHGROVmuaeiEm3OslpZ1RV96d7SKKjZKrSJu3+t/xlw3R9A==",
+    "issue": null,
+    "license": "Apache-2.0",
+    "notice_files": [
+      "frontend/node_modules/typescript/LICENSE.txt"
+    ],
+    "package": "typescript",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/microsoft/TypeScript.git"
+    },
+    "source": "https://registry.npmjs.org/typescript/-/typescript-5.9.2.tgz",
+    "version": "5.9.2"
+  },
+  {
+    "direct": false,
+    "evidence": "node_modules/update-browserslist-db/package.json",
+    "installed": true,
+    "integrity": "sha512-t8wonIOdQyOjtPd2VktlBu6QjTVTks6v8bSi7kd0r2Vll8TK1JYDZtRRdbmCHOAMphkZgrzK+L+vXK4pyZ8t4A==",
+    "issue": null,
+    "license": "MIT",
+    "notice_files": [
+      "frontend/node_modules/update-browserslist-db/LICENSE"
+    ],
+    "package": "update-browserslist-db",
+    "repository": "browserslist/update-db",
+    "source": "https://registry.npmjs.org/update-browserslist-db/-/update-browserslist-db-1.3.4.tgz",
+    "version": "1.3.4"
+  },
+  {
+    "direct": true,
+    "evidence": "node_modules/vite/package.json",
+    "installed": true,
+    "integrity": "sha512-AHEzTORMbi7/7aXp7w7KZ5+DCUdSeLsJz0grY8xHpc9DHdYb0vQu6DqJfm2tOw3gDExNgPgnJTXxM6syYFHaCA==",
+    "issue": null,
+    "license": "MIT",
+    "notice_files": [
+      "frontend/node_modules/vite/LICENSE.md"
+    ],
+    "package": "vite",
+    "repository": {
+      "directory": "packages/vite",
+      "type": "git",
+      "url": "git+https://github.com/vitejs/vite.git"
+    },
+    "source": "https://registry.npmjs.org/vite/-/vite-7.3.7.tgz",
+    "version": "7.3.7"
+  },
+  {
+    "direct": false,
+    "evidence": "node_modules/yallist/package.json",
+    "installed": true,
+    "integrity": "sha512-a4UGQaWPH59mOXUYnAG2ewncQS4i4F43Tv3JoAM+s2VDAmS9NsK8GpDMLrCHPksFT7h3K6TOoUNn2pb7RoXx4g==",
+    "issue": null,
+    "license": "ISC",
+    "notice_files": [
+      "frontend/node_modules/yallist/LICENSE"
+    ],
+    "package": "yallist",
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/isaacs/yallist.git"
+    },
+    "source": "https://registry.npmjs.org/yallist/-/yallist-3.1.1.tgz",
+    "version": "3.1.1"
+  }
+]

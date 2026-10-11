@@ -1,0 +1,72 @@
+{
+  "runtimes": [
+    {
+      "package": "Python",
+      "version": "Python 3.12.15",
+      "source": "https://github.com/python/cpython",
+      "license": "PSF-2.0 plus bundled terms",
+      "evidence": "/usr/local/lib/python3.12/LICENSE.txt",
+      "retained": "docs/licenses/Python-LICENSE.txt"
+    },
+    {
+      "package": "PostgreSQL",
+      "version": "postgres (PostgreSQL) 16.15",
+      "source": "https://www.postgresql.org/about/licence/",
+      "license": "PostgreSQL; installed full text not located",
+      "evidence": null
+    },
+    {
+      "package": "Nginx",
+      "version": "nginx version: nginx/1.30.5",
+      "source": "https://nginx.org/en/LICENSE",
+      "license": "BSD-2-Clause",
+      "evidence": "/usr/share/licenses/nginx/COPYRIGHT",
+      "retained": "docs/licenses/Nginx-LICENSE.txt"
+    },
+    {
+      "package": "Node.js",
+      "version": "v24.21.0",
+      "license": "MIT plus bundled third-party terms",
+      "source": "https://github.com/nodejs/node",
+      "scope": "build only",
+      "evidence": "pinned node image; full embedded library licence inventory pending"
+    }
+  ],
+  "images": [
+    {
+      "reference": "python:3.12-slim@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1",
+      "file": "backend/Dockerfile",
+      "image_id": "sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1",
+      "architecture": "arm64",
+      "os": "linux"
+    },
+    {
+      "reference": "python:3.12-slim@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1",
+      "file": "worker/Dockerfile",
+      "image_id": "sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1",
+      "architecture": "arm64",
+      "os": "linux"
+    },
+    {
+      "reference": "node:24-alpine@sha256:ebfe2f90462722a7a4de65e91990e97fe0d401c70e0e762c5b53302f905ec1c1",
+      "file": "frontend/Dockerfile",
+      "image_id": "sha256:ebfe2f90462722a7a4de65e91990e97fe0d401c70e0e762c5b53302f905ec1c1",
+      "architecture": "arm64",
+      "os": "linux"
+    },
+    {
+      "reference": "nginx:stable-alpine@sha256:0985e772fb9f729e6fa0980da05fca5d9c468e870eed43071545afa9d2e27d94",
+      "file": "frontend/Dockerfile",
+      "image_id": "sha256:0985e772fb9f729e6fa0980da05fca5d9c468e870eed43071545afa9d2e27d94",
+      "architecture": "arm64",
+      "os": "linux"
+    },
+    {
+      "reference": "postgres:16-alpine@sha256:721873c34ceb9f8d8fc265984940dc982404c105f19ad51be9fdc5970a6080ea",
+      "file": "compose.yaml",
+      "image_id": "sha256:721873c34ceb9f8d8fc265984940dc982404c105f19ad51be9fdc5970a6080ea",
+      "architecture": "arm64",
+      "os": "linux"
+    }
+  ]
+}

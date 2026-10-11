@@ -20,6 +20,16 @@ test('authenticated synthetic freeze, reveal, scorecard and future placeholders'
  expect(frozen.trade).toBeUndefined()
  await expect(page.getByRole('heading',{name:'Prices known at the cutoff'})).toBeVisible()
  await expect(page.locator('canvas').first()).toBeVisible()
+ const attribution=page.locator('.attribution')
+ await expect(attribution).toBeVisible()
+ await expect(attribution.getByRole('link',{name:'TradingView',exact:true})).toHaveAttribute('href','https://www.tradingview.com/')
+ await expect(attribution).toContainText('Copyright © 2025 TradingView, Inc.')
+ const noticesLink=attribution.getByRole('link',{name:'Third-party licences'})
+ await expect(noticesLink).toBeVisible()
+ const notices=await page.request.get((await noticesLink.getAttribute('href'))!)
+ expect(notices.ok()).toBeTruthy()
+ const noticeText=await notices.text()
+ for(const text of ['Apache License','Version 2.0','react 19.1.1','fancy-canvas','Permission is hereby granted','Microsoft Corporation']) expect(noticeText).toContain(text)
  // A chart ResizeObserver must not grow its own host or move the reveal control.
  const layout=await page.locator('.candle-chart').evaluate(async host=>{
   const button=host.parentElement!.querySelector('button')!;
