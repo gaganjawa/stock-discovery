@@ -193,7 +193,9 @@ Epic: E03 · Target: v0.2 · Status: Backlog · Owner: Unassigned · Depends on:
 - [ ] **STK-019** — Map ISIN, NSE symbol/series, BSE code and broker instrument IDs with effective dates. **[Ready for Release]** · Priority: P2 — Medium
   - Owner: Codex; 11 Oct 2026. Evidence: [STK-019](STK-019.md). Two identity tests pass; synthetic scope only.
 - [ ] **STK-020** — Import exchange calendars and corporate actions; preserve raw prices and version price-adjustment conventions. **[Backlog]** · Priority: P2 — Medium
-- [ ] **STK-021** — Build as-of universe selection including delisted/suspended instruments where available; document survivorship and coverage limits. **[Backlog]** · Priority: P2 — Medium
+  - Partial synthetic implementation: [STK-020](STK-020.md). Real imports and full action execution remain outstanding.
+- [ ] **STK-021** — Build as-of universe selection including delisted/suspended instruments where available; document survivorship and coverage limits. **[Ready for Release]** · Priority: P2 — Medium
+  - Owner: Codex; 11 Oct 2026. Evidence: [STK-021](STK-021.md). Synthetic universe only.
 
 ### S08 — Historical candles and quality
 
