@@ -48,6 +48,7 @@ services:
       dockerfile: worker/Dockerfile
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER:-stock_discovery}:${POSTGRES_PASSWORD:-change-me-for-local-use}@database:5432/${POSTGRES_DB:-stock_discovery}
+      CODE_VERSION: ${CODE_VERSION:-local-unversioned}
     depends_on:
       database:
         condition: service_healthy

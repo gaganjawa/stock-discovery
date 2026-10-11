@@ -6,4 +6,5 @@ RUN pip install --no-cache-dir --require-hashes -r /tmp/requirements.txt
 COPY shared /app/shared
 COPY worker/worker /app/worker
 ENV PYTHONPATH=/app/shared
+USER 10001:10001
 CMD ["python", "-m", "worker.main"]

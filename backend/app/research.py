@@ -29,7 +29,7 @@ class Selection(BaseModel):
 
 @router.post('/session')
 def login(body: Login,response:Response):
-    if not hmac.compare_digest(body.token,secret()): raise HTTPException(401,'Invalid access key')
+    if not hmac.compare_digest(body.token.encode(),secret().encode()): raise HTTPException(401,'Invalid access key')
     response.set_cookie('stk_session',session(),httponly=True,samesite='strict',secure=os.getenv('COOKIE_SECURE','true')=='true',max_age=8*3600)
     return {'authenticated':True}
 

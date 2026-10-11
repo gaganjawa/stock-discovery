@@ -8,5 +8,6 @@ COPY backend/app /app/app
 COPY backend/alembic.ini /app/backend/alembic.ini
 COPY backend/migrations /app/backend/migrations
 ENV PYTHONPATH=/app/shared
+USER 10001:10001
 EXPOSE 8000
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

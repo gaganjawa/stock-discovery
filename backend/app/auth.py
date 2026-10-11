@@ -22,7 +22,7 @@ def session():
 def require_auth(request: Request):
     key=secret()
     auth=request.headers.get('Authorization','')
-    if auth.startswith('Bearer ') and hmac.compare_digest(auth[7:],key): return
+    if auth.startswith('Bearer ') and hmac.compare_digest(auth[7:].encode(),key.encode()): return
     cookie=request.cookies.get('stk_session','')
     try:
         expiry,nonce,sig=cookie.split('.')
