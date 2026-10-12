@@ -1,0 +1,104 @@
+# Standalone deployment file: never merge with the local preview configuration.
+name: stock-discovery-private
+x-python: &python
+  image: ${API_IMAGE:?Set an immutable tested API image}
+  user: "10001:10001"
+  read_only: true
+  tmpfs: ["/tmp:size=32m,mode=1777"]
+  cap_drop: [ALL]
+  security_opt: [no-new-privileges:true]
+  pids_limit: 128
+  mem_limit: 768m
+  restart: unless-stopped
+  logging: &logs
+    driver: json-file
+    options: {max-size: "10m", max-file: "3"}
+x-runtime: &runtime
+  DEPLOYMENT_MODE: private
+  APP_ORIGIN: ${APP_ORIGIN:?Set exact private HTTPS origin}
+  COOKIE_SECURE: "true"
+  CODE_VERSION: ${CODE_VERSION:?Set tested commit}
+  DATABASE_URL_FILE: /run/secrets/runtime_database_url
+services:
+  database:
+    image: postgres:16-alpine@sha256:721873c34ceb9f8d8fc265984940dc982404c105f19ad51be9fdc5970a6080ea
+    environment:
+      POSTGRES_USER: stk_owner
+      POSTGRES_DB: stock_discovery
+      POSTGRES_PASSWORD_FILE: /run/secrets/owner_password
+      POSTGRES_INITDB_ARGS: --auth-host=scram-sha-256
+    secrets: [owner_password]
+    volumes: [database:/var/lib/postgresql/data]
+    networks: [database]
+    restart: unless-stopped
+    security_opt: [no-new-privileges:true]
+    mem_limit: 1g
+    pids_limit: 128
+    logging: *logs
+    healthcheck:
+      test: [CMD-SHELL, 'pg_isready -U stk_owner -d stock_discovery']
+      interval: 5s
+      timeout: 5s
+      retries: 12
+  migrate:
+    <<: *python
+    restart: "no"
+    environment:
+      DATABASE_URL_FILE: /run/secrets/owner_database_url
+      RUNTIME_PASSWORD_FILE: /run/secrets/runtime_password
+    secrets: [owner_database_url, runtime_password]
+    networks: [database]
+    command: [sh, -c, 'python -m alembic -c /app/backend/alembic.ini upgrade head && python /app/deploy/roles.py']
+    depends_on:
+      database: {condition: service_healthy}
+  api:
+    <<: *python
+    environment:
+      <<: *runtime
+      AUTH_TOKEN_FILE: /run/secrets/owner_access_key
+    secrets: [runtime_database_url, owner_access_key]
+    networks: [database, frontend]
+    healthcheck:
+      test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/healthz',timeout=3)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    depends_on:
+      migrate: {condition: service_completed_successfully}
+  worker:
+    <<: *python
+    image: ${WORKER_IMAGE:?Set an immutable tested worker image}
+    environment: *runtime
+    secrets: [runtime_database_url]
+    networks: [database]
+    depends_on:
+      migrate: {condition: service_completed_successfully}
+  web:
+    image: ${WEB_IMAGE:?Set an immutable tested web image}
+    user: "101:101"
+    read_only: true
+    tmpfs: ["/tmp:size=32m,mode=1777"]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    pids_limit: 64
+    mem_limit: 128m
+    ports: ["127.0.0.1:5173:8080"]
+    networks: [frontend, ingress]
+    restart: unless-stopped
+    logging: *logs
+    depends_on:
+      api: {condition: service_healthy}
+networks:
+  ingress: {}
+  database: {internal: true}
+  frontend: {internal: true}
+volumes:
+  database:
+    external: true
+    name: ${DATABASE_VOLUME:?Explicitly select a prepared database volume}
+secrets:
+  owner_password: {file: '${SECRETS_DIR:?Set protected secret directory}/owner_password'}
+  owner_database_url: {file: '${SECRETS_DIR}/owner_database_url'}
+  runtime_password: {file: '${SECRETS_DIR}/runtime_password'}
+  runtime_database_url: {file: '${SECRETS_DIR}/runtime_database_url'}
+  owner_access_key: {file: '${SECRETS_DIR}/owner_access_key'}

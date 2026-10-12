@@ -17,12 +17,13 @@ def main():
     url = os.environ['STK_TEST_DATABASE_URL']
     if psycopg.conninfo.conninfo_to_dict(url).get('dbname') != 'stk013_test':
         raise ValueError('Only the disposable stk013_test database is allowed')
+    os.environ.pop('DATABASE_URL_FILE', None)
     os.environ['DATABASE_URL'] = url
     os.environ['PYTHONPATH'] = os.pathsep.join(str(ROOT / part) for part in ('backend','shared','worker'))
     config = Config(str(ROOT / 'backend/alembic.ini'))
     command.upgrade(config, 'head')
     command.upgrade(config, 'head')
-    subprocess.run([sys.executable, '-m', 'pytest', str(ROOT / 'backend/tests/integration'), '-q'], check=True)
+    subprocess.run([sys.executable, '-m', 'pytest', str(ROOT / 'backend/tests/integration'), '-q', '-p', 'no:cacheprovider'], check=True)
     with psycopg.connect(url, autocommit=True) as db:
         db.execute('CREATE TABLE public.migration_test_sentinel (id integer)')
     command.downgrade(config, 'base')

@@ -5,6 +5,7 @@ import json
 import time
 import os
 import psycopg
+from stock_discovery_analysis.runtime import setting, validate_private
 from stock_discovery_analysis.jobs import run_job,enqueue
 from stock_discovery_analysis.service import load_dataset
 from datetime import datetime, timezone
@@ -27,10 +28,11 @@ def main() -> None:
     parser.add_argument("--interval-seconds", type=int, default=5)
     args = parser.parse_args()
 
+    validate_private()
     while True:
-        if os.getenv('DATABASE_URL') and not args.once:
+        if setting('DATABASE_URL') and not args.once:
             try:
-                with psycopg.connect(os.environ['DATABASE_URL'],autocommit=True) as conn:
+                with psycopg.connect(setting('DATABASE_URL'),autocommit=True,connect_timeout=5) as conn:
                     row=conn.execute('SELECT dataset_version FROM research.datasets ORDER BY created_at DESC LIMIT 1').fetchone()
                     if row:
                         dataset=load_dataset(conn,row[0])

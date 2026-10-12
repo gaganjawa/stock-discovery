@@ -4,10 +4,11 @@ WORKDIR /app
 COPY backend/requirements.txt /tmp/requirements.txt
 RUN pip install --no-cache-dir --require-hashes -r /tmp/requirements.txt
 COPY shared /app/shared
+COPY deploy/roles.py /app/deploy/roles.py
 COPY backend/app /app/app
 COPY backend/alembic.ini /app/backend/alembic.ini
 COPY backend/migrations /app/backend/migrations
 ENV PYTHONPATH=/app/shared
 USER 10001:10001
 EXPOSE 8000
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--no-access-log", "--no-proxy-headers"]

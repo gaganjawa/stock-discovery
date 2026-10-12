@@ -5,6 +5,7 @@ from fastapi import APIRouter,Depends,HTTPException,Request,Response
 from pydantic import BaseModel,Field
 import psycopg
 from .auth import require_auth,secret,session
+from stock_discovery_analysis.runtime import setting
 from stock_discovery_analysis.dataset import demo_dataset,canonical
 from stock_discovery_analysis.service import load_dataset,freeze,read_frozen,reveal,scorecard,json_value
 from stock_discovery_analysis.jobs import enqueue
@@ -13,7 +14,7 @@ router=APIRouter(prefix='/api/v1')
 
 
 def db():
-    url=os.getenv('DATABASE_URL')
+    url=setting('DATABASE_URL')
     if not url: raise HTTPException(503,'Database is not configured')
     try:
         with psycopg.connect(url,autocommit=True,connect_timeout=3) as conn: yield conn

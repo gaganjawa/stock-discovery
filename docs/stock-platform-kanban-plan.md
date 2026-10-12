@@ -541,3 +541,7 @@ Owner requested separate completed/WIP commits and a pause. See [work handoff](W
 - Licence clearance, HTTPS/private host, least-privilege database, operational log/monitoring controls, encrypted off-host recovery and secure rollback rehearsal remain open. Real-market rights, full corporate actions, benchmarks and EP-1 acceptance remain separate blockers; no providers/orders enabled, deployment or tag created.
 
 Existing test/CI evidence reused: `067860f`, `b6b3a4f`, and [dfd3875 CI](https://github.com/gaganjawa/stock-discovery/actions/runs/38177340717). This synchronization is documentation-only; no application tests rerun. Local diff, links and staged credential checks precede commit/push.
+
+## Foundation continuation — 12 October 2026
+
+STK-008 provider selection is owner-approved: Hetzner CX23/Linux/Compose and restic/B2; do not reopen alternatives. Region, checkout price and key custody remain provisioning gates. STK-016 independent hardening verified locally; see [STK-016](STK-016.md). Remains Backlog + Blocked, PARTIAL pending authorized deployment. Hosted board not updated by this continuation; copy-ready status only. WIP returns to zero before pulling STK-017.

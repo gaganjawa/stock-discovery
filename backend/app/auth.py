@@ -4,11 +4,12 @@ import hmac
 import os
 import secrets
 import time
+from stock_discovery_analysis.runtime import setting
 from fastapi import HTTPException,Request
 
 
 def secret():
-    value=os.getenv('AUTH_TOKEN','')
+    value=setting('AUTH_TOKEN')
     if len(value)<32: raise HTTPException(503,'Owner access key is not configured')
     return value
 
