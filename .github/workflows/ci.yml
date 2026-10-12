@@ -38,7 +38,7 @@ jobs:
           python scripts/validate_capital_risk_examples.py
           python -m pytest backend/tests worker/tests -q
           python -m worker.main --once
-          python -m unittest discover -s scripts -p "test_smoke_compose.py"
+          python -m unittest discover -s scripts -p "test_*.py"
       - name: Build UI from lockfile
         working-directory: frontend
         run: |
@@ -49,6 +49,13 @@ jobs:
           docker compose config --quiet
           docker compose up --build -d
           python scripts/smoke_compose.py
+      - name: Capture Linux AMD64 runtime licence evidence
+        run: python scripts/capture_platform_licenses.py evidence/linux-amd64-licenses.json
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: linux-amd64-licenses
+          path: evidence/linux-amd64-licenses.json
+          retention-days: 30
       - name: Browser workflow acceptance
         working-directory: frontend
         run: |
