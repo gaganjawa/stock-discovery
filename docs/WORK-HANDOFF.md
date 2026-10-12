@@ -1,5 +1,9 @@
 # Stock Discovery — work checkpoint
 
+## Hosted tracking synchronized — 12 Oct 2026
+
+39 tickets synchronized and their saved fields verified after reload; 51 unrelated tickets unchanged. See the [local Kanban synchronization record](stock-platform-kanban-plan.md#hosted-board-synchronization--12-oct-2026). Existing Done and synthetic Ready for Release statuses retained. Partial work uses Backlog + Blocked (not Done); no tickets remain In Progress or Review/Test. STK-004–008 remains outstanding, STK-008 not started. No deployment/tag or application changes. Historical notes below about the hosted board being untouched are superseded by this synchronization.
+
 Current release decision: **PARTIAL**. [STK-009 software audit](STK-009.md) records dependency inventory, corrected browser notices and remaining native/platform licence evidence gaps. See [STK-018 acceptance, release notes and recovery/rollback runbook](STK-018.md). Local synthetic preview verification passes; private deployment and formal release gates remain open.
 
 ## Verification update — 12 Oct 2026

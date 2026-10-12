@@ -120,10 +120,13 @@ Epic: E01 · Target: v0.1 · Status: Done · Owner: Codex · Depends on: -
 **Acceptance:** A frozen example defines information cutoff, horizon, entry, stop, targets, expiry and separate forecast/trade outcomes.
 
 - [x] **STK-001** — Define recommendation schema and work through 6 Aug 2025 using illustrative data; include buy/sell/wait and insufficient evidence. **[Done]** · Priority: P1 — High
+  - Board sync 12 Oct 2026: **Done**; Owner: Codex; Recommendation contract and nine fictional scenarios validated. Commits: `6417dba`. Remaining/blocker: None for completed scope. Evidence: [STK-001.md](STK-001.md). Saved state verified after reload.
   - Owner: Codex. Done 10 Oct 2026. Contract and 9 synthetic scenarios validated; implementation commit `6417dba` pushed and verified. Hosted board version 3 published successfully. Blocker: none. Actual effort: not time-tracked (observed resumed work window approximately 10 minutes). Evidence: [STK-001 record](STK-001.md).
 - [x] **STK-002** — Define accuracy denominators, net expectancy, drawdown, benchmarks and promotion criteria before testing. **[Done]** · Priority: P1 — High
+  - Board sync 12 Oct 2026: **Done**; Owner: Codex; Separate forecast/trade denominators and evaluation validators passed; EP-1 remains proposed policy. Commits: `1143d4a`. Remaining/blocker: None for completed scope. Evidence: [STK-002.md](STK-002.md). Saved state verified after reload.
   - Owner: Codex. Done 10 Oct 2026. Both validators and diff review passed; implementation commit `1143d4a` pushed and remote verified. Hosted board Done save confirmed. Blocker: none. Actual effort: not time-tracked. EP-1 remains proposed policy. Evidence: [STK-002 record](STK-002.md).
 - [x] **STK-003** — Record scope and configurable capital/risk rules; distinguish exit of a holding from short selling and allow skipped contributions. **[Done]** · Priority: P1 — High
+  - Board sync 12 Oct 2026: **Done**; Owner: Codex; Capital/risk contract and three validators passed; no live risk profile approved. Commits: `d15c00a`. Remaining/blocker: None for completed scope. Evidence: [STK-003.md](STK-003.md). Saved state verified after reload.
   - Owner: Codex. Done 10 Oct 2026. All three validators pass; implementation commit `d15c00a` pushed and remote verified; hosted board Done save confirmed. No live risk profile approved. Blocker: none. Actual effort: not time-tracked. Next ticket requires user confirmation. Evidence: [STK-003 record](STK-003.md).
 
 ### S02 — Market data rights and broker feasibility
@@ -133,8 +136,11 @@ Epic: E01 · Target: v0.1 · Status: Backlog · Owner: Unassigned · Depends on:
 **Acceptance:** Every proposed data use is marked permitted, prohibited or unresolved; unresolved uses cannot enter enabled features.
 
 - [ ] **STK-004** — Review Upstox and Zerodha terms for history, retention, private hosting, replay, paper evaluation, ML and external LLM processing; prepare questions for owner to send. **[Ready]** · Priority: P1 — High
+  - Board sync 12 Oct 2026: **Ready**; Owner: Gagan Jawa; OUTSTANDING — source-rights register records unresolved permissions/budget; affected integrations disabled. No implementation started by this synchronization. Commits: `002ddf0 (register only; no completed sourcing implementation)`. Remaining/blocker: Account-specific written history/retention/replay permissions and credentials unresolved. Evidence: [source-rights-register.md](source-rights-register.md). Saved state verified after reload.
 - [ ] **STK-005** — Compare NSE/BSE direct products and authorised vendors for missing data; record coverage, use rights and written quotes. **[Backlog]** · Priority: P1 — High
+  - Board sync 12 Oct 2026: **Backlog**; Owner: Gagan Jawa; OUTSTANDING — source-rights register records unresolved permissions/budget; affected integrations disabled. No implementation started by this synchronization. Commits: `002ddf0 (register only; no completed sourcing implementation)`. Remaining/blocker: Approved historical-data vendor, coverage and use-rights quotes unresolved. Evidence: [source-rights-register.md](source-rights-register.md). Saved state verified after reload.
 - [ ] **STK-006** — Review exact private-use and future execution scope against current broker/exchange/SEBI requirements; record approvals or specialist advice needed. **[Backlog]** · Priority: P1 — High
+  - Board sync 12 Oct 2026: **Backlog**; Owner: Gagan Jawa; OUTSTANDING — source-rights register records unresolved permissions/budget; affected integrations disabled. No implementation started by this synchronization. Commits: `002ddf0 (register only; no completed sourcing implementation)`. Remaining/blocker: Current account/use-specific broker, exchange and regulatory scope review unresolved. Evidence: [source-rights-register.md](source-rights-register.md). Saved state verified after reload.
 
 ### S03 — Document licences and budget
 
@@ -143,8 +149,11 @@ Epic: E01 · Target: v0.1 · Status: Backlog · Owner: Unassigned · Depends on:
 **Acceptance:** Source and software registers identify terms, costs, restrictions and unresolved decisions; no unapproved purchases.
 
 - [ ] **STK-007** — Assess permitted NSE/BSE/SEBI, issuer IR and news retrieval, archival and summarisation routes; distinguish manual imports from supported feeds. **[Ready]** · Priority: P1 — High
+  - Board sync 12 Oct 2026: **Ready**; Owner: Gagan Jawa; OUTSTANDING — source-rights register records unresolved permissions/budget; affected integrations disabled. No implementation started by this synchronization. Commits: `002ddf0 (register only; no completed sourcing implementation)`. Remaining/blocker: Permitted document/news retrieval, archival and derived-use routes unresolved. Evidence: [source-rights-register.md](source-rights-register.md). Saved state verified after reload.
 - [ ] **STK-008** — Compare hosting, model API and backup quotes against ₹3,000 monthly budget including tax/FX and one-off charges. **[Backlog]** · Priority: P1 — High
+  - Board sync 12 Oct 2026: **Backlog**; Owner: Gagan Jawa; OUTSTANDING — source-rights register records unresolved permissions/budget; affected integrations disabled. No implementation started by this synchronization. Commits: `002ddf0 (register only; no completed sourcing implementation)`. Remaining/blocker: Host/backup/model quotes and tax-inclusive budget decision outstanding; NOT STARTED. Evidence: [source-rights-register.md](source-rights-register.md). Saved state verified after reload.
 - [ ] **STK-009** — Audit pinned software licences, retain notices and add required TradingView attribution; create renewal and terms-review register. **[Backlog]** · Priority: P1 — High
+  - Board sync 12 Oct 2026: **Backlog**; Owner: Codex; PARTIAL; PARTIAL — Inventory: 125 npm, 35 Python and 221 OS records; notices/TradingView attribution and CI pass. Commits: `dfd3875`. Remaining/blocker: Native bundled-library versions/notices/source and target-platform licence clearance remain open. Evidence: [STK-009.md](STK-009.md). Saved state verified after reload.
 
 ### S04 — Application skeleton
 
@@ -153,10 +162,13 @@ Epic: E02 · Target: v0.1 · Status: In Progress · Owner: Codex · Depends on: 
 **Acceptance:** UI, API, worker and database run locally with synthetic data and reproducible builds.
 
 - [x] **STK-010** — Create one repository with React/TypeScript UI, FastAPI API, Python worker, shared analysis package and migrations. **[Done]** · Priority: P1 — High
+  - Board sync 12 Oct 2026: **Done**; Owner: Codex; Application skeleton validated; later full Compose and CI verification passed. Commits: `f522cbd`. Remaining/blocker: None for completed scope. Evidence: [STK-010.md](STK-010.md). Saved state verified after reload.
   - Owner: Codex. Done 10 Oct 2026. Synthetic API/worker tests, a local HTTP smoke test, frontend production build, Compose structure and prior contract validators passed. Implementation commit `f522cbd` was pushed and verified on `origin/main`. Docker Compose could not run on this host because the installed Docker CLI lacks the Compose subcommand. Hosted board update to Done is pending because its browser tab became unavailable. Evidence: [STK-010 record](STK-010.md).
 - [x] **STK-011** — Build navigation for Dashboard, Research, Replay, Portfolio and IPO with explicit empty/demo states. **[Done]** · Priority: P1 — High
+  - Board sync 12 Oct 2026: **Done**; Owner: Codex; Five-section navigation, demo/empty states and browser checks passed. Commits: `714bad8`. Remaining/blocker: None for completed scope. Evidence: [STK-011.md](STK-011.md). Saved state verified after reload.
   - Owner: Codex. Completed 10 Oct 2026; build and browser navigation checks passed. Commit `714bad8` pushed and verified. Hosted board Done update pending fresh sign-in. Evidence: [STK-011](STK-011.md).
 - [x] **STK-012** — Configure CI, relevant smoke tests, pinned dependencies and secret-free environment templates. **[Done]** · Priority: P1 — High
+  - Board sync 12 Oct 2026: **Done**; Owner: Codex; Pinned builds, contract checks and full-stack CI passed. Commits: `e355843, 2560317`. Remaining/blocker: None for completed scope. Evidence: [STK-012.md](STK-012.md). Saved state verified after reload.
 
   - Owner: Codex. Completion recorded 11 Oct 2026. Pushed commit `e355843` passed full CI, including Compose runtime smoke tests. Hosted board update delegated to the user. Evidence: [STK-012 record](STK-012.md).
 
@@ -167,9 +179,12 @@ Epic: E02 · Target: v0.1 · Status: Backlog · Owner: Unassigned · Depends on:
 **Acceptance:** The same engine can use a historical or live clock; decisions preserve source and version information.
 
 - [x] **STK-013** — Create PostgreSQL schema for instruments, candles, documents, facts, decisions, runs, holdings and contribution ledger. **[Done]** · Priority: P1 — High
+  - Board sync 12 Oct 2026: **Done**; Owner: Codex; PostgreSQL constraints, migrations and atomic failure rollback passed. Commits: `539f055, e18b669`. Remaining/blocker: None for completed scope. Evidence: [STK-013.md](STK-013.md). Saved state verified after reload.
   - Owner: Codex. Completed 11 Oct 2026. Implementation `539f055` pushed; PostgreSQL constraints, unchanged fixture round trips, upgrade/downgrade/re-upgrade and failed-migration rollback passed in CI. Hosted board update delegated to the user. Evidence: [STK-013](STK-013.md).
 - [ ] **STK-014** — Define market-data, document and account adapters with explicit availability timestamps and historical/live clock interfaces. **[Ready for Release]** · Priority: P1 — High
+  - Board sync 12 Oct 2026: **Ready for Release**; Owner: Codex; Availability-aware clocks and synthetic adapters; cutoff and timing tests passed. Commits: `220d617`. Remaining/blocker: Private release acceptance pending (STK-018); synthetic-only scope, real providers/orders disabled. Evidence: [STK-014.md](STK-014.md). Saved state verified after reload.
 - [ ] **STK-015** — Make decisions immutable; store source, dataset, code, strategy, prompt and model versions, with linked corrections. **[Ready for Release]** · Priority: P1 — High
+  - Board sync 12 Oct 2026: **Ready for Release**; Owner: Codex; Immutable decisions/outcomes and provenance; PostgreSQL mutation/rollback checks passed. Commits: `65499f6`. Remaining/blocker: Private release acceptance pending (STK-018); synthetic-only scope, real providers/orders disabled. Evidence: [STK-015.md](STK-015.md). Saved state verified after reload.
   - Owner: Codex; 11 Oct 2026. Evidence: [STK-015](STK-015.md). PostgreSQL integration and migration lifecycle passed; release pending.
 
   - STK-014 evidence: [implementation and validation](STK-014.md). Owner: Codex; 11 Oct 2026. Private-release verification pending.
@@ -181,8 +196,11 @@ Epic: E02 · Target: v0.1 · Status: Backlog · Owner: Unassigned · Depends on:
 **Acceptance:** Authenticated HTTPS deployment, backup restore and rollback work; unlicensed inputs and order execution are disabled.
 
 - [ ] **STK-016** — Deploy Docker Compose on one private host; protect UI/API, isolate database and keep credentials server-side. **[Backlog]** · Priority: P1 — High
+  - Board sync 12 Oct 2026: **Backlog**; Owner: Codex; PARTIAL; PARTIAL — Owner-authenticated local Compose/API and non-root Python services verified. Commits: `002ddf0, 067860f, b6b3a4f`. Remaining/blocker: Private HTTPS host, least-privilege database, secrets/network hardening and deployment approval required. Evidence: [STK-018.md](STK-018.md). Saved state verified after reload.
 - [ ] **STK-017** — Configure a single dedicated scheduled worker with job locks, retries, health status, redacted logs and backups. **[Backlog]** · Priority: P1 — High
+  - Board sync 12 Oct 2026: **Backlog**; Owner: Codex; PARTIAL; PARTIAL — Persistent leases/retries, synthetic scheduled worker and disposable restore verified. Commits: `002ddf0, 067860f`. Remaining/blocker: Operational monitoring/redaction and encrypted off-host backup cadence/retention/recovery remain open. Evidence: [STK-018.md](STK-018.md). Saved state verified after reload.
 - [ ] **STK-018** — Tag and release v0.1 with synthetic data; verify authentication, restore and rollback and record release notes. **[Backlog]** · Priority: P1 — High
+  - Board sync 12 Oct 2026: **Backlog**; Owner: Codex; PARTIAL; PARTIAL — Local synthetic acceptance, 42 Python/7 PostgreSQL tests, E2E, auth and backup restore verified; CI passed. Commits: `067860f, b6b3a4f`. Remaining/blocker: Private HTTPS deployment, durable encrypted recovery and secure rollback rehearsal required; no tag/deployment. Evidence: [STK-018.md](STK-018.md). Saved state verified after reload.
 
 ### S07 — Instrument identity and universe
 
@@ -191,10 +209,13 @@ Epic: E03 · Target: v0.2 · Status: Backlog · Owner: Unassigned · Depends on:
 **Acceptance:** Security mappings and historical universe limits are explicit; symbol changes do not join unrelated securities.
 
 - [ ] **STK-019** — Map ISIN, NSE symbol/series, BSE code and broker instrument IDs with effective dates. **[Ready for Release]** · Priority: P2 — Medium
+  - Board sync 12 Oct 2026: **Ready for Release**; Owner: Codex; Effective-dated identities; symbol reuse, ambiguity and future lookup tests passed. Commits: `8ad2d2d`. Remaining/blocker: Private release acceptance pending (STK-018); synthetic-only scope, real providers/orders disabled. Evidence: [STK-019.md](STK-019.md). Saved state verified after reload.
   - Owner: Codex; 11 Oct 2026. Evidence: [STK-019](STK-019.md). Two identity tests pass; synthetic scope only.
 - [ ] **STK-020** — Import exchange calendars and corporate actions; preserve raw prices and version price-adjustment conventions. **[Backlog]** · Priority: P2 — Medium
+  - Board sync 12 Oct 2026: **Backlog**; Owner: Codex; PARTIAL; PARTIAL — Synthetic calendars and known-split normalization tested. Commits: `10c9daf`. Remaining/blocker: Real exchange imports/rights and full share/cash corporate-action execution remain incomplete. Evidence: [STK-020.md](STK-020.md). Saved state verified after reload.
   - Partial synthetic implementation: [STK-020](STK-020.md). Real imports and full action execution remain outstanding.
 - [ ] **STK-021** — Build as-of universe selection including delisted/suspended instruments where available; document survivorship and coverage limits. **[Ready for Release]** · Priority: P2 — Medium
+  - Board sync 12 Oct 2026: **Ready for Release**; Owner: Codex; As-of membership includes historical delistings/suspensions; tests passed. Commits: `750a4a8`. Remaining/blocker: Private release acceptance pending (STK-018); synthetic-only scope, real providers/orders disabled. Evidence: [STK-021.md](STK-021.md). Saved state verified after reload.
   - Owner: Codex; 11 Oct 2026. Evidence: [STK-021](STK-021.md). Synthetic universe only.
 
 ### S08 — Historical candles and quality
@@ -204,10 +225,13 @@ Epic: E03 · Target: v0.2 · Status: Backlog · Owner: Unassigned · Depends on:
 **Acceptance:** A permitted, reproducible daily dataset passes quality checks; bad data blocks recommendations.
 
 - [ ] **STK-022** — Implement resumable, rate-limited historical import with idempotent writes and provenance. **[Ready for Release]** · Priority: P2 — Medium
+  - Board sync 12 Oct 2026: **Ready for Release**; Owner: Codex; 300 fictional candles persisted; repeat/resume ingestion and immutable manifests validated. Commits: `a538be2, 62a9860`. Remaining/blocker: Private release acceptance pending (STK-018); synthetic-only scope, real providers/orders disabled. Evidence: [STK-022.md](STK-022.md). Saved state verified after reload.
   - Evidence: [STK-022](STK-022.md). Synthetic ingestion verified; real provider access blocked.
 - [ ] **STK-023** — Validate timestamps, OHLC, volume, duplicates, gaps and split/dividend treatment against independently checked samples. **[Ready for Release]** · Priority: P2 — Medium
+  - Board sync 12 Oct 2026: **Ready for Release**; Owner: Codex; Synthetic OHLC/availability/calendar/action quality gates passed. Commits: `5cc57fb`. Remaining/blocker: Private release acceptance pending (STK-018); synthetic-only scope, real providers/orders disabled. Evidence: [STK-023.md](STK-023.md). Saved state verified after reload.
   - Evidence: [STK-023](STK-023.md). Synthetic quality gates verified; independent real samples unavailable.
 - [ ] **STK-024** — Freeze dataset manifest and chronological development/test windows; record missing periods and permitted retention. **[Ready for Release]** · Priority: P2 — Medium
+  - Board sync 12 Oct 2026: **Ready for Release**; Owner: Codex; Content-addressed manifest and chronological windows/gaps validated. Commits: `eafa81b`. Remaining/blocker: Private release acceptance pending (STK-018); synthetic-only scope, real providers/orders disabled. Evidence: [STK-024.md](STK-024.md). Saved state verified after reload.
   - Evidence: [STK-024](STK-024.md). Frozen synthetic manifest/windows; no real-data rights inferred.
 
 ### S09 — Read-only Upstox and Zerodha
@@ -227,10 +251,13 @@ Epic: E04 · Target: v0.2 · Status: Backlog · Owner: Unassigned · Depends on:
 **Acceptance:** Values match reference fixtures and only use closed, available candles with sufficient warm-up.
 
 - [ ] **STK-028** — Implement SMA/EMA, crossovers, relative volume and liquidity features. **[Ready for Release]** · Priority: P2 — Medium
+  - Board sync 12 Oct 2026: **Ready for Release**; Owner: Codex; Deterministic moving averages and relative-volume reference tests passed. Commits: `a5aff27`. Remaining/blocker: Private release acceptance pending (STK-018); synthetic-only scope, real providers/orders disabled. Evidence: [M2-indicators.md](M2-indicators.md). Saved state verified after reload.
   - Evidence: [M2 indicators](M2-indicators.md). Synthetic numerical references pass; private release pending.
 - [ ] **STK-029** — Implement ATR, prior-window support/resistance and breakout levels without future bars. **[Ready for Release]** · Priority: P2 — Medium
+  - Board sync 12 Oct 2026: **Ready for Release**; Owner: Codex; Wilder ATR and prior-only breakout/support reference tests passed. Commits: `a5aff27`. Remaining/blocker: Private release acceptance pending (STK-018); synthetic-only scope, real providers/orders disabled. Evidence: [M2-indicators.md](M2-indicators.md). Saved state verified after reload.
   - Evidence: [M2 indicators](M2-indicators.md). Synthetic numerical references pass; private release pending.
 - [ ] **STK-030** — Verify indicator fixtures, missing data and adjustment conventions; expose calculated values for inspection. **[Ready for Release]** · Priority: P2 — Medium
+  - Board sync 12 Oct 2026: **Ready for Release**; Owner: Codex; Numerical fixtures, warm-up and strategy integration checks passed. Commits: `a5aff27, 5b5aac5`. Remaining/blocker: Private release acceptance pending (STK-018); synthetic-only scope, real providers/orders disabled. Evidence: [M2-indicators.md](M2-indicators.md). Saved state verified after reload.
   - Evidence: [M2 indicators](M2-indicators.md). Synthetic numerical references pass; private release pending.
 
 ### S11 — First swing strategy
@@ -240,10 +267,13 @@ Epic: E04 · Target: v0.2 · Status: Backlog · Owner: Unassigned · Depends on:
 **Acceptance:** A deterministic strategy emits entry/stop/target/expiry or wait with traceable rules.
 
 - [ ] **STK-031** — Implement a frozen EMA plus relative-volume plus breakout baseline and explicit timing/exit rules. **[Ready for Release]** · Priority: P2 — Medium
+  - Board sync 12 Oct 2026: **Ready for Release**; Owner: Codex; Frozen swing rules and BUY/WAIT/insufficient branches validated. Commits: `5b5aac5`. Remaining/blocker: Private release acceptance pending (STK-018); synthetic-only scope, real providers/orders disabled. Evidence: [M2-strategy.md](M2-strategy.md). Saved state verified after reload.
   - Evidence: [M2 strategy](M2-strategy.md). Synthetic strategy and reference sizing verified; release pending.
 - [ ] **STK-032** — Implement sizing using chosen active capital, cash, stop distance and exposure constraints; flag gaps and rounding. **[Ready for Release]** · Priority: P2 — Medium
+  - Board sync 12 Oct 2026: **Ready for Release**; Owner: Codex; Decimal sizing/cash/risk/exposure checks and contract parity passed. Commits: `5b5aac5`. Remaining/blocker: Private release acceptance pending (STK-018); synthetic-only scope, real providers/orders disabled. Evidence: [M2-strategy.md](M2-strategy.md). Saved state verified after reload.
   - Evidence: [M2 strategy](M2-strategy.md). Synthetic strategy and reference sizing verified; release pending.
 - [ ] **STK-033** — Build recommendation card showing triggered rules, chart, invalidation and version; no invented confidence probability. **[Backlog]** · Priority: P2 — Medium
+  - Board sync 12 Oct 2026: **Backlog**; Owner: Codex; PARTIAL; PARTIAL — Authenticated recommendation/replay UI implemented in WIP; workflow verified. Commits: `002ddf0, 067860f`. Remaining/blocker: Full card/rule/invalidation/version acceptance review and private release remain pending; not inferred from one E2E. Evidence: [WORK-HANDOFF.md](WORK-HANDOFF.md). Saved state verified after reload.
 
 ### S12 — Ichimoku and additional strategies
 
@@ -262,10 +292,13 @@ Epic: E05 · Target: v0.2 · Status: Backlog · Owner: Unassigned · Depends on:
 **Acceptance:** Analysis sees only then-available information, freezes its recommendation and follows original execution rules.
 
 - [ ] **STK-037** — Implement replay clock/event loop with future-read guards, closed-bar signals and earliest realistic entry timing. **[Ready for Release]** · Priority: P2 — Medium
+  - Board sync 12 Oct 2026: **Ready for Release**; Owner: Codex; Persisted freeze/reveal, future-read guards and replay checks passed. Commits: `0603132`. Remaining/blocker: Private release acceptance pending (STK-018); synthetic-only scope, real providers/orders disabled. Evidence: [M3-replay.md](M3-replay.md). Saved state verified after reload.
   - Evidence: [M3 replay](M3-replay.md). Synthetic daily simulation and persisted freeze/reveal verified.
 - [ ] **STK-038** — Simulate entry, expiry, exits, cash, liquidity limits and gaps; flag bars where stop/target order is unknowable. **[Ready for Release]** · Priority: P2 — Medium
+  - Board sync 12 Oct 2026: **Ready for Release**; Owner: Codex; Synthetic entry/fill/gap/expiry and ambiguous-bar cases validated. Commits: `0603132`. Remaining/blocker: Private release acceptance pending (STK-018); synthetic-only scope, real providers/orders disabled. Evidence: [M3-replay.md](M3-replay.md). Saved state verified after reload.
   - Evidence: [M3 replay](M3-replay.md). Synthetic daily simulation and persisted freeze/reveal verified.
 - [ ] **STK-039** — Add date-effective brokerage, statutory charges and slippage assumptions; verify profit, loss, no-entry and ambiguous cases manually. **[Ready for Release]** · Priority: P2 — Medium
+  - Board sync 12 Oct 2026: **Ready for Release**; Owner: Codex; Fictional fees/slippage and hand-calculated outcome fixtures passed. Commits: `0603132`. Remaining/blocker: Private release acceptance pending (STK-018); synthetic-only scope, real providers/orders disabled. Evidence: [M3-replay.md](M3-replay.md). Saved state verified after reload.
   - Evidence: [M3 replay](M3-replay.md). Synthetic daily simulation and persisted freeze/reveal verified.
 
 ### S14 — Accuracy and performance scorecard
@@ -275,10 +308,13 @@ Epic: E05 · Target: v0.2 · Status: Backlog · Owner: Unassigned · Depends on:
 **Acceptance:** All recommendations remain visible; forecast accuracy and trade performance have explicit separate denominators.
 
 - [ ] **STK-040** — Implement directional and target-before-stop labels with open, expired, no-entry, invalid-data and ambiguous states. **[Ready for Release]** · Priority: P2 — Medium
+  - Board sync 12 Oct 2026: **Ready for Release**; Owner: Codex; Explicit outcome states and original metric parity validated. Commits: `0603132`. Remaining/blocker: Private release acceptance pending (STK-018); synthetic-only scope, real providers/orders disabled. Evidence: [M3-replay.md](M3-replay.md). Saved state verified after reload.
   - Evidence: [M3 replay](M3-replay.md). Synthetic daily simulation and persisted freeze/reveal verified.
 - [ ] **STK-041** — Calculate counts, accuracy, net expectancy, drawdown, turnover, exposure and suitable buy-and-hold/no-trade baselines. **[Backlog]** · Priority: P2 — Medium
+  - Board sync 12 Oct 2026: **Backlog**; Owner: Codex; PARTIAL; PARTIAL — Synthetic single-position portfolio metrics and original metric parity validated. Commits: `62a9860`. Remaining/blocker: Real-market benchmark/complete planned portfolio acceptance remains incomplete. Evidence: [M3-replay.md](M3-replay.md). Saved state verified after reload.
   - Partial implementation; remaining portfolio/reporting acceptance gaps: [M3 replay](M3-replay.md).
 - [ ] **STK-042** — Add chronological validation with overlap-aware gaps and reports by horizon, sector, regime and sample size; report uncertainty. **[Backlog]** · Priority: P2 — Medium
+  - Board sync 12 Oct 2026: **Backlog**; Owner: Codex; PARTIAL; PARTIAL — Grouped synthetic descriptive reports, chronological windows and uncertainty disclosures validated. Commits: `62a9860`. Remaining/blocker: Full sector/regime and EP-1 real-history validation remain incomplete. Evidence: [M3-replay.md](M3-replay.md). Saved state verified after reload.
   - Partial implementation; remaining portfolio/reporting acceptance gaps: [M3 replay](M3-replay.md).
 
 ### S15 — Historical replay screen
@@ -288,8 +324,11 @@ Epic: E05 · Target: v0.2 · Status: Backlog · Owner: Unassigned · Depends on:
 **Acceptance:** A user selects a past date, sees the frozen suggestion, then reveals subsequent prices and outcomes.
 
 - [ ] **STK-043** — Build stock/date/strategy selector and before/after chart with future candles hidden until reveal. **[Backlog]** · Priority: P2 — Medium
+  - Board sync 12 Oct 2026: **Backlog**; Owner: Codex; PARTIAL; PARTIAL — Stock/date freeze/reveal UI, stable chart and attribution pass E2E. Commits: `002ddf0, 17e4300, dfd3875`. Remaining/blocker: Full selector/strategy acceptance and private release review remain pending. Evidence: [WORK-HANDOFF.md](WORK-HANDOFF.md). Saved state verified after reload.
 - [ ] **STK-044** — Add batch experiments, failure drill-down and permitted result export with reproducible run IDs. **[Backlog]** · Priority: P2 — Medium
+  - Board sync 12 Oct 2026: **Backlog**; Owner: Codex; PARTIAL; PARTIAL — Batch jobs and audit export implemented as WIP. Commits: `002ddf0`. Remaining/blocker: Full batch/failure-drill-down/export acceptance not established by current E2E; resume targeted review only when pulled. Evidence: [WORK-HANDOFF.md](WORK-HANDOFF.md). Saved state verified after reload.
 - [ ] **STK-045** — Release v0.2 using a covered past-date example; demonstrate anti-leakage checks and disclose unavailable historical news/universe data. **[Backlog]** · Priority: P2 — Medium
+  - Board sync 12 Oct 2026: **Backlog**; Owner: Codex; PARTIAL; PARTIAL — Synthetic replay acceptance and release limitations documented. Commits: `067860f, b6b3a4f`. Remaining/blocker: Permitted historical coverage, full v0.2 acceptance and authorized private deployment/release remain open. Evidence: [STK-018.md](STK-018.md). Saved state verified after reload.
 
 ### S16 — Primary company and IPO documents
 
@@ -489,3 +528,16 @@ Reviewed 9 October 2026. Recheck prices and terms before activation. Official pa
 ## Work checkpoint — 11 Oct 2026
 
 Owner requested separate completed/WIP commits and a pause. See [work handoff](WORK-HANDOFF.md). STK-016–018/033/043–045 remain WIP or awaiting release verification; STK-004–009 retain source/procurement/audit blockers. No new feature is marked Done before private-release acceptance. Hosted board untouched.
+
+## Hosted board synchronization — 12 Oct 2026
+
+[Hosted board](https://stock-platform-kanban.jawagag.chatgpt.site/) synchronized against `dfd3875`; all 39 affected tickets were reopened after reload and status, owner, blocked flag, blocker and notes matched the saved updates. The other 51 ticket statuses/owners were unchanged. Existing verified completion history was preserved; older notes about tickets not yet started are historical.
+
+- Done retained: STK-001–003 and STK-010–013 (7).
+- Ready for Release retained for synthetic scope: STK-014/015/019/021–024/028–032/037–040 (16), now assigned to Codex with commit evidence and the STK-018 release blocker.
+- PARTIAL/paused: STK-009/016–018/020/033/041–045 (11), represented by **Backlog + Blocked** because the board has no Partial column. STK-020/041/042 moved out of In Progress; no incomplete ticket marked Done. Evidence and remaining acceptance are recorded per ticket above.
+- Sourcing STK-004–008 remains outstanding, owned by Gagan Jawa for external decisions; 004/007 retain Ready + Blocked, 005/006/008 retain Backlog + Blocked. STK-008 was not started; its note references only the existing source register.
+- WIP: 0 In Progress, 0 Review/Test, within limits of one each. No next ticket pulled. No estimates, ticket IDs, priorities, actual hours, unrelated tickets or application files changed.
+- Licence clearance, HTTPS/private host, least-privilege database, operational log/monitoring controls, encrypted off-host recovery and secure rollback rehearsal remain open. Real-market rights, full corporate actions, benchmarks and EP-1 acceptance remain separate blockers; no providers/orders enabled, deployment or tag created.
+
+Existing test/CI evidence reused: `067860f`, `b6b3a4f`, and [dfd3875 CI](https://github.com/gaganjawa/stock-discovery/actions/runs/38177340717). This synchronization is documentation-only; no application tests rerun. Local diff, links and staged credential checks precede commit/push.
