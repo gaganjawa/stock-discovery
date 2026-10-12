@@ -68,6 +68,11 @@ services:
   worker:
     <<: *python
     image: ${WORKER_IMAGE:?Set an immutable tested worker image}
+    healthcheck:
+      test: [CMD, python, -c, "from stock_discovery_analysis.operations import healthy; raise SystemExit(0 if healthy() else 1)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
     environment: *runtime
     secrets: [runtime_database_url]
     networks: [database]

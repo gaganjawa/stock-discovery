@@ -18,6 +18,17 @@ def enqueue(conn,kind,payload):
 
 
 def run_job(conn,code_version):
+    # A session lock prevents a second worker reclaiming a long-running job
+    # merely because its persisted recovery lease expired. A crash releases it.
+    if not conn.execute("SELECT pg_try_advisory_lock(170017)").fetchone()[0]:
+        return None
+    try:
+        return _run_job(conn,code_version)
+    finally:
+        conn.execute("SELECT pg_advisory_unlock(170017)")
+
+
+def _run_job(conn,code_version):
     token=str(uuid.uuid4())
     with conn.transaction():
         conn.execute("""UPDATE research.jobs SET status='failed',error_code='retry_exhausted',updated_at=now()

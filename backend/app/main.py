@@ -2,6 +2,10 @@ from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from stock_discovery_analysis.runtime import validate_private, setting
 from .security import LoginLimiter, throttle
+from stock_discovery_analysis.operations import event
+from fastapi.responses import JSONResponse
+import logging
+import time
 
 
 @asynccontextmanager
@@ -18,6 +22,22 @@ from stock_discovery_analysis import AnalysisMode, synthetic_recommendation
 app = FastAPI(title="Stock Discovery API", version="0.1.0", lifespan=lifespan)
 app.state.login_limiter = LoginLimiter()
 app.middleware("http")(throttle)
+
+
+@app.middleware("http")
+async def safe_request_log(request, call_next):
+    started = time.monotonic()
+    try:
+        response = await call_next(request)
+    except Exception:
+        # Do not pass exception strings/tracebacks to the server logger.
+        logging.getLogger("uvicorn.error").error(event("request_failed", status=500))
+        return JSONResponse({"detail": "Internal request failure"}, status_code=500)
+    if response.status_code >= 400:
+        logging.getLogger("uvicorn.error").warning(event(
+            "request_rejected", status=response.status_code,
+            duration_ms=round((time.monotonic() - started) * 1000)))
+    return response
 
 
 @app.get("/healthz")

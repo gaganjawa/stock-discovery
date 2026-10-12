@@ -6,6 +6,7 @@ import time
 import os
 import psycopg
 from stock_discovery_analysis.runtime import setting, validate_private
+from stock_discovery_analysis.operations import heartbeat, event
 from stock_discovery_analysis.jobs import run_job,enqueue
 from stock_discovery_analysis.service import load_dataset
 from datetime import datetime, timezone
@@ -40,9 +41,11 @@ def main() -> None:
                         enqueue(conn,'scan',{'dataset_version':dataset.version,'cutoff':latest.isoformat(),
                                             'scheduled_day':datetime.now(timezone.utc).date().isoformat()})
                     result=run_job(conn,os.getenv('CODE_VERSION','local-unversioned'))
-                if result: print(json.dumps(result,sort_keys=True),flush=True)
-            except psycopg.Error:
-                print(json.dumps({'status':'database_unavailable_or_unmigrated'}),flush=True)
+                heartbeat(True)
+                if result: print(event("job_cycle", status=1 if result["status"]=="completed" else 0),flush=True)
+            except Exception:
+                heartbeat(False)
+                print(event("worker_cycle_failed", status=0),flush=True)
         else:
             print(json.dumps(run_once(), sort_keys=True), flush=True)
         if args.once:

@@ -1,0 +1,15 @@
+[Unit]
+Description=Stock Discovery verified encrypted backup
+Requires=docker.service
+After=docker.service
+
+[Service]
+Type=oneshot
+User=root
+WorkingDirectory=/opt/stock-discovery
+EnvironmentFile=/etc/stock-discovery/operations.env
+ExecStart=/usr/bin/python3 scripts/operate.py backup
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+TimeoutStartSec=2h
