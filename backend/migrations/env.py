@@ -3,8 +3,9 @@ import os
 from alembic import context
 from sqlalchemy import create_engine, pool
 
-from stock_discovery_analysis.runtime import setting
-url = setting('DATABASE_URL')
+from pathlib import Path
+url = (Path(os.environ['DATABASE_URL_FILE']).read_text().strip()
+       if os.getenv('DATABASE_URL_FILE') else os.environ['DATABASE_URL'])
 if url.startswith('postgresql://'):
     url = url.replace('postgresql://', 'postgresql+psycopg://', 1)
 if context.is_offline_mode():
