@@ -545,3 +545,7 @@ Existing test/CI evidence reused: `067860f`, `b6b3a4f`, and [dfd3875 CI](https:/
 ## Foundation continuation — 12 October 2026
 
 STK-008 provider selection is owner-approved: Hetzner CX23/Linux/Compose and restic/B2; do not reopen alternatives. Region, checkout price and key custody remain provisioning gates. STK-016 independent hardening verified locally; see [STK-016](STK-016.md). Remains Backlog + Blocked, PARTIAL pending authorized deployment. Hosted board not updated by this continuation; copy-ready status only. WIP returns to zero before pulling STK-017.
+
+## Foundation acceptance and hosted synchronization
+
+STK-008 Done/unblocked: provider and backup selection approved (4e6efb1). STK-009/016/017/018 remain Backlog + Blocked/PARTIAL, with implementation, validation and remaining external gates recorded in their ticket documents and the current STK-018 table. These five hosted records were saved and verified after reload; other records unchanged. WIP: zero In Progress, zero Review/Test. No accepted tag or external deployment. Owner requests a pause after the foundation status report; wait for explicit go before further milestones.

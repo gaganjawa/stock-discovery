@@ -1,5 +1,16 @@
 # Stock Discovery — work checkpoint
 
+## Latest continuation — foundation work complete to external gates
+
+Owner approved Hetzner CX23/Linux/Compose and encrypted restic/B2; do not reopen hosting alternatives. STK-008 is Done. STK-009/016/017/018 remain PARTIAL (Backlog + Blocked), with secure private configuration, runtime privileges, worker/monitoring controls, encrypted local recovery and rollback verification delivered. See [current STK-018 acceptance](STK-018.md#current-foundation-acceptance--supersedes-historical-configuration-findings-below) for exact tests, commits and remaining gates. Native AMD64 CI evidence is retained in docs/licenses/linux-amd64-6e3886d.json.gz; no blanket licence clearance.
+
+Hosted board updates for these five tickets were saved and verified after reload. No purchases, B2 connection, external deployment or accepted release tag. Earlier unresolved-provider and configuration-gap descriptions below are historical. Unrelated .idea/, main.py and root pyproject.toml remain untouched.
+
+**Owner instruction: wait for explicit go after the current foundation status report.** Do not start another milestone or provision services automatically. Required before provisioning: region, final checkout price, backup-key custody and explicit authorization. Remaining deployment gates include native/host licences, actual private HTTPS/firewall, B2 disaster recovery and external alert/dead-man acceptance.
+
+Local preview: from this repository, use the existing ignored local .env owner key and run `COOKIE_SECURE=false APP_ORIGIN=http://127.0.0.1:5173 docker-compose up --build -d`, then open http://127.0.0.1:5173. Never carry the HTTP override to private hosting. Isolated verification containers are stopped after testing; their explicitly named test volume is retained, not substituted for preview data.
+
+
 ## Hosted tracking synchronized — 12 Oct 2026
 
 39 tickets synchronized and their saved fields verified after reload; 51 unrelated tickets unchanged. See the [local Kanban synchronization record](stock-platform-kanban-plan.md#hosted-board-synchronization--12-oct-2026). Existing Done and synthetic Ready for Release statuses retained. Partial work uses Backlog + Blocked (not Done); no tickets remain In Progress or Review/Test. STK-004–008 remains outstanding, STK-008 not started. No deployment/tag or application changes. Historical notes below about the hosted board being untouched are superseded by this synchronization.
