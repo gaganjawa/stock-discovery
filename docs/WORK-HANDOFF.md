@@ -2,7 +2,7 @@
 
 ## STK-043 continuation — 13 October 2026
 
-Owner authorized another bounded task. Replay now exposes its supported strategy version and rejects unsupported versions. Local tests/build passed; full CI pending. See [STK-043](STK-043.md). Pause after status report. Hosted board synchronization remains pending for STK-033/043.
+Owner authorized another bounded task. Replay now exposes its supported strategy version and rejects unsupported versions. 49 local tests/build passed; implementation `83f8fa8` passed full CI including browser acceptance and database migrations. See [STK-043](STK-043.md). Pause after status report. Hosted board synchronization remains pending for STK-033/043.
 
 ## STK-033 continuation — 13 October 2026
 
