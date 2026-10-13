@@ -16,13 +16,17 @@ def test_buy_wait_insufficient_and_future_mutation():
     assert buy['recommendation']['action']=='BUY'
     assert buy['sizing']['risk_reward']==2
     assert buy['recommendation']['earliest_executable_entry_at']>buy['recommendation']['decision_available_at']
-    assert result(38)['recommendation']['action']=='WAIT'
+    assert buy['recommendation']['rationale']['summary'].count(': met')==3
+    wait=result(38)['recommendation']
+    assert wait['action']=='WAIT'
+    assert ': not met' in wait['rationale']['summary']
+    assert 'not eligible' in result(2)['recommendation']['rationale']['summary']
     assert result(2)['recommendation']['action']=='INSUFFICIENT_EVIDENCE'
     cutoff=d.calendar.sessions[39].closes_at
     changed=replace(d,candles=tuple(replace(c,close=c.low) if c.ends_at>cutoff else c for c in d.candles))
     other=result(39,changed)
     for field in ('indicators','sizing'): assert other[field]==buy[field]
-    for field in ('action','execution','forecast'): assert other['recommendation'][field]==buy['recommendation'][field]
+    for field in ('action','execution','forecast','rationale'): assert other['recommendation'][field]==buy['recommendation'][field]
 
 
 def test_sizing_matches_unchanged_contract_reference_and_caps():

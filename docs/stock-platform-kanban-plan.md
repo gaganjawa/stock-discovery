@@ -272,8 +272,9 @@ Epic: E04 · Target: v0.2 · Status: Backlog · Owner: Unassigned · Depends on:
 - [ ] **STK-032** — Implement sizing using chosen active capital, cash, stop distance and exposure constraints; flag gaps and rounding. **[Ready for Release]** · Priority: P2 — Medium
   - Board sync 12 Oct 2026: **Ready for Release**; Owner: Codex; Decimal sizing/cash/risk/exposure checks and contract parity passed. Commits: `5b5aac5`. Remaining/blocker: Private release acceptance pending (STK-018); synthetic-only scope, real providers/orders disabled. Evidence: [M2-strategy.md](M2-strategy.md). Saved state verified after reload.
   - Evidence: [M2 strategy](M2-strategy.md). Synthetic strategy and reference sizing verified; release pending.
-- [ ] **STK-033** — Build recommendation card showing triggered rules, chart, invalidation and version; no invented confidence probability. **[Backlog]** · Priority: P2 — Medium
-  - Board sync 12 Oct 2026: **Backlog**; Owner: Codex; PARTIAL; PARTIAL — Authenticated recommendation/replay UI implemented in WIP; workflow verified. Commits: `002ddf0, 067860f`. Remaining/blocker: Full card/rule/invalidation/version acceptance review and private release remain pending; not inferred from one E2E. Evidence: [WORK-HANDOFF.md](WORK-HANDOFF.md). Saved state verified after reload.
+- [ ] **STK-033** — Build recommendation card showing triggered rules, chart, invalidation and version; no invented confidence probability. **[Review/Test]** · Priority: P2 — Medium
+  - Local update 13 Oct 2026: rule explanations and frozen provenance implemented; focused tests/build pass. CI pending; hosted sync pending. [Acceptance](STK-033.md).
+  - Historical board sync 12 Oct 2026: **Backlog**; Owner: Codex; PARTIAL; PARTIAL — Authenticated recommendation/replay UI implemented in WIP; workflow verified. Commits: `002ddf0, 067860f`. Remaining/blocker: Full card/rule/invalidation/version acceptance review and private release remain pending; not inferred from one E2E. Evidence: [WORK-HANDOFF.md](WORK-HANDOFF.md). Saved state verified after reload.
 
 ### S12 — Ichimoku and additional strategies
 

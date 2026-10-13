@@ -1,5 +1,9 @@
 # Stock Discovery — work checkpoint
 
+## STK-033 continuation — 13 October 2026
+
+Owner authorized the next bounded task with minimal usage. STK-033 now displays frozen rule results and complete version provenance; see [acceptance notes](STK-033.md). Focused tests/build passed; CI and hosted board synchronization are recorded separately. Stop after reporting this task and wait for the owner's next go. Foundation external gates remain unchanged.
+
 ## Latest continuation — foundation work complete to external gates
 
 Owner approved Hetzner CX23/Linux/Compose and encrypted restic/B2; do not reopen hosting alternatives. STK-008 is Done. STK-009/016/017/018 remain PARTIAL (Backlog + Blocked), with secure private configuration, runtime privileges, worker/monitoring controls, encrypted local recovery and rollback verification delivered. See [current STK-018 acceptance](STK-018.md#current-foundation-acceptance--supersedes-historical-configuration-findings-below) for exact tests, commits and remaining gates. Native AMD64 CI evidence is retained in docs/licenses/linux-amd64-6e3886d.json.gz; no blanket licence clearance.

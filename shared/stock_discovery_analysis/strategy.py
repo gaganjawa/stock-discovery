@@ -6,7 +6,7 @@ from .dataset import Dataset, canonical
 from .indicators import features
 from .risk import demo_profile, sizing
 
-STRATEGY_VERSION='ema-breakout-1.0.1'
+STRATEGY_VERSION='ema-breakout-1.0.2'
 CONFIG_VERSION='SYN-EMA10-30-RVOL20-1.5-ATR14-2R-v1'
 
 
@@ -48,6 +48,15 @@ def analyze(dataset: Dataset, instrument_id: str, cutoff: datetime, *, code_vers
                     'assumptions_version':'SYN-daily-costs-v1'}
                 forecast={'direction':'up','reference_price':str(bars[-1].close),'reference_at':stamp(bars[-1].ends_at),
                           'end_at':stamp(future[4].closes_at),'definition_version':'SYN-direction-v1'}
+    if quality:
+        explanation='Rules not eligible for a recommendation: '+', '.join(quality)+'.'
+    else:
+        checks=[('EMA10 > EMA30',f['ema10']>f['ema30']),
+                ('Close > prior 20-session high',bars[-1].close>f['breakout20']),
+                ('Relative volume >= 1.5',f['relative_volume20']>=D('1.5'))]
+        explanation='; '.join(label+': '+('met' if passed else 'not met') for label,passed in checks)+'.'
+        if risk is not None and not risk['quantity']:
+            explanation+=' No entry: sizing permits zero shares.'
     identity=next(i for i in dataset.instruments if i.instrument_id==instrument_id)
     run_id='SYN-RUN-'+hashlib.sha256(canonical([dataset.version,instrument_id,stamp(cutoff),STRATEGY_VERSION,CONFIG_VERSION,code_version]).encode()).hexdigest()[:32]
     evidence=[]
@@ -66,7 +75,7 @@ def analyze(dataset: Dataset, instrument_id: str, cutoff: datetime, *, code_vers
        'decision_available_at':stamp(ready),'earliest_executable_entry_at':stamp(future[0].opens_at) if action=='BUY' else None,
        'action':action,'position_effect':'OPEN_LONG' if action=='BUY' else 'NONE','holding':None,'execution':execution,'forecast':forecast,
        'evidence':evidence,'missing_evidence':[{'requirement':q,'reason':q,'blocking':True} for q in quality],
-       'rationale':{'summary':'EMA10 > EMA30, close above prior 20-session high, relative volume >= 1.5 required. '+action,
+       'rationale':{'summary':explanation+' Decision: '+action,
                     'evidence_ids':['closed-bars'] if evidence else [],'contradictions':[],
                     'invalidation':'No entry before next session; cancel gap above cap or target; unsupported corporate-action windows excluded.'},
        'versions':{'dataset':dataset.version,'code':code_version,'model':None,'prompt':None},
