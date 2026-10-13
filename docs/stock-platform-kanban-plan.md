@@ -324,8 +324,9 @@ Epic: E05 · Target: v0.2 · Status: Backlog · Owner: Unassigned · Depends on:
 
 **Acceptance:** A user selects a past date, sees the frozen suggestion, then reveals subsequent prices and outcomes.
 
-- [ ] **STK-043** — Build stock/date/strategy selector and before/after chart with future candles hidden until reveal. **[Backlog]** · Priority: P2 — Medium
-  - Board sync 12 Oct 2026: **Backlog**; Owner: Codex; PARTIAL; PARTIAL — Stock/date freeze/reveal UI, stable chart and attribution pass E2E. Commits: `002ddf0, 17e4300, dfd3875`. Remaining/blocker: Full selector/strategy acceptance and private release review remain pending. Evidence: [WORK-HANDOFF.md](WORK-HANDOFF.md). Saved state verified after reload.
+- [ ] **STK-043** — Build stock/date/strategy selector and before/after chart with future candles hidden until reveal. **[Review/Test]** · Priority: P2 — Medium
+  - Local update 13 Oct 2026: strategy selector/version validation added; 49 local tests and build pass. Browser acceptance expanded; CI pending. [Evidence](STK-043.md). Hosted sync pending; private release blocked by STK-018.
+  - Historical board sync 12 Oct 2026: **Backlog**; Owner: Codex; PARTIAL; PARTIAL — Stock/date freeze/reveal UI, stable chart and attribution pass E2E. Commits: `002ddf0, 17e4300, dfd3875`. Remaining/blocker: Full selector/strategy acceptance and private release review remain pending. Evidence: [WORK-HANDOFF.md](WORK-HANDOFF.md). Saved state verified after reload.
 - [ ] **STK-044** — Add batch experiments, failure drill-down and permitted result export with reproducible run IDs. **[Backlog]** · Priority: P2 — Medium
   - Board sync 12 Oct 2026: **Backlog**; Owner: Codex; PARTIAL; PARTIAL — Batch jobs and audit export implemented as WIP. Commits: `002ddf0`. Remaining/blocker: Full batch/failure-drill-down/export acceptance not established by current E2E; resume targeted review only when pulled. Evidence: [WORK-HANDOFF.md](WORK-HANDOFF.md). Saved state verified after reload.
 - [ ] **STK-045** — Release v0.2 using a covered past-date example; demonstrate anti-leakage checks and disclose unavailable historical news/universe data. **[Backlog]** · Priority: P2 — Medium

@@ -1,5 +1,6 @@
 import hmac
 import os
+from typing import Literal
 from datetime import datetime,time,timedelta,timezone
 from fastapi import APIRouter,Depends,HTTPException,Request,Response
 from pydantic import BaseModel,Field
@@ -9,6 +10,7 @@ from stock_discovery_analysis.runtime import setting
 from stock_discovery_analysis.dataset import demo_dataset,canonical
 from stock_discovery_analysis.service import load_dataset,freeze,read_frozen,reveal,scorecard,json_value
 from stock_discovery_analysis.jobs import enqueue
+from stock_discovery_analysis.strategy import STRATEGY_VERSION
 
 router=APIRouter(prefix='/api/v1')
 
@@ -23,6 +25,7 @@ def db():
 
 class Login(BaseModel): token: str=Field(max_length=512)
 class Selection(BaseModel):
+    strategy_version: Literal[STRATEGY_VERSION] = STRATEGY_VERSION
     dataset_version: str=Field(max_length=100)
     instrument_id: str=Field(max_length=80)
     date: str=Field(pattern=r'^\d{4}-\d{2}-\d{2}$')
@@ -62,7 +65,8 @@ def initialize(conn=Depends(db)):
 def dataset_info(version:str,conn=Depends(db)):
     try: d=load_dataset(conn,version)
     except KeyError: raise HTTPException(404,'Dataset not found')
-    return {'version':d.version,'instruments':[i.instrument_id for i in d.instruments],
+    return {'strategies':[{'version':STRATEGY_VERSION,'name':'EMA10 / EMA30 + volume + breakout'}],
+            'version':d.version,'instruments':[i.instrument_id for i in d.instruments],
             'dates':[s.closes_at.date().isoformat() for s in d.calendar.sessions],
             'default_date':d.calendar.sessions[39].closes_at.date().isoformat()}
 

@@ -1,5 +1,9 @@
 # Stock Discovery — work checkpoint
 
+## STK-043 continuation — 13 October 2026
+
+Owner authorized another bounded task. Replay now exposes its supported strategy version and rejects unsupported versions. Local tests/build passed; full CI pending. See [STK-043](STK-043.md). Pause after status report. Hosted board synchronization remains pending for STK-033/043.
+
 ## STK-033 continuation — 13 October 2026
 
 Owner authorized the next bounded task with minimal usage. STK-033 now displays frozen rule results and complete version provenance; see [acceptance notes](STK-033.md). Implementation `039c492` passed full CI including browser acceptance and migrations. Hosted board synchronization remains pending; local status is Ready for Release for synthetic scope only. Stop after reporting this task and wait for the owner's next go. Foundation external gates remain unchanged.
