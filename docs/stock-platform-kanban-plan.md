@@ -316,7 +316,7 @@ Epic: E05 · Target: v0.2 · Status: Backlog · Owner: Unassigned · Depends on:
   - Historical board sync 12 Oct 2026: **Backlog**; Owner: Codex; PARTIAL; PARTIAL — Synthetic single-position portfolio metrics and original metric parity validated. Commits: `62a9860`. Remaining/blocker: Real-market benchmark/complete planned portfolio acceptance remains incomplete. Evidence: [M3-replay.md](M3-replay.md). Saved state verified after reload.
   - Partial implementation; remaining portfolio/reporting acceptance gaps: [M3 replay](M3-replay.md).
 - [ ] **STK-042** — Add chronological validation with overlap-aware gaps and reports by horizon, sector, regime and sample size; report uncertainty. **[Backlog]** · Priority: P2 — Medium
-  - Local update 14 Oct 2026: grouped report UI shows sample counts, denominators and descriptive intervals with limitations; build passes; CI pending. Full STK-042 remains PARTIAL. [Evidence](STK-042.md). Hosted sync pending.
+  - Local update 14 Oct 2026: grouped report UI shows sample counts, denominators and descriptive intervals with limitations; implementation `c9d3ecf` passed full CI/browser and 11 database cases. Full STK-042 remains PARTIAL. [Evidence](STK-042.md). Hosted sync pending.
   - Historical board sync 12 Oct 2026: **Backlog**; Owner: Codex; PARTIAL; PARTIAL — Grouped synthetic descriptive reports, chronological windows and uncertainty disclosures validated. Commits: `62a9860`. Remaining/blocker: Full sector/regime and EP-1 real-history validation remain incomplete. Evidence: [M3-replay.md](M3-replay.md). Saved state verified after reload.
   - Partial implementation; remaining portfolio/reporting acceptance gaps: [M3 replay](M3-replay.md).
 

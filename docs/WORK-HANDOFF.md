@@ -2,7 +2,7 @@
 
 ## STK-042 validation visibility — 14 October 2026
 
-Grouped validation results, sample sizes, descriptive intervals and limitations now appear in the scorecard. Build passed; browser/full CI pending. STK-042 remains partial for real-history and chronological/overlap-aware acceptance. See [STK-042](STK-042.md). Pause after status.
+Grouped validation results, sample sizes, descriptive intervals and limitations now appear in the scorecard. Implementation `c9d3ecf` passed full CI: 51 application tests, 11 database cases, build and browser acceptance. STK-042 remains partial for real-history and chronological/overlap-aware acceptance. See [STK-042](STK-042.md). Pause after status.
 
 ## STK-041 scorecard visibility — 14 October 2026
 
