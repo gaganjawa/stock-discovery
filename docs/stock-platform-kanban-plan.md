@@ -1,3 +1,5 @@
+> Current overall and feature status: [Lightweight progress board](SIMPLE-BOARD.md), updated 14 October 2026. Owner requested local Markdown tracking; hosted-board records may be stale. This detailed plan preserves ticket scope and history.
+
 # Personal stock platform — Kanban delivery plan
 
 Planning baseline: 9 October 2026, Asia/Kolkata. Project key: STK.

@@ -1,5 +1,7 @@
 # Stock Discovery — work checkpoint
 
+**Current progress view: [Lightweight board](SIMPLE-BOARD.md).** Owner requested Markdown tracking on 14 October 2026 to avoid hosted-board overhead. Use this file for routine overall/feature status; hosted-board synchronization is no longer a prerequisite for local status reporting. Existing historical sync-pending notes below remain historical.
+
 ## STK-042 audit reproducibility — 14 October 2026
 
 Frozen split policy and content-based audit identity added; duplicate IDs rejected and unknown split policies unavailable. Implementation `32c4416` passed full CI: 55 application tests, 11 database cases, build and browser acceptance. Trial ledger/untouched-test controls remain open. Pause after status.
