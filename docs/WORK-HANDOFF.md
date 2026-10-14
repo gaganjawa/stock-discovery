@@ -1,5 +1,9 @@
 # Stock Discovery — work checkpoint
 
+## STK-042 chronological audit — 14 October 2026
+
+Synthetic split assignments and conservative label-window exclusions are implemented and visible. 53 application tests/build pass; full CI pending. This is an assignment audit, not training or EP-1 acceptance; STK-042 stays partial. Pause after status.
+
 ## STK-042 validation visibility — 14 October 2026
 
 Grouped validation results, sample sizes, descriptive intervals and limitations now appear in the scorecard. Implementation `c9d3ecf` passed full CI: 51 application tests, 11 database cases, build and browser acceptance. STK-042 remains partial for real-history and chronological/overlap-aware acceptance. See [STK-042](STK-042.md). Pause after status.

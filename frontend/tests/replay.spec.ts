@@ -73,6 +73,17 @@ test('authenticated synthetic freeze, reveal, scorecard and future placeholders'
  await groups.selectOption(chosenGroup!)
  const selectedScores=await (await groupResponse).json()
  expect(selectedScores.selected_cohort).toBe(chosenGroup)
+ const chronology=page.getByRole('region',{name:'Chronological split audit',exact:true})
+ await expect(chronology).toContainText('never realized profits')
+ await expect(chronology).toContainText(selectedScores.chronological_validation.limitation)
+ const assigned=Object.values(selectedScores.chronological_validation.windows).flatMap((w:any)=>w.recommendation_ids)
+ expect(new Set([...assigned,...selectedScores.chronological_validation.exclusions.map((e:any)=>e.id)]).size).toBe(selectedScores.eligibility.length)
+ for(const [name,window] of Object.entries(selectedScores.chronological_validation.windows) as [string,any][]){
+  const row=chronology.getByRole('row').filter({has:page.getByRole('rowheader',{name,exact:true})})
+  await expect(row.getByRole('cell').nth(0)).toHaveText(window.start_at)
+  await expect(row.getByRole('cell').nth(1)).toHaveText(window.end_at)
+  await expect(row.getByRole('cell').nth(2)).toHaveText(String(window.recommendation_ids.length))
+ }
  const validation=page.getByRole('region',{name:'Validation report',exact:true})
  await expect(validation).toContainText('not the probability of a future recommendation succeeding')
  await expect(validation).toContainText('do not add their sample counts together')

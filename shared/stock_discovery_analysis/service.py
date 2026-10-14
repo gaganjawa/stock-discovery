@@ -9,6 +9,7 @@ from .replay import simulate,dt
 from .evaluation import summarize,portfolio
 from .portfolio import replay_portfolio
 from .reports import validation_report
+from .splits import split_report
 
 
 def json_value(value): return json.loads(canonical(value))
@@ -102,7 +103,8 @@ def scorecard(conn,cohort=None):
         curve=o.get('equity_curve',[]) if o else []
         detail.append({'recommendation_id':r['recommendation_id'],'status':t.get('status','missing'),
                        'portfolio':portfolio(curve),'exclusions':o.get('exclusions',[]) if o else ['not_evaluated']})
-    return json_value({'cohorts':sorted(cohorts.values(),key=lambda c:c['id']),'selected_cohort':cohort,**summarize(rows),'eligibility':rows,'isolated_trade_portfolios':detail,
+    split_audit=split_report(load_dataset(conn,records[0][0]['versions']['dataset']),[a for a,_ in portfolio_records]) if records and len({cohort_metadata(r)['id'] for r,_ in records})==1 else {'status':'unavailable','reason':'select_one_nonempty_version_group'}
+    return json_value({'chronological_validation':split_audit,'cohorts':sorted(cohorts.values(),key=lambda c:c['id']),'selected_cohort':cohort,**summarize(rows),'eligibility':rows,'isolated_trade_portfolios':detail,
         'portfolio':replay_portfolio(portfolio_records),
         'validation_report':validation_report(rows,[a for a,_ in portfolio_records]),
         'benchmark':{'return':None,'reason':'no_permitted_comparable_benchmark'},'cash_benchmark_return':'0',
