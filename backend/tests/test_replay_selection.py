@@ -11,3 +11,10 @@ def test_replay_only_accepts_implemented_strategy_version():
     for unsupported in ('future-strategy', 'ema-breakout-1.0.1', ''):
         with pytest.raises(ValidationError):
             Selection(**inputs,strategy_version=unsupported)
+
+
+def test_batch_rejects_malformed_dates_before_enqueue():
+    from app.research import Batch
+    for dates in ([], ['not-a-date'], ['2026-01-01'] * 11):
+        with pytest.raises(ValidationError):
+            Batch(dataset_version='SYN-test', dates=dates)

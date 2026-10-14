@@ -1,5 +1,9 @@
 # Stock Discovery — work checkpoint
 
+## STK-044 continuation — 14 October 2026
+
+Job inspection and failure-inclusive audit export implemented; 50 local application tests and frontend build pass. Full batch/browser/database CI pending. See [STK-044](STK-044.md). Hosted sync pending for STK-033/043/044; pause after status.
+
 ## STK-043 continuation — 13 October 2026
 
 Owner authorized another bounded task. Replay now exposes its supported strategy version and rejects unsupported versions. 49 local tests/build passed; implementation `83f8fa8` passed full CI including browser acceptance and database migrations. See [STK-043](STK-043.md). Pause after status report. Hosted board synchronization remains pending for STK-033/043.

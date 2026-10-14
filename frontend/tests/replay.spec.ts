@@ -67,6 +67,31 @@ test('authenticated synthetic freeze, reveal, scorecard and future placeholders'
  await expect(page.locator('canvas')).toHaveCount(0)
  await page.getByRole('link',{name:'Scorecard',exact:true}).click()
  await expect(page.getByText('Directional accuracy',{exact:true})).toBeVisible()
+ const batchResponse=page.waitForResponse(r=>r.url().endsWith('/api/v1/experiments')&&r.request().method()==='POST')
+ await page.getByRole('button',{name:'Run synthetic sample batch'}).click()
+ const batch=await (await batchResponse).json()
+ expect(batch.job_ids).toHaveLength(9)
+ await expect.poll(async()=>{
+  const jobs=await Promise.all(batch.job_ids.map(async(id:string)=>(await page.request.get('/api/v1/jobs/'+id)).json()))
+  return jobs.every(j=>j.status==='completed')
+ },{timeout:60000}).toBeTruthy()
+ await page.getByRole('button',{name:/Inspect job/}).first().click()
+ await expect(page.getByRole('heading',{name:'Job details'})).toBeVisible()
+ await page.getByRole('link',{name:'Scorecard',exact:true}).click()
+ const downloadEvent=page.waitForEvent('download')
+ await page.getByRole('button',{name:'Export audit JSON'}).click()
+ const download=await downloadEvent
+ const audit=JSON.parse(readFileSync((await download.path())!,'utf8'))
+ for(const id of batch.job_ids){
+  const job=audit.jobs.find((j:{job_id:string})=>j.job_id===id)
+  expect(job.status).toBe('completed')
+  for(const rid of job.result.recommendation_ids){
+   const decision=audit.decisions.find((d:{recommendation_id:string})=>d.recommendation_id===rid)
+   expect(decision.run_id).toBeTruthy()
+   expect(audit.runs.some((r:any)=>r.analysis.recommendation.run_id===decision.run_id)).toBeTruthy()
+   expect(audit.outcomes.some((o:any)=>o.recommendation_id===rid)).toBeTruthy()
+  }
+ }
  await page.getByRole('link',{name:'Portfolio',exact:true}).click()
  await expect(page.getByRole('heading',{name:'Planned for a future release'})).toBeVisible()
  await page.getByRole('button',{name:'Sign out'}).click()

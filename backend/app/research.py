@@ -1,6 +1,6 @@
 import hmac
 import os
-from typing import Literal
+from typing import Literal, Annotated
 from datetime import datetime,time,timedelta,timezone
 from fastapi import APIRouter,Depends,HTTPException,Request,Response
 from pydantic import BaseModel,Field
@@ -54,6 +54,17 @@ def dashboard(conn=Depends(db)):
     jobs=[dict(zip(('job_id','kind','status','attempts','error_code','result'),r)) for r in conn.execute('SELECT job_id,kind,status,attempts,error_code,result FROM research.jobs ORDER BY created_at DESC LIMIT 20')]
     return {'datasets':datasets,'recommendations':rows,'jobs':jobs,'data_status':'synthetic_only','freshness':'Historical fictional fixtures; no live feed',
             'latest_analysis_date':max((r['information_cutoff_at'] for r in rows),default=None)}
+
+
+def job_record(row):
+    return dict(zip(('job_id','kind','status','attempts','error_code','payload','result'),row))
+
+
+@router.get('/jobs/{job_id}',dependencies=[Depends(require_auth)])
+def job_detail(job_id:str,conn=Depends(db)):
+    row=conn.execute('SELECT job_id,kind,status,attempts,error_code,payload,result FROM research.jobs WHERE job_id=%s',(job_id,)).fetchone()
+    if row is None: raise HTTPException(404,'Job not found')
+    return job_record(row)
 
 
 @router.post('/initialize',dependencies=[Depends(require_auth)])
@@ -126,7 +137,7 @@ def scores(conn=Depends(db)): return scorecard(conn)
 
 class Batch(BaseModel):
     dataset_version: str=Field(max_length=100)
-    dates: list[str]=Field(min_length=1,max_length=10)
+    dates: list[Annotated[str, Field(pattern=r'^\d{4}-\d{2}-\d{2}$')]]=Field(min_length=1,max_length=10)
 
 
 @router.post('/experiments',dependencies=[Depends(require_auth)])
@@ -146,7 +157,9 @@ def experiments(body:Batch,conn=Depends(db)):
 
 @router.get('/experiments/export',dependencies=[Depends(require_auth)])
 def export(conn=Depends(db)):
-    return {'label':'Synthetic research audit export','decisions':[r[0] for r in conn.execute('SELECT payload FROM research.decisions')],
+    return {'label':'Synthetic research audit export',
+            'jobs':[job_record(r) for r in conn.execute('SELECT job_id,kind,status,attempts,error_code,payload,result FROM research.jobs ORDER BY created_at,job_id')],
+            'decisions':[r[0] for r in conn.execute('SELECT payload FROM research.decisions')],
             'outcomes':[r[0] for r in conn.execute('SELECT payload FROM research.trade_outcomes')],
             'runs':[r[0] for r in conn.execute('SELECT manifest FROM research.runs')],
             'scorecard':scorecard(conn)}

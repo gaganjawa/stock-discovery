@@ -21,4 +21,13 @@ def test_job_idempotency_failure_and_retry():
             run_job(db,'test')
         state=db.execute('SELECT status,attempts,error_code FROM research.jobs WHERE job_id=%s',(bad,)).fetchone()
         assert state==('failed',3,'KeyError')
+        from app.research import job_detail, export
+        detail=job_detail(bad,db)
+        assert detail['status']=='failed' and detail['error_code']=='KeyError'
+        assert detail['payload']['dataset_version']=='does-not-exist'
+        assert next(j for j in export(db)['jobs'] if j['job_id']==bad)==detail
+        from fastapi import HTTPException
+        with pytest.raises(HTTPException) as missing:
+            job_detail('unknown-job',db)
+        assert missing.value.status_code==404
         assert run_job(db,'test') is None
