@@ -4,7 +4,7 @@
 
 ## Active scope reset — 14 October 2026
 
-Owner explicitly selected local daily-swing MVP software first, with hosting and broader v1.0 enhancements deferred. Finish this consolidated batch rather than stopping after each small ticket. Added optional LLM explanations (disabled by default, no paid calls), preserved local .env with blank key fields, and local startup helper. See [MVP handoff](DAILY-SWING-MVP.md). Local tests/build pass; full acceptance pending. Earlier repeated wait-for-go milestones are historical; pause only after the current consolidated handoff.
+Owner explicitly selected local daily-swing MVP software first, with hosting and broader v1.0 enhancements deferred. Finish this consolidated batch rather than stopping after each small ticket. Added optional LLM explanations (disabled by default, no paid calls), preserved local .env with blank key fields, and local startup helper. See [MVP handoff](DAILY-SWING-MVP.md). Implementation `a9a3eb7` passed full CI (58 application, 11 database, 7 script tests, build/browser). Local stack is running and API/UI/database/worker/login checks pass. Local synthetic MVP software acceptance is complete; live LLM access remains untested without an owner key. Earlier repeated wait-for-go milestones are historical; pause only after the current consolidated handoff.
 
 ## STK-042 audit reproducibility — 14 October 2026
 

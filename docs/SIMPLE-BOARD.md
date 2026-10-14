@@ -1,10 +1,10 @@
 # Stock Discovery — lightweight progress board
 
-Updated: **14 October 2026** · Verified implementation checkpoint: **4bbbc26**
+Updated: **14 October 2026** · Verified implementation checkpoint: **a9a3eb7**
 
 ## Current finish target: local daily-swing MVP
 
-Owner selected **daily-swing MVP first**, with hosting deferred. [Software scope, startup and API-key setup](DAILY-SWING-MVP.md). Core synthetic workflows are implemented; optional AI explanation and a local launcher have been added. Consolidated acceptance is pending. The 81-ticket roadmap below is longer-term scope, not the current finish target.
+Owner selected **daily-swing MVP first**, with hosting deferred. [Software scope, startup and API-key setup](DAILY-SWING-MVP.md). Core synthetic workflows are implemented; optional AI explanation and a local launcher have been added. **Local synthetic MVP software acceptance is complete.** The app is running at http://127.0.0.1:5173; live-market data and hosted release remain deferred. The 81-ticket roadmap below is longer-term scope, not the current finish target.
 
 LLM is optional: blank `OPENAI_API_KEY` is in `.env`; set `LLM_ENABLED=true` after adding a key. Calculations and trading signals remain deterministic. Without a key, explanations use frozen rule text.
 
@@ -23,7 +23,7 @@ Working flow: fictional history → rule-based recommendation → historical rep
 
 **27/81 tickets are done or implemented for synthetic use. This is not 33% of effort or production readiness:** ticket sizes differ, and the remaining integrations/release work is substantial. Optional v1.1 real-money execution (9 tickets) is excluded.
 
-Latest verified implementation CI: **55 application tests, 11 database cases, production build and browser workflow passed**. [Evidence](https://github.com/gaganjawa/stock-discovery/actions/runs/38610115055). These tests validate software, not trading profitability.
+Latest verified implementation CI: **58 application tests, 11 database cases, 7 script tests, production build and browser workflow passed**. [Evidence](https://github.com/gaganjawa/stock-discovery/actions/runs/38612490959). These tests validate software, not trading profitability.
 
 ## Feature-by-feature
 
