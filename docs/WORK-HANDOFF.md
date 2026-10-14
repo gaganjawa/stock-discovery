@@ -1,5 +1,9 @@
 # Stock Discovery — work checkpoint
 
+## STK-042 validation visibility — 14 October 2026
+
+Grouped validation results, sample sizes, descriptive intervals and limitations now appear in the scorecard. Build passed; browser/full CI pending. STK-042 remains partial for real-history and chronological/overlap-aware acceptance. See [STK-042](STK-042.md). Pause after status.
+
 ## STK-041 scorecard visibility — 14 October 2026
 
 Counts, traded notional, closing-mark exposure and admission/exclusion details are now visible with definitions and unavailable states. Implementation `d7ab84f` passed build and full CI: 51 application tests, 11 database cases and browser acceptance. STK-041 remains partial. Pause after status.

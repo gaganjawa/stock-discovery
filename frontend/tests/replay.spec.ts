@@ -73,6 +73,21 @@ test('authenticated synthetic freeze, reveal, scorecard and future placeholders'
  await groups.selectOption(chosenGroup!)
  const selectedScores=await (await groupResponse).json()
  expect(selectedScores.selected_cohort).toBe(chosenGroup)
+ const validation=page.getByRole('region',{name:'Validation report',exact:true})
+ await expect(validation).toContainText('not the probability of a future recommendation succeeding')
+ await expect(validation).toContainText('do not add their sample counts together')
+ for(const limitation of selectedScores.validation_report.limitations)await expect(validation).toContainText(limitation)
+ for(const [name,group] of Object.entries(selectedScores.validation_report.groups) as [string,any][]){
+  const row=validation.getByRole('row').filter({has:page.getByRole('rowheader',{name:name.replaceAll('_',' '),exact:true})})
+  await expect(row.getByRole('cell').nth(0)).toHaveText(String(group.sample_count))
+  await expect(row.getByRole('cell').nth(1)).toHaveText(String(group.metrics.direction.denominator))
+  const interval=group.direction_interval
+  if(interval.lower===null)await expect(row.getByRole('cell').nth(3)).toContainText('Not available')
+  else{
+   await expect(row.getByRole('cell').nth(3)).toContainText(Number(interval.lower).toLocaleString('en-IN',{maximumFractionDigits:4})+' to '+Number(interval.upper).toLocaleString('en-IN',{maximumFractionDigits:4}))
+   await expect(row.getByRole('cell').nth(3)).toContainText(interval.method)
+  }
+ }
  for(const [label,counts] of [['Recommendation counts',selectedScores.action_counts],['Trade outcome counts',selectedScores.trade_status_counts]] as const){
   const section=page.getByRole('region',{name:label,exact:true})
   await expect(section).toBeVisible()
