@@ -67,10 +67,23 @@ def reveal(conn,recommendation_id,evaluated_at=None):
     return stored
 
 
-def scorecard(conn):
+def cohort_metadata(r):
+    values=dict(dataset=r['versions']['dataset'],code=r['versions']['code'],
+                strategy=r['strategy']['version'],configuration=r['strategy']['config_version'])
+    return {'id':hashlib.sha256(canonical(values).encode()).hexdigest(),**values}
+
+
+def scorecard(conn,cohort=None):
     records=conn.execute('''SELECT d.payload,o.payload FROM research.decisions d LEFT JOIN LATERAL
         (SELECT payload FROM research.trade_outcomes WHERE recommendation_id=d.recommendation_id
          ORDER BY evaluated_at DESC,outcome_id DESC LIMIT 1) o ON true ORDER BY d.generated_at,d.recommendation_id''').fetchall()
+    cohorts={}
+    for r,_ in records:
+        group=cohort_metadata(r)
+        cohorts.setdefault(group['id'],{**group,'count':0})['count']+=1
+    if cohort is not None:
+        if cohort not in cohorts: raise ValueError('Unknown scorecard version group')
+        records=[(r,o) for r,o in records if cohort_metadata(r)['id']==cohort]
     rows=[]; detail=[]; portfolio_records=[]
     for r,o in records:
         t=o['trade'] if o else {}; f=o['forecast'] if o else {}
@@ -89,7 +102,7 @@ def scorecard(conn):
         curve=o.get('equity_curve',[]) if o else []
         detail.append({'recommendation_id':r['recommendation_id'],'status':t.get('status','missing'),
                        'portfolio':portfolio(curve),'exclusions':o.get('exclusions',[]) if o else ['not_evaluated']})
-    return json_value({**summarize(rows),'eligibility':rows,'isolated_trade_portfolios':detail,
+    return json_value({'cohorts':sorted(cohorts.values(),key=lambda c:c['id']),'selected_cohort':cohort,**summarize(rows),'eligibility':rows,'isolated_trade_portfolios':detail,
         'portfolio':replay_portfolio(portfolio_records),
         'validation_report':validation_report(rows,[a for a,_ in portfolio_records]),
         'benchmark':{'return':None,'reason':'no_permitted_comparable_benchmark'},'cash_benchmark_return':'0',

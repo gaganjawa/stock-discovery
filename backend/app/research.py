@@ -132,7 +132,9 @@ def replay_job(body:Selection,conn=Depends(db)):
 
 
 @router.get('/scorecard',dependencies=[Depends(require_auth)])
-def scores(conn=Depends(db)): return scorecard(conn)
+def scores(conn=Depends(db),cohort:str|None=None):
+    try: return scorecard(conn,cohort)
+    except ValueError as exc: raise HTTPException(400,str(exc))
 
 
 class Batch(BaseModel):

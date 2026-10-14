@@ -1,5 +1,9 @@
 # Stock Discovery — work checkpoint
 
+## STK-041 scorecard selection — 14 October 2026
+
+Version-group selection implemented using frozen dataset/code/strategy/configuration. Local tests/build passed; CI pending. STK-041 remains partial for real benchmarks/full portfolio acceptance. See [STK-041](STK-041.md). Pause after the status report.
+
 ## STK-044 versioned reruns — 14 October 2026
 
 New jobs pin code/strategy/configuration versions; upgrade reruns preserve prior results and mismatching workers reject pinned jobs. 50 local tests passed; implementation `1544f45` passed full CI including 10 database cases and browser acceptance. No external deployment. Pause after the result.

@@ -14,7 +14,7 @@ def replay_portfolio(records):
     """
     if not records: return {'reason':'no_recommendations','time_weighted_return':None,'maximum_drawdown':None}
     ordered=sorted(records,key=lambda pair:(pair[0]['recommendation']['information_cutoff_at'],pair[0]['recommendation']['instrument']['symbol'],pair[0]['recommendation']['recommendation_id']))
-    groups={(a['recommendation']['versions']['dataset'],a['recommendation']['versions']['code'],a['recommendation']['strategy']['version']) for a,_ in ordered}
+    groups={(a['recommendation']['versions']['dataset'],a['recommendation']['versions']['code'],a['recommendation']['strategy']['version'],a['recommendation']['strategy']['config_version']) for a,_ in ordered}
     if len(groups)!=1: return {'reason':'select_one_dataset_code_strategy_cohort','time_weighted_return':None,'maximum_drawdown':None}
     first=ordered[0][0]['recommendation']['information_cutoff_at']
     curve=[{'at':first,'cash':D(100000),'positions':[],'external_flow':D(0)}]

@@ -20,3 +20,12 @@ def test_ambiguous_portfolio_stays_undefined():
     a,d,end=scenario([('103','111','97','105')])
     p=replay_portfolio([(a,simulate(a,d,end))])
     assert p['reason']=='unresolved_admitted_trade' and p['time_weighted_return'] is None
+
+
+def test_different_configurations_are_not_pooled():
+    a,d,end=scenario([('102','105','101','104'),('104','111','103','108')])
+    b=deepcopy(a)
+    b['recommendation']['strategy']['config_version']='different-configuration'
+    p=replay_portfolio([(a,simulate(a,d,end)),(b,simulate(b,d,end))])
+    assert p['time_weighted_return'] is None
+    assert p['reason']=='select_one_dataset_code_strategy_cohort'
