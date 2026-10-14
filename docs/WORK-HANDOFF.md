@@ -2,7 +2,7 @@
 
 ## STK-044 continuation — 14 October 2026
 
-Job inspection and failure-inclusive audit export implemented; 50 local application tests and frontend build pass. Full batch/browser/database CI pending. See [STK-044](STK-044.md). Hosted sync pending for STK-033/043/044; pause after status.
+Job inspection and failure-inclusive audit export implemented; 50 local application tests and frontend build pass. Implementation `ae607b2` passed full CI including the nine-job batch/export browser workflow and database failure checks. See [STK-044](STK-044.md). Hosted sync pending for STK-033/043/044; pause after status.
 
 ## STK-043 continuation — 13 October 2026
 
