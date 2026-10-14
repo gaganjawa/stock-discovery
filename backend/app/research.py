@@ -9,7 +9,7 @@ from .auth import require_auth,secret,session
 from stock_discovery_analysis.runtime import setting
 from stock_discovery_analysis.dataset import demo_dataset,canonical
 from stock_discovery_analysis.service import load_dataset,freeze,read_frozen,reveal,scorecard,json_value
-from stock_discovery_analysis.jobs import enqueue
+from stock_discovery_analysis.jobs import enqueue,execution_versions
 from stock_discovery_analysis.strategy import STRATEGY_VERSION
 
 router=APIRouter(prefix='/api/v1')
@@ -122,13 +122,13 @@ def reveal_prices(rid:str,conn=Depends(db)):
 @router.post('/scan',dependencies=[Depends(require_auth)])
 def scan(body:Selection,conn=Depends(db)):
     d,cutoff=selection(body,conn)
-    return {'job_id':enqueue(conn,'scan',{'dataset_version':d.version,'cutoff':cutoff.isoformat()})}
+    return {'job_id':enqueue(conn,'scan',{**execution_versions(os.getenv('CODE_VERSION','local-unversioned')),'dataset_version':d.version,'cutoff':cutoff.isoformat()})}
 
 
 @router.post('/replay-job',dependencies=[Depends(require_auth)])
 def replay_job(body:Selection,conn=Depends(db)):
     d,cutoff=selection(body,conn)
-    return {'job_id':enqueue(conn,'replay',{'dataset_version':d.version,'instrument_id':body.instrument_id,'cutoff':cutoff.isoformat()})}
+    return {'job_id':enqueue(conn,'replay',{**execution_versions(os.getenv('CODE_VERSION','local-unversioned')),'dataset_version':d.version,'instrument_id':body.instrument_id,'cutoff':cutoff.isoformat()})}
 
 
 @router.get('/scorecard',dependencies=[Depends(require_auth)])
@@ -149,7 +149,7 @@ def experiments(body:Batch,conn=Depends(db)):
         for instrument in d.instruments:
             chosen=Selection(dataset_version=d.version,instrument_id=instrument.instrument_id,date=day)
             _,cutoff=selection(chosen,conn)
-            requests.append({'dataset_version':d.version,'instrument_id':instrument.instrument_id,'cutoff':cutoff.isoformat()})
+            requests.append({**execution_versions(os.getenv('CODE_VERSION','local-unversioned')),'dataset_version':d.version,'instrument_id':instrument.instrument_id,'cutoff':cutoff.isoformat()})
     with conn.transaction():
         jobs=[enqueue(conn,'replay',payload) for payload in requests]
     return {'job_ids':jobs,'label':'Synthetic software validation; failed outcomes retained'}

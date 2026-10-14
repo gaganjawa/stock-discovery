@@ -85,6 +85,9 @@ test('authenticated synthetic freeze, reveal, scorecard and future placeholders'
  for(const id of batch.job_ids){
   const job=audit.jobs.find((j:{job_id:string})=>j.job_id===id)
   expect(job.status).toBe('completed')
+  expect(job.payload.code_version).toBe(frozen.recommendation.versions.code)
+  expect(job.payload.strategy_version).toBe(frozen.recommendation.strategy.version)
+  expect(job.payload.config_version).toBe(frozen.recommendation.strategy.config_version)
   for(const rid of job.result.recommendation_ids){
    const decision=audit.decisions.find((d:{recommendation_id:string})=>d.recommendation_id===rid)
    expect(decision.run_id).toBeTruthy()

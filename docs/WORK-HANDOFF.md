@@ -1,5 +1,9 @@
 # Stock Discovery — work checkpoint
 
+## STK-044 versioned reruns — 14 October 2026
+
+New jobs pin code/strategy/configuration versions; upgrade reruns preserve prior results and mismatching workers reject pinned jobs. Local regression passed; expanded database/browser CI pending. No external deployment. Pause after the result.
+
 ## STK-044 continuation — 14 October 2026
 
 Job inspection and failure-inclusive audit export implemented; 50 local application tests and frontend build pass. Implementation `ae607b2` passed full CI including the nine-job batch/export browser workflow and database failure checks. See [STK-044](STK-044.md). Hosted sync pending for STK-033/043/044; pause after status.

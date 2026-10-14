@@ -7,6 +7,15 @@ from .dataset import canonical,demo_dataset
 from .storage import ingest
 from .service import freeze,reveal,json_value,load_dataset
 from .replay import dt
+from .strategy import STRATEGY_VERSION, CONFIG_VERSION
+
+
+class ExecutionVersionMismatch(ValueError):
+    pass
+
+
+def execution_versions(code_version):
+    return dict(code_version=code_version,strategy_version=STRATEGY_VERSION,config_version=CONFIG_VERSION)
 
 
 def enqueue(conn,kind,payload):
@@ -45,6 +54,8 @@ def _run_job(conn,code_version):
         if kind=='ingest':
             result={'dataset_version':ingest(conn,demo_dataset())}
         else:
+            if any(payload.get(key, value)!=value for key,value in execution_versions(code_version).items()):
+                raise ExecutionVersionMismatch('Queued execution versions do not match this worker')
             d=load_dataset(conn,payload['dataset_version'])
             cutoff=dt(payload['cutoff'])
             instruments=[payload['instrument_id']] if kind=='replay' else [i.instrument_id for i in d.instruments]
