@@ -33,6 +33,8 @@ def main():
         compose=[docker,'compose']
     elif shutil.which('docker-compose'): compose=[shutil.which('docker-compose')]
     else: raise SystemExit('Install/start Docker with Compose, then retry. Your .env is ready.')
+    if not docker or subprocess.run([docker,'info'],capture_output=True).returncode!=0:
+        raise SystemExit('Docker is installed but not running. Start Docker Desktop or Colima, then retry.')
     env=os.environ.copy()
     port=env.get('WEB_PORT',values.get('WEB_PORT','5173'))
     if not port.isdigit() or not 1<=int(port)<=65535: raise SystemExit('WEB_PORT must be a valid port number.')
@@ -41,7 +43,8 @@ def main():
         rev=subprocess.run(['git','rev-parse','HEAD'],cwd=ROOT,capture_output=True,text=True)
         if rev.returncode==0: env['CODE_VERSION']=rev.stdout.strip()
     command={'start':['up','--build','-d'],'stop':['stop'],'status':['ps']}[args.action]
-    subprocess.run(compose+command,cwd=ROOT,env=env,check=True)
+    completed=subprocess.run(compose+command,cwd=ROOT,env=env)
+    if completed.returncode: raise SystemExit('Compose did not complete; see its diagnostic above. Existing data was not removed.')
     if args.action=='start':
         print('Open http://127.0.0.1:'+port)
         print('Sign in with AUTH_TOKEN from '+str(ROOT/'.env')+'. Load synthetic history from Dashboard.')
