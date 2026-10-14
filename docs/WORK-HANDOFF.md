@@ -2,7 +2,7 @@
 
 ## STK-041 scorecard selection — 14 October 2026
 
-Version-group selection implemented using frozen dataset/code/strategy/configuration. Local tests/build passed; CI pending. STK-041 remains partial for real benchmarks/full portfolio acceptance. See [STK-041](STK-041.md). Pause after the status report.
+Version-group selection implemented using frozen dataset/code/strategy/configuration. 51 local tests/build passed; implementation `bc57f40` passed full CI including browser acceptance and 11 database cases. STK-041 remains partial for real benchmarks/full portfolio acceptance. See [STK-041](STK-041.md). Pause after the status report.
 
 ## STK-044 versioned reruns — 14 October 2026
 
