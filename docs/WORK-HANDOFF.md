@@ -2,7 +2,7 @@
 
 ## STK-044 versioned reruns — 14 October 2026
 
-New jobs pin code/strategy/configuration versions; upgrade reruns preserve prior results and mismatching workers reject pinned jobs. Local regression passed; expanded database/browser CI pending. No external deployment. Pause after the result.
+New jobs pin code/strategy/configuration versions; upgrade reruns preserve prior results and mismatching workers reject pinned jobs. 50 local tests passed; implementation `1544f45` passed full CI including 10 database cases and browser acceptance. No external deployment. Pause after the result.
 
 ## STK-044 continuation — 14 October 2026
 
