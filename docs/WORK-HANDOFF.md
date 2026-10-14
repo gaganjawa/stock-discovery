@@ -2,6 +2,10 @@
 
 **Current progress view: [Lightweight board](SIMPLE-BOARD.md).** Owner requested Markdown tracking on 14 October 2026 to avoid hosted-board overhead. Use this file for routine overall/feature status; hosted-board synchronization is no longer a prerequisite for local status reporting. Existing historical sync-pending notes below remain historical.
 
+## Active scope reset — 14 October 2026
+
+Owner explicitly selected local daily-swing MVP software first, with hosting and broader v1.0 enhancements deferred. Finish this consolidated batch rather than stopping after each small ticket. Added optional LLM explanations (disabled by default, no paid calls), preserved local .env with blank key fields, and local startup helper. See [MVP handoff](DAILY-SWING-MVP.md). Local tests/build pass; full acceptance pending. Earlier repeated wait-for-go milestones are historical; pause only after the current consolidated handoff.
+
 ## STK-042 audit reproducibility — 14 October 2026
 
 Frozen split policy and content-based audit identity added; duplicate IDs rejected and unknown split policies unavailable. Implementation `32c4416` passed full CI: 55 application tests, 11 database cases, build and browser acceptance. Trial ledger/untouched-test controls remain open. Pause after status.

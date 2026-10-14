@@ -2,6 +2,12 @@
 
 Updated: **14 October 2026** · Verified implementation checkpoint: **4bbbc26**
 
+## Current finish target: local daily-swing MVP
+
+Owner selected **daily-swing MVP first**, with hosting deferred. [Software scope, startup and API-key setup](DAILY-SWING-MVP.md). Core synthetic workflows are implemented; optional AI explanation and a local launcher have been added. Consolidated acceptance is pending. The 81-ticket roadmap below is longer-term scope, not the current finish target.
+
+LLM is optional: blank `OPENAI_API_KEY` is in `.env`; set `LLM_ENABLED=true` after adding a key. Calculations and trading signals remain deterministic. Without a key, explanations use frozen rule text.
+
 ## Overall
 
 **A tested synthetic research MVP works end to end. A private deployed product and the full v1.0 roadmap are not complete.**

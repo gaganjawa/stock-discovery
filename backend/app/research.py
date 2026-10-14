@@ -119,6 +119,14 @@ def reveal_prices(rid:str,conn=Depends(db)):
     return {**out,'candles':chart(d.asof(a['recommendation']['instrument']['instrument_id'],datetime.now(timezone.utc)))}
 
 
+@router.post('/analysis/{rid}/explanation',dependencies=[Depends(require_auth)])
+def explanation(rid:str,conn=Depends(db)):
+    from .explanations import explain
+    try: frozen=read_frozen(conn,rid)
+    except KeyError: raise HTTPException(404,'Recommendation not found')
+    return explain(frozen)
+
+
 @router.post('/scan',dependencies=[Depends(require_auth)])
 def scan(body:Selection,conn=Depends(db)):
     d,cutoff=selection(body,conn)

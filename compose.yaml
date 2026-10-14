@@ -31,6 +31,10 @@ services:
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER:-stock_discovery}:${POSTGRES_PASSWORD:-change-me-for-local-use}@database:5432/${POSTGRES_DB:-stock_discovery}
       AUTH_TOKEN: ${AUTH_TOKEN:-}
+      LLM_ENABLED: ${LLM_ENABLED:-false}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      LLM_MODEL: ${LLM_MODEL:-gpt-4.1-mini}
+      LLM_MAX_OUTPUT_TOKENS: ${LLM_MAX_OUTPUT_TOKENS:-512}
       COOKIE_SECURE: ${COOKIE_SECURE:-true}
       APP_ORIGIN: ${APP_ORIGIN:-http://127.0.0.1:5173}
       CODE_VERSION: ${CODE_VERSION:-local-unversioned}

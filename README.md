@@ -1,8 +1,37 @@
 # Stock Discovery
 
+## Local daily-swing MVP
+
+Start Docker, then from this repository run:
+
+```sh
+python3 scripts/local.py start
+```
+
+Open http://127.0.0.1:5173 and sign in using `AUTH_TOKEN` in `.env`. The launcher creates a missing owner key without printing it or replacing existing credentials. Choose **Load synthetic history**, then **Replay → Freeze recommendation → Reveal**. Scorecard supports version groups, batches and export. Use `python3 scripts/local.py stop` to stop services while retaining their containers/data; `status` shows services.
+
+The application currently uses fictional daily history. Real-market feeds, hosting, IPO/news, intraday and model training are deferred. See [MVP scope and acceptance](docs/DAILY-SWING-MVP.md).
+
+### Optional AI explanation
+
+`.env` and `.env.example` contain these fields. Add your key only to `.env`:
+
+```dotenv
+LLM_ENABLED=false
+OPENAI_API_KEY=
+LLM_MODEL=gpt-4.1-mini
+LLM_MAX_OUTPUT_TOKENS=512
+```
+
+After adding the key, set `LLM_ENABLED=true` and rerun the local launcher. **Explain recommendation** then makes an on-demand API request using frozen synthetic facts. It does not calculate or change the signal. With AI disabled, missing credentials or provider failure, the existing rule explanation remains available. No external API calls are needed for normal MVP operation. Never commit `.env`.
+
+AI calls can incur provider charges when you enable them. Requests have a 20-second timeout and bounded output, no tools and no automatic retries. Broader AI budgets and persistent explanation history are deferred. The current integration is for the local Compose stack; private-host configuration remains separate.
+
+---
+
 Private Indian equity research: discover stocks using news, fundamentals, technical indicators, candles and volume; produce evidence-linked recommendations; compare forecasts and simulated trades with subsequent prices and forward paper results.
 
-Agreed architecture: React + TypeScript + Lightweight Charts, FastAPI, one scheduled Python worker, PostgreSQL, shared Python analysis for historical and live modes, and Docker Compose. An existing LLM supports grounded research; predictive ML experiments come later. No initial microservices, Kubernetes or Redis.
+Agreed architecture: React + TypeScript + Lightweight Charts, FastAPI, one scheduled Python worker, PostgreSQL, shared Python analysis for historical and live modes, and Docker Compose. Optional LLM explanations can summarize frozen recommendations; signals, calculations and sizing are deterministic. Broader grounded research and predictive ML come later. No initial microservices, Kubernetes or Redis.
 
 Current checkpoint: synthetic preview, hardened private configuration and encrypted local recovery/rollback verification pass; private release readiness is **PARTIAL**. **v0.1/v0.2 have not been tagged or privately deployed.** See [STK-018 release acceptance and recovery runbook](docs/STK-018.md) for gates, risks and release notes, and [work handoff](docs/WORK-HANDOFF.md) for local preview instructions.
 
@@ -14,7 +43,7 @@ Current checkpoint: synthetic preview, hardened private configuration and encryp
 - [Working Kanban plan](docs/stock-platform-kanban-plan.md)
 - [Original supplied plan](docs/reference/stock-platform-kanban-plan.md)
 - [System design](docs/stock-discovery-system-design.docx)
-- [Delivery board](https://stock-platform-kanban.jawagag.chatgpt.site)
+- [Lightweight progress board](docs/SIMPLE-BOARD.md)
 
 Validate with Python 3.9 or later (standard library only):
 
