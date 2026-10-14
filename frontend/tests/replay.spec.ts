@@ -73,6 +73,23 @@ test('authenticated synthetic freeze, reveal, scorecard and future placeholders'
  await groups.selectOption(chosenGroup!)
  const selectedScores=await (await groupResponse).json()
  expect(selectedScores.selected_cohort).toBe(chosenGroup)
+ for(const [label,counts] of [['Recommendation counts',selectedScores.action_counts],['Trade outcome counts',selectedScores.trade_status_counts]] as const){
+  const section=page.getByRole('region',{name:label,exact:true})
+  await expect(section).toBeVisible()
+  expect(Object.values(counts).reduce((sum:any,value:any)=>sum+value,0)).toBe(selectedScores.eligibility.length)
+  for(const [name,count] of Object.entries(counts)){
+   const row=section.locator('dl > div').filter({has:page.getByText(name.replaceAll('_',' '),{exact:true})})
+   await expect(row.locator('dd')).toHaveText(String(count))
+  }
+ }
+ const activity=page.getByRole('region',{name:'Portfolio activity',exact:true})
+ await expect(activity).toContainText('not a turnover percentage')
+ for(const [label,key] of [['Traded notional ₹','turnover_notional_inr'],['Closing-mark exposure fraction','exposure_mark_fraction']]){
+  const value=selectedScores.portfolio[key]
+  const expected=value===undefined?'Not available':Number(value).toLocaleString('en-IN',{maximumFractionDigits:4})
+  await expect(activity.locator('dl > div').filter({has:page.getByText(label,{exact:true})}).locator('dd')).toHaveText(expected)
+ }
+ if(selectedScores.portfolio.exposure_definition)await expect(activity).toContainText(selectedScores.portfolio.exposure_definition)
  await expect(groups).toHaveValue(chosenGroup!)
  await page.getByRole('button',{name:'Refresh scorecard',exact:true}).click()
  await expect(groups).toHaveValue(chosenGroup!)

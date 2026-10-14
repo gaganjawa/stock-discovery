@@ -1,5 +1,9 @@
 # Stock Discovery — work checkpoint
 
+## STK-041 scorecard visibility — 14 October 2026
+
+Counts, traded notional, closing-mark exposure and admission/exclusion details are now visible with definitions and unavailable states. Build passed; focused browser/full CI pending. STK-041 remains partial. Pause after status.
+
 ## STK-041 scorecard selection — 14 October 2026
 
 Version-group selection implemented using frozen dataset/code/strategy/configuration. 51 local tests/build passed; implementation `bc57f40` passed full CI including browser acceptance and 11 database cases. STK-041 remains partial for real benchmarks/full portfolio acceptance. See [STK-041](STK-041.md). Pause after the status report.
