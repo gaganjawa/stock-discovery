@@ -2,7 +2,7 @@
 
 ## STK-042 chronological audit — 14 October 2026
 
-Synthetic split assignments and conservative label-window exclusions are implemented and visible. 53 application tests/build pass; full CI pending. This is an assignment audit, not training or EP-1 acceptance; STK-042 stays partial. Pause after status.
+Synthetic split assignments and conservative label-window exclusions are implemented and visible. Implementation `1fa5ca0` passed full CI: 53 application tests, 11 database cases, build and browser acceptance. This is an assignment audit, not training or EP-1 acceptance; STK-042 stays partial. Pause after status.
 
 ## STK-042 validation visibility — 14 October 2026
 
