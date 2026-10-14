@@ -1,10 +1,19 @@
 """Audit fixed synthetic session splits without reading realized outcomes."""
-from .dataset import chronological_windows
+import hashlib
+from .dataset import chronological_windows, canonical
 from .replay import dt
-from .strategy import CONFIG_VERSION, stamp
+from .strategy import stamp
+
+# Policy is frozen independently of whichever strategy is currently deployed.
+LABEL_CONFIG='SYN-EMA10-30-RVOL20-1.5-ATR14-2R-v1'
+SPLIT_POLICY='chronological-60-20-20-gap5-v1'
 
 
 def split_report(dataset, analyses):
+    if dataset.split_version!=SPLIT_POLICY:
+        return {'status':'unavailable','reason':'unsupported_dataset_split_policy'}
+    ids=[a['recommendation']['recommendation_id'] for a in analyses]
+    if len(ids)!=len(set(ids)): raise ValueError('duplicate recommendation in split audit')
     sessions=dataset.calendar.sessions
     windows=chronological_windows(len(sessions),gap=5)
     names=('development','validation','test')
@@ -19,7 +28,7 @@ def split_report(dataset, analyses):
                     (i+1==len(sessions) or cutoff<sessions[i+1].opens_at)),None)
         name=next((n for n in names if index is not None and windows[n][0]<=index<windows[n][1]),None)
         if r['versions']['dataset']!=dataset.version: reason='dataset_mismatch'
-        elif r['strategy']['config_version']!=CONFIG_VERSION: reason='unsupported_label_policy'
+        elif r['strategy']['config_version']!=LABEL_CONFIG: reason='unsupported_label_policy'
         elif index is None: reason='cutoff_outside_closed_session'
         elif name is None: reason='boundary_gap'
         elif index+5>=len(sessions): reason='label_horizon_outside_calendar'
@@ -40,7 +49,13 @@ def split_report(dataset, analyses):
             if next_name and endpoint>=dt(result[next_name]['start_at']): reason='label_overlaps_next_split'
         if reason: excluded.append({'id':rid,'reason':reason})
         else: result[name]['recommendation_ids'].append(rid)
-    return {'policy':'SYN-60-20-20-gap5-label5-v1','calendar_version':dataset.calendar.version,
+    for window in result.values(): window['recommendation_ids'].sort()
+    excluded.sort(key=lambda e:e['id'])
+    report={'policy':'SYN-60-20-20-gap5-label5-v1','dataset_version':dataset.version,
+            'dataset_split_policy':SPLIT_POLICY,'label_configuration':LABEL_CONFIG,'calendar_version':dataset.calendar.version,
             'gap_sessions':5,'maximum_label_sessions':5,'windows':result,'exclusions':excluded,
             'status':'synthetic_audit_only',
             'limitation':'Session-based synthetic audit, not EP-1 complete-month validation or an untouched-test guarantee.'}
+
+    report['audit_id']='SYN-SPLIT-'+hashlib.sha256(canonical(report).encode()).hexdigest()
+    return report

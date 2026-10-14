@@ -1,5 +1,9 @@
 # Stock Discovery — work checkpoint
 
+## STK-042 audit reproducibility — 14 October 2026
+
+Frozen split policy and content-based audit identity added; duplicate IDs rejected and unknown split policies unavailable. 55 local tests/build pass; full CI pending. Trial ledger/untouched-test controls remain open. Pause after status.
+
 ## STK-042 chronological audit — 14 October 2026
 
 Synthetic split assignments and conservative label-window exclusions are implemented and visible. Implementation `1fa5ca0` passed full CI: 53 application tests, 11 database cases, build and browser acceptance. This is an assignment audit, not training or EP-1 acceptance; STK-042 stays partial. Pause after status.

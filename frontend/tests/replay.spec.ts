@@ -75,6 +75,7 @@ test('authenticated synthetic freeze, reveal, scorecard and future placeholders'
  expect(selectedScores.selected_cohort).toBe(chosenGroup)
  const chronology=page.getByRole('region',{name:'Chronological split audit',exact:true})
  await expect(chronology).toContainText('never realized profits')
+ await expect(chronology).toContainText(selectedScores.chronological_validation.audit_id)
  await expect(chronology).toContainText(selectedScores.chronological_validation.limitation)
  const assigned=Object.values(selectedScores.chronological_validation.windows).flatMap((w:any)=>w.recommendation_ids)
  expect(new Set([...assigned,...selectedScores.chronological_validation.exclusions.map((e:any)=>e.id)]).size).toBe(selectedScores.eligibility.length)
