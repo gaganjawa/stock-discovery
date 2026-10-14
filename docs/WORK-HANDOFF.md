@@ -2,7 +2,7 @@
 
 ## STK-042 audit reproducibility — 14 October 2026
 
-Frozen split policy and content-based audit identity added; duplicate IDs rejected and unknown split policies unavailable. 55 local tests/build pass; full CI pending. Trial ledger/untouched-test controls remain open. Pause after status.
+Frozen split policy and content-based audit identity added; duplicate IDs rejected and unknown split policies unavailable. Implementation `32c4416` passed full CI: 55 application tests, 11 database cases, build and browser acceptance. Trial ledger/untouched-test controls remain open. Pause after status.
 
 ## STK-042 chronological audit — 14 October 2026
 
