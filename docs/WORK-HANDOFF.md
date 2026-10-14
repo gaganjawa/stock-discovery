@@ -2,7 +2,7 @@
 
 ## STK-041 scorecard visibility — 14 October 2026
 
-Counts, traded notional, closing-mark exposure and admission/exclusion details are now visible with definitions and unavailable states. Build passed; focused browser/full CI pending. STK-041 remains partial. Pause after status.
+Counts, traded notional, closing-mark exposure and admission/exclusion details are now visible with definitions and unavailable states. Implementation `d7ab84f` passed build and full CI: 51 application tests, 11 database cases and browser acceptance. STK-041 remains partial. Pause after status.
 
 ## STK-041 scorecard selection — 14 October 2026
 
