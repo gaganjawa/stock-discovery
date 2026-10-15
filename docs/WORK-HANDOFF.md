@@ -1,5 +1,9 @@
 # Stock Discovery — work checkpoint
 
+## Owner review workflow — 15 October 2026
+
+Use ticket-named branches and PRs for all new work. Never push directly to main or merge PRs. The owner reviews, merges and confirms before the next package starts. See [repository rules](../AGENTS.md) and the [SD ARCH 3.0 board](SIMPLE-BOARD.md). D3-01 was already on main before this instruction; it is not being rewritten. D3-02 remains unstarted and awaits authorization. Older workflow/scope notes below are historical.
+
 ## Current scope — 15 October 2026
 
 [SD ARCH 3.0](SD-ARCH-3.0.md) is the authoritative design specification. The subsequent owner instruction authorized repository integration and **D3-01 only**. [D3-01 contract amendment](contracts/v2/README.md) is implemented: strict v2 recommendations, all three horizon profiles, policy/outcome schemas, research/admission separation, synthetic fixtures and deterministic compatibility tests. D3-02 through D3-13 remain unstarted. No real data source, paid AI, hosting or broker action is activated.
