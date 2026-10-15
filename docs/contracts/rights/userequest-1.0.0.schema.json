@@ -1,0 +1,111 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "account_ref": {
+      "minLength": 1,
+      "pattern": "\\S",
+      "title": "Account Ref",
+      "type": "string"
+    },
+    "attribution_present": {
+      "title": "Attribution Present",
+      "type": "boolean"
+    },
+    "destination_region": {
+      "anyOf": [
+        {
+          "pattern": "^[A-Z]{2}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Destination Region"
+    },
+    "processor_ref": {
+      "anyOf": [
+        {
+          "minLength": 1,
+          "pattern": "\\S",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Processor Ref"
+    },
+    "region": {
+      "pattern": "^[A-Z]{2}$",
+      "title": "Region",
+      "type": "string"
+    },
+    "requested_at": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$",
+      "title": "Requested At",
+      "type": "string"
+    },
+    "retention_days": {
+      "exclusiveMinimum": 0,
+      "title": "Retention Days",
+      "type": "integer"
+    },
+    "scope": {
+      "enum": [
+        "prices",
+        "universe",
+        "calendar",
+        "corporate_actions",
+        "benchmark",
+        "filings",
+        "news",
+        "financial_facts"
+      ],
+      "title": "Scope",
+      "type": "string"
+    },
+    "source_id": {
+      "minLength": 1,
+      "pattern": "\\S",
+      "title": "Source Id",
+      "type": "string"
+    },
+    "synthetic": {
+      "title": "Synthetic",
+      "type": "boolean"
+    },
+    "units": {
+      "exclusiveMinimum": 0,
+      "title": "Units",
+      "type": "integer"
+    },
+    "uses": {
+      "items": {
+        "minLength": 1,
+        "pattern": "\\S",
+        "type": "string"
+      },
+      "minItems": 1,
+      "title": "Uses",
+      "type": "array"
+    }
+  },
+  "required": [
+    "source_id",
+    "account_ref",
+    "scope",
+    "uses",
+    "region",
+    "destination_region",
+    "processor_ref",
+    "requested_at",
+    "synthetic",
+    "units",
+    "retention_days",
+    "attribution_present"
+  ],
+  "title": "UseRequest",
+  "type": "object"
+}

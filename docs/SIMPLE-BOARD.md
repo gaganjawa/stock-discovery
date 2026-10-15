@@ -2,13 +2,13 @@
 
 Updated: **15 October 2026** · Baseline: [SD ARCH 3.0](SD-ARCH-3.0.md)
 
-**Overall:** architecture integrated; D3-01 contracts implemented at `6b88cf6`. The other 12 packages remain unstarted. This is a package count, not a percentage of effort or application readiness. The existing synthetic MVP works; automatic real-market discovery and grounded AI research are not yet implemented.
+**Overall:** architecture integrated; D3-01 contracts implemented at `6b88cf6`. D3-02 rights/feasibility work is ready for owner review with real-source activation blocked. D3-03 through D3-13 remain unstarted. This is a package count, not a percentage of effort or application readiness. The existing synthetic MVP works; automatic real-market discovery and grounded AI research are not yet implemented.
 
 ## Delivery workflow
 
 - Use existing STK ticket IDs and the architecture's D3 package names in branches, commits and PR titles. D3 labels are delivery packages, not new tracker IDs.
 - Work on a ticket-named branch. Push that branch and provide a PR for owner review. Never push directly to `main` or merge a PR.
-- Wait for the owner to review, merge and confirm before starting the next package. D3-02 has not been authorized yet.
+- Wait for the owner to review, merge and confirm before starting the next package. D3-02 was authorized for this branch; D3-03 awaits owner review, merge and confirmation.
 - Keep one implementation package in progress. Preserve unrelated tracked/untracked WIP; stage only the current ticket's files.
 
 ## Package and feature status
@@ -16,7 +16,7 @@ Updated: **15 October 2026** · Baseline: [SD ARCH 3.0](SD-ARCH-3.0.md)
 | Package / ticket names | Done | Remaining | Status / dependency |
 |---|---|---|---|
 | **D3-01 Contract amendment** · STK-001/002/003 | Strict v2 recommendations, three horizon profiles, four actions, research/admission separation, policy/outcome contracts, fixtures, compatibility tests | Runtime adoption belongs to later packages | Implemented · `6b88cf6` |
-| **D3-02 Rights and source feasibility** · STK-004/005/006/007 | Architecture requirements defined | Source coverage, use/territory/cost matrix, grants and denied-operation cases | Not started · next package, awaiting authorization |
+| **D3-02 Rights and source feasibility** · STK-004/005/006/007 | [Source matrix and rights gate](D3-02-source-feasibility.md), strict grant contracts and T03 denial tests | Written account-specific permissions/quotes, coverage samples and territorial approval before activation | Ready for review · real-source activation blocked |
 | **D3-03 Revision storage and ingestion** · STK-014/015/019–024 | Existing synthetic data foundation | Automatic adapters, exact revisions, snapshots, corporate actions, quarantine and migrations | Not started · D3-01; mock grants |
 | **D3-04 Scheduling and coverage** · STK-017/058/060/073 | Existing synthetic worker foundation | Exchange-calendar occurrences, catch-up, event triggers and full-universe coverage accounting | Not started · D3-03 |
 | **D3-05 Quant horizon policies** · STK-028–032/054/058/076 | Existing swing baseline preserved | Configured swing/short/long policies, features and deterministic decision composition | Not started · D3-01/03 |
@@ -38,3 +38,5 @@ Existing optional LLM explanations summarize synthetic decisions. They are not t
 Purchases, paid APIs, deployment and broker orders are outside current authorization. Hosting selection remains fixed; region, final pricing and backup-key custody must be confirmed before provisioning. Optional IPO, intraday, broker reads and predictive ML are not prerequisites for the core three-horizon release.
 
 [Contract details](contracts/v2/README.md) · [Handoff](WORK-HANDOFF.md) · [Historical board](archive/BOARD-before-sd-arch-3.md). Historical synthetic milestones remain valid within their original scope; they do not mark new architecture packages complete.
+
+D3-02 validation: the isolated delivery snapshot passes 193 application/worker tests (52 new rights cases) and 7 script tests; 11 database cases skip locally without a test database. Schema consistency, whitespace and documentation-link checks pass. All real-source grants remain absent; no paid call or provider activation occurred. Existing app WIP is preserved. This delivery does not claim STK-004–007 real-use approvals are complete.

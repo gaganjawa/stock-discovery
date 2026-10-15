@@ -1,0 +1,215 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "account_ref": {
+      "minLength": 1,
+      "pattern": "\\S",
+      "title": "Account Ref",
+      "type": "string"
+    },
+    "allowed_uses": {
+      "items": {
+        "enum": [
+          "acquire",
+          "store",
+          "extract",
+          "derive",
+          "embed",
+          "external_ai",
+          "historical_replay",
+          "paper_evaluation",
+          "export",
+          "backup",
+          "train"
+        ],
+        "type": "string"
+      },
+      "title": "Allowed Uses",
+      "type": "array"
+    },
+    "approval_evidence_ref": {
+      "anyOf": [
+        {
+          "minLength": 1,
+          "pattern": "\\S",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Approval Evidence Ref"
+    },
+    "attribution": {
+      "anyOf": [
+        {
+          "minLength": 1,
+          "pattern": "\\S",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Attribution"
+    },
+    "audit_tombstones_permitted": {
+      "title": "Audit Tombstones Permitted",
+      "type": "boolean"
+    },
+    "deletion_deadline_days": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Deletion Deadline Days"
+    },
+    "expires_at": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$",
+      "title": "Expires At",
+      "type": "string"
+    },
+    "external_processors": {
+      "items": {
+        "minLength": 1,
+        "pattern": "\\S",
+        "type": "string"
+      },
+      "title": "External Processors",
+      "type": "array"
+    },
+    "grant_id": {
+      "minLength": 1,
+      "pattern": "\\S",
+      "title": "Grant Id",
+      "type": "string"
+    },
+    "max_units_per_operation": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Max Units Per Operation"
+    },
+    "regions": {
+      "items": {
+        "pattern": "^[A-Z]{2}$",
+        "type": "string"
+      },
+      "title": "Regions",
+      "type": "array"
+    },
+    "retention_days": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Retention Days"
+    },
+    "revoked_at": {
+      "anyOf": [
+        {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Revoked At"
+    },
+    "schema_version": {
+      "const": "1.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "scopes": {
+      "items": {
+        "enum": [
+          "prices",
+          "universe",
+          "calendar",
+          "corporate_actions",
+          "benchmark",
+          "filings",
+          "news",
+          "financial_facts"
+        ],
+        "type": "string"
+      },
+      "title": "Scopes",
+      "type": "array"
+    },
+    "source_id": {
+      "minLength": 1,
+      "pattern": "\\S",
+      "title": "Source Id",
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "pending",
+        "active",
+        "denied",
+        "revoked"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "synthetic": {
+      "title": "Synthetic",
+      "type": "boolean"
+    },
+    "valid_from_at": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$",
+      "title": "Valid From At",
+      "type": "string"
+    },
+    "version": {
+      "minLength": 1,
+      "pattern": "\\S",
+      "title": "Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "grant_id",
+    "version",
+    "source_id",
+    "account_ref",
+    "status",
+    "synthetic",
+    "approval_evidence_ref",
+    "valid_from_at",
+    "expires_at",
+    "revoked_at",
+    "allowed_uses",
+    "scopes",
+    "regions",
+    "external_processors",
+    "retention_days",
+    "deletion_deadline_days",
+    "attribution",
+    "max_units_per_operation",
+    "audit_tombstones_permitted"
+  ],
+  "title": "Grant",
+  "type": "object"
+}

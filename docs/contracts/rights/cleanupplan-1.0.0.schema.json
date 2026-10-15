@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "deadline_days": {
+      "minimum": 0,
+      "title": "Deadline Days",
+      "type": "integer"
+    },
+    "delete_by_at": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$",
+      "title": "Delete By At",
+      "type": "string"
+    },
+    "delete_content": {
+      "const": true,
+      "title": "Delete Content",
+      "type": "boolean"
+    },
+    "include_derived_and_backups": {
+      "const": true,
+      "title": "Include Derived And Backups",
+      "type": "boolean"
+    },
+    "keep_metadata_tombstone": {
+      "title": "Keep Metadata Tombstone",
+      "type": "boolean"
+    },
+    "reason": {
+      "enum": [
+        "revoked",
+        "expired",
+        "permission_unknown"
+      ],
+      "title": "Reason",
+      "type": "string"
+    },
+    "stop_processing": {
+      "const": true,
+      "title": "Stop Processing",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "stop_processing",
+    "delete_content",
+    "include_derived_and_backups",
+    "keep_metadata_tombstone",
+    "deadline_days",
+    "delete_by_at",
+    "reason"
+  ],
+  "title": "CleanupPlan",
+  "type": "object"
+}
