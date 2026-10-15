@@ -31,7 +31,7 @@ Updated: **15 October 2026** · Baseline: [SD ARCH 3.0](SD-ARCH-3.0.md)
 
 ## Verification and boundaries
 
-D3-01: **141 application/worker tests passed**, including **83 new contract cases**; 7 script tests, schema consistency, whitespace checks and isolated frontend build passed. Eleven database cases were skipped locally without a test database. All six historical fixture files retain their original hashes. [CI run](https://github.com/gaganjawa/stock-discovery/actions/runs/38758750057) is the source for remote validation status; local results do not imply CI success.
+D3-01: **141 application/worker tests passed**, including **83 new contract cases**; 7 script tests, schema consistency, whitespace checks and isolated frontend build passed. Eleven database cases were skipped locally without a test database. All six historical fixture files retain their original hashes. [D3-01 CI run](https://github.com/gaganjawa/stock-discovery/actions/runs/38758750057) completed successfully, including the database and browser workflow checks.
 
 Existing optional LLM explanations summarize synthetic decisions. They are not the planned pre-decision RAG, bounded agent or LLM judge. No paid AI or real-source capability has been activated.
 

@@ -2,7 +2,7 @@
 
 ## Architecture integration — 15 October 2026
 
-[SD ARCH 3.0](SD-ARCH-3.0.md) is the authoritative design specification. The subsequent owner instruction authorized repository integration and **D3-01 only**. [D3-01 contract amendment](contracts/v2/README.md) is implemented: strict v2 recommendations, all three horizon profiles, policy/outcome schemas, research/admission separation, synthetic fixtures and deterministic compatibility tests. D3-02 through D3-13 remain unstarted. No real data source, paid AI, hosting or broker action is activated.
+[SD ARCH 3.0](../SD-ARCH-3.0.md) is the authoritative design specification. The subsequent owner instruction authorized repository integration and **D3-01 only**. [D3-01 contract amendment](../contracts/v2/README.md) is implemented: strict v2 recommendations, all three horizon profiles, policy/outcome schemas, research/admission separation, synthetic fixtures and deterministic compatibility tests. D3-02 through D3-13 remain unstarted. No real data source, paid AI, hosting or broker action is activated.
 
 Validation: 141 application/worker tests passed in the isolated delivery snapshot (including 83 D3-01 cases); 11 database cases skipped without a test database; 7 script tests passed. All six historical fixtures match their original hashes. Schema regeneration, whitespace checks and the isolated delivery frontend build pass. The working tree additionally contains three passing unrelated WIP tests; that WIP is excluded from the commit. Existing unrelated application and untracked work are preserved and excluded from this delivery. Full automatic discovery, RAG/agents/judge, operational paper tracking and deployment remain later packages. See the contract document for precise scope and limitations.
 
@@ -11,7 +11,7 @@ Updated: **14 October 2026** · Verified implementation checkpoint: **a9a3eb7**
 
 ## Current finish target: local daily-swing MVP
 
-Owner selected **daily-swing MVP first**, with hosting deferred. [Software scope, startup and API-key setup](DAILY-SWING-MVP.md). Core synthetic workflows are implemented; optional AI explanation and a local launcher have been added. **Local synthetic MVP software acceptance is complete.** The app is running at http://127.0.0.1:5173; live-market data and hosted release remain deferred. The 81-ticket roadmap below is longer-term scope, not the current finish target.
+Owner selected **daily-swing MVP first**, with hosting deferred. [Software scope, startup and API-key setup](../DAILY-SWING-MVP.md). Core synthetic workflows are implemented; optional AI explanation and a local launcher have been added. **Local synthetic MVP software acceptance is complete.** The app is running at http://127.0.0.1:5173; live-market data and hosted release remain deferred. The 81-ticket roadmap below is longer-term scope, not the current finish target.
 
 LLM is optional: blank `OPENAI_API_KEY` is in `.env`; set `LLM_ENABLED=true` after adding a key. Calculations and trading signals remain deterministic. Without a key, explanations use frozen rule text.
 
@@ -72,7 +72,7 @@ Latest verified implementation CI: **58 application tests, 11 database cases, 7 
 
 - This Markdown file is the lightweight user-facing board requested by the owner. Update it at meaningful milestones; no hosted-board interaction is required for routine status updates.
 - The hosted board has not been synchronized with recent work. Do not treat its older records as current.
-- Keep [detailed ticket plan](stock-platform-kanban-plan.md) for scope/history and [work handoff](WORK-HANDOFF.md) for technical continuation.
+- Keep [detailed ticket plan](../stock-platform-kanban-plan.md) for scope/history and [work handoff](../WORK-HANDOFF.md) for technical continuation.
 - Done IDs: 001, 002, 003, 008, 010, 011, 012, 013.
 - Synthetic implemented/release-pending IDs: 014, 015, 019, 021–024, 028–033, 037–040, 043, 044.
 - Partial IDs: 009, 016–018, 020, 041, 042, 045. These remain Backlog in the detailed plan until their gates close.
