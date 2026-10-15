@@ -1,5 +1,9 @@
 # Stock Discovery — work checkpoint
 
+## D3-02 — STK-004/005/006/007 · 15 October 2026
+
+Owner authorized D3-02 after the board PR merged. The ticket branch contains a [source feasibility review](D3-02-source-feasibility.md), use-specific rights gate, strict schemas, fictional fixtures and 52 denial/cleanup tests. Real permissions, quotes, coverage samples and regions remain explicit activation blockers. No live provider or paid AI was activated. Deliver through a review PR; wait for owner merge and confirmation before D3-03. Unrelated WIP and historical fixtures are preserved. Earlier “D3-02 unstarted” statements below describe prior checkpoints.
+
 ## Owner review workflow — 15 October 2026
 
 Use ticket-named branches and PRs for all new work. Never push directly to main or merge PRs. The owner reviews, merges and confirms before the next package starts. See [repository rules](../AGENTS.md) and the [SD ARCH 3.0 board](SIMPLE-BOARD.md). D3-01 was already on main before this instruction; it is not being rewritten. D3-02 remains unstarted and awaits authorization. Older workflow/scope notes below are historical.

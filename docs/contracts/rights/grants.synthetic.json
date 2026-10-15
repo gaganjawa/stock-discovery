@@ -1,0 +1,24 @@
+[
+  {
+    "schema_version": "1.0.0",
+    "grant_id": "SYN-grant",
+    "version": "fixture-1",
+    "source_id": "SYN-source",
+    "account_ref": "SYN-account",
+    "status": "active",
+    "synthetic": true,
+    "approval_evidence_ref": "fixture://fictional-permission",
+    "valid_from_at": "2026-01-01T00:00:00Z",
+    "expires_at": "2027-01-01T00:00:00Z",
+    "revoked_at": null,
+    "allowed_uses": ["acquire", "store", "extract", "derive", "historical_replay", "paper_evaluation"],
+    "scopes": ["prices", "filings"],
+    "regions": ["IN"],
+    "external_processors": [],
+    "retention_days": 30,
+    "deletion_deadline_days": 0,
+    "attribution": "Fictional fixture only; no provider rights granted.",
+    "max_units_per_operation": 100,
+    "audit_tombstones_permitted": false
+  }
+]

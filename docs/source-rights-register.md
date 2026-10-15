@@ -1,18 +1,16 @@
-# Source and procurement gates — reviewed 11 Oct 2026
+# Source-rights register — 15 October 2026
 
-This preview enables only fictional fixtures. No provider credentials, broker accounts, purchases, vendor outreach, real prices, document scraping, ML training or external LLM processing were activated. Unresolved permission is not permission.
+Authoritative D3-02 review: [source feasibility, evidence, blockers and software boundary](D3-02-source-feasibility.md). The [real grant register](contracts/rights/grants.real.json) is empty. No public page, example grant or configured API key implies permission or activation.
 
-| Ticket | Evidence and disposition | Remaining blocker |
+| Ticket | Delivered for review | Real-use blockers |
 |---|---|---|
-| STK-004 | [Kite terms](https://kite.trade/terms/) restrict mock-trading uses and permanent copies of API content absent permission. Kite historical replay/retention is disabled. [Upstox documentation](https://upstox.com/developer/api-documentation/) identifies an API route but does not establish this project's retention/replay rights. Upstox uses remain unresolved and disabled. | Owner's account-specific written permissions, credentials, coverage and rate limits. Partial review; not Done. |
-| STK-005 | [NSE data policy](https://www.nseindia.com/static/market-data/nse-data-policy) is the official starting point for usage terms. BSE product page could not be retrieved in this review. No approved vendor or quote chosen. | Exact daily history, delisted universe, actions, benchmark and permitted-use quotes. Blocked. |
-| STK-006 | Scope remains private synthetic research, without execution, client advice or public distribution. No conclusion about regulatory exemptions is inferred. | Current account/use-specific broker, exchange and regulatory review before any real integration. Blocked. |
-| STK-007 | Documents/news are not required by this price-only synthetic strategy. No retrieval/archive/summarization routes enabled. | Supported retrieval routes, publication/revision availability and written archival/derived-use terms. Deferred and blocked for real content. |
-| STK-008 | This local demo uses existing hardware and free open-source components; no hosting, model API, data feed, domain or backup subscription purchased. Existing ₹3,000 allocation remains a planning assumption, excluding hardware, electricity and development. | External host/backup selection, tax-inclusive quotes and deployment approval. Not Done. |
-| STK-009 | Lightweight Charts pinned to 5.2.0; creator link and 2025 NOTICE retained. [Official NOTICE](https://raw.githubusercontent.com/tradingview/lightweight-charts/v5.2.0/NOTICE) and Apache-2.0 licence are linked in the distributed notice. Lockfiles retained. | [STK-009 audit](STK-009.md): locked inventory and browser notices completed; native bundled-library and target-platform redistribution evidence remains partial. |
+| STK-004 — Broker/data rights | Kite restrictions and Upstox documented route reviewed; use-specific permission gate and denied-operation tests | Account-specific rights, territory, retention, replay/paper and AI-transfer approval |
+| STK-005 — Exchange/vendor feasibility | NSE/BSE and vendor route/coverage/cost matrix with primary references | Suitable written product quote, exact coverage, licensing and permitted samples |
+| STK-006 — Private-use review | Exact private research boundary and official regulatory review references | Applicable account/use obligations and specialist review remain unresolved; no exemption claimed |
+| STK-007 — Evidence sourcing | Exchange feeds, issuer IR and licensed news routes; storage/extraction/embedding/AI uses separated | Supported automatic routes, original revisions, text/metadata rights and retention/deletion terms |
 
-## Copy-ready owner questions (not sent)
+Grant contracts and fixtures are in [contracts/rights](contracts/rights). Unknown, denied, revoked or expired permission blocks the affected operation. Actual provider/storage adapters are later packages. No messages to vendors have been sent.
 
-For each prospective provider: Please confirm whether my individual account may fetch and retain versioned daily OHLCV and corporate actions on a private host, reconstruct historical recommendations, simulate fills and evaluate paper outcomes, retain failed experiments and backups, and calculate/retain derived indicators. Specify permitted host regions, retention/deletion on termination, benchmark/universe coverage, quotas, attribution, redistribution limits and all setup/monthly/usage costs including taxes. Separately confirm ML training and external-LLM transfer; neither is needed for this preview.
+Hosting selection is already approved under [STK-008](STK-008.md); do not reopen it. Region, final price and backup-key custody plus explicit provisioning authorization remain gates. Native/host licensing remains tracked in [STK-009](STK-009.md).
 
-Real-data activation remains blocked until the answers and account authorization are recorded. Synthetic results cannot replace these checks.
+[11 October historical register](archive/source-rights-register-2026-10-11.md) is retained for provenance and is superseded by this review, including its outdated hosting-selection status.
