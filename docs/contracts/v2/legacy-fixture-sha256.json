@@ -1,0 +1,8 @@
+{
+  "docs/contracts/examples/capital-risk.synthetic.json": "6217e94953864fc313f211b88411dbb7798cb53b2dc9f710c871fafb032f1df0",
+  "docs/contracts/examples/evaluation-edge-cases.synthetic.json": "a445191f1d1f00023f91a3c19aa6f8eb079f40dc105e00392a4d715d59866aab",
+  "docs/contracts/examples/forecast-outcomes.synthetic.json": "8298fb2525dfcce8d608475358af8428cc040b4dcdee6b74c19e3ff5da23e36d",
+  "docs/contracts/examples/observations.synthetic.json": "5bd971f403533b53a6742033f483de2e35e57c243249c8020b9677af512dad46",
+  "docs/contracts/examples/recommendations.synthetic.json": "3d40b53fe70cd127821c4c0433936bc1663b25fb0157ab1ac79b402cdc8b8425",
+  "docs/contracts/examples/trade-outcomes.synthetic.json": "77568dd995f9efb8287b492f6f3febd286efa8cfc1147b9d134eed3c2121c1dc"
+}

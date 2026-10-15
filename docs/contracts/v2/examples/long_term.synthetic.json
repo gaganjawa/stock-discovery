@@ -1,0 +1,2402 @@
+{
+  "schema_version": "2.0.0",
+  "snapshot": {
+    "snapshot_id": "SYN-snapshot",
+    "mode": "synthetic",
+    "information_cutoff_at": "2025-01-06T10:05:00Z",
+    "calendar_ref": {
+      "id": "SYN-calendar",
+      "version": "fixture-1",
+      "content_hash": "5ba76629e7a411a7aa725584e20c0e035f23cbcab14345ec089377daf88c40ff"
+    },
+    "session_closes": [
+      "2025-01-06T10:00:00Z",
+      "2025-01-07T10:00:00Z",
+      "2025-01-08T10:00:00Z",
+      "2025-01-09T10:00:00Z",
+      "2025-01-10T10:00:00Z",
+      "2025-01-13T10:00:00Z",
+      "2025-01-14T10:00:00Z",
+      "2025-01-15T10:00:00Z",
+      "2025-01-16T10:00:00Z",
+      "2025-01-17T10:00:00Z",
+      "2025-01-20T10:00:00Z",
+      "2025-01-21T10:00:00Z",
+      "2025-01-22T10:00:00Z",
+      "2025-01-23T10:00:00Z",
+      "2025-01-24T10:00:00Z",
+      "2025-01-27T10:00:00Z",
+      "2025-01-28T10:00:00Z",
+      "2025-01-29T10:00:00Z",
+      "2025-01-30T10:00:00Z",
+      "2025-01-31T10:00:00Z",
+      "2025-02-03T10:00:00Z",
+      "2025-02-04T10:00:00Z",
+      "2025-02-05T10:00:00Z",
+      "2025-02-06T10:00:00Z",
+      "2025-02-07T10:00:00Z",
+      "2025-02-10T10:00:00Z",
+      "2025-02-11T10:00:00Z",
+      "2025-02-12T10:00:00Z",
+      "2025-02-13T10:00:00Z",
+      "2025-02-14T10:00:00Z",
+      "2025-02-17T10:00:00Z",
+      "2025-02-18T10:00:00Z",
+      "2025-02-19T10:00:00Z",
+      "2025-02-20T10:00:00Z",
+      "2025-02-21T10:00:00Z",
+      "2025-02-24T10:00:00Z",
+      "2025-02-25T10:00:00Z",
+      "2025-02-26T10:00:00Z",
+      "2025-02-27T10:00:00Z",
+      "2025-02-28T10:00:00Z",
+      "2025-03-03T10:00:00Z",
+      "2025-03-04T10:00:00Z",
+      "2025-03-05T10:00:00Z",
+      "2025-03-06T10:00:00Z",
+      "2025-03-07T10:00:00Z",
+      "2025-03-10T10:00:00Z",
+      "2025-03-11T10:00:00Z",
+      "2025-03-12T10:00:00Z",
+      "2025-03-13T10:00:00Z",
+      "2025-03-14T10:00:00Z",
+      "2025-03-17T10:00:00Z",
+      "2025-03-18T10:00:00Z",
+      "2025-03-19T10:00:00Z",
+      "2025-03-20T10:00:00Z",
+      "2025-03-21T10:00:00Z",
+      "2025-03-24T10:00:00Z",
+      "2025-03-25T10:00:00Z",
+      "2025-03-26T10:00:00Z",
+      "2025-03-27T10:00:00Z",
+      "2025-03-28T10:00:00Z",
+      "2025-03-31T10:00:00Z",
+      "2025-04-01T10:00:00Z",
+      "2025-04-02T10:00:00Z",
+      "2025-04-03T10:00:00Z",
+      "2025-04-04T10:00:00Z",
+      "2025-04-07T10:00:00Z",
+      "2025-04-08T10:00:00Z",
+      "2025-04-09T10:00:00Z",
+      "2025-04-10T10:00:00Z",
+      "2025-04-11T10:00:00Z",
+      "2025-04-14T10:00:00Z",
+      "2025-04-15T10:00:00Z",
+      "2025-04-16T10:00:00Z",
+      "2025-04-17T10:00:00Z",
+      "2025-04-18T10:00:00Z",
+      "2025-04-21T10:00:00Z",
+      "2025-04-22T10:00:00Z",
+      "2025-04-23T10:00:00Z",
+      "2025-04-24T10:00:00Z",
+      "2025-04-25T10:00:00Z",
+      "2025-04-28T10:00:00Z",
+      "2025-04-29T10:00:00Z",
+      "2025-04-30T10:00:00Z",
+      "2025-05-01T10:00:00Z",
+      "2025-05-02T10:00:00Z",
+      "2025-05-05T10:00:00Z",
+      "2025-05-06T10:00:00Z",
+      "2025-05-07T10:00:00Z",
+      "2025-05-08T10:00:00Z",
+      "2025-05-09T10:00:00Z",
+      "2025-05-12T10:00:00Z",
+      "2025-05-13T10:00:00Z",
+      "2025-05-14T10:00:00Z",
+      "2025-05-15T10:00:00Z",
+      "2025-05-16T10:00:00Z",
+      "2025-05-19T10:00:00Z",
+      "2025-05-20T10:00:00Z",
+      "2025-05-21T10:00:00Z",
+      "2025-05-22T10:00:00Z",
+      "2025-05-23T10:00:00Z",
+      "2025-05-26T10:00:00Z",
+      "2025-05-27T10:00:00Z",
+      "2025-05-28T10:00:00Z",
+      "2025-05-29T10:00:00Z",
+      "2025-05-30T10:00:00Z",
+      "2025-06-02T10:00:00Z",
+      "2025-06-03T10:00:00Z",
+      "2025-06-04T10:00:00Z",
+      "2025-06-05T10:00:00Z",
+      "2025-06-06T10:00:00Z",
+      "2025-06-09T10:00:00Z",
+      "2025-06-10T10:00:00Z",
+      "2025-06-11T10:00:00Z",
+      "2025-06-12T10:00:00Z",
+      "2025-06-13T10:00:00Z",
+      "2025-06-16T10:00:00Z",
+      "2025-06-17T10:00:00Z",
+      "2025-06-18T10:00:00Z",
+      "2025-06-19T10:00:00Z",
+      "2025-06-20T10:00:00Z",
+      "2025-06-23T10:00:00Z",
+      "2025-06-24T10:00:00Z",
+      "2025-06-25T10:00:00Z",
+      "2025-06-26T10:00:00Z",
+      "2025-06-27T10:00:00Z",
+      "2025-06-30T10:00:00Z",
+      "2025-07-01T10:00:00Z",
+      "2025-07-02T10:00:00Z",
+      "2025-07-03T10:00:00Z",
+      "2025-07-04T10:00:00Z",
+      "2025-07-07T10:00:00Z",
+      "2025-07-08T10:00:00Z",
+      "2025-07-09T10:00:00Z",
+      "2025-07-10T10:00:00Z",
+      "2025-07-11T10:00:00Z",
+      "2025-07-14T10:00:00Z",
+      "2025-07-15T10:00:00Z",
+      "2025-07-16T10:00:00Z",
+      "2025-07-17T10:00:00Z",
+      "2025-07-18T10:00:00Z",
+      "2025-07-21T10:00:00Z",
+      "2025-07-22T10:00:00Z",
+      "2025-07-23T10:00:00Z",
+      "2025-07-24T10:00:00Z",
+      "2025-07-25T10:00:00Z",
+      "2025-07-28T10:00:00Z",
+      "2025-07-29T10:00:00Z",
+      "2025-07-30T10:00:00Z",
+      "2025-07-31T10:00:00Z",
+      "2025-08-01T10:00:00Z",
+      "2025-08-04T10:00:00Z",
+      "2025-08-05T10:00:00Z",
+      "2025-08-06T10:00:00Z",
+      "2025-08-07T10:00:00Z",
+      "2025-08-08T10:00:00Z",
+      "2025-08-11T10:00:00Z",
+      "2025-08-12T10:00:00Z",
+      "2025-08-13T10:00:00Z",
+      "2025-08-14T10:00:00Z",
+      "2025-08-15T10:00:00Z",
+      "2025-08-18T10:00:00Z",
+      "2025-08-19T10:00:00Z",
+      "2025-08-20T10:00:00Z",
+      "2025-08-21T10:00:00Z",
+      "2025-08-22T10:00:00Z",
+      "2025-08-25T10:00:00Z",
+      "2025-08-26T10:00:00Z",
+      "2025-08-27T10:00:00Z",
+      "2025-08-28T10:00:00Z",
+      "2025-08-29T10:00:00Z",
+      "2025-09-01T10:00:00Z",
+      "2025-09-02T10:00:00Z",
+      "2025-09-03T10:00:00Z",
+      "2025-09-04T10:00:00Z",
+      "2025-09-05T10:00:00Z",
+      "2025-09-08T10:00:00Z",
+      "2025-09-09T10:00:00Z",
+      "2025-09-10T10:00:00Z",
+      "2025-09-11T10:00:00Z",
+      "2025-09-12T10:00:00Z",
+      "2025-09-15T10:00:00Z",
+      "2025-09-16T10:00:00Z",
+      "2025-09-17T10:00:00Z",
+      "2025-09-18T10:00:00Z",
+      "2025-09-19T10:00:00Z",
+      "2025-09-22T10:00:00Z",
+      "2025-09-23T10:00:00Z",
+      "2025-09-24T10:00:00Z",
+      "2025-09-25T10:00:00Z",
+      "2025-09-26T10:00:00Z",
+      "2025-09-29T10:00:00Z",
+      "2025-09-30T10:00:00Z",
+      "2025-10-01T10:00:00Z",
+      "2025-10-02T10:00:00Z",
+      "2025-10-03T10:00:00Z",
+      "2025-10-06T10:00:00Z",
+      "2025-10-07T10:00:00Z",
+      "2025-10-08T10:00:00Z",
+      "2025-10-09T10:00:00Z",
+      "2025-10-10T10:00:00Z",
+      "2025-10-13T10:00:00Z",
+      "2025-10-14T10:00:00Z",
+      "2025-10-15T10:00:00Z",
+      "2025-10-16T10:00:00Z",
+      "2025-10-17T10:00:00Z",
+      "2025-10-20T10:00:00Z",
+      "2025-10-21T10:00:00Z",
+      "2025-10-22T10:00:00Z",
+      "2025-10-23T10:00:00Z",
+      "2025-10-24T10:00:00Z",
+      "2025-10-27T10:00:00Z",
+      "2025-10-28T10:00:00Z",
+      "2025-10-29T10:00:00Z",
+      "2025-10-30T10:00:00Z",
+      "2025-10-31T10:00:00Z",
+      "2025-11-03T10:00:00Z",
+      "2025-11-04T10:00:00Z",
+      "2025-11-05T10:00:00Z",
+      "2025-11-06T10:00:00Z",
+      "2025-11-07T10:00:00Z",
+      "2025-11-10T10:00:00Z",
+      "2025-11-11T10:00:00Z",
+      "2025-11-12T10:00:00Z",
+      "2025-11-13T10:00:00Z",
+      "2025-11-14T10:00:00Z",
+      "2025-11-17T10:00:00Z",
+      "2025-11-18T10:00:00Z",
+      "2025-11-19T10:00:00Z",
+      "2025-11-20T10:00:00Z",
+      "2025-11-21T10:00:00Z",
+      "2025-11-24T10:00:00Z",
+      "2025-11-25T10:00:00Z",
+      "2025-11-26T10:00:00Z",
+      "2025-11-27T10:00:00Z",
+      "2025-11-28T10:00:00Z",
+      "2025-12-01T10:00:00Z",
+      "2025-12-02T10:00:00Z",
+      "2025-12-03T10:00:00Z",
+      "2025-12-04T10:00:00Z",
+      "2025-12-05T10:00:00Z",
+      "2025-12-08T10:00:00Z",
+      "2025-12-09T10:00:00Z",
+      "2025-12-10T10:00:00Z",
+      "2025-12-11T10:00:00Z",
+      "2025-12-12T10:00:00Z",
+      "2025-12-15T10:00:00Z",
+      "2025-12-16T10:00:00Z",
+      "2025-12-17T10:00:00Z",
+      "2025-12-18T10:00:00Z",
+      "2025-12-19T10:00:00Z",
+      "2025-12-22T10:00:00Z",
+      "2025-12-23T10:00:00Z",
+      "2025-12-24T10:00:00Z",
+      "2025-12-25T10:00:00Z",
+      "2025-12-26T10:00:00Z",
+      "2025-12-29T10:00:00Z",
+      "2025-12-30T10:00:00Z",
+      "2025-12-31T10:00:00Z",
+      "2026-01-01T10:00:00Z",
+      "2026-01-02T10:00:00Z",
+      "2026-01-05T10:00:00Z",
+      "2026-01-06T10:00:00Z",
+      "2026-01-07T10:00:00Z"
+    ],
+    "evidence": [
+      {
+        "evidence_id": "SYN-evidence",
+        "revision_id": "SYN-revision-1",
+        "instrument_id": "SYN-listing",
+        "kind": "closed_candles",
+        "source_ref": "fixture://closed-prices",
+        "source_version": "fixture-1",
+        "locator": "row 1",
+        "published_at": "2025-01-06T10:00:00Z",
+        "available_at": "2025-01-06T10:01:00Z",
+        "fetched_at": "2025-01-06T10:02:00Z",
+        "period_end_at": "2025-01-06T10:00:00Z",
+        "availability_basis": "fictional_fixture",
+        "archive_verification_ref": null,
+        "summary": "Fictional closed candle; not market data."
+      }
+    ],
+    "references": [
+      {
+        "id": "SYN-baseline",
+        "kind": "baseline",
+        "snapshot_id": "SYN-snapshot",
+        "instrument_id": "SYN-listing",
+        "assessment_id": null,
+        "passed": true,
+        "quantity": null
+      },
+      {
+        "id": "SYN-risk",
+        "kind": "risk",
+        "snapshot_id": "SYN-snapshot",
+        "instrument_id": "SYN-listing",
+        "assessment_id": null,
+        "passed": true,
+        "quantity": 1
+      },
+      {
+        "id": "SYN-capital",
+        "kind": "capital",
+        "snapshot_id": "SYN-snapshot",
+        "instrument_id": "SYN-listing",
+        "assessment_id": null,
+        "passed": true,
+        "quantity": null
+      },
+      {
+        "id": "SYN-reservation",
+        "kind": "reservation",
+        "snapshot_id": "SYN-snapshot",
+        "instrument_id": "SYN-listing",
+        "assessment_id": null,
+        "passed": true,
+        "quantity": 1
+      },
+      {
+        "id": "SYN-event",
+        "kind": "event",
+        "snapshot_id": "SYN-snapshot",
+        "instrument_id": "SYN-listing",
+        "assessment_id": null,
+        "passed": true,
+        "quantity": null
+      },
+      {
+        "id": "SYN-quant_rag-research",
+        "kind": "research",
+        "snapshot_id": "SYN-snapshot",
+        "instrument_id": "SYN-listing",
+        "assessment_id": "SYN-quant_rag-research",
+        "passed": true,
+        "quantity": null
+      },
+      {
+        "id": "SYN-quant_rag-validation",
+        "kind": "validation",
+        "snapshot_id": "SYN-snapshot",
+        "instrument_id": "SYN-listing",
+        "assessment_id": "SYN-quant_rag-research",
+        "passed": true,
+        "quantity": null
+      },
+      {
+        "id": "SYN-quant_rag-judge",
+        "kind": "judge",
+        "snapshot_id": "SYN-snapshot",
+        "instrument_id": "SYN-listing",
+        "assessment_id": "SYN-quant_rag-research",
+        "passed": true,
+        "quantity": null
+      },
+      {
+        "id": "SYN-quant_agent-research",
+        "kind": "research",
+        "snapshot_id": "SYN-snapshot",
+        "instrument_id": "SYN-listing",
+        "assessment_id": "SYN-quant_agent-research",
+        "passed": true,
+        "quantity": null
+      },
+      {
+        "id": "SYN-quant_agent-validation",
+        "kind": "validation",
+        "snapshot_id": "SYN-snapshot",
+        "instrument_id": "SYN-listing",
+        "assessment_id": "SYN-quant_agent-research",
+        "passed": true,
+        "quantity": null
+      },
+      {
+        "id": "SYN-quant_agent-judge",
+        "kind": "judge",
+        "snapshot_id": "SYN-snapshot",
+        "instrument_id": "SYN-listing",
+        "assessment_id": "SYN-quant_agent-research",
+        "passed": true,
+        "quantity": null
+      }
+    ],
+    "policies": [
+      {
+        "schema_version": "2.0.0",
+        "ref": {
+          "id": "SYN-long_term-strategy",
+          "version": "fixture-1",
+          "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+        },
+        "kind": "strategy",
+        "profile": "long_term",
+        "status": "fixture",
+        "effective_at": "2025-01-01T00:00:00Z",
+        "parameters": [
+          {
+            "name": "fictional_test_parameter",
+            "value": "1",
+            "unit": "fixture_only",
+            "unavailable_reason": null
+          }
+        ],
+        "approval_ref": null
+      },
+      {
+        "schema_version": "2.0.0",
+        "ref": {
+          "id": "SYN-long_term-horizon",
+          "version": "fixture-1",
+          "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+        },
+        "kind": "horizon",
+        "profile": "long_term",
+        "status": "fixture",
+        "effective_at": "2025-01-01T00:00:00Z",
+        "parameters": [
+          {
+            "name": "fictional_test_parameter",
+            "value": "1",
+            "unit": "fixture_only",
+            "unavailable_reason": null
+          }
+        ],
+        "approval_ref": null
+      },
+      {
+        "schema_version": "2.0.0",
+        "ref": {
+          "id": "SYN-long_term-research",
+          "version": "fixture-1",
+          "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+        },
+        "kind": "research",
+        "profile": "long_term",
+        "status": "fixture",
+        "effective_at": "2025-01-01T00:00:00Z",
+        "parameters": [
+          {
+            "name": "fictional_test_parameter",
+            "value": "1",
+            "unit": "fixture_only",
+            "unavailable_reason": null
+          }
+        ],
+        "approval_ref": null
+      },
+      {
+        "schema_version": "2.0.0",
+        "ref": {
+          "id": "SYN-long_term-risk",
+          "version": "fixture-1",
+          "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+        },
+        "kind": "risk",
+        "profile": "long_term",
+        "status": "fixture",
+        "effective_at": "2025-01-01T00:00:00Z",
+        "parameters": [
+          {
+            "name": "fictional_test_parameter",
+            "value": "1",
+            "unit": "fixture_only",
+            "unavailable_reason": null
+          }
+        ],
+        "approval_ref": null
+      },
+      {
+        "schema_version": "2.0.0",
+        "ref": {
+          "id": "SYN-long_term-cost",
+          "version": "fixture-1",
+          "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+        },
+        "kind": "cost",
+        "profile": "long_term",
+        "status": "fixture",
+        "effective_at": "2025-01-01T00:00:00Z",
+        "parameters": [
+          {
+            "name": "fictional_test_parameter",
+            "value": "1",
+            "unit": "fixture_only",
+            "unavailable_reason": null
+          }
+        ],
+        "approval_ref": null
+      },
+      {
+        "schema_version": "2.0.0",
+        "ref": {
+          "id": "SYN-long_term-retrieval",
+          "version": "fixture-1",
+          "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+        },
+        "kind": "retrieval",
+        "profile": "long_term",
+        "status": "fixture",
+        "effective_at": "2025-01-01T00:00:00Z",
+        "parameters": [
+          {
+            "name": "fictional_test_parameter",
+            "value": "1",
+            "unit": "fixture_only",
+            "unavailable_reason": null
+          }
+        ],
+        "approval_ref": null
+      },
+      {
+        "schema_version": "2.0.0",
+        "ref": {
+          "id": "SYN-long_term-schedule",
+          "version": "fixture-1",
+          "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+        },
+        "kind": "schedule",
+        "profile": "long_term",
+        "status": "fixture",
+        "effective_at": "2025-01-01T00:00:00Z",
+        "parameters": [
+          {
+            "name": "fictional_test_parameter",
+            "value": "1",
+            "unit": "fixture_only",
+            "unavailable_reason": null
+          }
+        ],
+        "approval_ref": null
+      },
+      {
+        "schema_version": "2.0.0",
+        "ref": {
+          "id": "SYN-long_term-universe",
+          "version": "fixture-1",
+          "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+        },
+        "kind": "universe",
+        "profile": "long_term",
+        "status": "fixture",
+        "effective_at": "2025-01-01T00:00:00Z",
+        "parameters": [
+          {
+            "name": "fictional_test_parameter",
+            "value": "1",
+            "unit": "fixture_only",
+            "unavailable_reason": null
+          }
+        ],
+        "approval_ref": null
+      }
+    ]
+  },
+  "recommendations": [
+    {
+      "schema_version": "2.0.0",
+      "recommendation_id": "SYN-long_term-quant",
+      "synthetic": true,
+      "mode": "synthetic",
+      "run_id": "SYN-run",
+      "instrument": {
+        "instrument_id": "SYN-listing",
+        "issuer_id": "SYN-issuer",
+        "symbol": "FICTION",
+        "exchange": "SYNTHETIC_NSE",
+        "series": "EQ",
+        "isin": null,
+        "currency": "INR",
+        "exchange_timezone": "Asia/Kolkata",
+        "lot_size": 1
+      },
+      "strategy": {
+        "id": "SYN-strategy",
+        "version": "fixture-1",
+        "config_version": "fixture-1"
+      },
+      "horizon": {
+        "schema_version": "2.0.0",
+        "profile": "long_term",
+        "minimum": 1,
+        "maximum": 5,
+        "units": "calendar_years",
+        "duration": 1,
+        "anchor_at": "2025-01-06T10:06:00Z",
+        "holding_end_at": "2026-01-06T10:00:00Z",
+        "next_review_at": "2025-01-07T10:00:00Z",
+        "entry_expires_at": "2025-01-08T09:00:00Z",
+        "calendar_ref": {
+          "id": "SYN-calendar",
+          "version": "fixture-1",
+          "content_hash": "5ba76629e7a411a7aa725584e20c0e035f23cbcab14345ec089377daf88c40ff"
+        },
+        "review_cadence": "monthly"
+      },
+      "information_cutoff_at": "2025-01-06T10:05:00Z",
+      "generated_at": "2025-01-06T10:06:00Z",
+      "decision_available_at": "2025-01-06T10:06:00Z",
+      "availability_simulated": true,
+      "action": "BUY",
+      "cohort": {
+        "arm": "quant",
+        "config_hash": "23302efd910dafb5afde14f8fe4e454faf952149f4cb08b7211aeb29cd7bb3d6",
+        "capability": "technical_only",
+        "shadow": false
+      },
+      "candidate_origin": "quant",
+      "event_ids": [],
+      "snapshot_id": "SYN-snapshot",
+      "baseline_ref": "SYN-baseline",
+      "research_status": "not_requested",
+      "research_ref": null,
+      "validation_ref": null,
+      "judge_ref": null,
+      "research_unavailable_reason": "technical_only",
+      "policy_refs": {
+        "strategy": {
+          "id": "SYN-long_term-strategy",
+          "version": "fixture-1",
+          "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+        },
+        "horizon": {
+          "id": "SYN-long_term-horizon",
+          "version": "fixture-1",
+          "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+        },
+        "research": {
+          "id": "SYN-long_term-research",
+          "version": "fixture-1",
+          "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+        },
+        "risk": {
+          "id": "SYN-long_term-risk",
+          "version": "fixture-1",
+          "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+        },
+        "cost": {
+          "id": "SYN-long_term-cost",
+          "version": "fixture-1",
+          "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+        },
+        "retrieval": {
+          "id": "SYN-long_term-retrieval",
+          "version": "fixture-1",
+          "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+        },
+        "schedule": {
+          "id": "SYN-long_term-schedule",
+          "version": "fixture-1",
+          "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+        },
+        "universe": {
+          "id": "SYN-long_term-universe",
+          "version": "fixture-1",
+          "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+        }
+      },
+      "evidence": [
+        {
+          "evidence_id": "SYN-evidence",
+          "revision_id": "SYN-revision-1",
+          "instrument_id": "SYN-listing",
+          "kind": "closed_candles",
+          "source_ref": "fixture://closed-prices",
+          "source_version": "fixture-1",
+          "locator": "row 1",
+          "published_at": "2025-01-06T10:00:00Z",
+          "available_at": "2025-01-06T10:01:00Z",
+          "fetched_at": "2025-01-06T10:02:00Z",
+          "period_end_at": "2025-01-06T10:00:00Z",
+          "availability_basis": "fictional_fixture",
+          "archive_verification_ref": null,
+          "summary": "Fictional closed candle; not market data."
+        }
+      ],
+      "missing_evidence": [],
+      "rationale": {
+        "summary": "Fictional contract example, not investment research.",
+        "evidence_ids": [
+          "SYN-evidence"
+        ]
+      },
+      "versions": {
+        "code": "fixture-1",
+        "dataset": "SYN-dataset",
+        "model": null,
+        "prompt": null
+      },
+      "evidence_quality": {
+        "coverage": "1",
+        "freshness": "fresh",
+        "source_quality": "unknown",
+        "claim_support": null,
+        "contradiction_ids": [],
+        "uncertainty": [
+          "fictional inputs"
+        ],
+        "missing_required": []
+      },
+      "conditions": {
+        "entry": [
+          {
+            "code": "fixture_condition",
+            "explanation": "Fictional deterministic condition.",
+            "evidence_ids": [
+              "SYN-evidence"
+            ]
+          }
+        ],
+        "invalidation": [
+          {
+            "code": "fixture_condition",
+            "explanation": "Fictional deterministic condition.",
+            "evidence_ids": [
+              "SYN-evidence"
+            ]
+          }
+        ],
+        "review": [
+          {
+            "code": "fixture_condition",
+            "explanation": "Fictional deterministic condition.",
+            "evidence_ids": [
+              "SYN-evidence"
+            ]
+          }
+        ],
+        "expires_at": "2025-01-08T09:00:00Z"
+      },
+      "valuation": null,
+      "execution": {
+        "profile": "long_term",
+        "side": "OPEN_LONG",
+        "entry_type": "buy_stop",
+        "entry_price": "100",
+        "stop_price": "90",
+        "target_price": "120",
+        "earliest_entry_at": "2025-01-07T03:45:00Z",
+        "entry_expires_at": "2025-01-08T09:00:00Z",
+        "time_exit_at": "2026-01-06T10:00:00Z",
+        "assumptions_ref": {
+          "id": "SYN-long_term-cost",
+          "version": "fixture-1",
+          "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+        }
+      },
+      "risk_context": {
+        "eligibility": "eligible",
+        "binding_constraints": [],
+        "risk_ref": "SYN-risk",
+        "capital_profile_ref": "SYN-capital"
+      },
+      "paper_admission": {
+        "status": "admitted",
+        "reservation_ref": "SYN-reservation",
+        "reason": "fictional_reservation",
+        "quantity": 1
+      },
+      "action_reason_codes": [
+        "fixture_qualifies"
+      ],
+      "revises_id": null,
+      "revision_reason": null
+    },
+    {
+      "schema_version": "2.0.0",
+      "recommendation_id": "SYN-long_term-quant_rag",
+      "synthetic": true,
+      "mode": "synthetic",
+      "run_id": "SYN-run",
+      "instrument": {
+        "instrument_id": "SYN-listing",
+        "issuer_id": "SYN-issuer",
+        "symbol": "FICTION",
+        "exchange": "SYNTHETIC_NSE",
+        "series": "EQ",
+        "isin": null,
+        "currency": "INR",
+        "exchange_timezone": "Asia/Kolkata",
+        "lot_size": 1
+      },
+      "strategy": {
+        "id": "SYN-strategy",
+        "version": "fixture-1",
+        "config_version": "fixture-1"
+      },
+      "horizon": {
+        "schema_version": "2.0.0",
+        "profile": "long_term",
+        "minimum": 1,
+        "maximum": 5,
+        "units": "calendar_years",
+        "duration": 1,
+        "anchor_at": "2025-01-06T10:06:00Z",
+        "holding_end_at": "2026-01-06T10:00:00Z",
+        "next_review_at": "2025-01-07T10:00:00Z",
+        "entry_expires_at": "2025-01-08T09:00:00Z",
+        "calendar_ref": {
+          "id": "SYN-calendar",
+          "version": "fixture-1",
+          "content_hash": "5ba76629e7a411a7aa725584e20c0e035f23cbcab14345ec089377daf88c40ff"
+        },
+        "review_cadence": "monthly"
+      },
+      "information_cutoff_at": "2025-01-06T10:05:00Z",
+      "generated_at": "2025-01-06T10:06:00Z",
+      "decision_available_at": "2025-01-06T10:06:00Z",
+      "availability_simulated": true,
+      "action": "BUY",
+      "cohort": {
+        "arm": "quant_rag",
+        "config_hash": "b61ee83c7ac81e8be8671c673a2507e690abdac27734b56e52ffefd80f76419a",
+        "capability": "researched",
+        "shadow": false
+      },
+      "candidate_origin": "quant",
+      "event_ids": [],
+      "snapshot_id": "SYN-snapshot",
+      "baseline_ref": "SYN-baseline",
+      "research_status": "succeeded",
+      "research_ref": "SYN-quant_rag-research",
+      "validation_ref": "SYN-quant_rag-validation",
+      "judge_ref": "SYN-quant_rag-judge",
+      "research_unavailable_reason": null,
+      "policy_refs": {
+        "strategy": {
+          "id": "SYN-long_term-strategy",
+          "version": "fixture-1",
+          "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+        },
+        "horizon": {
+          "id": "SYN-long_term-horizon",
+          "version": "fixture-1",
+          "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+        },
+        "research": {
+          "id": "SYN-long_term-research",
+          "version": "fixture-1",
+          "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+        },
+        "risk": {
+          "id": "SYN-long_term-risk",
+          "version": "fixture-1",
+          "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+        },
+        "cost": {
+          "id": "SYN-long_term-cost",
+          "version": "fixture-1",
+          "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+        },
+        "retrieval": {
+          "id": "SYN-long_term-retrieval",
+          "version": "fixture-1",
+          "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+        },
+        "schedule": {
+          "id": "SYN-long_term-schedule",
+          "version": "fixture-1",
+          "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+        },
+        "universe": {
+          "id": "SYN-long_term-universe",
+          "version": "fixture-1",
+          "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+        }
+      },
+      "evidence": [
+        {
+          "evidence_id": "SYN-evidence",
+          "revision_id": "SYN-revision-1",
+          "instrument_id": "SYN-listing",
+          "kind": "closed_candles",
+          "source_ref": "fixture://closed-prices",
+          "source_version": "fixture-1",
+          "locator": "row 1",
+          "published_at": "2025-01-06T10:00:00Z",
+          "available_at": "2025-01-06T10:01:00Z",
+          "fetched_at": "2025-01-06T10:02:00Z",
+          "period_end_at": "2025-01-06T10:00:00Z",
+          "availability_basis": "fictional_fixture",
+          "archive_verification_ref": null,
+          "summary": "Fictional closed candle; not market data."
+        }
+      ],
+      "missing_evidence": [],
+      "rationale": {
+        "summary": "Fictional contract example, not investment research.",
+        "evidence_ids": [
+          "SYN-evidence"
+        ]
+      },
+      "versions": {
+        "code": "fixture-1",
+        "dataset": "SYN-dataset",
+        "model": "fixture-model",
+        "prompt": "fixture-prompt"
+      },
+      "evidence_quality": {
+        "coverage": "1",
+        "freshness": "fresh",
+        "source_quality": "unknown",
+        "claim_support": null,
+        "contradiction_ids": [],
+        "uncertainty": [
+          "fictional inputs"
+        ],
+        "missing_required": []
+      },
+      "conditions": {
+        "entry": [
+          {
+            "code": "fixture_condition",
+            "explanation": "Fictional deterministic condition.",
+            "evidence_ids": [
+              "SYN-evidence"
+            ]
+          }
+        ],
+        "invalidation": [
+          {
+            "code": "fixture_condition",
+            "explanation": "Fictional deterministic condition.",
+            "evidence_ids": [
+              "SYN-evidence"
+            ]
+          }
+        ],
+        "review": [
+          {
+            "code": "fixture_condition",
+            "explanation": "Fictional deterministic condition.",
+            "evidence_ids": [
+              "SYN-evidence"
+            ]
+          }
+        ],
+        "expires_at": "2025-01-08T09:00:00Z"
+      },
+      "valuation": null,
+      "execution": {
+        "profile": "long_term",
+        "side": "OPEN_LONG",
+        "entry_type": "buy_stop",
+        "entry_price": "100",
+        "stop_price": "90",
+        "target_price": "120",
+        "earliest_entry_at": "2025-01-07T03:45:00Z",
+        "entry_expires_at": "2025-01-08T09:00:00Z",
+        "time_exit_at": "2026-01-06T10:00:00Z",
+        "assumptions_ref": {
+          "id": "SYN-long_term-cost",
+          "version": "fixture-1",
+          "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+        }
+      },
+      "risk_context": {
+        "eligibility": "eligible",
+        "binding_constraints": [],
+        "risk_ref": "SYN-risk",
+        "capital_profile_ref": "SYN-capital"
+      },
+      "paper_admission": {
+        "status": "blocked",
+        "reservation_ref": null,
+        "reason": "capacity_exhausted",
+        "quantity": null
+      },
+      "action_reason_codes": [
+        "fixture_qualifies"
+      ],
+      "revises_id": null,
+      "revision_reason": null
+    },
+    {
+      "schema_version": "2.0.0",
+      "recommendation_id": "SYN-long_term-quant_agent",
+      "synthetic": true,
+      "mode": "synthetic",
+      "run_id": "SYN-run",
+      "instrument": {
+        "instrument_id": "SYN-listing",
+        "issuer_id": "SYN-issuer",
+        "symbol": "FICTION",
+        "exchange": "SYNTHETIC_NSE",
+        "series": "EQ",
+        "isin": null,
+        "currency": "INR",
+        "exchange_timezone": "Asia/Kolkata",
+        "lot_size": 1
+      },
+      "strategy": {
+        "id": "SYN-strategy",
+        "version": "fixture-1",
+        "config_version": "fixture-1"
+      },
+      "horizon": {
+        "schema_version": "2.0.0",
+        "profile": "long_term",
+        "minimum": 1,
+        "maximum": 5,
+        "units": "calendar_years",
+        "duration": 1,
+        "anchor_at": "2025-01-06T10:06:00Z",
+        "holding_end_at": "2026-01-06T10:00:00Z",
+        "next_review_at": "2025-01-07T10:00:00Z",
+        "entry_expires_at": "2025-01-08T09:00:00Z",
+        "calendar_ref": {
+          "id": "SYN-calendar",
+          "version": "fixture-1",
+          "content_hash": "5ba76629e7a411a7aa725584e20c0e035f23cbcab14345ec089377daf88c40ff"
+        },
+        "review_cadence": "monthly"
+      },
+      "information_cutoff_at": "2025-01-06T10:05:00Z",
+      "generated_at": "2025-01-06T10:06:00Z",
+      "decision_available_at": "2025-01-06T10:06:00Z",
+      "availability_simulated": true,
+      "action": "BUY",
+      "cohort": {
+        "arm": "quant_agent",
+        "config_hash": "23b77b78ceb6c6e8a0b8122122c649f23ac270b35381f53af252202374c8774f",
+        "capability": "researched",
+        "shadow": false
+      },
+      "candidate_origin": "quant",
+      "event_ids": [],
+      "snapshot_id": "SYN-snapshot",
+      "baseline_ref": "SYN-baseline",
+      "research_status": "succeeded",
+      "research_ref": "SYN-quant_agent-research",
+      "validation_ref": "SYN-quant_agent-validation",
+      "judge_ref": "SYN-quant_agent-judge",
+      "research_unavailable_reason": null,
+      "policy_refs": {
+        "strategy": {
+          "id": "SYN-long_term-strategy",
+          "version": "fixture-1",
+          "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+        },
+        "horizon": {
+          "id": "SYN-long_term-horizon",
+          "version": "fixture-1",
+          "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+        },
+        "research": {
+          "id": "SYN-long_term-research",
+          "version": "fixture-1",
+          "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+        },
+        "risk": {
+          "id": "SYN-long_term-risk",
+          "version": "fixture-1",
+          "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+        },
+        "cost": {
+          "id": "SYN-long_term-cost",
+          "version": "fixture-1",
+          "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+        },
+        "retrieval": {
+          "id": "SYN-long_term-retrieval",
+          "version": "fixture-1",
+          "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+        },
+        "schedule": {
+          "id": "SYN-long_term-schedule",
+          "version": "fixture-1",
+          "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+        },
+        "universe": {
+          "id": "SYN-long_term-universe",
+          "version": "fixture-1",
+          "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+        }
+      },
+      "evidence": [
+        {
+          "evidence_id": "SYN-evidence",
+          "revision_id": "SYN-revision-1",
+          "instrument_id": "SYN-listing",
+          "kind": "closed_candles",
+          "source_ref": "fixture://closed-prices",
+          "source_version": "fixture-1",
+          "locator": "row 1",
+          "published_at": "2025-01-06T10:00:00Z",
+          "available_at": "2025-01-06T10:01:00Z",
+          "fetched_at": "2025-01-06T10:02:00Z",
+          "period_end_at": "2025-01-06T10:00:00Z",
+          "availability_basis": "fictional_fixture",
+          "archive_verification_ref": null,
+          "summary": "Fictional closed candle; not market data."
+        }
+      ],
+      "missing_evidence": [],
+      "rationale": {
+        "summary": "Fictional contract example, not investment research.",
+        "evidence_ids": [
+          "SYN-evidence"
+        ]
+      },
+      "versions": {
+        "code": "fixture-1",
+        "dataset": "SYN-dataset",
+        "model": "fixture-model",
+        "prompt": "fixture-prompt"
+      },
+      "evidence_quality": {
+        "coverage": "1",
+        "freshness": "fresh",
+        "source_quality": "unknown",
+        "claim_support": null,
+        "contradiction_ids": [],
+        "uncertainty": [
+          "fictional inputs"
+        ],
+        "missing_required": []
+      },
+      "conditions": {
+        "entry": [
+          {
+            "code": "fixture_condition",
+            "explanation": "Fictional deterministic condition.",
+            "evidence_ids": [
+              "SYN-evidence"
+            ]
+          }
+        ],
+        "invalidation": [
+          {
+            "code": "fixture_condition",
+            "explanation": "Fictional deterministic condition.",
+            "evidence_ids": [
+              "SYN-evidence"
+            ]
+          }
+        ],
+        "review": [
+          {
+            "code": "fixture_condition",
+            "explanation": "Fictional deterministic condition.",
+            "evidence_ids": [
+              "SYN-evidence"
+            ]
+          }
+        ],
+        "expires_at": "2025-01-08T09:00:00Z"
+      },
+      "valuation": null,
+      "execution": {
+        "profile": "long_term",
+        "side": "OPEN_LONG",
+        "entry_type": "buy_stop",
+        "entry_price": "100",
+        "stop_price": "90",
+        "target_price": "120",
+        "earliest_entry_at": "2025-01-07T03:45:00Z",
+        "entry_expires_at": "2025-01-08T09:00:00Z",
+        "time_exit_at": "2026-01-06T10:00:00Z",
+        "assumptions_ref": {
+          "id": "SYN-long_term-cost",
+          "version": "fixture-1",
+          "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+        }
+      },
+      "risk_context": {
+        "eligibility": "eligible",
+        "binding_constraints": [],
+        "risk_ref": "SYN-risk",
+        "capital_profile_ref": "SYN-capital"
+      },
+      "paper_admission": {
+        "status": "blocked",
+        "reservation_ref": null,
+        "reason": "capacity_exhausted",
+        "quantity": null
+      },
+      "action_reason_codes": [
+        "fixture_qualifies"
+      ],
+      "revises_id": null,
+      "revision_reason": null
+    },
+    {
+      "schema_version": "2.0.0",
+      "recommendation_id": "SYN-long_term-traditional_ml",
+      "synthetic": true,
+      "mode": "synthetic",
+      "run_id": "SYN-run",
+      "instrument": {
+        "instrument_id": "SYN-listing",
+        "issuer_id": "SYN-issuer",
+        "symbol": "FICTION",
+        "exchange": "SYNTHETIC_NSE",
+        "series": "EQ",
+        "isin": null,
+        "currency": "INR",
+        "exchange_timezone": "Asia/Kolkata",
+        "lot_size": 1
+      },
+      "strategy": {
+        "id": "SYN-strategy",
+        "version": "fixture-1",
+        "config_version": "fixture-1"
+      },
+      "horizon": {
+        "schema_version": "2.0.0",
+        "profile": "long_term",
+        "minimum": 1,
+        "maximum": 5,
+        "units": "calendar_years",
+        "duration": 1,
+        "anchor_at": "2025-01-06T10:06:00Z",
+        "holding_end_at": "2026-01-06T10:00:00Z",
+        "next_review_at": "2025-01-07T10:00:00Z",
+        "entry_expires_at": "2025-01-08T09:00:00Z",
+        "calendar_ref": {
+          "id": "SYN-calendar",
+          "version": "fixture-1",
+          "content_hash": "5ba76629e7a411a7aa725584e20c0e035f23cbcab14345ec089377daf88c40ff"
+        },
+        "review_cadence": "monthly"
+      },
+      "information_cutoff_at": "2025-01-06T10:05:00Z",
+      "generated_at": "2025-01-06T10:06:00Z",
+      "decision_available_at": "2025-01-06T10:06:00Z",
+      "availability_simulated": true,
+      "action": "BUY",
+      "cohort": {
+        "arm": "traditional_ml",
+        "config_hash": "0cd11b729da73e7e7a194619eb9c8431b303a22970422593ee86806e1d6cfaae",
+        "capability": "predictive",
+        "shadow": false
+      },
+      "candidate_origin": "quant",
+      "event_ids": [],
+      "snapshot_id": "SYN-snapshot",
+      "baseline_ref": "SYN-baseline",
+      "research_status": "not_requested",
+      "research_ref": null,
+      "validation_ref": null,
+      "judge_ref": null,
+      "research_unavailable_reason": "technical_only",
+      "policy_refs": {
+        "strategy": {
+          "id": "SYN-long_term-strategy",
+          "version": "fixture-1",
+          "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+        },
+        "horizon": {
+          "id": "SYN-long_term-horizon",
+          "version": "fixture-1",
+          "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+        },
+        "research": {
+          "id": "SYN-long_term-research",
+          "version": "fixture-1",
+          "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+        },
+        "risk": {
+          "id": "SYN-long_term-risk",
+          "version": "fixture-1",
+          "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+        },
+        "cost": {
+          "id": "SYN-long_term-cost",
+          "version": "fixture-1",
+          "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+        },
+        "retrieval": {
+          "id": "SYN-long_term-retrieval",
+          "version": "fixture-1",
+          "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+        },
+        "schedule": {
+          "id": "SYN-long_term-schedule",
+          "version": "fixture-1",
+          "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+        },
+        "universe": {
+          "id": "SYN-long_term-universe",
+          "version": "fixture-1",
+          "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+        }
+      },
+      "evidence": [
+        {
+          "evidence_id": "SYN-evidence",
+          "revision_id": "SYN-revision-1",
+          "instrument_id": "SYN-listing",
+          "kind": "closed_candles",
+          "source_ref": "fixture://closed-prices",
+          "source_version": "fixture-1",
+          "locator": "row 1",
+          "published_at": "2025-01-06T10:00:00Z",
+          "available_at": "2025-01-06T10:01:00Z",
+          "fetched_at": "2025-01-06T10:02:00Z",
+          "period_end_at": "2025-01-06T10:00:00Z",
+          "availability_basis": "fictional_fixture",
+          "archive_verification_ref": null,
+          "summary": "Fictional closed candle; not market data."
+        }
+      ],
+      "missing_evidence": [],
+      "rationale": {
+        "summary": "Fictional contract example, not investment research.",
+        "evidence_ids": [
+          "SYN-evidence"
+        ]
+      },
+      "versions": {
+        "code": "fixture-1",
+        "dataset": "SYN-dataset",
+        "model": null,
+        "prompt": null
+      },
+      "evidence_quality": {
+        "coverage": "1",
+        "freshness": "fresh",
+        "source_quality": "unknown",
+        "claim_support": null,
+        "contradiction_ids": [],
+        "uncertainty": [
+          "fictional inputs"
+        ],
+        "missing_required": []
+      },
+      "conditions": {
+        "entry": [
+          {
+            "code": "fixture_condition",
+            "explanation": "Fictional deterministic condition.",
+            "evidence_ids": [
+              "SYN-evidence"
+            ]
+          }
+        ],
+        "invalidation": [
+          {
+            "code": "fixture_condition",
+            "explanation": "Fictional deterministic condition.",
+            "evidence_ids": [
+              "SYN-evidence"
+            ]
+          }
+        ],
+        "review": [
+          {
+            "code": "fixture_condition",
+            "explanation": "Fictional deterministic condition.",
+            "evidence_ids": [
+              "SYN-evidence"
+            ]
+          }
+        ],
+        "expires_at": "2025-01-08T09:00:00Z"
+      },
+      "valuation": null,
+      "execution": {
+        "profile": "long_term",
+        "side": "OPEN_LONG",
+        "entry_type": "buy_stop",
+        "entry_price": "100",
+        "stop_price": "90",
+        "target_price": "120",
+        "earliest_entry_at": "2025-01-07T03:45:00Z",
+        "entry_expires_at": "2025-01-08T09:00:00Z",
+        "time_exit_at": "2026-01-06T10:00:00Z",
+        "assumptions_ref": {
+          "id": "SYN-long_term-cost",
+          "version": "fixture-1",
+          "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+        }
+      },
+      "risk_context": {
+        "eligibility": "eligible",
+        "binding_constraints": [],
+        "risk_ref": "SYN-risk",
+        "capital_profile_ref": "SYN-capital"
+      },
+      "paper_admission": {
+        "status": "blocked",
+        "reservation_ref": null,
+        "reason": "capacity_exhausted",
+        "quantity": null
+      },
+      "action_reason_codes": [
+        "fixture_qualifies"
+      ],
+      "revises_id": null,
+      "revision_reason": null
+    },
+    {
+      "schema_version": "2.0.0",
+      "recommendation_id": "SYN-long_term-WATCH",
+      "synthetic": true,
+      "mode": "synthetic",
+      "run_id": "SYN-run",
+      "instrument": {
+        "instrument_id": "SYN-listing",
+        "issuer_id": "SYN-issuer",
+        "symbol": "FICTION",
+        "exchange": "SYNTHETIC_NSE",
+        "series": "EQ",
+        "isin": null,
+        "currency": "INR",
+        "exchange_timezone": "Asia/Kolkata",
+        "lot_size": 1
+      },
+      "strategy": {
+        "id": "SYN-strategy",
+        "version": "fixture-1",
+        "config_version": "fixture-1"
+      },
+      "horizon": {
+        "schema_version": "2.0.0",
+        "profile": "long_term",
+        "minimum": 1,
+        "maximum": 5,
+        "units": "calendar_years",
+        "duration": 1,
+        "anchor_at": "2025-01-06T10:06:00Z",
+        "holding_end_at": "2026-01-06T10:00:00Z",
+        "next_review_at": "2025-01-07T10:00:00Z",
+        "entry_expires_at": "2025-01-08T09:00:00Z",
+        "calendar_ref": {
+          "id": "SYN-calendar",
+          "version": "fixture-1",
+          "content_hash": "5ba76629e7a411a7aa725584e20c0e035f23cbcab14345ec089377daf88c40ff"
+        },
+        "review_cadence": "monthly"
+      },
+      "information_cutoff_at": "2025-01-06T10:05:00Z",
+      "generated_at": "2025-01-06T10:06:00Z",
+      "decision_available_at": "2025-01-06T10:06:00Z",
+      "availability_simulated": true,
+      "action": "WATCH",
+      "cohort": {
+        "arm": "quant",
+        "config_hash": "23302efd910dafb5afde14f8fe4e454faf952149f4cb08b7211aeb29cd7bb3d6",
+        "capability": "technical_only",
+        "shadow": false
+      },
+      "candidate_origin": "event",
+      "event_ids": [
+        "SYN-event"
+      ],
+      "snapshot_id": "SYN-snapshot",
+      "baseline_ref": "SYN-baseline",
+      "research_status": "not_requested",
+      "research_ref": null,
+      "validation_ref": null,
+      "judge_ref": null,
+      "research_unavailable_reason": "technical_only",
+      "policy_refs": {
+        "strategy": {
+          "id": "SYN-long_term-strategy",
+          "version": "fixture-1",
+          "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+        },
+        "horizon": {
+          "id": "SYN-long_term-horizon",
+          "version": "fixture-1",
+          "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+        },
+        "research": {
+          "id": "SYN-long_term-research",
+          "version": "fixture-1",
+          "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+        },
+        "risk": {
+          "id": "SYN-long_term-risk",
+          "version": "fixture-1",
+          "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+        },
+        "cost": {
+          "id": "SYN-long_term-cost",
+          "version": "fixture-1",
+          "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+        },
+        "retrieval": {
+          "id": "SYN-long_term-retrieval",
+          "version": "fixture-1",
+          "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+        },
+        "schedule": {
+          "id": "SYN-long_term-schedule",
+          "version": "fixture-1",
+          "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+        },
+        "universe": {
+          "id": "SYN-long_term-universe",
+          "version": "fixture-1",
+          "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+        }
+      },
+      "evidence": [
+        {
+          "evidence_id": "SYN-evidence",
+          "revision_id": "SYN-revision-1",
+          "instrument_id": "SYN-listing",
+          "kind": "closed_candles",
+          "source_ref": "fixture://closed-prices",
+          "source_version": "fixture-1",
+          "locator": "row 1",
+          "published_at": "2025-01-06T10:00:00Z",
+          "available_at": "2025-01-06T10:01:00Z",
+          "fetched_at": "2025-01-06T10:02:00Z",
+          "period_end_at": "2025-01-06T10:00:00Z",
+          "availability_basis": "fictional_fixture",
+          "archive_verification_ref": null,
+          "summary": "Fictional closed candle; not market data."
+        }
+      ],
+      "missing_evidence": [],
+      "rationale": {
+        "summary": "Fictional contract example, not investment research.",
+        "evidence_ids": [
+          "SYN-evidence"
+        ]
+      },
+      "versions": {
+        "code": "fixture-1",
+        "dataset": "SYN-dataset",
+        "model": null,
+        "prompt": null
+      },
+      "evidence_quality": {
+        "coverage": "1",
+        "freshness": "fresh",
+        "source_quality": "unknown",
+        "claim_support": null,
+        "contradiction_ids": [],
+        "uncertainty": [
+          "fictional inputs"
+        ],
+        "missing_required": []
+      },
+      "conditions": {
+        "entry": [
+          {
+            "code": "fixture_condition",
+            "explanation": "Fictional deterministic condition.",
+            "evidence_ids": [
+              "SYN-evidence"
+            ]
+          }
+        ],
+        "invalidation": [
+          {
+            "code": "fixture_condition",
+            "explanation": "Fictional deterministic condition.",
+            "evidence_ids": [
+              "SYN-evidence"
+            ]
+          }
+        ],
+        "review": [
+          {
+            "code": "fixture_condition",
+            "explanation": "Fictional deterministic condition.",
+            "evidence_ids": [
+              "SYN-evidence"
+            ]
+          }
+        ],
+        "expires_at": "2025-01-08T09:00:00Z"
+      },
+      "valuation": null,
+      "execution": null,
+      "risk_context": {
+        "eligibility": "eligible",
+        "binding_constraints": [],
+        "risk_ref": "SYN-risk",
+        "capital_profile_ref": "SYN-capital"
+      },
+      "paper_admission": {
+        "status": "not_requested",
+        "reservation_ref": null,
+        "reason": "research_only",
+        "quantity": null
+      },
+      "action_reason_codes": [
+        "fixture_watch"
+      ],
+      "revises_id": null,
+      "revision_reason": null
+    },
+    {
+      "schema_version": "2.0.0",
+      "recommendation_id": "SYN-long_term-AVOID",
+      "synthetic": true,
+      "mode": "synthetic",
+      "run_id": "SYN-run",
+      "instrument": {
+        "instrument_id": "SYN-listing",
+        "issuer_id": "SYN-issuer",
+        "symbol": "FICTION",
+        "exchange": "SYNTHETIC_NSE",
+        "series": "EQ",
+        "isin": null,
+        "currency": "INR",
+        "exchange_timezone": "Asia/Kolkata",
+        "lot_size": 1
+      },
+      "strategy": {
+        "id": "SYN-strategy",
+        "version": "fixture-1",
+        "config_version": "fixture-1"
+      },
+      "horizon": {
+        "schema_version": "2.0.0",
+        "profile": "long_term",
+        "minimum": 1,
+        "maximum": 5,
+        "units": "calendar_years",
+        "duration": 1,
+        "anchor_at": "2025-01-06T10:06:00Z",
+        "holding_end_at": "2026-01-06T10:00:00Z",
+        "next_review_at": "2025-01-07T10:00:00Z",
+        "entry_expires_at": "2025-01-08T09:00:00Z",
+        "calendar_ref": {
+          "id": "SYN-calendar",
+          "version": "fixture-1",
+          "content_hash": "5ba76629e7a411a7aa725584e20c0e035f23cbcab14345ec089377daf88c40ff"
+        },
+        "review_cadence": "monthly"
+      },
+      "information_cutoff_at": "2025-01-06T10:05:00Z",
+      "generated_at": "2025-01-06T10:06:00Z",
+      "decision_available_at": "2025-01-06T10:06:00Z",
+      "availability_simulated": true,
+      "action": "AVOID",
+      "cohort": {
+        "arm": "quant",
+        "config_hash": "23302efd910dafb5afde14f8fe4e454faf952149f4cb08b7211aeb29cd7bb3d6",
+        "capability": "technical_only",
+        "shadow": false
+      },
+      "candidate_origin": "event",
+      "event_ids": [
+        "SYN-event"
+      ],
+      "snapshot_id": "SYN-snapshot",
+      "baseline_ref": "SYN-baseline",
+      "research_status": "not_requested",
+      "research_ref": null,
+      "validation_ref": null,
+      "judge_ref": null,
+      "research_unavailable_reason": "technical_only",
+      "policy_refs": {
+        "strategy": {
+          "id": "SYN-long_term-strategy",
+          "version": "fixture-1",
+          "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+        },
+        "horizon": {
+          "id": "SYN-long_term-horizon",
+          "version": "fixture-1",
+          "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+        },
+        "research": {
+          "id": "SYN-long_term-research",
+          "version": "fixture-1",
+          "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+        },
+        "risk": {
+          "id": "SYN-long_term-risk",
+          "version": "fixture-1",
+          "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+        },
+        "cost": {
+          "id": "SYN-long_term-cost",
+          "version": "fixture-1",
+          "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+        },
+        "retrieval": {
+          "id": "SYN-long_term-retrieval",
+          "version": "fixture-1",
+          "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+        },
+        "schedule": {
+          "id": "SYN-long_term-schedule",
+          "version": "fixture-1",
+          "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+        },
+        "universe": {
+          "id": "SYN-long_term-universe",
+          "version": "fixture-1",
+          "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+        }
+      },
+      "evidence": [
+        {
+          "evidence_id": "SYN-evidence",
+          "revision_id": "SYN-revision-1",
+          "instrument_id": "SYN-listing",
+          "kind": "closed_candles",
+          "source_ref": "fixture://closed-prices",
+          "source_version": "fixture-1",
+          "locator": "row 1",
+          "published_at": "2025-01-06T10:00:00Z",
+          "available_at": "2025-01-06T10:01:00Z",
+          "fetched_at": "2025-01-06T10:02:00Z",
+          "period_end_at": "2025-01-06T10:00:00Z",
+          "availability_basis": "fictional_fixture",
+          "archive_verification_ref": null,
+          "summary": "Fictional closed candle; not market data."
+        }
+      ],
+      "missing_evidence": [],
+      "rationale": {
+        "summary": "Fictional contract example, not investment research.",
+        "evidence_ids": [
+          "SYN-evidence"
+        ]
+      },
+      "versions": {
+        "code": "fixture-1",
+        "dataset": "SYN-dataset",
+        "model": null,
+        "prompt": null
+      },
+      "evidence_quality": {
+        "coverage": "1",
+        "freshness": "fresh",
+        "source_quality": "unknown",
+        "claim_support": null,
+        "contradiction_ids": [],
+        "uncertainty": [
+          "fictional inputs"
+        ],
+        "missing_required": []
+      },
+      "conditions": {
+        "entry": [
+          {
+            "code": "fixture_condition",
+            "explanation": "Fictional deterministic condition.",
+            "evidence_ids": [
+              "SYN-evidence"
+            ]
+          }
+        ],
+        "invalidation": [
+          {
+            "code": "fixture_condition",
+            "explanation": "Fictional deterministic condition.",
+            "evidence_ids": [
+              "SYN-evidence"
+            ]
+          }
+        ],
+        "review": [
+          {
+            "code": "fixture_condition",
+            "explanation": "Fictional deterministic condition.",
+            "evidence_ids": [
+              "SYN-evidence"
+            ]
+          }
+        ],
+        "expires_at": "2025-01-08T09:00:00Z"
+      },
+      "valuation": null,
+      "execution": null,
+      "risk_context": {
+        "eligibility": "eligible",
+        "binding_constraints": [],
+        "risk_ref": "SYN-risk",
+        "capital_profile_ref": "SYN-capital"
+      },
+      "paper_admission": {
+        "status": "not_requested",
+        "reservation_ref": null,
+        "reason": "research_only",
+        "quantity": null
+      },
+      "action_reason_codes": [
+        "fixture_avoid"
+      ],
+      "revises_id": null,
+      "revision_reason": null
+    },
+    {
+      "schema_version": "2.0.0",
+      "recommendation_id": "SYN-long_term-INSUFFICIENT_EVIDENCE",
+      "synthetic": true,
+      "mode": "synthetic",
+      "run_id": "SYN-run",
+      "instrument": {
+        "instrument_id": "SYN-listing",
+        "issuer_id": "SYN-issuer",
+        "symbol": "FICTION",
+        "exchange": "SYNTHETIC_NSE",
+        "series": "EQ",
+        "isin": null,
+        "currency": "INR",
+        "exchange_timezone": "Asia/Kolkata",
+        "lot_size": 1
+      },
+      "strategy": {
+        "id": "SYN-strategy",
+        "version": "fixture-1",
+        "config_version": "fixture-1"
+      },
+      "horizon": {
+        "schema_version": "2.0.0",
+        "profile": "long_term",
+        "minimum": 1,
+        "maximum": 5,
+        "units": "calendar_years",
+        "duration": 1,
+        "anchor_at": "2025-01-06T10:06:00Z",
+        "holding_end_at": "2026-01-06T10:00:00Z",
+        "next_review_at": "2025-01-07T10:00:00Z",
+        "entry_expires_at": "2025-01-08T09:00:00Z",
+        "calendar_ref": {
+          "id": "SYN-calendar",
+          "version": "fixture-1",
+          "content_hash": "5ba76629e7a411a7aa725584e20c0e035f23cbcab14345ec089377daf88c40ff"
+        },
+        "review_cadence": "monthly"
+      },
+      "information_cutoff_at": "2025-01-06T10:05:00Z",
+      "generated_at": "2025-01-06T10:06:00Z",
+      "decision_available_at": "2025-01-06T10:06:00Z",
+      "availability_simulated": true,
+      "action": "INSUFFICIENT_EVIDENCE",
+      "cohort": {
+        "arm": "quant_agent",
+        "config_hash": "d67ad2c8a7352861787ab7ce3dc102eb86e46e61d188d3489a807977abaf41bf",
+        "capability": "researched",
+        "shadow": true
+      },
+      "candidate_origin": "event",
+      "event_ids": [
+        "SYN-event"
+      ],
+      "snapshot_id": "SYN-snapshot",
+      "baseline_ref": "SYN-baseline",
+      "research_status": "failed",
+      "research_ref": null,
+      "validation_ref": null,
+      "judge_ref": null,
+      "research_unavailable_reason": "fixture_timeout",
+      "policy_refs": {
+        "strategy": {
+          "id": "SYN-long_term-strategy",
+          "version": "fixture-1",
+          "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+        },
+        "horizon": {
+          "id": "SYN-long_term-horizon",
+          "version": "fixture-1",
+          "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+        },
+        "research": {
+          "id": "SYN-long_term-research",
+          "version": "fixture-1",
+          "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+        },
+        "risk": {
+          "id": "SYN-long_term-risk",
+          "version": "fixture-1",
+          "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+        },
+        "cost": {
+          "id": "SYN-long_term-cost",
+          "version": "fixture-1",
+          "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+        },
+        "retrieval": {
+          "id": "SYN-long_term-retrieval",
+          "version": "fixture-1",
+          "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+        },
+        "schedule": {
+          "id": "SYN-long_term-schedule",
+          "version": "fixture-1",
+          "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+        },
+        "universe": {
+          "id": "SYN-long_term-universe",
+          "version": "fixture-1",
+          "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+        }
+      },
+      "evidence": [
+        {
+          "evidence_id": "SYN-evidence",
+          "revision_id": "SYN-revision-1",
+          "instrument_id": "SYN-listing",
+          "kind": "closed_candles",
+          "source_ref": "fixture://closed-prices",
+          "source_version": "fixture-1",
+          "locator": "row 1",
+          "published_at": "2025-01-06T10:00:00Z",
+          "available_at": "2025-01-06T10:01:00Z",
+          "fetched_at": "2025-01-06T10:02:00Z",
+          "period_end_at": "2025-01-06T10:00:00Z",
+          "availability_basis": "fictional_fixture",
+          "archive_verification_ref": null,
+          "summary": "Fictional closed candle; not market data."
+        }
+      ],
+      "missing_evidence": [
+        {
+          "requirement": "filing",
+          "reason": "fixture_unavailable",
+          "blocking": true
+        }
+      ],
+      "rationale": {
+        "summary": "Fictional contract example, not investment research.",
+        "evidence_ids": [
+          "SYN-evidence"
+        ]
+      },
+      "versions": {
+        "code": "fixture-1",
+        "dataset": "SYN-dataset",
+        "model": null,
+        "prompt": null
+      },
+      "evidence_quality": {
+        "coverage": "1",
+        "freshness": "fresh",
+        "source_quality": "unknown",
+        "claim_support": null,
+        "contradiction_ids": [],
+        "uncertainty": [
+          "fictional inputs"
+        ],
+        "missing_required": [
+          "filing"
+        ]
+      },
+      "conditions": {
+        "entry": [
+          {
+            "code": "fixture_condition",
+            "explanation": "Fictional deterministic condition.",
+            "evidence_ids": [
+              "SYN-evidence"
+            ]
+          }
+        ],
+        "invalidation": [
+          {
+            "code": "fixture_condition",
+            "explanation": "Fictional deterministic condition.",
+            "evidence_ids": [
+              "SYN-evidence"
+            ]
+          }
+        ],
+        "review": [
+          {
+            "code": "fixture_condition",
+            "explanation": "Fictional deterministic condition.",
+            "evidence_ids": [
+              "SYN-evidence"
+            ]
+          }
+        ],
+        "expires_at": "2025-01-08T09:00:00Z"
+      },
+      "valuation": null,
+      "execution": null,
+      "risk_context": {
+        "eligibility": "eligible",
+        "binding_constraints": [],
+        "risk_ref": "SYN-risk",
+        "capital_profile_ref": "SYN-capital"
+      },
+      "paper_admission": {
+        "status": "not_requested",
+        "reservation_ref": null,
+        "reason": "research_only",
+        "quantity": null
+      },
+      "action_reason_codes": [
+        "fixture_insufficient_evidence"
+      ],
+      "revises_id": null,
+      "revision_reason": null
+    }
+  ],
+  "outcomes": [
+    {
+      "schema_version": "2.0.0",
+      "outcome_id": "SYN-out-SYN-long_term-quant",
+      "recommendation_id": "SYN-long_term-quant",
+      "mode": "synthetic",
+      "horizon": {
+        "schema_version": "2.0.0",
+        "profile": "long_term",
+        "minimum": 1,
+        "maximum": 5,
+        "units": "calendar_years",
+        "duration": 1,
+        "anchor_at": "2025-01-06T10:06:00Z",
+        "holding_end_at": "2026-01-06T10:00:00Z",
+        "next_review_at": "2025-01-07T10:00:00Z",
+        "entry_expires_at": "2025-01-08T09:00:00Z",
+        "calendar_ref": {
+          "id": "SYN-calendar",
+          "version": "fixture-1",
+          "content_hash": "5ba76629e7a411a7aa725584e20c0e035f23cbcab14345ec089377daf88c40ff"
+        },
+        "review_cadence": "monthly"
+      },
+      "cohort": {
+        "arm": "quant",
+        "config_hash": "23302efd910dafb5afde14f8fe4e454faf952149f4cb08b7211aeb29cd7bb3d6",
+        "capability": "technical_only",
+        "shadow": false
+      },
+      "evaluated_at": "2025-01-07T10:00:00Z",
+      "observation_cutoff_at": "2025-01-07T10:00:00Z",
+      "observation_manifest_ref": {
+        "id": "SYN-observations",
+        "version": "fixture-1",
+        "content_hash": "4e2252fbda4d6a2348d30be4db6b6d270d083143795fbefc56b6c5c638fb4b52"
+      },
+      "evaluator_ref": {
+        "id": "SYN-evaluator",
+        "version": "fixture-1",
+        "content_hash": "222f5ce38f76635462afd69ebda52ab6e954364f366ddf17171a482cf2216b5f"
+      },
+      "cost_policy_ref": {
+        "id": "SYN-long_term-cost",
+        "version": "fixture-1",
+        "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+      },
+      "status": "provisional",
+      "reason_codes": [
+        "fixture_not_matured"
+      ],
+      "realized_return": null,
+      "thesis_result": "unknown",
+      "supersedes_outcome_id": null
+    },
+    {
+      "schema_version": "2.0.0",
+      "outcome_id": "SYN-out-SYN-long_term-quant_rag",
+      "recommendation_id": "SYN-long_term-quant_rag",
+      "mode": "synthetic",
+      "horizon": {
+        "schema_version": "2.0.0",
+        "profile": "long_term",
+        "minimum": 1,
+        "maximum": 5,
+        "units": "calendar_years",
+        "duration": 1,
+        "anchor_at": "2025-01-06T10:06:00Z",
+        "holding_end_at": "2026-01-06T10:00:00Z",
+        "next_review_at": "2025-01-07T10:00:00Z",
+        "entry_expires_at": "2025-01-08T09:00:00Z",
+        "calendar_ref": {
+          "id": "SYN-calendar",
+          "version": "fixture-1",
+          "content_hash": "5ba76629e7a411a7aa725584e20c0e035f23cbcab14345ec089377daf88c40ff"
+        },
+        "review_cadence": "monthly"
+      },
+      "cohort": {
+        "arm": "quant_rag",
+        "config_hash": "b61ee83c7ac81e8be8671c673a2507e690abdac27734b56e52ffefd80f76419a",
+        "capability": "researched",
+        "shadow": false
+      },
+      "evaluated_at": "2025-01-07T10:00:00Z",
+      "observation_cutoff_at": "2025-01-07T10:00:00Z",
+      "observation_manifest_ref": {
+        "id": "SYN-observations",
+        "version": "fixture-1",
+        "content_hash": "4e2252fbda4d6a2348d30be4db6b6d270d083143795fbefc56b6c5c638fb4b52"
+      },
+      "evaluator_ref": {
+        "id": "SYN-evaluator",
+        "version": "fixture-1",
+        "content_hash": "222f5ce38f76635462afd69ebda52ab6e954364f366ddf17171a482cf2216b5f"
+      },
+      "cost_policy_ref": {
+        "id": "SYN-long_term-cost",
+        "version": "fixture-1",
+        "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+      },
+      "status": "provisional",
+      "reason_codes": [
+        "fixture_not_matured"
+      ],
+      "realized_return": null,
+      "thesis_result": "unknown",
+      "supersedes_outcome_id": null
+    },
+    {
+      "schema_version": "2.0.0",
+      "outcome_id": "SYN-out-SYN-long_term-quant_agent",
+      "recommendation_id": "SYN-long_term-quant_agent",
+      "mode": "synthetic",
+      "horizon": {
+        "schema_version": "2.0.0",
+        "profile": "long_term",
+        "minimum": 1,
+        "maximum": 5,
+        "units": "calendar_years",
+        "duration": 1,
+        "anchor_at": "2025-01-06T10:06:00Z",
+        "holding_end_at": "2026-01-06T10:00:00Z",
+        "next_review_at": "2025-01-07T10:00:00Z",
+        "entry_expires_at": "2025-01-08T09:00:00Z",
+        "calendar_ref": {
+          "id": "SYN-calendar",
+          "version": "fixture-1",
+          "content_hash": "5ba76629e7a411a7aa725584e20c0e035f23cbcab14345ec089377daf88c40ff"
+        },
+        "review_cadence": "monthly"
+      },
+      "cohort": {
+        "arm": "quant_agent",
+        "config_hash": "23b77b78ceb6c6e8a0b8122122c649f23ac270b35381f53af252202374c8774f",
+        "capability": "researched",
+        "shadow": false
+      },
+      "evaluated_at": "2025-01-07T10:00:00Z",
+      "observation_cutoff_at": "2025-01-07T10:00:00Z",
+      "observation_manifest_ref": {
+        "id": "SYN-observations",
+        "version": "fixture-1",
+        "content_hash": "4e2252fbda4d6a2348d30be4db6b6d270d083143795fbefc56b6c5c638fb4b52"
+      },
+      "evaluator_ref": {
+        "id": "SYN-evaluator",
+        "version": "fixture-1",
+        "content_hash": "222f5ce38f76635462afd69ebda52ab6e954364f366ddf17171a482cf2216b5f"
+      },
+      "cost_policy_ref": {
+        "id": "SYN-long_term-cost",
+        "version": "fixture-1",
+        "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+      },
+      "status": "provisional",
+      "reason_codes": [
+        "fixture_not_matured"
+      ],
+      "realized_return": null,
+      "thesis_result": "unknown",
+      "supersedes_outcome_id": null
+    },
+    {
+      "schema_version": "2.0.0",
+      "outcome_id": "SYN-out-SYN-long_term-traditional_ml",
+      "recommendation_id": "SYN-long_term-traditional_ml",
+      "mode": "synthetic",
+      "horizon": {
+        "schema_version": "2.0.0",
+        "profile": "long_term",
+        "minimum": 1,
+        "maximum": 5,
+        "units": "calendar_years",
+        "duration": 1,
+        "anchor_at": "2025-01-06T10:06:00Z",
+        "holding_end_at": "2026-01-06T10:00:00Z",
+        "next_review_at": "2025-01-07T10:00:00Z",
+        "entry_expires_at": "2025-01-08T09:00:00Z",
+        "calendar_ref": {
+          "id": "SYN-calendar",
+          "version": "fixture-1",
+          "content_hash": "5ba76629e7a411a7aa725584e20c0e035f23cbcab14345ec089377daf88c40ff"
+        },
+        "review_cadence": "monthly"
+      },
+      "cohort": {
+        "arm": "traditional_ml",
+        "config_hash": "0cd11b729da73e7e7a194619eb9c8431b303a22970422593ee86806e1d6cfaae",
+        "capability": "predictive",
+        "shadow": false
+      },
+      "evaluated_at": "2025-01-07T10:00:00Z",
+      "observation_cutoff_at": "2025-01-07T10:00:00Z",
+      "observation_manifest_ref": {
+        "id": "SYN-observations",
+        "version": "fixture-1",
+        "content_hash": "4e2252fbda4d6a2348d30be4db6b6d270d083143795fbefc56b6c5c638fb4b52"
+      },
+      "evaluator_ref": {
+        "id": "SYN-evaluator",
+        "version": "fixture-1",
+        "content_hash": "222f5ce38f76635462afd69ebda52ab6e954364f366ddf17171a482cf2216b5f"
+      },
+      "cost_policy_ref": {
+        "id": "SYN-long_term-cost",
+        "version": "fixture-1",
+        "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+      },
+      "status": "provisional",
+      "reason_codes": [
+        "fixture_not_matured"
+      ],
+      "realized_return": null,
+      "thesis_result": "unknown",
+      "supersedes_outcome_id": null
+    },
+    {
+      "schema_version": "2.0.0",
+      "outcome_id": "SYN-out-SYN-long_term-WATCH",
+      "recommendation_id": "SYN-long_term-WATCH",
+      "mode": "synthetic",
+      "horizon": {
+        "schema_version": "2.0.0",
+        "profile": "long_term",
+        "minimum": 1,
+        "maximum": 5,
+        "units": "calendar_years",
+        "duration": 1,
+        "anchor_at": "2025-01-06T10:06:00Z",
+        "holding_end_at": "2026-01-06T10:00:00Z",
+        "next_review_at": "2025-01-07T10:00:00Z",
+        "entry_expires_at": "2025-01-08T09:00:00Z",
+        "calendar_ref": {
+          "id": "SYN-calendar",
+          "version": "fixture-1",
+          "content_hash": "5ba76629e7a411a7aa725584e20c0e035f23cbcab14345ec089377daf88c40ff"
+        },
+        "review_cadence": "monthly"
+      },
+      "cohort": {
+        "arm": "quant",
+        "config_hash": "23302efd910dafb5afde14f8fe4e454faf952149f4cb08b7211aeb29cd7bb3d6",
+        "capability": "technical_only",
+        "shadow": false
+      },
+      "evaluated_at": "2025-01-07T10:00:00Z",
+      "observation_cutoff_at": "2025-01-07T10:00:00Z",
+      "observation_manifest_ref": {
+        "id": "SYN-observations",
+        "version": "fixture-1",
+        "content_hash": "4e2252fbda4d6a2348d30be4db6b6d270d083143795fbefc56b6c5c638fb4b52"
+      },
+      "evaluator_ref": {
+        "id": "SYN-evaluator",
+        "version": "fixture-1",
+        "content_hash": "222f5ce38f76635462afd69ebda52ab6e954364f366ddf17171a482cf2216b5f"
+      },
+      "cost_policy_ref": {
+        "id": "SYN-long_term-cost",
+        "version": "fixture-1",
+        "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+      },
+      "status": "not_applicable",
+      "reason_codes": [
+        "no_execution"
+      ],
+      "realized_return": null,
+      "thesis_result": "unknown",
+      "supersedes_outcome_id": null
+    },
+    {
+      "schema_version": "2.0.0",
+      "outcome_id": "SYN-out-SYN-long_term-AVOID",
+      "recommendation_id": "SYN-long_term-AVOID",
+      "mode": "synthetic",
+      "horizon": {
+        "schema_version": "2.0.0",
+        "profile": "long_term",
+        "minimum": 1,
+        "maximum": 5,
+        "units": "calendar_years",
+        "duration": 1,
+        "anchor_at": "2025-01-06T10:06:00Z",
+        "holding_end_at": "2026-01-06T10:00:00Z",
+        "next_review_at": "2025-01-07T10:00:00Z",
+        "entry_expires_at": "2025-01-08T09:00:00Z",
+        "calendar_ref": {
+          "id": "SYN-calendar",
+          "version": "fixture-1",
+          "content_hash": "5ba76629e7a411a7aa725584e20c0e035f23cbcab14345ec089377daf88c40ff"
+        },
+        "review_cadence": "monthly"
+      },
+      "cohort": {
+        "arm": "quant",
+        "config_hash": "23302efd910dafb5afde14f8fe4e454faf952149f4cb08b7211aeb29cd7bb3d6",
+        "capability": "technical_only",
+        "shadow": false
+      },
+      "evaluated_at": "2025-01-07T10:00:00Z",
+      "observation_cutoff_at": "2025-01-07T10:00:00Z",
+      "observation_manifest_ref": {
+        "id": "SYN-observations",
+        "version": "fixture-1",
+        "content_hash": "4e2252fbda4d6a2348d30be4db6b6d270d083143795fbefc56b6c5c638fb4b52"
+      },
+      "evaluator_ref": {
+        "id": "SYN-evaluator",
+        "version": "fixture-1",
+        "content_hash": "222f5ce38f76635462afd69ebda52ab6e954364f366ddf17171a482cf2216b5f"
+      },
+      "cost_policy_ref": {
+        "id": "SYN-long_term-cost",
+        "version": "fixture-1",
+        "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+      },
+      "status": "not_applicable",
+      "reason_codes": [
+        "no_execution"
+      ],
+      "realized_return": null,
+      "thesis_result": "unknown",
+      "supersedes_outcome_id": null
+    },
+    {
+      "schema_version": "2.0.0",
+      "outcome_id": "SYN-out-SYN-long_term-INSUFFICIENT_EVIDENCE",
+      "recommendation_id": "SYN-long_term-INSUFFICIENT_EVIDENCE",
+      "mode": "synthetic",
+      "horizon": {
+        "schema_version": "2.0.0",
+        "profile": "long_term",
+        "minimum": 1,
+        "maximum": 5,
+        "units": "calendar_years",
+        "duration": 1,
+        "anchor_at": "2025-01-06T10:06:00Z",
+        "holding_end_at": "2026-01-06T10:00:00Z",
+        "next_review_at": "2025-01-07T10:00:00Z",
+        "entry_expires_at": "2025-01-08T09:00:00Z",
+        "calendar_ref": {
+          "id": "SYN-calendar",
+          "version": "fixture-1",
+          "content_hash": "5ba76629e7a411a7aa725584e20c0e035f23cbcab14345ec089377daf88c40ff"
+        },
+        "review_cadence": "monthly"
+      },
+      "cohort": {
+        "arm": "quant_agent",
+        "config_hash": "d67ad2c8a7352861787ab7ce3dc102eb86e46e61d188d3489a807977abaf41bf",
+        "capability": "researched",
+        "shadow": true
+      },
+      "evaluated_at": "2025-01-07T10:00:00Z",
+      "observation_cutoff_at": "2025-01-07T10:00:00Z",
+      "observation_manifest_ref": {
+        "id": "SYN-observations",
+        "version": "fixture-1",
+        "content_hash": "4e2252fbda4d6a2348d30be4db6b6d270d083143795fbefc56b6c5c638fb4b52"
+      },
+      "evaluator_ref": {
+        "id": "SYN-evaluator",
+        "version": "fixture-1",
+        "content_hash": "222f5ce38f76635462afd69ebda52ab6e954364f366ddf17171a482cf2216b5f"
+      },
+      "cost_policy_ref": {
+        "id": "SYN-long_term-cost",
+        "version": "fixture-1",
+        "content_hash": "d0e25e8b4222697edeb5554a0c5444a77304be3e9bc9f98508327c103ece6ed7"
+      },
+      "status": "not_applicable",
+      "reason_codes": [
+        "no_execution"
+      ],
+      "realized_return": null,
+      "thesis_result": "unknown",
+      "supersedes_outcome_id": null
+    }
+  ],
+  "observation_manifests": [
+    {
+      "ref": {
+        "id": "SYN-observations",
+        "version": "fixture-1",
+        "content_hash": "4e2252fbda4d6a2348d30be4db6b6d270d083143795fbefc56b6c5c638fb4b52"
+      },
+      "mode": "synthetic",
+      "observation_cutoff_at": "2025-01-07T10:00:00Z",
+      "revision_ids": [
+        "SYN-observation-1"
+      ]
+    }
+  ],
+  "evaluator_refs": [
+    {
+      "id": "SYN-evaluator",
+      "version": "fixture-1",
+      "content_hash": "222f5ce38f76635462afd69ebda52ab6e954364f366ddf17171a482cf2216b5f"
+    }
+  ]
+}

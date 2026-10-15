@@ -1,0 +1,1758 @@
+{
+  "$defs": {
+    "Admission": {
+      "additionalProperties": false,
+      "properties": {
+        "quantity": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Quantity"
+        },
+        "reason": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Reason",
+          "type": "string"
+        },
+        "reservation_ref": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Reservation Ref"
+        },
+        "status": {
+          "enum": [
+            "not_requested",
+            "admitted",
+            "blocked",
+            "expired"
+          ],
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "status",
+        "reservation_ref",
+        "reason",
+        "quantity"
+      ],
+      "title": "Admission",
+      "type": "object"
+    },
+    "Cohort": {
+      "additionalProperties": false,
+      "properties": {
+        "arm": {
+          "enum": [
+            "quant",
+            "quant_rag",
+            "quant_agent",
+            "traditional_ml"
+          ],
+          "title": "Arm",
+          "type": "string"
+        },
+        "capability": {
+          "enum": [
+            "technical_only",
+            "researched",
+            "predictive"
+          ],
+          "title": "Capability",
+          "type": "string"
+        },
+        "config_hash": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Config Hash",
+          "type": "string"
+        },
+        "shadow": {
+          "title": "Shadow",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "arm",
+        "config_hash",
+        "capability",
+        "shadow"
+      ],
+      "title": "Cohort",
+      "type": "object"
+    },
+    "Condition": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Code",
+          "type": "string"
+        },
+        "evidence_ids": {
+          "items": {
+            "minLength": 1,
+            "pattern": "\\S",
+            "type": "string"
+          },
+          "title": "Evidence Ids",
+          "type": "array"
+        },
+        "explanation": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Explanation",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "explanation",
+        "evidence_ids"
+      ],
+      "title": "Condition",
+      "type": "object"
+    },
+    "Conditions": {
+      "additionalProperties": false,
+      "properties": {
+        "entry": {
+          "items": {
+            "$ref": "#/$defs/Condition"
+          },
+          "title": "Entry",
+          "type": "array"
+        },
+        "expires_at": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$",
+          "title": "Expires At",
+          "type": "string"
+        },
+        "invalidation": {
+          "items": {
+            "$ref": "#/$defs/Condition"
+          },
+          "title": "Invalidation",
+          "type": "array"
+        },
+        "review": {
+          "items": {
+            "$ref": "#/$defs/Condition"
+          },
+          "minItems": 1,
+          "title": "Review",
+          "type": "array"
+        }
+      },
+      "required": [
+        "entry",
+        "invalidation",
+        "review",
+        "expires_at"
+      ],
+      "title": "Conditions",
+      "type": "object"
+    },
+    "Evidence": {
+      "additionalProperties": false,
+      "properties": {
+        "archive_verification_ref": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Archive Verification Ref"
+        },
+        "availability_basis": {
+          "enum": [
+            "fictional_fixture",
+            "observed",
+            "verified_archive"
+          ],
+          "title": "Availability Basis",
+          "type": "string"
+        },
+        "available_at": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$",
+          "title": "Available At",
+          "type": "string"
+        },
+        "evidence_id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Evidence Id",
+          "type": "string"
+        },
+        "fetched_at": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$",
+          "title": "Fetched At",
+          "type": "string"
+        },
+        "instrument_id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Instrument Id",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "closed_candles",
+            "filing",
+            "news",
+            "fact"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "locator": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Locator",
+          "type": "string"
+        },
+        "period_end_at": {
+          "anyOf": [
+            {
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Period End At"
+        },
+        "published_at": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$",
+          "title": "Published At",
+          "type": "string"
+        },
+        "revision_id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Revision Id",
+          "type": "string"
+        },
+        "source_ref": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Source Ref",
+          "type": "string"
+        },
+        "source_version": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Source Version",
+          "type": "string"
+        },
+        "summary": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Summary",
+          "type": "string"
+        }
+      },
+      "required": [
+        "evidence_id",
+        "revision_id",
+        "instrument_id",
+        "kind",
+        "source_ref",
+        "source_version",
+        "locator",
+        "published_at",
+        "available_at",
+        "fetched_at",
+        "period_end_at",
+        "availability_basis",
+        "archive_verification_ref",
+        "summary"
+      ],
+      "title": "Evidence",
+      "type": "object"
+    },
+    "Execution": {
+      "additionalProperties": false,
+      "properties": {
+        "assumptions_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "earliest_entry_at": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$",
+          "title": "Earliest Entry At",
+          "type": "string"
+        },
+        "entry_expires_at": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$",
+          "title": "Entry Expires At",
+          "type": "string"
+        },
+        "entry_price": {
+          "pattern": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?$",
+          "title": "Entry Price",
+          "type": "string"
+        },
+        "entry_type": {
+          "enum": [
+            "buy_stop",
+            "limit",
+            "next_open"
+          ],
+          "title": "Entry Type",
+          "type": "string"
+        },
+        "profile": {
+          "enum": [
+            "swing",
+            "short_term",
+            "long_term"
+          ],
+          "title": "Profile",
+          "type": "string"
+        },
+        "side": {
+          "const": "OPEN_LONG",
+          "title": "Side",
+          "type": "string"
+        },
+        "stop_price": {
+          "pattern": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?$",
+          "title": "Stop Price",
+          "type": "string"
+        },
+        "target_price": {
+          "anyOf": [
+            {
+              "pattern": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Target Price"
+        },
+        "time_exit_at": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$",
+          "title": "Time Exit At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "profile",
+        "side",
+        "entry_type",
+        "entry_price",
+        "stop_price",
+        "target_price",
+        "earliest_entry_at",
+        "entry_expires_at",
+        "time_exit_at",
+        "assumptions_ref"
+      ],
+      "title": "Execution",
+      "type": "object"
+    },
+    "Horizon": {
+      "additionalProperties": false,
+      "properties": {
+        "anchor_at": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$",
+          "title": "Anchor At",
+          "type": "string"
+        },
+        "calendar_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "duration": {
+          "title": "Duration",
+          "type": "integer"
+        },
+        "entry_expires_at": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$",
+          "title": "Entry Expires At",
+          "type": "string"
+        },
+        "holding_end_at": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$",
+          "title": "Holding End At",
+          "type": "string"
+        },
+        "maximum": {
+          "title": "Maximum",
+          "type": "integer"
+        },
+        "minimum": {
+          "title": "Minimum",
+          "type": "integer"
+        },
+        "next_review_at": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$",
+          "title": "Next Review At",
+          "type": "string"
+        },
+        "profile": {
+          "enum": [
+            "swing",
+            "short_term",
+            "long_term"
+          ],
+          "title": "Profile",
+          "type": "string"
+        },
+        "review_cadence": {
+          "enum": [
+            "each_session",
+            "weekly",
+            "monthly"
+          ],
+          "title": "Review Cadence",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "2.0.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "units": {
+          "enum": [
+            "trading_sessions",
+            "calendar_months",
+            "calendar_years"
+          ],
+          "title": "Units",
+          "type": "string"
+        }
+      },
+      "required": [
+        "schema_version",
+        "profile",
+        "minimum",
+        "maximum",
+        "units",
+        "duration",
+        "review_cadence",
+        "anchor_at",
+        "holding_end_at",
+        "next_review_at",
+        "entry_expires_at",
+        "calendar_ref"
+      ],
+      "title": "Horizon",
+      "type": "object"
+    },
+    "Instrument": {
+      "additionalProperties": false,
+      "properties": {
+        "currency": {
+          "const": "INR",
+          "title": "Currency",
+          "type": "string"
+        },
+        "exchange": {
+          "enum": [
+            "SYNTHETIC_NSE",
+            "NSE"
+          ],
+          "title": "Exchange",
+          "type": "string"
+        },
+        "exchange_timezone": {
+          "const": "Asia/Kolkata",
+          "title": "Exchange Timezone",
+          "type": "string"
+        },
+        "instrument_id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Instrument Id",
+          "type": "string"
+        },
+        "isin": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Isin"
+        },
+        "issuer_id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Issuer Id",
+          "type": "string"
+        },
+        "lot_size": {
+          "exclusiveMinimum": 0,
+          "title": "Lot Size",
+          "type": "integer"
+        },
+        "series": {
+          "const": "EQ",
+          "title": "Series",
+          "type": "string"
+        },
+        "symbol": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Symbol",
+          "type": "string"
+        }
+      },
+      "required": [
+        "instrument_id",
+        "issuer_id",
+        "symbol",
+        "exchange",
+        "series",
+        "isin",
+        "currency",
+        "exchange_timezone",
+        "lot_size"
+      ],
+      "title": "Instrument",
+      "type": "object"
+    },
+    "Missing": {
+      "additionalProperties": false,
+      "properties": {
+        "blocking": {
+          "title": "Blocking",
+          "type": "boolean"
+        },
+        "reason": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Reason",
+          "type": "string"
+        },
+        "requirement": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Requirement",
+          "type": "string"
+        }
+      },
+      "required": [
+        "requirement",
+        "reason",
+        "blocking"
+      ],
+      "title": "Missing",
+      "type": "object"
+    },
+    "ObservationManifest": {
+      "additionalProperties": false,
+      "properties": {
+        "mode": {
+          "enum": [
+            "synthetic",
+            "historical_reconstructed",
+            "live_paper"
+          ],
+          "title": "Mode",
+          "type": "string"
+        },
+        "observation_cutoff_at": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$",
+          "title": "Observation Cutoff At",
+          "type": "string"
+        },
+        "ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "revision_ids": {
+          "items": {
+            "minLength": 1,
+            "pattern": "\\S",
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Revision Ids",
+          "type": "array"
+        }
+      },
+      "required": [
+        "ref",
+        "mode",
+        "observation_cutoff_at",
+        "revision_ids"
+      ],
+      "title": "ObservationManifest",
+      "type": "object"
+    },
+    "Outcome": {
+      "additionalProperties": false,
+      "properties": {
+        "cohort": {
+          "$ref": "#/$defs/Cohort"
+        },
+        "cost_policy_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "evaluated_at": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$",
+          "title": "Evaluated At",
+          "type": "string"
+        },
+        "evaluator_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "horizon": {
+          "$ref": "#/$defs/Horizon"
+        },
+        "mode": {
+          "enum": [
+            "synthetic",
+            "historical_reconstructed",
+            "live_paper"
+          ],
+          "title": "Mode",
+          "type": "string"
+        },
+        "observation_cutoff_at": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$",
+          "title": "Observation Cutoff At",
+          "type": "string"
+        },
+        "observation_manifest_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "outcome_id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Outcome Id",
+          "type": "string"
+        },
+        "realized_return": {
+          "anyOf": [
+            {
+              "pattern": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Realized Return"
+        },
+        "reason_codes": {
+          "items": {
+            "minLength": 1,
+            "pattern": "\\S",
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Reason Codes",
+          "type": "array"
+        },
+        "recommendation_id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Recommendation Id",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "2.0.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "provisional",
+            "matured",
+            "no_entry",
+            "ambiguous",
+            "unavailable",
+            "not_applicable"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "supersedes_outcome_id": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Supersedes Outcome Id"
+        },
+        "thesis_result": {
+          "enum": [
+            "supported",
+            "invalidated",
+            "unknown"
+          ],
+          "title": "Thesis Result",
+          "type": "string"
+        }
+      },
+      "required": [
+        "schema_version",
+        "outcome_id",
+        "recommendation_id",
+        "mode",
+        "horizon",
+        "cohort",
+        "evaluated_at",
+        "observation_cutoff_at",
+        "observation_manifest_ref",
+        "evaluator_ref",
+        "cost_policy_ref",
+        "status",
+        "reason_codes",
+        "realized_return",
+        "thesis_result",
+        "supersedes_outcome_id"
+      ],
+      "title": "Outcome",
+      "type": "object"
+    },
+    "Parameter": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Name",
+          "type": "string"
+        },
+        "unavailable_reason": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Unavailable Reason"
+        },
+        "unit": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Unit",
+          "type": "string"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "pattern": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Value"
+        }
+      },
+      "required": [
+        "name",
+        "value",
+        "unit",
+        "unavailable_reason"
+      ],
+      "title": "Parameter",
+      "type": "object"
+    },
+    "Policy": {
+      "additionalProperties": false,
+      "properties": {
+        "approval_ref": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Approval Ref"
+        },
+        "effective_at": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$",
+          "title": "Effective At",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "strategy",
+            "horizon",
+            "research",
+            "risk",
+            "cost",
+            "retrieval",
+            "schedule",
+            "universe"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "parameters": {
+          "items": {
+            "$ref": "#/$defs/Parameter"
+          },
+          "minItems": 1,
+          "title": "Parameters",
+          "type": "array"
+        },
+        "profile": {
+          "enum": [
+            "swing",
+            "short_term",
+            "long_term"
+          ],
+          "title": "Profile",
+          "type": "string"
+        },
+        "ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "schema_version": {
+          "const": "2.0.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "unconfigured",
+            "fixture",
+            "approved"
+          ],
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "schema_version",
+        "ref",
+        "kind",
+        "profile",
+        "status",
+        "effective_at",
+        "parameters",
+        "approval_ref"
+      ],
+      "title": "Policy",
+      "type": "object"
+    },
+    "PolicyRefs": {
+      "additionalProperties": false,
+      "properties": {
+        "cost": {
+          "$ref": "#/$defs/Ref"
+        },
+        "horizon": {
+          "$ref": "#/$defs/Ref"
+        },
+        "research": {
+          "$ref": "#/$defs/Ref"
+        },
+        "retrieval": {
+          "$ref": "#/$defs/Ref"
+        },
+        "risk": {
+          "$ref": "#/$defs/Ref"
+        },
+        "schedule": {
+          "$ref": "#/$defs/Ref"
+        },
+        "strategy": {
+          "$ref": "#/$defs/Ref"
+        },
+        "universe": {
+          "$ref": "#/$defs/Ref"
+        }
+      },
+      "required": [
+        "strategy",
+        "horizon",
+        "research",
+        "risk",
+        "cost",
+        "retrieval",
+        "schedule",
+        "universe"
+      ],
+      "title": "PolicyRefs",
+      "type": "object"
+    },
+    "Quality": {
+      "additionalProperties": false,
+      "properties": {
+        "claim_support": {
+          "anyOf": [
+            {
+              "pattern": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Claim Support"
+        },
+        "contradiction_ids": {
+          "items": {
+            "minLength": 1,
+            "pattern": "\\S",
+            "type": "string"
+          },
+          "title": "Contradiction Ids",
+          "type": "array"
+        },
+        "coverage": {
+          "anyOf": [
+            {
+              "pattern": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Coverage"
+        },
+        "freshness": {
+          "enum": [
+            "fresh",
+            "stale",
+            "unknown"
+          ],
+          "title": "Freshness",
+          "type": "string"
+        },
+        "missing_required": {
+          "items": {
+            "minLength": 1,
+            "pattern": "\\S",
+            "type": "string"
+          },
+          "title": "Missing Required",
+          "type": "array"
+        },
+        "source_quality": {
+          "enum": [
+            "primary",
+            "secondary",
+            "mixed",
+            "unknown"
+          ],
+          "title": "Source Quality",
+          "type": "string"
+        },
+        "uncertainty": {
+          "items": {
+            "minLength": 1,
+            "pattern": "\\S",
+            "type": "string"
+          },
+          "title": "Uncertainty",
+          "type": "array"
+        }
+      },
+      "required": [
+        "coverage",
+        "freshness",
+        "source_quality",
+        "claim_support",
+        "contradiction_ids",
+        "uncertainty",
+        "missing_required"
+      ],
+      "title": "Quality",
+      "type": "object"
+    },
+    "Rationale": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence_ids": {
+          "items": {
+            "minLength": 1,
+            "pattern": "\\S",
+            "type": "string"
+          },
+          "title": "Evidence Ids",
+          "type": "array"
+        },
+        "summary": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Summary",
+          "type": "string"
+        }
+      },
+      "required": [
+        "summary",
+        "evidence_ids"
+      ],
+      "title": "Rationale",
+      "type": "object"
+    },
+    "Recommendation": {
+      "additionalProperties": false,
+      "properties": {
+        "action": {
+          "enum": [
+            "BUY",
+            "WATCH",
+            "AVOID",
+            "INSUFFICIENT_EVIDENCE"
+          ],
+          "title": "Action",
+          "type": "string"
+        },
+        "action_reason_codes": {
+          "items": {
+            "minLength": 1,
+            "pattern": "\\S",
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Action Reason Codes",
+          "type": "array"
+        },
+        "availability_simulated": {
+          "title": "Availability Simulated",
+          "type": "boolean"
+        },
+        "baseline_ref": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Baseline Ref",
+          "type": "string"
+        },
+        "candidate_origin": {
+          "enum": [
+            "quant",
+            "event",
+            "both"
+          ],
+          "title": "Candidate Origin",
+          "type": "string"
+        },
+        "cohort": {
+          "$ref": "#/$defs/Cohort"
+        },
+        "conditions": {
+          "$ref": "#/$defs/Conditions"
+        },
+        "decision_available_at": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$",
+          "title": "Decision Available At",
+          "type": "string"
+        },
+        "event_ids": {
+          "items": {
+            "minLength": 1,
+            "pattern": "\\S",
+            "type": "string"
+          },
+          "title": "Event Ids",
+          "type": "array"
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/Evidence"
+          },
+          "title": "Evidence",
+          "type": "array"
+        },
+        "evidence_quality": {
+          "$ref": "#/$defs/Quality"
+        },
+        "execution": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Execution"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "generated_at": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$",
+          "title": "Generated At",
+          "type": "string"
+        },
+        "horizon": {
+          "$ref": "#/$defs/Horizon"
+        },
+        "information_cutoff_at": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$",
+          "title": "Information Cutoff At",
+          "type": "string"
+        },
+        "instrument": {
+          "$ref": "#/$defs/Instrument"
+        },
+        "judge_ref": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Judge Ref"
+        },
+        "missing_evidence": {
+          "items": {
+            "$ref": "#/$defs/Missing"
+          },
+          "title": "Missing Evidence",
+          "type": "array"
+        },
+        "mode": {
+          "enum": [
+            "synthetic",
+            "historical_reconstructed",
+            "live_paper"
+          ],
+          "title": "Mode",
+          "type": "string"
+        },
+        "paper_admission": {
+          "$ref": "#/$defs/Admission"
+        },
+        "policy_refs": {
+          "$ref": "#/$defs/PolicyRefs"
+        },
+        "rationale": {
+          "$ref": "#/$defs/Rationale"
+        },
+        "recommendation_id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Recommendation Id",
+          "type": "string"
+        },
+        "research_ref": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Research Ref"
+        },
+        "research_status": {
+          "enum": [
+            "not_requested",
+            "succeeded",
+            "failed",
+            "unavailable"
+          ],
+          "title": "Research Status",
+          "type": "string"
+        },
+        "research_unavailable_reason": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Research Unavailable Reason"
+        },
+        "revises_id": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Revises Id"
+        },
+        "revision_reason": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Revision Reason"
+        },
+        "risk_context": {
+          "$ref": "#/$defs/Risk"
+        },
+        "run_id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Run Id",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "2.0.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "snapshot_id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Snapshot Id",
+          "type": "string"
+        },
+        "strategy": {
+          "$ref": "#/$defs/Strategy"
+        },
+        "synthetic": {
+          "title": "Synthetic",
+          "type": "boolean"
+        },
+        "validation_ref": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Validation Ref"
+        },
+        "valuation": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Valuation"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "versions": {
+          "$ref": "#/$defs/Versions"
+        }
+      },
+      "required": [
+        "schema_version",
+        "recommendation_id",
+        "synthetic",
+        "mode",
+        "run_id",
+        "instrument",
+        "strategy",
+        "horizon",
+        "information_cutoff_at",
+        "generated_at",
+        "decision_available_at",
+        "availability_simulated",
+        "action",
+        "cohort",
+        "candidate_origin",
+        "event_ids",
+        "snapshot_id",
+        "baseline_ref",
+        "research_status",
+        "research_ref",
+        "validation_ref",
+        "judge_ref",
+        "research_unavailable_reason",
+        "policy_refs",
+        "evidence",
+        "missing_evidence",
+        "rationale",
+        "versions",
+        "evidence_quality",
+        "conditions",
+        "valuation",
+        "execution",
+        "risk_context",
+        "paper_admission",
+        "action_reason_codes",
+        "revises_id",
+        "revision_reason"
+      ],
+      "title": "Recommendation",
+      "type": "object"
+    },
+    "Ref": {
+      "additionalProperties": false,
+      "properties": {
+        "content_hash": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Content Hash",
+          "type": "string"
+        },
+        "id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Id",
+          "type": "string"
+        },
+        "version": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "content_hash"
+      ],
+      "title": "Ref",
+      "type": "object"
+    },
+    "ReferenceRecord": {
+      "additionalProperties": false,
+      "properties": {
+        "assessment_id": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Assessment Id"
+        },
+        "id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Id",
+          "type": "string"
+        },
+        "instrument_id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Instrument Id",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "baseline",
+            "research",
+            "validation",
+            "judge",
+            "event",
+            "calculation",
+            "risk",
+            "capital",
+            "reservation",
+            "archive",
+            "contradiction"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "passed": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Passed"
+        },
+        "quantity": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Quantity"
+        },
+        "snapshot_id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Snapshot Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "kind",
+        "snapshot_id",
+        "instrument_id",
+        "assessment_id",
+        "passed",
+        "quantity"
+      ],
+      "title": "ReferenceRecord",
+      "type": "object"
+    },
+    "Risk": {
+      "additionalProperties": false,
+      "properties": {
+        "binding_constraints": {
+          "items": {
+            "minLength": 1,
+            "pattern": "\\S",
+            "type": "string"
+          },
+          "title": "Binding Constraints",
+          "type": "array"
+        },
+        "capital_profile_ref": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Capital Profile Ref"
+        },
+        "eligibility": {
+          "enum": [
+            "eligible",
+            "blocked",
+            "unknown"
+          ],
+          "title": "Eligibility",
+          "type": "string"
+        },
+        "risk_ref": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Risk Ref"
+        }
+      },
+      "required": [
+        "eligibility",
+        "binding_constraints",
+        "risk_ref",
+        "capital_profile_ref"
+      ],
+      "title": "Risk",
+      "type": "object"
+    },
+    "Snapshot": {
+      "additionalProperties": false,
+      "properties": {
+        "calendar_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/Evidence"
+          },
+          "title": "Evidence",
+          "type": "array"
+        },
+        "information_cutoff_at": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$",
+          "title": "Information Cutoff At",
+          "type": "string"
+        },
+        "mode": {
+          "enum": [
+            "synthetic",
+            "historical_reconstructed",
+            "live_paper"
+          ],
+          "title": "Mode",
+          "type": "string"
+        },
+        "policies": {
+          "items": {
+            "$ref": "#/$defs/Policy"
+          },
+          "title": "Policies",
+          "type": "array"
+        },
+        "references": {
+          "items": {
+            "$ref": "#/$defs/ReferenceRecord"
+          },
+          "title": "References",
+          "type": "array"
+        },
+        "session_closes": {
+          "items": {
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$",
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Session Closes",
+          "type": "array"
+        },
+        "snapshot_id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Snapshot Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "snapshot_id",
+        "mode",
+        "information_cutoff_at",
+        "calendar_ref",
+        "session_closes",
+        "evidence",
+        "references",
+        "policies"
+      ],
+      "title": "Snapshot",
+      "type": "object"
+    },
+    "Strategy": {
+      "additionalProperties": false,
+      "properties": {
+        "config_version": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Config Version",
+          "type": "string"
+        },
+        "id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Id",
+          "type": "string"
+        },
+        "version": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "config_version"
+      ],
+      "title": "Strategy",
+      "type": "object"
+    },
+    "Valuation": {
+      "additionalProperties": false,
+      "properties": {
+        "assumptions": {
+          "items": {
+            "minLength": 1,
+            "pattern": "\\S",
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Assumptions",
+          "type": "array"
+        },
+        "calculation_ids": {
+          "items": {
+            "minLength": 1,
+            "pattern": "\\S",
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Calculation Ids",
+          "type": "array"
+        },
+        "currency": {
+          "const": "INR",
+          "title": "Currency",
+          "type": "string"
+        },
+        "high": {
+          "pattern": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?$",
+          "title": "High",
+          "type": "string"
+        },
+        "low": {
+          "pattern": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?$",
+          "title": "Low",
+          "type": "string"
+        },
+        "valued_at": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$",
+          "title": "Valued At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "low",
+        "high",
+        "currency",
+        "valued_at",
+        "assumptions",
+        "calculation_ids"
+      ],
+      "title": "Valuation",
+      "type": "object"
+    },
+    "Versions": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Code",
+          "type": "string"
+        },
+        "dataset": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Dataset",
+          "type": "string"
+        },
+        "model": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Model"
+        },
+        "prompt": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Prompt"
+        }
+      },
+      "required": [
+        "code",
+        "dataset",
+        "model",
+        "prompt"
+      ],
+      "title": "Versions",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "evaluator_refs": {
+      "items": {
+        "$ref": "#/$defs/Ref"
+      },
+      "title": "Evaluator Refs",
+      "type": "array"
+    },
+    "observation_manifests": {
+      "items": {
+        "$ref": "#/$defs/ObservationManifest"
+      },
+      "title": "Observation Manifests",
+      "type": "array"
+    },
+    "outcomes": {
+      "items": {
+        "$ref": "#/$defs/Outcome"
+      },
+      "title": "Outcomes",
+      "type": "array"
+    },
+    "recommendations": {
+      "items": {
+        "$ref": "#/$defs/Recommendation"
+      },
+      "title": "Recommendations",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "2.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "snapshot": {
+      "$ref": "#/$defs/Snapshot"
+    }
+  },
+  "required": [
+    "schema_version",
+    "snapshot",
+    "recommendations",
+    "outcomes",
+    "observation_manifests",
+    "evaluator_refs"
+  ],
+  "title": "Bundle",
+  "type": "object"
+}

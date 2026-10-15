@@ -1,5 +1,9 @@
 # Stock Discovery
 
+## Authoritative architecture
+
+[SD ARCH 3.0](docs/SD-ARCH-3.0.md) is the frozen design baseline for three-horizon automated NSE discovery and grounded AI research. Repository integration and [D3-01 contracts](docs/contracts/v2/README.md) are implemented following the subsequent owner authorization on 15 October 2026. D3-02 through D3-13 remain unstarted. Existing synthetic MVP behavior is unchanged. External deployment remains unauthorized.
+
 ## Local daily-swing MVP
 
 Start Docker, then from this repository run:
@@ -31,7 +35,7 @@ AI calls can incur provider charges when you enable them. Requests have a 20-sec
 
 Private Indian equity research: discover stocks using news, fundamentals, technical indicators, candles and volume; produce evidence-linked recommendations; compare forecasts and simulated trades with subsequent prices and forward paper results.
 
-Agreed architecture: React + TypeScript + Lightweight Charts, FastAPI, one scheduled Python worker, PostgreSQL, shared Python analysis for historical and live modes, and Docker Compose. Optional LLM explanations can summarize frozen recommendations; signals, calculations and sizing are deterministic. Broader grounded research and predictive ML come later. No initial microservices, Kubernetes or Redis.
+Existing MVP stack: React + TypeScript + Lightweight Charts, FastAPI, one scheduled Python worker, PostgreSQL, shared Python analysis for historical and live modes, and Docker Compose. Its optional LLM explanation summarizes frozen synthetic recommendations. The approved target adds grounded research, bounded investigation and ranking influence under deterministic risk controls; see SD ARCH 3.0 above. Predictive ML remains optional. No initial microservices, Kubernetes or Redis.
 
 Current checkpoint: synthetic preview, hardened private configuration and encrypted local recovery/rollback verification pass; private release readiness is **PARTIAL**. **v0.1/v0.2 have not been tagged or privately deployed.** See [STK-018 release acceptance and recovery runbook](docs/STK-018.md) for gates, risks and release notes, and [work handoff](docs/WORK-HANDOFF.md) for local preview instructions.
 

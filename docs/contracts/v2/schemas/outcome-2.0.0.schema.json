@@ -1,0 +1,293 @@
+{
+  "$defs": {
+    "Cohort": {
+      "additionalProperties": false,
+      "properties": {
+        "arm": {
+          "enum": [
+            "quant",
+            "quant_rag",
+            "quant_agent",
+            "traditional_ml"
+          ],
+          "title": "Arm",
+          "type": "string"
+        },
+        "capability": {
+          "enum": [
+            "technical_only",
+            "researched",
+            "predictive"
+          ],
+          "title": "Capability",
+          "type": "string"
+        },
+        "config_hash": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Config Hash",
+          "type": "string"
+        },
+        "shadow": {
+          "title": "Shadow",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "arm",
+        "config_hash",
+        "capability",
+        "shadow"
+      ],
+      "title": "Cohort",
+      "type": "object"
+    },
+    "Horizon": {
+      "additionalProperties": false,
+      "properties": {
+        "anchor_at": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$",
+          "title": "Anchor At",
+          "type": "string"
+        },
+        "calendar_ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "duration": {
+          "title": "Duration",
+          "type": "integer"
+        },
+        "entry_expires_at": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$",
+          "title": "Entry Expires At",
+          "type": "string"
+        },
+        "holding_end_at": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$",
+          "title": "Holding End At",
+          "type": "string"
+        },
+        "maximum": {
+          "title": "Maximum",
+          "type": "integer"
+        },
+        "minimum": {
+          "title": "Minimum",
+          "type": "integer"
+        },
+        "next_review_at": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$",
+          "title": "Next Review At",
+          "type": "string"
+        },
+        "profile": {
+          "enum": [
+            "swing",
+            "short_term",
+            "long_term"
+          ],
+          "title": "Profile",
+          "type": "string"
+        },
+        "review_cadence": {
+          "enum": [
+            "each_session",
+            "weekly",
+            "monthly"
+          ],
+          "title": "Review Cadence",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "2.0.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "units": {
+          "enum": [
+            "trading_sessions",
+            "calendar_months",
+            "calendar_years"
+          ],
+          "title": "Units",
+          "type": "string"
+        }
+      },
+      "required": [
+        "schema_version",
+        "profile",
+        "minimum",
+        "maximum",
+        "units",
+        "duration",
+        "review_cadence",
+        "anchor_at",
+        "holding_end_at",
+        "next_review_at",
+        "entry_expires_at",
+        "calendar_ref"
+      ],
+      "title": "Horizon",
+      "type": "object"
+    },
+    "Ref": {
+      "additionalProperties": false,
+      "properties": {
+        "content_hash": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Content Hash",
+          "type": "string"
+        },
+        "id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Id",
+          "type": "string"
+        },
+        "version": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "content_hash"
+      ],
+      "title": "Ref",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "cohort": {
+      "$ref": "#/$defs/Cohort"
+    },
+    "cost_policy_ref": {
+      "$ref": "#/$defs/Ref"
+    },
+    "evaluated_at": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$",
+      "title": "Evaluated At",
+      "type": "string"
+    },
+    "evaluator_ref": {
+      "$ref": "#/$defs/Ref"
+    },
+    "horizon": {
+      "$ref": "#/$defs/Horizon"
+    },
+    "mode": {
+      "enum": [
+        "synthetic",
+        "historical_reconstructed",
+        "live_paper"
+      ],
+      "title": "Mode",
+      "type": "string"
+    },
+    "observation_cutoff_at": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$",
+      "title": "Observation Cutoff At",
+      "type": "string"
+    },
+    "observation_manifest_ref": {
+      "$ref": "#/$defs/Ref"
+    },
+    "outcome_id": {
+      "minLength": 1,
+      "pattern": "\\S",
+      "title": "Outcome Id",
+      "type": "string"
+    },
+    "realized_return": {
+      "anyOf": [
+        {
+          "pattern": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Realized Return"
+    },
+    "reason_codes": {
+      "items": {
+        "minLength": 1,
+        "pattern": "\\S",
+        "type": "string"
+      },
+      "minItems": 1,
+      "title": "Reason Codes",
+      "type": "array"
+    },
+    "recommendation_id": {
+      "minLength": 1,
+      "pattern": "\\S",
+      "title": "Recommendation Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "2.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "provisional",
+        "matured",
+        "no_entry",
+        "ambiguous",
+        "unavailable",
+        "not_applicable"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "supersedes_outcome_id": {
+      "anyOf": [
+        {
+          "minLength": 1,
+          "pattern": "\\S",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Supersedes Outcome Id"
+    },
+    "thesis_result": {
+      "enum": [
+        "supported",
+        "invalidated",
+        "unknown"
+      ],
+      "title": "Thesis Result",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "outcome_id",
+    "recommendation_id",
+    "mode",
+    "horizon",
+    "cohort",
+    "evaluated_at",
+    "observation_cutoff_at",
+    "observation_manifest_ref",
+    "evaluator_ref",
+    "cost_policy_ref",
+    "status",
+    "reason_codes",
+    "realized_return",
+    "thesis_result",
+    "supersedes_outcome_id"
+  ],
+  "title": "Outcome",
+  "type": "object"
+}

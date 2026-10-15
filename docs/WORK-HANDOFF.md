@@ -1,5 +1,12 @@
 # Stock Discovery — work checkpoint
 
+## Current scope — 15 October 2026
+
+[SD ARCH 3.0](SD-ARCH-3.0.md) is the authoritative design specification. The subsequent owner instruction authorized repository integration and **D3-01 only**. [D3-01 contract amendment](contracts/v2/README.md) is implemented: strict v2 recommendations, all three horizon profiles, policy/outcome schemas, research/admission separation, synthetic fixtures and deterministic compatibility tests. D3-02 through D3-13 remain unstarted. No real data source, paid AI, hosting or broker action is activated.
+
+Validation: 141 application/worker tests passed in the isolated delivery snapshot (including 83 D3-01 cases); 11 database cases skipped without a test database; 7 script tests passed. All six historical fixtures match their original hashes. Schema regeneration, whitespace checks and the isolated delivery frontend build pass. The working tree additionally contains three passing unrelated WIP tests; that WIP is excluded from the commit. Existing unrelated application and untracked work are preserved and excluded from this delivery. Full automatic discovery, RAG/agents/judge, operational paper tracking and deployment remain later packages. See the contract document for precise scope and limitations.
+
+
 **Current progress view: [Lightweight board](SIMPLE-BOARD.md).** Owner requested Markdown tracking on 14 October 2026 to avoid hosted-board overhead. Use this file for routine overall/feature status; hosted-board synchronization is no longer a prerequisite for local status reporting. Existing historical sync-pending notes below remain historical.
 
 ## Active scope reset — 14 October 2026

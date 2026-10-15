@@ -1,0 +1,183 @@
+{
+  "$defs": {
+    "Cohort": {
+      "additionalProperties": false,
+      "properties": {
+        "arm": {
+          "enum": [
+            "quant",
+            "quant_rag",
+            "quant_agent",
+            "traditional_ml"
+          ],
+          "title": "Arm",
+          "type": "string"
+        },
+        "capability": {
+          "enum": [
+            "technical_only",
+            "researched",
+            "predictive"
+          ],
+          "title": "Capability",
+          "type": "string"
+        },
+        "config_hash": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Config Hash",
+          "type": "string"
+        },
+        "shadow": {
+          "title": "Shadow",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "arm",
+        "config_hash",
+        "capability",
+        "shadow"
+      ],
+      "title": "Cohort",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Failure-inclusive denominators; no investment metrics are computed here.",
+  "properties": {
+    "ambiguous": {
+      "minimum": 0,
+      "title": "Ambiguous",
+      "type": "integer"
+    },
+    "avoid": {
+      "minimum": 0,
+      "title": "Avoid",
+      "type": "integer"
+    },
+    "buy": {
+      "minimum": 0,
+      "title": "Buy",
+      "type": "integer"
+    },
+    "cohort": {
+      "$ref": "#/$defs/Cohort"
+    },
+    "decisions": {
+      "minimum": 0,
+      "title": "Decisions",
+      "type": "integer"
+    },
+    "eligible": {
+      "minimum": 0,
+      "title": "Eligible",
+      "type": "integer"
+    },
+    "insufficient_evidence": {
+      "minimum": 0,
+      "title": "Insufficient Evidence",
+      "type": "integer"
+    },
+    "metric_unavailable_reason": {
+      "anyOf": [
+        {
+          "minLength": 1,
+          "pattern": "\\S",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Metric Unavailable Reason"
+    },
+    "missing": {
+      "minimum": 0,
+      "title": "Missing",
+      "type": "integer"
+    },
+    "mode": {
+      "enum": [
+        "synthetic",
+        "historical_reconstructed",
+        "live_paper"
+      ],
+      "title": "Mode",
+      "type": "string"
+    },
+    "net_expectancy": {
+      "anyOf": [
+        {
+          "pattern": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Net Expectancy"
+    },
+    "no_entry": {
+      "minimum": 0,
+      "title": "No Entry",
+      "type": "integer"
+    },
+    "profile": {
+      "enum": [
+        "swing",
+        "short_term",
+        "long_term"
+      ],
+      "title": "Profile",
+      "type": "string"
+    },
+    "provisional": {
+      "minimum": 0,
+      "title": "Provisional",
+      "type": "integer"
+    },
+    "research_failed": {
+      "minimum": 0,
+      "title": "Research Failed",
+      "type": "integer"
+    },
+    "resolved": {
+      "minimum": 0,
+      "title": "Resolved",
+      "type": "integer"
+    },
+    "schema_version": {
+      "const": "2.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "watch": {
+      "minimum": 0,
+      "title": "Watch",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "schema_version",
+    "mode",
+    "profile",
+    "cohort",
+    "decisions",
+    "buy",
+    "watch",
+    "avoid",
+    "insufficient_evidence",
+    "research_failed",
+    "eligible",
+    "resolved",
+    "missing",
+    "ambiguous",
+    "provisional",
+    "no_entry",
+    "net_expectancy",
+    "metric_unavailable_reason"
+  ],
+  "title": "CohortSummary",
+  "type": "object"
+}
