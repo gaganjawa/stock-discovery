@@ -4,6 +4,9 @@ import argparse
 import json
 import time
 import os
+from pathlib import Path
+from stock_discovery_analysis.scheduling import ScheduleConfig, stamp
+from stock_discovery_analysis.schedule_runner import tick
 import psycopg
 from stock_discovery_analysis.runtime import setting, validate_private
 from stock_discovery_analysis.operations import heartbeat, event
@@ -27,11 +30,28 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Run the Stock Discovery scheduled worker")
     parser.add_argument("--once", action="store_true", help="run one synthetic cycle and exit")
     parser.add_argument("--interval-seconds", type=int, default=5)
+    parser.add_argument('--synthetic-schedule', action='store_true', help='use fictional D3-04 acceptance adapter')
+    parser.add_argument('--schedule-config', type=Path, help='versioned D3-04 calendar/policy JSON')
     args = parser.parse_args()
+    if args.interval_seconds < 1:
+        parser.error('interval must be positive')
+    config = ScheduleConfig.model_validate_json(args.schedule_config.read_text()) if args.schedule_config else None
+    if config and not setting('DATABASE_URL'):
+        parser.error('scheduler requires DATABASE_URL')
 
     validate_private()
+    schedule_handlers = None
+    if args.synthetic_schedule:
+        if config is None:
+            parser.error('--synthetic-schedule requires --schedule-config')
+        from stock_discovery_analysis.schedule_fixtures import handlers
+        schedule_handlers = handlers(config)
     while True:
-        if setting('DATABASE_URL') and not args.once:
+        if config:
+            with psycopg.connect(setting('DATABASE_URL'), autocommit=True, connect_timeout=5) as conn:
+                result = tick(conn, config, handlers=schedule_handlers, clock=lambda: stamp(datetime.now(timezone.utc)))
+            print(json.dumps(result, sort_keys=True), flush=True)
+        elif setting('DATABASE_URL') and not args.once:
             try:
                 with psycopg.connect(setting('DATABASE_URL'),autocommit=True,connect_timeout=5) as conn:
                     row=conn.execute('SELECT dataset_version FROM research.datasets ORDER BY created_at DESC LIMIT 1').fetchone()
