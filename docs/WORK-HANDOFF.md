@@ -1,5 +1,9 @@
 # Stock Discovery — work checkpoint
 
+## D3-05 — STK-028–032/054/058/076 · 17 October 2026
+
+Owner explicitly authorized D3-05 after PR #4 merged at `08812db`. [Quantitative policies](D3-05-quant-policies.md) implement three deterministic engines, immutable configuration manifests, as-of evidence/financial calculations, valuation sensitivity, calendar endpoints and research/admission separation. Legacy swing remains unchanged. All shipped settings are fictional; real-market acceptance is not complete. No runtime grant change, paid API, RAG/agent, broker action or deployment. Preserve unrelated WIP. Deliver on the ticket branch for owner review and stop after D3-05; D3-06 requires confirmation.
+
 ## D3-04 — STK-017/058/060/073 · 16 October 2026
 
 PR #3 merged at `e5bc9ea`; the owner authorized D3-04. [Scheduler delivery](D3-04-scheduling.md) adds durable calendar occurrences, dependency jobs, fenced atomic results, event hooks, frozen-universe counters and an opt-in fictional unattended worker. Runtime-role access remains blocked by automatic approval review; `deploy/roles.py` and database grants are unchanged. No owner key, paid service or deployment is used. Unrelated WIP and historical evaluation fixtures remain preserved. Open a ticket-branch PR; wait for owner review/merge and confirmation before D3-05. Earlier entries describe historical checkpoints.
