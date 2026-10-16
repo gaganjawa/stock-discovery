@@ -1,5 +1,9 @@
 # Stock Discovery — work checkpoint
 
+## D3-03 — STK-014/015/019–024 · 15 October 2026
+
+After PR #2 merged, the owner authorized D3-03. [Delivery details](D3-03-revision-ingestion.md): additive discovery schema, rights-checked paged adapter boundary, immutable source revisions and snapshots, quarantine, raw/adjusted separation and recovery tests. Real sources remain disabled. The supplied OpenAI key is not read, committed or used. Application database and unrelated WIP are unchanged. Deliver as a ticket-branch PR; wait for owner merge and confirmation before D3-04. Older status entries below are historical.
+
 ## D3-02 — STK-004/005/006/007 · 15 October 2026
 
 Owner authorized D3-02 after the board PR merged. The ticket branch contains a [source feasibility review](D3-02-source-feasibility.md), use-specific rights gate, strict schemas, fictional fixtures and 52 denial/cleanup tests. Real permissions, quotes, coverage samples and regions remain explicit activation blockers. No live provider or paid AI was activated. Deliver through a review PR; wait for owner merge and confirmation before D3-03. Unrelated WIP and historical fixtures are preserved. Earlier “D3-02 unstarted” statements below describe prior checkpoints.
