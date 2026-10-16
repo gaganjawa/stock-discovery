@@ -1,14 +1,14 @@
 # Stock Discovery — SD ARCH 3.0 board
 
-Updated: **16 October 2026** · Baseline: [SD ARCH 3.0](SD-ARCH-3.0.md)
+Updated: **17 October 2026** · Baseline: [SD ARCH 3.0](SD-ARCH-3.0.md)
 
-**Overall:** architecture integrated; D3-01 contracts implemented at `6b88cf6`. D3-02 rights/feasibility is merged (PR #2), with real-source activation blocked. D3-03 revision storage/ingestion is merged (PR #3). D3-04 scheduling/coverage is ready for review with a restricted-runtime permission blocker. D3-05 through D3-13 remain unstarted. This is a package count, not a percentage of effort or application readiness. The existing synthetic MVP works; automatic real-market discovery and grounded AI research are not yet implemented.
+**Overall:** architecture integrated; D3-01 contracts implemented at `6b88cf6`. D3-02 rights/feasibility is merged (PR #2), with real-source activation blocked. D3-03 revision storage/ingestion is merged (PR #3). D3-04 scheduling/coverage is merged (PR #4); its restricted-runtime permission blocker remains. D3-05 quantitative policies are ready for review with synthetic acceptance only. D3-06 through D3-13 remain unstarted. This is a package count, not a percentage of effort or application readiness. The existing synthetic MVP works; automatic real-market discovery and grounded AI research are not yet implemented.
 
 ## Delivery workflow
 
 - Use existing STK ticket IDs and the architecture's D3 package names in branches, commits and PR titles. D3 labels are delivery packages, not new tracker IDs.
 - Work on a ticket-named branch. Push that branch and provide a PR for owner review. Never push directly to `main` or merge a PR.
-- Wait for the owner to review, merge and confirm before starting the next package. D3-04 was authorized after PR #3 merged; D3-05 awaits owner review, merge and confirmation.
+- Wait for the owner to review, merge and confirm before starting the next package. D3-05 was authorized after PR #4 merged; D3-06 awaits owner review, merge and confirmation.
 - Keep one implementation package in progress. Preserve unrelated tracked/untracked WIP; stage only the current ticket's files.
 
 ## Package and feature status
@@ -18,8 +18,8 @@ Updated: **16 October 2026** · Baseline: [SD ARCH 3.0](SD-ARCH-3.0.md)
 | **D3-01 Contract amendment** · STK-001/002/003 | Strict v2 recommendations, three horizon profiles, four actions, research/admission separation, policy/outcome contracts, fixtures, compatibility tests | Runtime adoption belongs to later packages | Implemented · `6b88cf6` |
 | **D3-02 Rights and source feasibility** · STK-004/005/006/007 | [Source matrix and rights gate](D3-02-source-feasibility.md), strict grant contracts and T03 denial tests | Written account-specific permissions/quotes, coverage samples and territorial approval before activation | Merged · PR #2; real-source activation blocked |
 | **D3-03 Revision storage and ingestion** · STK-014/015/019–024 | [Revision storage and paged ingestion](D3-03-revision-ingestion.md), immutable as-of snapshots, quarantine, action metadata/adjustment, additive migration and recovery tests | Real provider adapters and activation blocked by source rights; document extraction, scheduling and execution outcomes remain later packages | Merged · PR #3; fictional adapter acceptance |
-| **D3-04 Scheduling and coverage** · STK-017/058/060/073 | [Durable scheduler](D3-04-scheduling.md), calendar occurrences, catch-up, fenced dependencies/outbox, event hooks and reconciled coverage; unattended fictional pipeline | Restricted-runtime grant approval/test; real handlers and UI/outcomes belong to later packages | Ready for review · runtime activation blocked |
-| **D3-05 Quant horizon policies** · STK-028–032/054/058/076 | Existing swing baseline preserved | Configured swing/short/long policies, features and deterministic decision composition | Not started · D3-01/03 |
+| **D3-04 Scheduling and coverage** · STK-017/058/060/073 | [Durable scheduler](D3-04-scheduling.md), calendar occurrences, catch-up, fenced dependencies/outbox, event hooks and reconciled coverage; unattended fictional pipeline | Restricted-runtime grant approval/test; real handlers and UI/outcomes belong to later packages | Merged · PR #4; runtime activation blocked |
+| **D3-05 Quant horizon policies** · STK-028–032/054/058/076 | [Three quantitative engines](D3-05-quant-policies.md), immutable registrations, as-of financial features, valuation scenarios, calendar endpoints and separated admission; legacy swing preserved | Approved real policy settings, real source/evidence integration and sector-specific formulas; publication/admission are later packages | Ready for review · synthetic acceptance only |
 | **D3-06 Evidence ingestion** · STK-046–051 | Interfaces specified | Automatic permitted filings/news, parsing, financial facts, events and provenance | Not started · D3-02/03 |
 | **D3-07 Hybrid RAG** · STK-052/053/074 | Contracts specified | Structured/lexical/semantic retrieval, deterministic calculations, grounded fixed research and budgets | Not started · D3-05/06 |
 | **D3-08 Bounded agent and judge** · STK-052/070/071/072 | Contracts specified | Bounded investigation, claim checks, calibrated judge and shadow evaluation | Not started · D3-07 |
@@ -44,3 +44,5 @@ D3-02 validation: the isolated delivery snapshot passes 193 application/worker t
 D3-03 validation: 243 tests passed in the isolated delivery snapshot, including 39 new cases and 32 total database integration cases; 7 script tests passed. Migration upgrade, repeat upgrade, downgrade, re-upgrade and atomic failure rollback passed on 16 October 2026. PostgreSQL validation uses a disposable container, not the application database. No API key or paid service is used.
 
 D3-04 validation: the isolated delivery snapshot passes **279 application/worker tests**, including **36 new scheduler cases**, plus **7 script tests** and the frontend build. All **48 database integration tests** and migration upgrade/repeat/downgrade/re-upgrade/failure rollback pass; generated-schema consistency, legacy contract examples and whitespace checks pass. Runtime database grants are unchanged: automatic approval review blocked the proposed permission expansion. See the [scheduler handoff](D3-04-scheduling.md) before activating the restricted runtime worker. No key, paid API or deployment is used.
+
+D3-05 validation: **326 application/worker tests passed** in the isolated delivery snapshot, including **47 new quantitative-policy tests** and all **48 database integration cases**; **7 script tests** passed. Generated policy/schema/result fixtures reproduce exactly; whitespace checks pass. Legacy strategy and historical evaluation fixtures are unchanged. No approved real policy, source activation, admission grant, AI call or deployment is included.

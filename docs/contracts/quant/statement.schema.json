@@ -1,0 +1,299 @@
+{
+  "$defs": {
+    "Evidence": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence_id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Evidence Id",
+          "type": "string"
+        },
+        "revision_id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Revision Id",
+          "type": "string"
+        },
+        "instrument_id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Instrument Id",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "closed_candles",
+            "filing",
+            "news",
+            "fact"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "source_ref": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Source Ref",
+          "type": "string"
+        },
+        "source_version": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Source Version",
+          "type": "string"
+        },
+        "locator": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Locator",
+          "type": "string"
+        },
+        "published_at": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$",
+          "title": "Published At",
+          "type": "string"
+        },
+        "available_at": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$",
+          "title": "Available At",
+          "type": "string"
+        },
+        "fetched_at": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$",
+          "title": "Fetched At",
+          "type": "string"
+        },
+        "period_end_at": {
+          "anyOf": [
+            {
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Period End At"
+        },
+        "availability_basis": {
+          "enum": [
+            "fictional_fixture",
+            "observed",
+            "verified_archive"
+          ],
+          "title": "Availability Basis",
+          "type": "string"
+        },
+        "archive_verification_ref": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Archive Verification Ref"
+        },
+        "summary": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Summary",
+          "type": "string"
+        }
+      },
+      "required": [
+        "evidence_id",
+        "revision_id",
+        "instrument_id",
+        "kind",
+        "source_ref",
+        "source_version",
+        "locator",
+        "published_at",
+        "available_at",
+        "fetched_at",
+        "period_end_at",
+        "availability_basis",
+        "archive_verification_ref",
+        "summary"
+      ],
+      "title": "Evidence",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "revision_id": {
+      "minLength": 1,
+      "pattern": "\\S",
+      "title": "Revision Id",
+      "type": "string"
+    },
+    "instrument_id": {
+      "minLength": 1,
+      "pattern": "\\S",
+      "title": "Instrument Id",
+      "type": "string"
+    },
+    "period_start_at": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$",
+      "title": "Period Start At",
+      "type": "string"
+    },
+    "period_end_at": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$",
+      "title": "Period End At",
+      "type": "string"
+    },
+    "period_kind": {
+      "enum": [
+        "annual",
+        "quarter"
+      ],
+      "title": "Period Kind",
+      "type": "string"
+    },
+    "scope": {
+      "enum": [
+        "consolidated",
+        "standalone"
+      ],
+      "title": "Scope",
+      "type": "string"
+    },
+    "currency": {
+      "const": "INR",
+      "title": "Currency",
+      "type": "string"
+    },
+    "monetary_unit": {
+      "const": "INR",
+      "title": "Monetary Unit",
+      "type": "string"
+    },
+    "evidence": {
+      "$ref": "#/$defs/Evidence"
+    },
+    "revenue": {
+      "anyOf": [
+        {
+          "pattern": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Revenue"
+    },
+    "earnings": {
+      "anyOf": [
+        {
+          "pattern": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Earnings"
+    },
+    "operating_cash_flow": {
+      "anyOf": [
+        {
+          "pattern": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Operating Cash Flow"
+    },
+    "capital_expenditure": {
+      "anyOf": [
+        {
+          "pattern": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Capital Expenditure"
+    },
+    "debt": {
+      "anyOf": [
+        {
+          "pattern": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Debt"
+    },
+    "cash": {
+      "anyOf": [
+        {
+          "pattern": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Cash"
+    },
+    "equity": {
+      "anyOf": [
+        {
+          "pattern": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Equity"
+    },
+    "diluted_shares": {
+      "anyOf": [
+        {
+          "pattern": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Diluted Shares"
+    }
+  },
+  "required": [
+    "revision_id",
+    "instrument_id",
+    "period_start_at",
+    "period_end_at",
+    "period_kind",
+    "scope",
+    "currency",
+    "monetary_unit",
+    "evidence",
+    "revenue",
+    "earnings",
+    "operating_cash_flow",
+    "capital_expenditure",
+    "debt",
+    "cash",
+    "equity",
+    "diluted_shares"
+  ],
+  "title": "Statement",
+  "type": "object"
+}

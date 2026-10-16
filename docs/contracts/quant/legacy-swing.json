@@ -1,0 +1,16 @@
+{
+  "registration": {
+    "id": "ema-volume-breakout",
+    "version": "ema-breakout-1.0.2",
+    "formula": "EMA10>EMA30;close>prior20high;relative_volume20>=1.5;ATR14",
+    "entry_tick": "0.01",
+    "stop_atr_multiple": "2",
+    "target_r_multiple": "2",
+    "entry_cap_multiplier": "1.01",
+    "entry_sessions": 2,
+    "holding_sessions": 3,
+    "forecast_sessions": 5,
+    "synthetic_only": true
+  },
+  "content_hash": "e5ba022b0d63344c582c9b2bb9b3f3279118249eda8627602d38c256650aa3d5"
+}

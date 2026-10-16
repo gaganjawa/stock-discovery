@@ -1,0 +1,263 @@
+[
+  {
+    "schema_version": "2.0.0",
+    "ref": {
+      "id": "SYN-long_term",
+      "version": "fixture-1",
+      "content_hash": "34b567b52df32bd7cd71f22de41e16162ddee9df6266c0f97dce013fa2c47abd"
+    },
+    "kind": "strategy",
+    "profile": "long_term",
+    "status": "fixture",
+    "effective_at": "2020-01-01T00:00:00Z",
+    "parameters": [
+      {
+        "name": "base_pe",
+        "value": "60",
+        "unit": "multiple",
+        "unavailable_reason": null
+      },
+      {
+        "name": "bear_pe",
+        "value": "50",
+        "unit": "multiple",
+        "unavailable_reason": null
+      },
+      {
+        "name": "bull_pe",
+        "value": "70",
+        "unit": "multiple",
+        "unavailable_reason": null
+      },
+      {
+        "name": "durability_years",
+        "value": "2",
+        "unit": "count",
+        "unavailable_reason": null
+      },
+      {
+        "name": "duration",
+        "value": "1",
+        "unit": "count",
+        "unavailable_reason": null
+      },
+      {
+        "name": "entry_sessions",
+        "value": "2",
+        "unit": "count",
+        "unavailable_reason": null
+      },
+      {
+        "name": "max_evidence_age_days",
+        "value": "30",
+        "unit": "days",
+        "unavailable_reason": null
+      },
+      {
+        "name": "max_net_debt_to_ocf",
+        "value": "10",
+        "unit": "multiple",
+        "unavailable_reason": null
+      },
+      {
+        "name": "max_price_age_days",
+        "value": "5",
+        "unit": "days",
+        "unavailable_reason": null
+      },
+      {
+        "name": "max_statement_age_days",
+        "value": "500",
+        "unit": "days",
+        "unavailable_reason": null
+      },
+      {
+        "name": "min_earnings_growth",
+        "value": "0.01",
+        "unit": "ratio",
+        "unavailable_reason": null
+      },
+      {
+        "name": "min_fcf_yield",
+        "value": "0.001",
+        "unit": "ratio",
+        "unavailable_reason": null
+      },
+      {
+        "name": "min_margin_of_safety",
+        "value": "0.1",
+        "unit": "ratio",
+        "unavailable_reason": null
+      },
+      {
+        "name": "min_ocf_margin",
+        "value": "0.01",
+        "unit": "ratio",
+        "unavailable_reason": null
+      },
+      {
+        "name": "min_price_to_sma",
+        "value": "0.5",
+        "unit": "ratio",
+        "unavailable_reason": null
+      },
+      {
+        "name": "min_revenue_growth",
+        "value": "0.01",
+        "unit": "ratio",
+        "unavailable_reason": null
+      },
+      {
+        "name": "min_roe",
+        "value": "0.01",
+        "unit": "ratio",
+        "unavailable_reason": null
+      },
+      {
+        "name": "report_months",
+        "value": "12",
+        "unit": "months",
+        "unavailable_reason": null
+      }
+    ],
+    "approval_ref": null
+  },
+  {
+    "schema_version": "2.0.0",
+    "ref": {
+      "id": "SYN-short_term",
+      "version": "fixture-1",
+      "content_hash": "8b5d3a38f2c3c55f42ba93a226eaee031ad3b17c26844dff552c9c9a52121950"
+    },
+    "kind": "strategy",
+    "profile": "short_term",
+    "status": "fixture",
+    "effective_at": "2020-01-01T00:00:00Z",
+    "parameters": [
+      {
+        "name": "base_pe",
+        "value": "60",
+        "unit": "multiple",
+        "unavailable_reason": null
+      },
+      {
+        "name": "bear_pe",
+        "value": "50",
+        "unit": "multiple",
+        "unavailable_reason": null
+      },
+      {
+        "name": "bull_pe",
+        "value": "70",
+        "unit": "multiple",
+        "unavailable_reason": null
+      },
+      {
+        "name": "duration",
+        "value": "1",
+        "unit": "count",
+        "unavailable_reason": null
+      },
+      {
+        "name": "entry_sessions",
+        "value": "2",
+        "unit": "count",
+        "unavailable_reason": null
+      },
+      {
+        "name": "max_evidence_age_days",
+        "value": "30",
+        "unit": "days",
+        "unavailable_reason": null
+      },
+      {
+        "name": "max_price_age_days",
+        "value": "5",
+        "unit": "days",
+        "unavailable_reason": null
+      },
+      {
+        "name": "max_statement_age_days",
+        "value": "500",
+        "unit": "days",
+        "unavailable_reason": null
+      },
+      {
+        "name": "min_earnings_growth",
+        "value": "0.01",
+        "unit": "ratio",
+        "unavailable_reason": null
+      },
+      {
+        "name": "min_margin_of_safety",
+        "value": "0.1",
+        "unit": "ratio",
+        "unavailable_reason": null
+      },
+      {
+        "name": "min_price_to_sma",
+        "value": "0.5",
+        "unit": "ratio",
+        "unavailable_reason": null
+      },
+      {
+        "name": "min_revenue_growth",
+        "value": "0.01",
+        "unit": "ratio",
+        "unavailable_reason": null
+      },
+      {
+        "name": "report_months",
+        "value": "12",
+        "unit": "months",
+        "unavailable_reason": null
+      }
+    ],
+    "approval_ref": null
+  },
+  {
+    "schema_version": "2.0.0",
+    "ref": {
+      "id": "SYN-swing",
+      "version": "fixture-1",
+      "content_hash": "9db92950590ca0e7b9af4959eb7627994225be8fc6fc0170b45a9c9f509761a5"
+    },
+    "kind": "strategy",
+    "profile": "swing",
+    "status": "fixture",
+    "effective_at": "2020-01-01T00:00:00Z",
+    "parameters": [
+      {
+        "name": "duration",
+        "value": "3",
+        "unit": "count",
+        "unavailable_reason": null
+      },
+      {
+        "name": "entry_sessions",
+        "value": "2",
+        "unit": "count",
+        "unavailable_reason": null
+      },
+      {
+        "name": "forecast_sessions",
+        "value": "5",
+        "unit": "count",
+        "unavailable_reason": null
+      },
+      {
+        "name": "max_evidence_age_days",
+        "value": "30",
+        "unit": "days",
+        "unavailable_reason": null
+      },
+      {
+        "name": "max_price_age_days",
+        "value": "5",
+        "unit": "days",
+        "unavailable_reason": null
+      }
+    ],
+    "approval_ref": null
+  }
+]

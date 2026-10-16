@@ -1,0 +1,354 @@
+{
+  "schema_version": "1.0.0",
+  "formula_version": "quant-horizons-1.0.0",
+  "profile": "long_term",
+  "instrument_id": "SYN-ALPHA",
+  "mode": "synthetic",
+  "information_cutoff_at": "2025-06-25T10:01:00Z",
+  "policy_ref": {
+    "id": "SYN-long_term",
+    "version": "fixture-1",
+    "content_hash": "34b567b52df32bd7cd71f22de41e16162ddee9df6266c0f97dce013fa2c47abd"
+  },
+  "policy_manifest_hash": "4e20fa48ae18ebe2b22adc5ac04e415d604a45299e269737d9212bdcf449d3cd",
+  "action": "BUY",
+  "reasons": [],
+  "known_adverse": [],
+  "capability": "technical_only",
+  "metrics": {
+    "revenue_growth": "0.5",
+    "earnings_growth": "0.5",
+    "eps": "3",
+    "price_confirmation": "1.053307642903018625561978163134232",
+    "bear_value": "150",
+    "base_value": "180",
+    "bull_value": "210",
+    "ocf_margin": "0.15",
+    "roe": "0.3",
+    "net_debt_to_ocf": "0.1777777777777777777777777777777778",
+    "free_cash_flow": "430",
+    "fcf_yield": "0.03745644599303135888501742160278746",
+    "durability_ocf_margin": "0.15"
+  },
+  "calculations": [
+    {
+      "name": "revenue_growth",
+      "value": "0.5",
+      "formula": "(revenue-prior_revenue)/prior_revenue",
+      "formula_version": "quant-horizons-1.0.0",
+      "input_ids": [
+        "SYN-annual-2023",
+        "SYN-annual-2024"
+      ],
+      "unavailable_reason": null,
+      "calculation_id": "efa81c6b645df5ea79f5adfa5807743f122be8cec39c7fe580bb7beacab6243d"
+    },
+    {
+      "name": "earnings_growth",
+      "value": "0.5",
+      "formula": "(earnings-prior_earnings)/prior_earnings",
+      "formula_version": "quant-horizons-1.0.0",
+      "input_ids": [
+        "SYN-annual-2023",
+        "SYN-annual-2024"
+      ],
+      "unavailable_reason": null,
+      "calculation_id": "1989edc9d5e83805041cb07f5daea3839031ea4f5d4c851deaea53f022687727"
+    },
+    {
+      "name": "eps",
+      "value": "3",
+      "formula": "annual_earnings/diluted_shares",
+      "formula_version": "quant-horizons-1.0.0",
+      "input_ids": [
+        "SYN-annual-2024"
+      ],
+      "unavailable_reason": null,
+      "calculation_id": "aa523e57a2d3bfb22af0b591686aacd712e1451d74e972a9689000140ffcd154"
+    },
+    {
+      "name": "price_confirmation",
+      "value": "1.053307642903018625561978163134232",
+      "formula": "close/SMA20",
+      "formula_version": "quant-horizons-1.0.0",
+      "input_ids": [
+        "176c5447d58b4090a7650999bc5eccccc332e516115f7bcdff87e7a7d7ac6903",
+        "1cc138cd999823c867383d30d731802da7f2ec84065bdb8f6d504c779503e0c5",
+        "4e52f69a4eb901f6528d68f538fa9f6f37fb65e2efeed3971c23cd0a8af6e726",
+        "54ce5be6e3c3b10335f97474c1a080d281f96a025843b2dee3d92e9ee3a69448",
+        "58789dec75750a704d0176ceb9dee7972fb0e17850fccd48c231d44f6f0e787b",
+        "6b236b86269ca098804089af017528de60ddfeded140ad428552eb57e9992cba",
+        "6b419be09ae4e4417aec5ca18fad6c40450a0ff744925be614c93a69190a1ebe",
+        "9f709e04a2b54d551457ffee7bf401ffde7b42c281620ff9db6c36d90f34f07c",
+        "a51e1106ea979130bf7652a682d6bed2c84751cf5d5b577af41e5938138415dd",
+        "a547844aab5b8ce7f217553367211ed5a584bcc66ea5390a7fb968b2ed0c70d0",
+        "ac3ef34a409207dbf37df05d4e161b664a7f8b52d91183aed7b1b2af14b2c37a",
+        "ac41e7ab5bc713a8b09fa182a343050c722f642edc8484f365764644eebf5b78",
+        "b16d9c9c65e868826a5dc93f7d20a9e40b135e005d6799a0378c8e33538248ef",
+        "b5a5798489c79fb9bdda6e91b5bb46c431c4e90f9665cba7bad3068063bb07dc",
+        "d39ee7f5d547bb4ea6efb932457a62972e5beda2c85f8d923dcdceae0dcfd396",
+        "d641e5ef69dbf7c45c66bb4a5b298078d2ea4fd3ea7b7b345bc23d23ffbd1f8f",
+        "d92a079b069f5857acc04aa6275691d1be5bd05f6a8e9f4448fadbe161c141a2",
+        "e5a76a10c5a681d3807231a8bdad25082b6694f1e8e1eb112caf2eea385f01ab",
+        "f33139da5d2b19eb4f29aa00e833fef360ff7bfa5ddf86e010277fcfb1e4c33c",
+        "fd6711f4e70d2ee82e1e2b1373a4aee75a2d4c7bf89d29f9698ae8da7a4b83af"
+      ],
+      "unavailable_reason": null,
+      "calculation_id": "9310fc3b0db41a721ef337bfadf2c338270b9bdc5696a2002c7c0d445dcf03ee"
+    },
+    {
+      "name": "bear_value",
+      "value": "150",
+      "formula": "annual_EPS * registered_bear_PE",
+      "formula_version": "quant-horizons-1.0.0",
+      "input_ids": [
+        "SYN-annual-2024"
+      ],
+      "unavailable_reason": null,
+      "calculation_id": "88b577d53ff983eb4ca8c05be3f6ce9b1492b7663fd10689d37f0dc2cec34e7a"
+    },
+    {
+      "name": "base_value",
+      "value": "180",
+      "formula": "annual_EPS * registered_base_PE",
+      "formula_version": "quant-horizons-1.0.0",
+      "input_ids": [
+        "SYN-annual-2024"
+      ],
+      "unavailable_reason": null,
+      "calculation_id": "1766137416abe03f9b0986e6c366dbcf0787cf42bf733ba0698d145da7502965"
+    },
+    {
+      "name": "bull_value",
+      "value": "210",
+      "formula": "annual_EPS * registered_bull_PE",
+      "formula_version": "quant-horizons-1.0.0",
+      "input_ids": [
+        "SYN-annual-2024"
+      ],
+      "unavailable_reason": null,
+      "calculation_id": "7c9c383e69fceb90988969a25e7b2df775b4a131bbac78241017436a5c601631"
+    },
+    {
+      "name": "ocf_margin",
+      "value": "0.15",
+      "formula": "OCF/revenue",
+      "formula_version": "quant-horizons-1.0.0",
+      "input_ids": [
+        "SYN-annual-2023",
+        "SYN-annual-2024"
+      ],
+      "unavailable_reason": null,
+      "calculation_id": "eb84bbe1ec83ff996413b914e7685e0cab9dc0ab3c5629da81993c29bc0d8a6c"
+    },
+    {
+      "name": "roe",
+      "value": "0.3",
+      "formula": "earnings/closing_equity",
+      "formula_version": "quant-horizons-1.0.0",
+      "input_ids": [
+        "SYN-annual-2023",
+        "SYN-annual-2024"
+      ],
+      "unavailable_reason": null,
+      "calculation_id": "640cc7655b1cd362f7d5e5e639ab7b2b6067fa51e34487c7dbb686e91dbfb000"
+    },
+    {
+      "name": "net_debt_to_ocf",
+      "value": "0.1777777777777777777777777777777778",
+      "formula": "(debt-cash)/OCF",
+      "formula_version": "quant-horizons-1.0.0",
+      "input_ids": [
+        "SYN-annual-2023",
+        "SYN-annual-2024"
+      ],
+      "unavailable_reason": null,
+      "calculation_id": "7797b2f4ad88b9b668765df45ac69464b46f706d121a985d05b59282ae77d568"
+    },
+    {
+      "name": "free_cash_flow",
+      "value": "430",
+      "formula": "OCF-positive_capex",
+      "formula_version": "quant-horizons-1.0.0",
+      "input_ids": [
+        "SYN-annual-2023",
+        "SYN-annual-2024"
+      ],
+      "unavailable_reason": null,
+      "calculation_id": "30ae1f32eadefa4af759cac1722c2f38f65ef2b95f6416114b79fa4bac4c6b9e"
+    },
+    {
+      "name": "fcf_yield",
+      "value": "0.03745644599303135888501742160278746",
+      "formula": "FCF/(shares*price)",
+      "formula_version": "quant-horizons-1.0.0",
+      "input_ids": [
+        "SYN-annual-2023",
+        "SYN-annual-2024"
+      ],
+      "unavailable_reason": null,
+      "calculation_id": "a3be81481feb7b04feb325be517bad15711a6c828e5ffb5cf6b9bd40eba6b4a9"
+    },
+    {
+      "name": "durability_ocf_margin",
+      "value": "0.15",
+      "formula": "minimum annual OCF/revenue across registered history",
+      "formula_version": "quant-horizons-1.0.0",
+      "input_ids": [
+        "SYN-annual-2023",
+        "SYN-annual-2024"
+      ],
+      "unavailable_reason": null,
+      "calculation_id": "9a33d440b027250333e6c5599cbe793cc472e78552031bb4cfce8fb70c6f066f"
+    }
+  ],
+  "valuation": {
+    "low": "150",
+    "high": "210",
+    "currency": "INR",
+    "valued_at": "2025-06-25T10:01:00Z",
+    "assumptions": [
+      "bear_PE=50",
+      "base_PE=60",
+      "bull_PE=70",
+      "Annual EPS; scenario values are not trading targets"
+    ],
+    "calculation_ids": [
+      "88b577d53ff983eb4ca8c05be3f6ce9b1492b7663fd10689d37f0dc2cec34e7a",
+      "1766137416abe03f9b0986e6c366dbcf0787cf42bf733ba0698d145da7502965",
+      "7c9c383e69fceb90988969a25e7b2df775b4a131bbac78241017436a5c601631"
+    ]
+  },
+  "horizon": {
+    "schema_version": "2.0.0",
+    "profile": "long_term",
+    "minimum": 1,
+    "maximum": 5,
+    "units": "calendar_years",
+    "duration": 1,
+    "review_cadence": "monthly",
+    "anchor_at": "2025-06-25T10:01:00Z",
+    "holding_end_at": "2026-06-25T10:00:00Z",
+    "next_review_at": "2025-06-30T10:00:00Z",
+    "entry_expires_at": "2025-06-27T10:00:00Z",
+    "calendar_ref": {
+      "id": "exchange-calendar",
+      "version": "fictional-weekdays-v1",
+      "content_hash": "41dfd4ee18b390b3bcf5c8e4c66ae0a729b1fac8984420dd0da440399a4d9519"
+    }
+  },
+  "forecast_end_at": null,
+  "conditions": {
+    "entry": [
+      {
+        "code": "quant_entry_conditions",
+        "explanation": "{\"earliest_entry_at\": \"2025-06-26T03:45:00Z\", \"max_price\": \"135.0\", \"minimum_price_confirmation\": \"0.5\"}; required quantitative limits: {\"max_evidence_age_days\": \"30\", \"max_net_debt_to_ocf\": \"10\", \"max_price_age_days\": \"5\", \"max_statement_age_days\": \"500\", \"min_earnings_growth\": \"0.01\", \"min_fcf_yield\": \"0.001\", \"min_margin_of_safety\": \"0.1\", \"min_ocf_margin\": \"0.01\", \"min_price_to_sma\": \"0.5\", \"min_revenue_growth\": \"0.01\", \"min_roe\": \"0.01\"}; mandatory coverage must be current; enter only before expiry",
+        "evidence_ids": [
+          "SYN-actions",
+          "SYN-annual-2022",
+          "SYN-annual-2023",
+          "SYN-annual-2024",
+          "SYN-business",
+          "SYN-filings",
+          "SYN-governance",
+          "SYN-material_events"
+        ]
+      }
+    ],
+    "invalidation": [
+      {
+        "code": "thesis_invalidated",
+        "explanation": "Invalidate readiness on violation of {\"max_evidence_age_days\": \"30\", \"max_net_debt_to_ocf\": \"10\", \"max_price_age_days\": \"5\", \"max_statement_age_days\": \"500\", \"min_earnings_growth\": \"0.01\", \"min_fcf_yield\": \"0.001\", \"min_margin_of_safety\": \"0.1\", \"min_ocf_margin\": \"0.01\", \"min_price_to_sma\": \"0.5\", \"min_revenue_growth\": \"0.01\", \"min_roe\": \"0.01\"} or verified adverse evidence, prohibited instrument risk or stale mandatory data; no automatic portfolio action",
+        "evidence_ids": [
+          "SYN-actions",
+          "SYN-annual-2022",
+          "SYN-annual-2023",
+          "SYN-annual-2024",
+          "SYN-business",
+          "SYN-filings",
+          "SYN-governance",
+          "SYN-material_events"
+        ]
+      }
+    ],
+    "review": [
+      {
+        "code": "monthly",
+        "explanation": "Review on pinned cadence and material events; holding endpoint is separate",
+        "evidence_ids": [
+          "SYN-actions",
+          "SYN-annual-2022",
+          "SYN-annual-2023",
+          "SYN-annual-2024",
+          "SYN-business",
+          "SYN-filings",
+          "SYN-governance",
+          "SYN-material_events"
+        ]
+      }
+    ],
+    "expires_at": "2025-06-27T10:00:00Z"
+  },
+  "entry_terms": {
+    "max_price": "135.0",
+    "minimum_price_confirmation": "0.5",
+    "earliest_entry_at": "2025-06-26T03:45:00Z"
+  },
+  "input_hash": "24a1d9dc70fda3967ff1e16ecfd7a9b18bbc1e743f9efd21c31b3e58ac817506",
+  "input_refs": [
+    "00d1a57da9817f9b0f435d1dc08521f76e88f69d4b358eadd1cf2a337557a676",
+    "176c5447d58b4090a7650999bc5eccccc332e516115f7bcdff87e7a7d7ac6903",
+    "19efe32389f7d3507f8b1ee5bc0df9a1d86ef43de59d4c599711c178122995b6",
+    "1cc138cd999823c867383d30d731802da7f2ec84065bdb8f6d504c779503e0c5",
+    "21d711c3f7d01e100ba1997010a51a82a13a82d048eaef98f07898a9a104742f",
+    "290d6e7934806ee6a5cdf3ec55d792103314b494f20291e473ba356045a9c6d2",
+    "2f74b989c79575ae7cf4d27004e723b82c6789a64cdbe4f33663256933f3b2d3",
+    "37cd4bb1c9a631aea1d265b09de899f4dfb6b6dfa44b4136fc29346b12508df7",
+    "3e3ca0dcc8bc0fec3c696e71b0e07deb83aacb77b3133449e9f742996b47418e",
+    "41356c10a7106af544cca1d9750269cd24b2c7c70262798b309522e41ceb6a4c",
+    "41e36262ce2b68b8947bc0e96587ae43e58a86ac7cb2a675141a08cffbfd1bf3",
+    "472f6f5ba43c18bd806c717e5a744915f32a385828c871b4d28f81def348b3d2",
+    "4e52f69a4eb901f6528d68f538fa9f6f37fb65e2efeed3971c23cd0a8af6e726",
+    "54ce5be6e3c3b10335f97474c1a080d281f96a025843b2dee3d92e9ee3a69448",
+    "58789dec75750a704d0176ceb9dee7972fb0e17850fccd48c231d44f6f0e787b",
+    "5cc93b1b5c60e9412d15821c88ad4a4d6650c38db2ef679d94e3da84f2dc5b1b",
+    "5d2f51fbecade5eddc35df0640d897dfb11cc598ec3213c5ec96cedd68fa84a1",
+    "6b236b86269ca098804089af017528de60ddfeded140ad428552eb57e9992cba",
+    "6b419be09ae4e4417aec5ca18fad6c40450a0ff744925be614c93a69190a1ebe",
+    "717ae8f13e8315fa2c883aa93089ca12a8c747f2855f01a74258f6348138935a",
+    "7637e82e38102aa8ecc1b9e63d3fe06cc2dd4cf92b2adba932924401ea3faa5e",
+    "7c26f96c068def656eed01fd01edf7145b517f72529e3aec0cb121672c2c99b1",
+    "7cd5cb2737be07c5d2aea61ef8baa94bdee834f8611224b80f82e982892d8e09",
+    "81c40d4e6698ab31ec9ebd7d4bb3fc88a1feaa231de914ee2fb517d0111bd374",
+    "82ade4f00dd7507985687f4d26a0307d2688da6b3aa212e490d396f2ceef88f2",
+    "87d4639c1c303f17e0252fc906244b07b398663bd4abf00bcdcef12bf601ade7",
+    "9e9ba563ac7f39d41800d6e3500aa02725313124a841e3a17aeda97ab4b3edde",
+    "9f709e04a2b54d551457ffee7bf401ffde7b42c281620ff9db6c36d90f34f07c",
+    "a51e1106ea979130bf7652a682d6bed2c84751cf5d5b577af41e5938138415dd",
+    "a547844aab5b8ce7f217553367211ed5a584bcc66ea5390a7fb968b2ed0c70d0",
+    "a73ea430f5f8fd903b0c1da203c342dce4cedf9ddb744a693b0125eef96cde0f",
+    "a8a1eaea0ab323084058d63d8b8c4591785328e9cb794e807082c710fbb092db",
+    "ac3ef34a409207dbf37df05d4e161b664a7f8b52d91183aed7b1b2af14b2c37a",
+    "ac41e7ab5bc713a8b09fa182a343050c722f642edc8484f365764644eebf5b78",
+    "ad13d32c884a857bd4ad7b193e80a42f354c8dd00dd641bf3d05ae54a5d2b94c",
+    "b16d9c9c65e868826a5dc93f7d20a9e40b135e005d6799a0378c8e33538248ef",
+    "b5a5798489c79fb9bdda6e91b5bb46c431c4e90f9665cba7bad3068063bb07dc",
+    "bccc8ad2d4e5e91ec4e8afb5daa29a6e49d4456b54127f7d1413e59406b57ff7",
+    "d39ee7f5d547bb4ea6efb932457a62972e5beda2c85f8d923dcdceae0dcfd396",
+    "d641e5ef69dbf7c45c66bb4a5b298078d2ea4fd3ea7b7b345bc23d23ffbd1f8f",
+    "d92a079b069f5857acc04aa6275691d1be5bd05f6a8e9f4448fadbe161c141a2",
+    "dc29d5367887fe5b37d48ea6a52572e031b57cedf046065f9f90d4a4da392f7b",
+    "e5349ef5c4c2a446c3f5319e4c3f738d0b285298f10c9cc27c18384c128fa42b",
+    "e5a76a10c5a681d3807231a8bdad25082b6694f1e8e1eb112caf2eea385f01ab",
+    "eae7f8fde246cf4609c504abde923f18274f3d9a6a6ea15a32e75515cd671850",
+    "f26c739a7ef94d9b1b5ed77322e1d3f199e255fc95982045fb32c2e9f405c0a7",
+    "f33139da5d2b19eb4f29aa00e833fef360ff7bfa5ddf86e010277fcfb1e4c33c",
+    "fd6711f4e70d2ee82e1e2b1373a4aee75a2d4c7bf89d29f9698ae8da7a4b83af"
+  ],
+  "paper_admission": {
+    "status": "blocked",
+    "quantity": null,
+    "reason": "paper_admission_not_evaluated"
+  },
+  "assessment_id": "f90ce500a1e748bf9328f915683f7d4b372fcf2b43fe6176e9bf5b985315cbf6"
+}
