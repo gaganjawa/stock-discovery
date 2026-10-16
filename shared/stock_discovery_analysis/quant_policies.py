@@ -196,6 +196,8 @@ def assess(registry, reference, *, profile, instrument_id, cutoff, mode, calenda
     independently checks clocks, identity, period compatibility and numeric data.
     """
     check(profile in SUPPORTED and mode in ('synthetic','live_paper','historical_reconstructed'), 'profile/mode')
+    check(eligible is None or type(eligible) is bool, 'strict eligibility flag')
+    check(risk_prohibited is None or type(risk_prohibited) is bool, 'strict instrument-risk flag')
     at(cutoff)
     with localcontext(Context(prec=34)) as context:
         context.prec = 34

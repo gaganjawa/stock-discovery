@@ -31,6 +31,10 @@ def test_fixture_research_buy_is_separate_from_admission(profile):
     assert result['horizon']['profile']==profile
     assert result['conditions']['invalidation'] and result['conditions']['entry']
     assert result==run(profile)
+    with pytest.raises(ValueError,match='strict'):
+        run(profile,eligible='false')
+    with pytest.raises(ValueError,match='strict'):
+        run(profile,risk_prohibited=0)
 
 
 @pytest.mark.parametrize('profile',PROFILES)
