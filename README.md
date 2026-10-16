@@ -2,7 +2,7 @@
 
 ## Authoritative architecture
 
-[SD ARCH 3.0](docs/SD-ARCH-3.0.md) is the frozen design baseline for three-horizon automated NSE discovery and grounded AI research. Repository integration and [D3-01 contracts](docs/contracts/v2/README.md) are implemented following the subsequent owner authorization on 15 October 2026. [D3-02 source rights and feasibility](docs/D3-02-source-feasibility.md) is ready for owner review; real-source activation remains blocked. D3-03 through D3-13 remain unstarted. Existing synthetic MVP behavior is unchanged. External deployment remains unauthorized.
+[SD ARCH 3.0](docs/SD-ARCH-3.0.md) is the frozen design baseline for three-horizon automated NSE discovery and grounded AI research. Repository integration and [D3-01 contracts](docs/contracts/v2/README.md) are implemented following the subsequent owner authorization on 15 October 2026. [D3-02 source rights and feasibility](docs/D3-02-source-feasibility.md) is merged; real-source activation remains blocked. [D3-03 revision ingestion](docs/D3-03-revision-ingestion.md) is ready for owner review with fictional adapter acceptance. D3-04 through D3-13 remain unstarted. Existing synthetic MVP behavior is unchanged. External deployment remains unauthorized.
 
 ## Local daily-swing MVP
 

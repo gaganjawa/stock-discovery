@@ -28,7 +28,7 @@ def main():
         db.execute('CREATE TABLE public.migration_test_sentinel (id integer)')
     command.downgrade(config, 'base')
     with psycopg.connect(url) as db:
-        assert db.execute("SELECT count(*) FROM pg_namespace WHERE nspname='research'").fetchone()[0] == 0
+        assert db.execute("SELECT count(*) FROM pg_namespace WHERE nspname IN ('research','discovery')").fetchone()[0] == 0
         assert db.execute("SELECT to_regclass('public.migration_test_sentinel')").fetchone()[0] is not None
     command.upgrade(config, 'head')
     with tempfile.TemporaryDirectory() as temp:
@@ -36,7 +36,7 @@ def main():
         shutil.copytree(ROOT / 'backend/migrations', migrations)
         (migrations / 'versions/9999_failure.py').write_text('''from alembic import op
 revision = '9999'
-down_revision = '0004'
+down_revision = '0005'
 def upgrade():
     op.execute('CREATE TABLE research.should_rollback (id integer)')
     op.execute('SELECT 1 / 0')
@@ -54,7 +54,7 @@ def downgrade():
             raise AssertionError('Intentional migration failure did not fail')
     with psycopg.connect(url, autocommit=True) as db:
         assert db.execute("SELECT to_regclass('research.should_rollback')").fetchone()[0] is None
-        assert db.execute('SELECT version_num FROM alembic_version').fetchone()[0] == '0004'
+        assert db.execute('SELECT version_num FROM alembic_version').fetchone()[0] == '0005'
         db.execute('DROP TABLE public.migration_test_sentinel')
     print('PASS: upgrade, repeat upgrade, constraints, downgrade, re-upgrade and atomic failure rollback')
 
