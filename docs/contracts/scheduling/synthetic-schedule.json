@@ -1,0 +1,49 @@
+{
+  "schema_version": "1.0.0",
+  "schedule_id": "SYN-D304",
+  "scope_id": "SYN-universe-1",
+  "input_hash": "b2cdf1fc380ce38012db1b390dc2b11a6a9f84ce95b52aacd196d9b38fff1054",
+  "code_version": "SYN-D304-v1",
+  "mode": "synthetic",
+  "calendar": {
+    "ref": {
+      "id": "SYN-calendar",
+      "version": "1",
+      "content_hash": "9d8eef33545aab300b32e3ce36ab8856465f48b5838d942e8a7991a7a5a7ca01"
+    },
+    "available_at": "2026-10-15T00:00:00Z",
+    "starts_on": "2026-10-15",
+    "ends_on": "2026-10-31",
+    "sessions": [
+      {
+        "opens_at": "2026-10-15T03:45:00Z",
+        "closes_at": "2026-10-15T10:00:00Z"
+      },
+      {
+        "opens_at": "2026-10-16T03:45:00Z",
+        "closes_at": "2026-10-16T10:00:00Z"
+      },
+      {
+        "opens_at": "2026-10-19T03:45:00Z",
+        "closes_at": "2026-10-19T10:00:00Z"
+      }
+    ]
+  },
+  "policy": {
+    "version": "SYN-1",
+    "ready_delay_minutes": 30,
+    "readiness_retry_minutes": 15,
+    "swing_stop_before_open_minutes": 60,
+    "short_term_window_minutes": 1440,
+    "long_term_window_minutes": 1440,
+    "event_window_start_hour": 8,
+    "event_window_end_hour": 20,
+    "max_events_per_call": 20
+  },
+  "horizons": [
+    "swing",
+    "short_term",
+    "long_term"
+  ],
+  "starts_on": "2026-10-15"
+}

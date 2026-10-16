@@ -1,0 +1,238 @@
+{
+  "$defs": {
+    "Ref": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Id",
+          "type": "string"
+        },
+        "version": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Version",
+          "type": "string"
+        },
+        "content_hash": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Content Hash",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "content_hash"
+      ],
+      "title": "Ref",
+      "type": "object"
+    },
+    "ScheduleCalendar": {
+      "additionalProperties": false,
+      "properties": {
+        "ref": {
+          "$ref": "#/$defs/Ref"
+        },
+        "available_at": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$",
+          "title": "Available At",
+          "type": "string"
+        },
+        "starts_on": {
+          "title": "Starts On",
+          "type": "string"
+        },
+        "ends_on": {
+          "title": "Ends On",
+          "type": "string"
+        },
+        "sessions": {
+          "items": {
+            "$ref": "#/$defs/TradingSession"
+          },
+          "maxItems": 400,
+          "minItems": 1,
+          "title": "Sessions",
+          "type": "array"
+        }
+      },
+      "required": [
+        "ref",
+        "available_at",
+        "starts_on",
+        "ends_on",
+        "sessions"
+      ],
+      "title": "ScheduleCalendar",
+      "type": "object"
+    },
+    "SchedulePolicy": {
+      "additionalProperties": false,
+      "properties": {
+        "version": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Version",
+          "type": "string"
+        },
+        "ready_delay_minutes": {
+          "const": 30,
+          "title": "Ready Delay Minutes",
+          "type": "integer"
+        },
+        "readiness_retry_minutes": {
+          "const": 15,
+          "title": "Readiness Retry Minutes",
+          "type": "integer"
+        },
+        "swing_stop_before_open_minutes": {
+          "const": 60,
+          "title": "Swing Stop Before Open Minutes",
+          "type": "integer"
+        },
+        "short_term_window_minutes": {
+          "maximum": 10080,
+          "minimum": 15,
+          "title": "Short Term Window Minutes",
+          "type": "integer"
+        },
+        "long_term_window_minutes": {
+          "maximum": 44640,
+          "minimum": 15,
+          "title": "Long Term Window Minutes",
+          "type": "integer"
+        },
+        "event_window_start_hour": {
+          "const": 8,
+          "title": "Event Window Start Hour",
+          "type": "integer"
+        },
+        "event_window_end_hour": {
+          "const": 20,
+          "title": "Event Window End Hour",
+          "type": "integer"
+        },
+        "max_events_per_call": {
+          "maximum": 100,
+          "minimum": 1,
+          "title": "Max Events Per Call",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "version",
+        "ready_delay_minutes",
+        "readiness_retry_minutes",
+        "swing_stop_before_open_minutes",
+        "short_term_window_minutes",
+        "long_term_window_minutes",
+        "event_window_start_hour",
+        "event_window_end_hour",
+        "max_events_per_call"
+      ],
+      "title": "SchedulePolicy",
+      "type": "object"
+    },
+    "TradingSession": {
+      "additionalProperties": false,
+      "properties": {
+        "opens_at": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$",
+          "title": "Opens At",
+          "type": "string"
+        },
+        "closes_at": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$",
+          "title": "Closes At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "opens_at",
+        "closes_at"
+      ],
+      "title": "TradingSession",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "schedule_id": {
+      "minLength": 1,
+      "pattern": "\\S",
+      "title": "Schedule Id",
+      "type": "string"
+    },
+    "scope_id": {
+      "minLength": 1,
+      "pattern": "\\S",
+      "title": "Scope Id",
+      "type": "string"
+    },
+    "input_hash": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Input Hash",
+      "type": "string"
+    },
+    "code_version": {
+      "minLength": 1,
+      "pattern": "\\S",
+      "title": "Code Version",
+      "type": "string"
+    },
+    "mode": {
+      "enum": [
+        "synthetic",
+        "historical_reconstructed",
+        "live_paper"
+      ],
+      "title": "Mode",
+      "type": "string"
+    },
+    "calendar": {
+      "$ref": "#/$defs/ScheduleCalendar"
+    },
+    "policy": {
+      "$ref": "#/$defs/SchedulePolicy"
+    },
+    "horizons": {
+      "items": {
+        "enum": [
+          "swing",
+          "short_term",
+          "long_term"
+        ],
+        "type": "string"
+      },
+      "maxItems": 3,
+      "minItems": 1,
+      "title": "Horizons",
+      "type": "array"
+    },
+    "starts_on": {
+      "title": "Starts On",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "schedule_id",
+    "scope_id",
+    "input_hash",
+    "code_version",
+    "mode",
+    "calendar",
+    "policy",
+    "horizons",
+    "starts_on"
+  ],
+  "title": "ScheduleConfig",
+  "type": "object"
+}

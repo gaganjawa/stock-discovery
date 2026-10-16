@@ -1,5 +1,9 @@
 # Stock Discovery — work checkpoint
 
+## D3-04 — STK-017/058/060/073 · 16 October 2026
+
+PR #3 merged at `e5bc9ea`; the owner authorized D3-04. [Scheduler delivery](D3-04-scheduling.md) adds durable calendar occurrences, dependency jobs, fenced atomic results, event hooks, frozen-universe counters and an opt-in fictional unattended worker. Runtime-role access remains blocked by automatic approval review; `deploy/roles.py` and database grants are unchanged. No owner key, paid service or deployment is used. Unrelated WIP and historical evaluation fixtures remain preserved. Open a ticket-branch PR; wait for owner review/merge and confirmation before D3-05. Earlier entries describe historical checkpoints.
+
 ## D3-03 — STK-014/015/019–024 · 15 October 2026
 
 After PR #2 merged, the owner authorized D3-03. [Delivery details](D3-03-revision-ingestion.md): additive discovery schema, rights-checked paged adapter boundary, immutable source revisions and snapshots, quarantine, raw/adjusted separation and recovery tests. Real sources remain disabled. The supplied OpenAI key is not read, committed or used. Application database and unrelated WIP are unchanged. Deliver as a ticket-branch PR; wait for owner merge and confirmation before D3-04. Older status entries below are historical.
