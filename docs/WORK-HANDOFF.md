@@ -1,5 +1,9 @@
 # Stock Discovery — work checkpoint
 
+## D3-07 — STK-052/053/074 · 17 October 2026
+
+Verified D3-06 merge `5be2cac` against origin/main. [Hybrid RAG](D3-07-hybrid-rag.md) adds rights-filtered structured/PostgreSQL lexical/local semantic retrieval, deterministic ranking/calculations, strict fixed research validation, abstention and durable all-component budgets. Research stays shadow/non-actionable; no paid model or real source is activated. Existing synthetic workflows and unrelated WIP remain intact. Owner authorized the connected GitHub account for this PR, with commits attributed to Codex. Deliver the STK-052/053/074 branch for review; stop after D3-07. D3-08, publication integration and existing runtime grant blockers remain later dependencies.
+
 ## D3-06 — STK-046–051 · 17 October 2026
 
 Verified PR #5 merge `ad1da0b` against origin/main. [Evidence ingestion foundation](D3-06-evidence-ingestion.md) adds bounded automatic mock feeds, immutable content/chunks/facts/claims, source permissions and point-in-time retrieval, revisions/quarantine and D3-04 event dispatch. Existing synthetic workflows and unrelated WIP are preserved. No real provider, paid API, RAG/agent, deployment or broker operation. Real format/provider activation and the prior restricted-runtime grants remain explicit blockers. Owner authorized the connected GitHub account for this PR, with commits attributed to Codex. Deliver on the STK-046–051 branch and stop after D3-06.
