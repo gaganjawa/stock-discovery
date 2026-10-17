@@ -1,5 +1,9 @@
 # Stock Discovery — work checkpoint
 
+## D3-06 — STK-046–051 · 17 October 2026
+
+Verified PR #5 merge `ad1da0b` against origin/main. [Evidence ingestion foundation](D3-06-evidence-ingestion.md) adds bounded automatic mock feeds, immutable content/chunks/facts/claims, source permissions and point-in-time retrieval, revisions/quarantine and D3-04 event dispatch. Existing synthetic workflows and unrelated WIP are preserved. No real provider, paid API, RAG/agent, deployment or broker operation. Real format/provider activation and the prior restricted-runtime grants remain explicit blockers. Owner authorized the connected GitHub account for this PR, with commits attributed to Codex. Deliver on the STK-046–051 branch and stop after D3-06.
+
 ## D3-05 — STK-028–032/054/058/076 · 17 October 2026
 
 Owner explicitly authorized D3-05 after PR #4 merged at `08812db`. [Quantitative policies](D3-05-quant-policies.md) implement three deterministic engines, immutable configuration manifests, as-of evidence/financial calculations, valuation sensitivity, calendar endpoints and research/admission separation. Legacy swing remains unchanged. All shipped settings are fictional; real-market acceptance is not complete. No runtime grant change, paid API, RAG/agent, broker action or deployment. Preserve unrelated WIP. Deliver on the ticket branch for owner review and stop after D3-05; D3-06 requires confirmation.

@@ -1,0 +1,193 @@
+{
+  "$defs": {
+    "EventRow": {
+      "additionalProperties": false,
+      "properties": {
+        "event_type": {
+          "enum": [
+            "earnings",
+            "restatement",
+            "default",
+            "auditor_change",
+            "regulatory_action"
+          ],
+          "title": "Event Type",
+          "type": "string"
+        },
+        "statement": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Statement",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "confirmed",
+            "unverified"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "locator": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Locator",
+          "type": "string"
+        }
+      },
+      "required": [
+        "event_type",
+        "statement",
+        "status",
+        "locator"
+      ],
+      "title": "EventRow",
+      "type": "object"
+    },
+    "FinancialRow": {
+      "additionalProperties": false,
+      "properties": {
+        "metric": {
+          "enum": [
+            "revenue",
+            "earnings",
+            "operating_cash_flow",
+            "capital_expenditure",
+            "debt",
+            "cash",
+            "equity",
+            "assets",
+            "liabilities",
+            "diluted_shares",
+            "operating_margin",
+            "net_margin"
+          ],
+          "title": "Metric",
+          "type": "string"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "pattern": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Value"
+        },
+        "missing_reason": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Missing Reason"
+        },
+        "unit": {
+          "enum": [
+            "INR",
+            "INR_thousand",
+            "INR_lakh",
+            "INR_crore",
+            "shares",
+            "percent",
+            "ratio"
+          ],
+          "title": "Unit",
+          "type": "string"
+        },
+        "period_start_at": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$",
+          "title": "Period Start At",
+          "type": "string"
+        },
+        "period_end_at": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$",
+          "title": "Period End At",
+          "type": "string"
+        },
+        "period_kind": {
+          "enum": [
+            "annual",
+            "quarter",
+            "instant"
+          ],
+          "title": "Period Kind",
+          "type": "string"
+        },
+        "scope": {
+          "enum": [
+            "consolidated",
+            "standalone"
+          ],
+          "title": "Scope",
+          "type": "string"
+        },
+        "locator": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Locator",
+          "type": "string"
+        }
+      },
+      "required": [
+        "metric",
+        "value",
+        "missing_reason",
+        "unit",
+        "period_start_at",
+        "period_end_at",
+        "period_kind",
+        "scope",
+        "locator"
+      ],
+      "title": "FinancialRow",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "text": {
+      "maxLength": 100000,
+      "minLength": 1,
+      "title": "Text",
+      "type": "string"
+    },
+    "facts": {
+      "items": {
+        "$ref": "#/$defs/FinancialRow"
+      },
+      "maxItems": 80,
+      "title": "Facts",
+      "type": "array"
+    },
+    "events": {
+      "items": {
+        "$ref": "#/$defs/EventRow"
+      },
+      "maxItems": 20,
+      "title": "Events",
+      "type": "array"
+    }
+  },
+  "required": [
+    "schema_version",
+    "text",
+    "facts",
+    "events"
+  ],
+  "title": "StructuredReport",
+  "type": "object"
+}

@@ -1,0 +1,34 @@
+{
+  "revision": {
+    "schema_version": "1.0.0",
+    "revision_id": "SYN-E-report",
+    "source_id": "SYN-source",
+    "source_revision": "SYN-E-report",
+    "sequence": 1,
+    "listing_id": "SYN-listing",
+    "instrument_revision_id": "SYN-instrument",
+    "published_at": "2026-10-14T10:00:00Z",
+    "available_at": "2026-10-14T10:01:00Z",
+    "fetched_at": "2026-10-15T10:30:00Z",
+    "availability_basis": "fictional_fixture",
+    "archive_evidence_ref": null,
+    "archive_revision_id": null,
+    "supersedes_id": null,
+    "data": {
+      "kind": "document",
+      "document_id": "SYN-evidence-news",
+      "document_type": "news",
+      "url": "https://example.invalid/fictional-report",
+      "content_hash": "67981e66fab5794832428c9b29b76abef13837729e6f2c489740b6cc67311af0",
+      "locator": "page 1",
+      "metadata_only": true
+    }
+  },
+  "issuer_id": "SYN-issuer",
+  "title": "Fictional annual evidence",
+  "attribution": "Fictional D3-03 fixture",
+  "category": "news",
+  "authority": "secondary",
+  "media_type": "application/vnd.stock-evidence+json",
+  "body": "{\"schema_version\": \"1.0.0\", \"text\": \"The issuer confirms its annual earnings release.\", \"facts\": [], \"events\": [{\"event_type\": \"earnings\", \"statement\": \"The issuer confirms its annual earnings release.\", \"status\": \"confirmed\", \"locator\": \"announcement paragraph 1\"}]}"
+}
