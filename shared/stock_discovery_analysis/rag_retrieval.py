@@ -135,7 +135,7 @@ def calculate_ratio(numerator: Fact, denominator: Fact):
     return dict(calculation_id=digest(record), **record)
 
 
-def retrieve(conn, query, policy, *, access, embeddings=None, deadline=float('inf'), monotonic=None):
+def retrieve(conn, query, policy, *, access, embeddings=None, deadline=float('inf'), monotonic=None, persist=True):
     from time import monotonic as clock
     clock = monotonic or clock
     query = Query.model_validate_json(query.model_dump_json())
@@ -236,9 +236,10 @@ def retrieve(conn, query, policy, *, access, embeddings=None, deadline=float('in
         if embedding_ref:
             read_evidence(conn,rid,access=access,cutoff=query.cutoff_at,mode=query.mode,purpose='embed')
         stream = stored_stream(conn,rid)
-        access.require(stream, ('store',))
-        if any(f.citation.revision_id==rid for f in bundle.facts):
+        if persist:access.require(stream, ('store',))
+        if persist and any(f.citation.revision_id==rid for f in bundle.facts):
             access.require(stream.model_copy(update={'scope':'financial_facts'}), ('store',))
-    conn.execute('INSERT INTO discovery.rag_bundles VALUES (%s,%s) ON CONFLICT DO NOTHING',
-                 (bundle.content_hash,Jsonb(bundle.model_dump(mode='json'))))
+    if persist:
+        conn.execute('INSERT INTO discovery.rag_bundles VALUES (%s,%s) ON CONFLICT DO NOTHING',
+                     (bundle.content_hash,Jsonb(bundle.model_dump(mode='json'))))
     return bundle
