@@ -1,5 +1,9 @@
 # Stock Discovery — work checkpoint
 
+## D3-08 — STK-052/070/071/072 · 17 October 2026
+
+Verified PR #7 merge `d7f3381` against origin/main. [Bounded research and semantic judge](D3-08-bounded-research.md) reuse D3-07 retrieval/contracts/budget reservations, enforce four database-read-only tools and a 120-second default deadline, and persist immutable validation/judge reports. The 54-case paired mock evaluation has provisional synthetic labels, not human calibration or evidence of agent superiority. All outputs remain shadow/non-actionable. No paid call, source activation, deployment or broker action. Preserve unrelated WIP. Owner authorized the connected GitHub account for this PR with Codex commits. Deliver on the ticket branch and stop; D3-09 requires owner confirmation.
+
 ## D3-07 — STK-052/053/074 · 17 October 2026
 
 Verified D3-06 merge `5be2cac` against origin/main. [Hybrid RAG](D3-07-hybrid-rag.md) adds rights-filtered structured/PostgreSQL lexical/local semantic retrieval, deterministic ranking/calculations, strict fixed research validation, abstention and durable all-component budgets. Research stays shadow/non-actionable; no paid model or real source is activated. Existing synthetic workflows and unrelated WIP remain intact. Owner authorized the connected GitHub account for this PR, with commits attributed to Codex. Deliver the STK-052/053/074 branch for review; stop after D3-07. D3-08, publication integration and existing runtime grant blockers remain later dependencies.
