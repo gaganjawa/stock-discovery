@@ -46,8 +46,8 @@ def tick(conn, config, *, clock, handlers=None):
             raise JobFailure(reason)
         with conn.transaction():
             result, next_stage = handler(conn, job, clock)
-            finish(conn,job,clock(),status='completed',result=result,next_stage=next_stage)
-        status = 'completed'
+            status = 'partial' if result.get('status')=='partial' else 'completed'
+            finish(conn,job,clock(),status=status,result=result,next_stage=next_stage)
     except JobFailure as exc:
         try:
             status = retry(conn,job,clock(),reason=exc.reason,retry_after_seconds=exc.retry_after_seconds)

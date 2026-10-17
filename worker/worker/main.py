@@ -30,11 +30,14 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Run the Stock Discovery scheduled worker")
     parser.add_argument("--once", action="store_true", help="run one synthetic cycle and exit")
     parser.add_argument("--interval-seconds", type=int, default=5)
+    parser.add_argument('--synthetic-evidence', action='store_true', help='automatically ingest fictional filings/news; requires --synthetic-schedule')
     parser.add_argument('--synthetic-schedule', action='store_true', help='use fictional D3-04 acceptance adapter')
     parser.add_argument('--schedule-config', type=Path, help='versioned D3-04 calendar/policy JSON')
     args = parser.parse_args()
     if args.interval_seconds < 1:
         parser.error('interval must be positive')
+    if args.synthetic_evidence and not args.synthetic_schedule:
+        parser.error('--synthetic-evidence requires --synthetic-schedule')
     config = ScheduleConfig.model_validate_json(args.schedule_config.read_text()) if args.schedule_config else None
     if config and not setting('DATABASE_URL'):
         parser.error('scheduler requires DATABASE_URL')
@@ -46,6 +49,9 @@ def main() -> None:
             parser.error('--synthetic-schedule requires --schedule-config')
         from stock_discovery_analysis.schedule_fixtures import handlers
         schedule_handlers = handlers(config)
+        if args.synthetic_evidence:
+            from stock_discovery_analysis.evidence_fixtures import scheduled_handlers
+            schedule_handlers = scheduled_handlers(config)
     while True:
         if config:
             with psycopg.connect(setting('DATABASE_URL'), autocommit=True, connect_timeout=5) as conn:

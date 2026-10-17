@@ -1,0 +1,606 @@
+{
+  "$defs": {
+    "ActionData": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "action",
+          "title": "Kind",
+          "type": "string"
+        },
+        "action_id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Action Id",
+          "type": "string"
+        },
+        "action_type": {
+          "enum": [
+            "split",
+            "bonus",
+            "dividend",
+            "unsupported"
+          ],
+          "title": "Action Type",
+          "type": "string"
+        },
+        "effective_at": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$",
+          "title": "Effective At",
+          "type": "string"
+        },
+        "share_ratio": {
+          "anyOf": [
+            {
+              "pattern": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Share Ratio"
+        },
+        "cash_per_share": {
+          "anyOf": [
+            {
+              "pattern": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Cash Per Share"
+        },
+        "currency": {
+          "const": "INR",
+          "title": "Currency",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "action_id",
+        "action_type",
+        "effective_at",
+        "share_ratio",
+        "cash_per_share",
+        "currency"
+      ],
+      "title": "ActionData",
+      "type": "object"
+    },
+    "CandleData": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "candle",
+          "title": "Kind",
+          "type": "string"
+        },
+        "interval": {
+          "const": "1d",
+          "title": "Interval",
+          "type": "string"
+        },
+        "starts_at": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$",
+          "title": "Starts At",
+          "type": "string"
+        },
+        "ends_at": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$",
+          "title": "Ends At",
+          "type": "string"
+        },
+        "open": {
+          "pattern": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?$",
+          "title": "Open",
+          "type": "string"
+        },
+        "high": {
+          "pattern": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?$",
+          "title": "High",
+          "type": "string"
+        },
+        "low": {
+          "pattern": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?$",
+          "title": "Low",
+          "type": "string"
+        },
+        "close": {
+          "pattern": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?$",
+          "title": "Close",
+          "type": "string"
+        },
+        "volume": {
+          "minimum": 0,
+          "title": "Volume",
+          "type": "integer"
+        },
+        "adjustment_basis": {
+          "const": "raw",
+          "title": "Adjustment Basis",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "interval",
+        "starts_at",
+        "ends_at",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume",
+        "adjustment_basis"
+      ],
+      "title": "CandleData",
+      "type": "object"
+    },
+    "DocumentData": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "document",
+          "title": "Kind",
+          "type": "string"
+        },
+        "document_id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Document Id",
+          "type": "string"
+        },
+        "document_type": {
+          "enum": [
+            "filing",
+            "news"
+          ],
+          "title": "Document Type",
+          "type": "string"
+        },
+        "url": {
+          "pattern": "^https://[^\\s]+$",
+          "title": "Url",
+          "type": "string"
+        },
+        "content_hash": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Content Hash",
+          "type": "string"
+        },
+        "locator": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Locator",
+          "type": "string"
+        },
+        "metadata_only": {
+          "const": true,
+          "title": "Metadata Only",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "kind",
+        "document_id",
+        "document_type",
+        "url",
+        "content_hash",
+        "locator",
+        "metadata_only"
+      ],
+      "title": "DocumentData",
+      "type": "object"
+    },
+    "InstrumentData": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "instrument",
+          "title": "Kind",
+          "type": "string"
+        },
+        "issuer_id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Issuer Id",
+          "type": "string"
+        },
+        "symbol": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Symbol",
+          "type": "string"
+        },
+        "isin": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Isin"
+        },
+        "series": {
+          "const": "EQ",
+          "title": "Series",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "active",
+            "suspended",
+            "delisted"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "lot_size": {
+          "exclusiveMinimum": 0,
+          "title": "Lot Size",
+          "type": "integer"
+        },
+        "tick_size": {
+          "pattern": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?$",
+          "title": "Tick Size",
+          "type": "string"
+        },
+        "effective_at": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$",
+          "title": "Effective At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "issuer_id",
+        "symbol",
+        "isin",
+        "series",
+        "status",
+        "lot_size",
+        "tick_size",
+        "effective_at"
+      ],
+      "title": "InstrumentData",
+      "type": "object"
+    },
+    "MembershipData": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "membership",
+          "title": "Kind",
+          "type": "string"
+        },
+        "universe_version": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Universe Version",
+          "type": "string"
+        },
+        "valid_from_at": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$",
+          "title": "Valid From At",
+          "type": "string"
+        },
+        "valid_until_at": {
+          "anyOf": [
+            {
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Valid Until At"
+        },
+        "eligible": {
+          "title": "Eligible",
+          "type": "boolean"
+        },
+        "reason": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Reason",
+          "type": "string"
+        },
+        "selection_inputs_hash": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Selection Inputs Hash",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "universe_version",
+        "valid_from_at",
+        "valid_until_at",
+        "eligible",
+        "reason",
+        "selection_inputs_hash"
+      ],
+      "title": "MembershipData",
+      "type": "object"
+    },
+    "Revision": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "1.0.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "revision_id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Revision Id",
+          "type": "string"
+        },
+        "source_id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Source Id",
+          "type": "string"
+        },
+        "source_revision": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Source Revision",
+          "type": "string"
+        },
+        "sequence": {
+          "exclusiveMinimum": 0,
+          "title": "Sequence",
+          "type": "integer"
+        },
+        "listing_id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Listing Id",
+          "type": "string"
+        },
+        "instrument_revision_id": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Instrument Revision Id"
+        },
+        "published_at": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$",
+          "title": "Published At",
+          "type": "string"
+        },
+        "available_at": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$",
+          "title": "Available At",
+          "type": "string"
+        },
+        "fetched_at": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$",
+          "title": "Fetched At",
+          "type": "string"
+        },
+        "availability_basis": {
+          "enum": [
+            "fictional_fixture",
+            "observed",
+            "verified_archive"
+          ],
+          "title": "Availability Basis",
+          "type": "string"
+        },
+        "archive_evidence_ref": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Archive Evidence Ref"
+        },
+        "archive_revision_id": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Archive Revision Id"
+        },
+        "supersedes_id": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Supersedes Id"
+        },
+        "data": {
+          "discriminator": {
+            "mapping": {
+              "action": "#/$defs/ActionData",
+              "candle": "#/$defs/CandleData",
+              "document": "#/$defs/DocumentData",
+              "instrument": "#/$defs/InstrumentData",
+              "membership": "#/$defs/MembershipData",
+              "session": "#/$defs/SessionData"
+            },
+            "propertyName": "kind"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/InstrumentData"
+            },
+            {
+              "$ref": "#/$defs/MembershipData"
+            },
+            {
+              "$ref": "#/$defs/CandleData"
+            },
+            {
+              "$ref": "#/$defs/ActionData"
+            },
+            {
+              "$ref": "#/$defs/DocumentData"
+            },
+            {
+              "$ref": "#/$defs/SessionData"
+            }
+          ],
+          "title": "Data"
+        }
+      },
+      "required": [
+        "schema_version",
+        "revision_id",
+        "source_id",
+        "source_revision",
+        "sequence",
+        "listing_id",
+        "instrument_revision_id",
+        "published_at",
+        "available_at",
+        "fetched_at",
+        "availability_basis",
+        "archive_evidence_ref",
+        "archive_revision_id",
+        "supersedes_id",
+        "data"
+      ],
+      "title": "Revision",
+      "type": "object"
+    },
+    "SessionData": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "session",
+          "title": "Kind",
+          "type": "string"
+        },
+        "calendar_version": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Calendar Version",
+          "type": "string"
+        },
+        "opens_at": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$",
+          "title": "Opens At",
+          "type": "string"
+        },
+        "closes_at": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$",
+          "title": "Closes At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "calendar_version",
+        "opens_at",
+        "closes_at"
+      ],
+      "title": "SessionData",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "revision": {
+      "$ref": "#/$defs/Revision"
+    },
+    "issuer_id": {
+      "minLength": 1,
+      "pattern": "\\S",
+      "title": "Issuer Id",
+      "type": "string"
+    },
+    "title": {
+      "minLength": 1,
+      "pattern": "\\S",
+      "title": "Title",
+      "type": "string"
+    },
+    "attribution": {
+      "minLength": 1,
+      "pattern": "\\S",
+      "title": "Attribution",
+      "type": "string"
+    },
+    "category": {
+      "enum": [
+        "announcement",
+        "annual_report",
+        "quarterly_report",
+        "news"
+      ],
+      "title": "Category",
+      "type": "string"
+    },
+    "authority": {
+      "enum": [
+        "issuer_primary",
+        "secondary"
+      ],
+      "title": "Authority",
+      "type": "string"
+    },
+    "media_type": {
+      "enum": [
+        "text/plain",
+        "application/vnd.stock-evidence+json"
+      ],
+      "title": "Media Type",
+      "type": "string"
+    },
+    "body": {
+      "maxLength": 150000,
+      "minLength": 1,
+      "title": "Body",
+      "type": "string"
+    }
+  },
+  "required": [
+    "revision",
+    "issuer_id",
+    "title",
+    "attribution",
+    "category",
+    "authority",
+    "media_type",
+    "body"
+  ],
+  "title": "Document",
+  "type": "object"
+}
