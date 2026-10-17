@@ -5,12 +5,24 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import xml.etree.ElementTree as ET
 
 import psycopg
 from alembic import command
 from alembic.config import Config
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+def verify_integration_report(path):
+    """Database acceptance must execute tests, never silently skip them."""
+    cases = ET.parse(path).getroot().findall(".//testcase")
+    if not cases:
+        raise AssertionError("No database integration tests executed")
+    skipped = [case.get("name") for case in cases if case.find("skipped") is not None]
+    if skipped:
+        raise AssertionError(f"Database integration tests skipped: {skipped}")
+    print(f"PASS: all {len(cases)} database integration tests executed; zero skipped")
 
 
 def main():
@@ -23,7 +35,10 @@ def main():
     config = Config(str(ROOT / 'backend/alembic.ini'))
     command.upgrade(config, 'head')
     command.upgrade(config, 'head')
-    subprocess.run([sys.executable, '-m', 'pytest', str(ROOT / 'backend/tests/integration'), '-q', '-p', 'no:cacheprovider'], check=True)
+    with tempfile.TemporaryDirectory() as reports:
+        report = Path(reports) / 'integration.xml'
+        subprocess.run([sys.executable, '-m', 'pytest', str(ROOT / 'backend/tests/integration'), '-q', '-p', 'no:cacheprovider', f'--junitxml={report}'], check=True)
+        verify_integration_report(report)
     with psycopg.connect(url, autocommit=True) as db:
         db.execute('CREATE TABLE public.migration_test_sentinel (id integer)')
     command.downgrade(config, 'base')

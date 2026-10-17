@@ -17,6 +17,7 @@ jobs:
       COOKIE_SECURE: "false"
       APP_ORIGIN: http://127.0.0.1:5173
       CODE_VERSION: ${{ github.sha }}
+      STK_TEST_DATABASE_URL: postgresql://stock_discovery:change-me-for-local-use@127.0.0.1:5432/stk013_test
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
@@ -29,6 +30,11 @@ jobs:
           cache-dependency-path: frontend/package-lock.json
       - name: Install locked Python packages
         run: python -m pip install --require-hashes -r backend/requirements.txt
+      - name: Verify migrations and all database integration tests
+        run: |
+          docker compose up -d --wait database
+          docker compose exec -T database createdb -U stock_discovery stk013_test
+          python scripts/validate_migrations.py
       - name: Validate contracts and application
         env:
           PYTHONPATH: backend:shared:worker
@@ -61,12 +67,6 @@ jobs:
         run: |
           npx playwright install --with-deps chromium
           npm run test:e2e
-      - name: Verify migrations in disposable PostgreSQL database
-        env:
-          STK_TEST_DATABASE_URL: postgresql://stock_discovery:change-me-for-local-use@127.0.0.1:5432/stk013_test
-        run: |
-          docker compose exec -T database createdb -U stock_discovery stk013_test
-          python scripts/validate_migrations.py
       - name: Container diagnostics
         if: failure()
         run: docker compose logs --no-color --tail=100
