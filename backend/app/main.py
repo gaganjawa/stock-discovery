@@ -56,3 +56,6 @@ app.include_router(router)
 
 from .discovery import router as discovery_router
 app.include_router(discovery_router)
+
+from .paper import router as paper_router
+app.include_router(paper_router)
