@@ -74,3 +74,19 @@ npm run dev -- --host 127.0.0.1
 ```
 
 Open the URL printed by Vite (normally http://127.0.0.1:5173). Use the sidebar to explore five sections and toggle fictional examples. The functional preview now requires the API, PostgreSQL, migrations and owner authentication; use the Compose instructions in the work handoff.
+
+### Paper portfolios and outcome tracking (D3-10)
+
+The authenticated dashboard now includes **Paper portfolio & outcomes**. Create a
+separately labelled fictional simulation with virtual starting capital, run
+D3-09 discovery, track published decisions, and advance a fictional session.
+The local worker records reservations, fills, fees, immutable transactions and
+outcomes. Cash is shared across horizons; risk limits govern every admission.
+View holdings, outcome details, horizon/cohort comparisons and explicit data
+limitations alongside the existing discovery and synthetic replay workflows.
+
+MOCK/SHADOW recommendations remain blocked from forward-paper portfolios. The
+fictional simulation contract never changes their original admission status.
+Forward source/model/policy approvals and observation adapters remain
+unconfigured; no broker orders or real-market activation are included.
+See [D3-10 contracts, execution assumptions and API](docs/D3-10-paper-portfolio.md).

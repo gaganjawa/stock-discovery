@@ -152,6 +152,8 @@ test('authenticated synthetic freeze, reveal, scorecard and future placeholders'
   }
  }
  await page.getByRole('link',{name:'Portfolio',exact:true}).click()
+ await expect(page.getByRole('region',{name:'Paper portfolio and outcomes'})).toBeVisible()
+ await page.getByRole('link',{name:'IPO',exact:true}).click()
  await expect(page.getByRole('heading',{name:'Planned for a future release'})).toBeVisible()
  await page.getByRole('button',{name:'Sign out'}).click()
  await expect(page.getByLabel('Owner access key')).toBeVisible()
