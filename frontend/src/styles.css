@@ -456,3 +456,25 @@ dl {
 
 /* autoSize observes this box; its dimensions must not depend on chart contents. */
 .candle-chart { height:340px; width:100%; min-width:0; }
+
+.discovery { margin: 24px 0 48px; }
+.discovery-heading { display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap; align-items:flex-start; }
+.horizon-tabs { display:flex; gap:10px; margin:24px 0; flex-wrap:wrap; }
+.horizon-tabs button { flex:1; min-width:150px; text-align:left; padding:16px; }
+.horizon-tabs button[aria-selected="true"] { border-color:#91dfbf; background:#183c35; color:#d8fff0; }
+.horizon-tabs small { display:block; margin-top:8px; }
+.discovery .controls { flex-wrap:wrap; }
+.discovery dd { overflow-wrap:anywhere; }
+.discovery caption { text-align:left; margin:16px 0; font-weight:600; }
+.decision { display:inline-block; border:1px solid #6c8294; border-radius:5px; padding:5px 8px; font-size:12px; }
+.decision-buy { color:#a4eed0; border-color:#6eaa91; }
+.decision-avoid { color:#ffc2b9; border-color:#bb837c; }
+.decision-insufficient_evidence { color:#f2d59a; border-color:#bba173; }
+.citation { border-left:2px solid #6eaa91; padding:8px 16px; margin:12px 0; overflow-wrap:anywhere; }
+.discovery blockquote { margin:8px 0; color:#c2d3df; }
+.discovery table { width:100%; }
+.discovery .panel { padding:24px; }
+.discovery .signal-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:16px; }
+.discovery .signal-grid div { min-width:0; }
+.discovery .record-meta { display:grid; grid-template-columns:minmax(100px,1fr) minmax(0,3fr); gap:10px 18px; }
+.discovery .record-meta dd { margin:0; }

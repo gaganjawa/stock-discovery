@@ -66,7 +66,9 @@ def main() -> None:
                         latest=max(c.provenance.available_at for c in dataset.candles)
                         enqueue(conn,'scan',{'dataset_version':dataset.version,'cutoff':latest.isoformat(),
                                             'scheduled_day':datetime.now(timezone.utc).date().isoformat()})
-                    result=run_job(conn,os.getenv('CODE_VERSION','local-unversioned'))
+                    from stock_discovery_analysis.publication_store import run_next
+                    result=run_next(conn,os.getenv('CODE_VERSION','local-unversioned'))
+                    if result is None: result=run_job(conn,os.getenv('CODE_VERSION','local-unversioned'))
                 heartbeat(True)
                 if result: print(event("job_cycle", status=1 if result["status"]=="completed" else 0),flush=True)
             except Exception:

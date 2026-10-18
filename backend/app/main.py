@@ -53,3 +53,6 @@ def demo_recommendation() -> dict[str, object]:
 
 from .research import router
 app.include_router(router)
+
+from .discovery import router as discovery_router
+app.include_router(discovery_router)
