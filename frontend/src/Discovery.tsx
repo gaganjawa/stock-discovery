@@ -22,7 +22,7 @@ export function Discovery({onUnauthorized}:{onUnauthorized:()=>void}) {
   return r.json()
  }
  async function load(){const p:Page=await api(`/discovery?horizon=${horizon}&cohort=${cohort}`);setData(p);setRun(p.latest_run)}
- useEffect(()=>{let active=true;setData(null);setDetail(null);setComparisons([]);setSource(null);setError('');setRequestKey(null)
+ useEffect(()=>{let active=true;setData(null);setRun(null);setDetail(null);setComparisons([]);setSource(null);setError('');setRequestKey(null)
   api(`/discovery?horizon=${horizon}&cohort=${cohort}`).then(p=>{if(active){setData(p);setRun(p.latest_run)}}).catch(e=>{if(active)setError(e.message)})
   return()=>{active=false}
  },[horizon,cohort])
@@ -37,10 +37,10 @@ export function Discovery({onUnauthorized}:{onUnauthorized:()=>void}) {
  return <section aria-label="Three-horizon discovery" className="discovery">
   <div className="discovery-heading"><div><p className="eyebrow">AUTOMATIC INGESTION · LOCAL MOCK RESEARCH</p><h2>Three-horizon discovery</h2><p>Five fictional companies. Published decisions are immutable and cannot place orders.</p></div><span className="badge">MOCK / SHADOW / NON-ACTIONABLE</span></div>
   <div role="tablist" aria-label="Investment horizon" className="horizon-tabs">{horizons.map(([id,name,range])=><button key={id} role="tab" aria-selected={horizon===id} disabled={busy||pending} onClick={()=>setHorizon(id)}><strong>{name}</strong><small>{range}</small></button>)}</div>
-  <div className="controls"><label>Research mode<select aria-label="Discovery research mode" value={cohort} disabled={busy} onChange={e=>setCohort(e.target.value)}>{modes.map(([id,name])=><option key={id} value={id}>{name}</option>)}</select></label><button className="primary" disabled={busy||pending} onClick={()=>work(start)}>{pending?'Research in progress…':'Run fictional discovery'}</button><button disabled={busy} onClick={()=>work(load)}>Refresh discovery</button></div>
+  <div className="controls"><label>Research mode<select aria-label="Discovery research mode" value={cohort} disabled={busy} onChange={e=>setCohort(e.target.value)}>{modes.map(([id,name])=><option key={id} value={id}>{name}</option>)}</select></label><button className="primary" disabled={busy||pending||!data} onClick={()=>work(start)}>{pending?'Research in progress…':'Run fictional discovery'}</button><button disabled={busy} onClick={()=>work(load)}>Refresh discovery</button></div>
   <p>This run evaluates every research mode for the selected horizon. Inputs are pinned historical fixtures, not current market data.</p>
   {error&&<p className="error" role="alert">{error}</p>}
-  {run&&<p role="status">Execution: {label(run.status)} · {label(run.stage)}{run.error_code?' · '+label(run.error_code):''}</p>}
+  {run&&<p role="status" data-run-id={run.run_id}>Execution: {label(run.status)} · {label(run.stage)}{run.error_code?' · '+label(run.error_code):''}</p>}
   {run?.status==='failed'&&<p className="notice">The latest scan failed. Any previous published batch below remains visible with its original timestamp.</p>}
   {data?.coverage&&<section className="panel" aria-label="Universe coverage"><h3>Universe coverage</h3><p>{data.coverage.screened} / {data.coverage.universe_total} fictional listings screened · {data.coverage.data_complete} with sufficient evidence · {data.coverage.research_complete} research complete · {data.coverage.research_failed} research unavailable</p><p>Batch: {label(data.status)} · Data through: {time(data.information_cutoff_at)}<br/>Published: {time(data.published_at)} · Next run: on request</p>{data.source_issues?.map(s=><p key={s}>{s}</p>)}</section>}
   {!data&&!error&&<p role="status">Loading discovery…</p>}

@@ -12,7 +12,12 @@ test('three horizons, four decisions, research comparison and permission-gated s
  await expect(discovery).toBeVisible()
  for(const name of ['Swing','Short-term','Long-term']){
   await discovery.getByRole('tab',{name:new RegExp(name)}).click()
+  const created=page.waitForResponse(r=>r.url().endsWith('/v1/discovery-runs')&&r.request().method()==='POST')
   await discovery.getByRole('button',{name:'Run fictional discovery',exact:true}).click()
+  const run=await (await created).json()
+  await expect.poll(async()=>{const response=await page.request.get(run.status_url);return (await response.json()).status},{timeout:60000}).toBe('completed')
+  await discovery.getByRole('button',{name:'Refresh discovery'}).click()
+  await expect(discovery.getByRole('status')).toHaveAttribute('data-run-id',run.run_id)
   await expect(discovery.getByRole('status')).toContainText('completed',{timeout:60000})
   await expect(discovery.getByRole('region',{name:'Universe coverage'})).toContainText('5 / 5 fictional listings screened')
   const table=discovery.locator('table').first()
