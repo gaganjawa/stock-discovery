@@ -1,5 +1,7 @@
 # REAL-001 — real integration acceptance record
 
+**Phase 4 update (20 October):** [Permission findings and stop condition](REAL-001-phase4.md). New Upstox developer-community evidence confirms private market-data storage, research/ML and replay, superseding the earlier blanket rights blocker. Financial-corpus rights and recommendation/forward-evaluation scope remain unresolved. Historical candles are back-adjusted, conflicting with the current raw-data representation. No financial document or actual research was processed; no infrastructure was added. REAL-001 remains PARTIAL.
+
 **20 October 2026 · PARTIAL · not end-to-end acceptance.**
 
 **Phase 3 update:** [Detailed acceptance and blockers](REAL-001-phase3.md). Conditional real D3-09 publication, immutable shadow references/observation receipts and dashboard history are implemented. Actual INFY A1–A14 acceptance remains blocked; no genuine filing/facts, grounded research, real publication or outcome was produced. Local validation: 606 tests, 164 PostgreSQL integration cases (zero skips), five browser workflows, migration checks and build passed. The historical records below remain Phase 1/2 evidence.

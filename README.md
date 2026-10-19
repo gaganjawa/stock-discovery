@@ -110,3 +110,7 @@ view. No genuine INFY publication or outcome has passed acceptance. Source right
 calendar/action coverage, real policies and grounded model qualification remain
 blocked. The T9 model folder and Ollama inventory passed the final recheck. See
 [Phase 3 acceptance](docs/REAL-001-phase3.md) for commands, validation and A1–A14.
+
+### REAL-001 Phase 4 — permission review, PARTIAL
+
+[Phase 4 findings](docs/REAL-001-phase4.md) establish private Upstox market-data retention/research/replay rights from provider-community replies. Genuine filing-corpus rights remain unresolved; no actual INFY research was produced. The stop condition was followed: no additional conditional infrastructure. Consolidated Upstox and Infosys permission drafts are prepared, not sent.

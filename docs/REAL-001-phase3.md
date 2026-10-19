@@ -1,5 +1,7 @@
 # REAL-001 Phase 3 — conditional publication and prospective references
 
+**Subsequent Phase 4 finding:** [Permission review](REAL-001-phase4.md) resolves private market-data retention/replay through newly located Upstox developer replies. The historical Phase 3 blockers below describe what was known then; financial-source and actual end-to-end acceptance remain blocked.
+
 **20 October 2026 (IST) · PARTIAL · actual INFY acceptance BLOCKED.**
 Continues `feat/stk-014-046-052-060-real-001`, draft PR #12, baseline `d10ff6b`.
 STK-004–007/046/048/052/059/060; existing D3-02/03/05/06/07/08/09/10.

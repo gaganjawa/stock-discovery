@@ -1,5 +1,7 @@
 # REAL-001 — provider verification and activation matrix
 
+**Phase 4 supersedes the earlier Upstox market-data uncertainty:** [Nine-operation matrix, exact clauses and owner drafts](REAL-001-phase4.md). Provider developer replies permit private local market-data retention, ML/AI research and replay. This does not establish filing/news corpus rights or every output/evaluation use. Historical-candle adjustment semantics require technical correction before raw-data ingestion. No active grant created.
+
 Verified **19 October 2026**. STK-004/005/006/007, D3-02. API reachability,
 provider permissions, software acceptance and investment qualification are separate.
 This record grants no rights. No paid subscription was activated.
