@@ -70,3 +70,12 @@ rights-aware company/analysis readers, D3-05 input mapping and existing UI panel
 returned 403; Upstox use evidence remains unknown. No actual filing, new model
 run, real recommendation or prospective outcome accepted. Publication/tracking
 still require implementation. [Phase 2 record](REAL-001-phase2.md).
+
+Phase 3 (20 October): **PARTIAL**, same draft PR #12. Conditional D3-09 real
+publication and D3-10 immutable shadow references/observation receipts are wired
+to rights-aware dashboard history; no portfolio admission or fabricated returns.
+606 tests, 164 PostgreSQL cases (zero skips), migration lifecycle, five browser
+workflows and production build passed. **No actual INFY filing, grounded research,
+publication or outcome**: unresolved provider rights, observed coverage/policies
+and model qualification. T9/Ollama inventory passed the final recheck. [Phase 3/A1–A14](REAL-001-phase3.md).
+D3-11/12/13 remain unstarted.

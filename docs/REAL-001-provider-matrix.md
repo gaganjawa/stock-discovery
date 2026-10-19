@@ -42,3 +42,36 @@ expressly permits reuse of public EDGAR filing content. The genuine 2026 INFY
 reuse permission from technical access; no access-control workaround or active
 grant was created. Upstox retention/AI evidence remains unresolved; the owner
 confirmed no additional evidence is available. See [Phase 2](REAL-001-phase2.md).
+
+## Phase 3 use-specific review — 20 October 2026
+
+No new grant, purchase or provider communication. The following are permission
+findings, not legal conclusions that every unconfirmed private use is prohibited.
+
+| Candidate | Retrieval | Retention/extraction | Quant/replay | Embeddings/local AI | Prospective evaluation | Exact missing evidence |
+|---|---|---|---|---|---|---|
+| Upstox Analytics | Read-only API access documented and previously probed | Unresolved use-specific retention/deletion and derived-data rights | Unresolved for retained/replayed installation data | Unresolved | Unresolved | Applicable account/data-provider terms or written authorization covering each intended use, attribution and retention duration. Token success is insufficient. |
+| Infosys IR annual/quarterly disclosures | Public document links found; automated pipeline grant not established | Site terms restrict reproduction; no report-specific exception verified | Not established | Not established | Not established | Permission for automated document retrieval, private document/fact storage, deterministic derivation, local embeddings/inference and subsequent research evaluation, with attribution/retention conditions. |
+| NSE official website/data service | Website automation restricted; permitted feed requires applicable agreement | No applicable agreement | No applicable agreement | No applicable agreement | No applicable agreement | Official feed licence scoped to this installation; do not substitute website scraping. |
+| BSE corporate-data service | Official service identified, access not activated | Licence not supplied | Not established | Not established | Not established | Applicable corporate-data delivery/usage licence and NSE identity mapping; public links are not an authorization. |
+| SEC EDGAR | Prior identified filing request blocked, no retry in Phase 3 | Public EDGAR reuse documented by SEC FAQ | Runtime corpus unavailable | Runtime corpus unavailable | Runtime corpus unavailable | Legitimate authorized access; no bypass or alternative request identity attempted. |
+
+Official primary candidates identified (not ingested):
+
+- [Infosys integrated annual report 2025–26, PDF](https://www.infosys.com/investors/reports-filings/annual-report/annual/documents/infosys-ar-26.pdf).
+  Reporting-year label 2025–26; exact publication timestamp and table periods not
+  verified by ingestion. Discovered through the official annual-report index.
+- [Infosys Q1 FY27 financial-results advertisement, PDF](https://www.infosys.com/investors/documents/exchange-filings/2026/advertisement-pertaining-financial-results-q1fy27.pdf).
+  Candidate quarterly disclosure; exact publication timestamp, statements/scope,
+  completeness and units remain unverified. Not substituted for a full filing.
+- [Infosys board-meeting outcome, PDF](https://www.infosys.com/investors/documents/exchange-filings/2026/outcome-board-meeting-23apr2026.pdf).
+  Candidate announcement; filename date is not a verified publication timestamp.
+
+Supporting terms/product URLs: [Infosys terms](https://www.infosys.com/terms-of-use.html),
+[annual index](https://www.infosys.com/investors/reports-filings/annual-report/annual-reports.html),
+[Upstox Analytics Token](https://upstox.com/developer/api-documentation/analytics-token/),
+[NSE terms](https://www.nseindia.com/static/nse-terms-of-use),
+[NSE data policy](https://www.nseindia.com/static/market-data/nse-data-policy),
+[NSE copyright](https://www.nseindia.com/static/nse-copyright),
+[BSE official corporate-data service](https://marketdata.bseindia.com/).
+No raw report, restricted financial table or API content was retained for this review.

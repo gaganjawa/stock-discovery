@@ -43,7 +43,7 @@ def discovery(horizon:Profile='swing',cohort:Cohort='quant',mode:Literal['synthe
               cursor:str|None=None,batch_id:str|None=None,limit:int=Query(default=20,ge=1,le=100),conn=Depends(db)):
     if cursor and not batch_id:raise error(400,'cursor_requires_batch_id')
     authorize(conn)
-    latest=conn.execute("SELECT run_id FROM discovery.publication_runs WHERE request->>'horizon'=%s ORDER BY created_at DESC,run_id DESC LIMIT 1",(horizon,)).fetchone()
+    latest=conn.execute("SELECT run_id FROM discovery.publication_runs WHERE request->>'horizon'=%s AND request->>'mode'='synthetic' ORDER BY created_at DESC,run_id DESC LIMIT 1",(horizon,)).fetchone()
     row=conn.execute('''SELECT payload FROM discovery.publication_batches WHERE horizon=%s AND mode=%s
         AND (%s::text IS NULL OR run_id=%s) ORDER BY published_at DESC,run_id DESC LIMIT 1''',(horizon,mode,batch_id,batch_id)).fetchone()
     current=run_status(conn,latest[0]) if latest else None
@@ -89,7 +89,12 @@ def evidence(revision_id:str,recommendation_id:str,conn=Depends(db)):
     a=recommendation(recommendation_id,conn)
     permitted=(a['research_bundle'] or {}).get('documents',[])
     if revision_id not in permitted:raise error(404,'evidence_not_in_recommendation')
-    try:return read_evidence(conn,revision_id,access=authorize(conn),cutoff=a['recommendation']['information_cutoff_at'],mode='synthetic')
+    try:
+        if a['recommendation']['mode']=='live_paper':
+            from stock_discovery_analysis.real_publication import configured_access
+            access=configured_access()
+        else:access=authorize(conn)
+        return read_evidence(conn,revision_id,access=access,cutoff=a['recommendation']['information_cutoff_at'],mode=a['recommendation']['mode'])
     except PermissionError:raise error(403,'source_permission_denied')
 
 

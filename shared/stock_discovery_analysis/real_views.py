@@ -38,10 +38,10 @@ def eligible_revisions(conn,listing,cutoff,access):
     return result
 
 
-def company(conn,config,listing,*,clock=now):
+def company(conn,config,listing,*,clock=now,publication_inputs=False,cutoff_at=None):
     config=ViewConfig.model_validate(config)
     check(listing in config.listing_ids,'listing_not_configured')
-    cutoff=clock();access=source_access(config.sources,clock)
+    cutoff=cutoff_at or clock();check(at(cutoff)<=at(clock()),'future_read_cutoff');access=source_access(config.sources,clock)
     records=eligible_revisions(conn,listing,cutoff,access)
     identities=[r for r in records if r.data.kind=='instrument']
     check(len(identities)==1,'real_identity_missing_or_ambiguous')
@@ -57,15 +57,17 @@ def company(conn,config,listing,*,clock=now):
         facts.extend(item['facts']);events.extend(item['events'])
     history=[]
     # Immutable RAG results are analysis history, never prospective publication.
-    rows=conn.execute("""SELECT r.run_id,r.payload,b.payload FROM discovery.rag_results r
-        JOIN discovery.rag_bundles b USING(bundle_hash)
+    rows=conn.execute("""SELECT r.run_id,r.payload,b.payload,r.arm FROM (
+          SELECT run_id,payload,bundle_hash,'quant_rag' AS arm FROM discovery.rag_results
+          UNION ALL SELECT run_id,payload,coalesce(final_bundle_hash,baseline_hash),'quant_agent' AS arm FROM discovery.agent_results
+        ) r JOIN discovery.rag_bundles b USING(bundle_hash)
         WHERE b.payload->'query'->>'listing_id'=%s AND b.payload->'query'->>'mode'='live_paper'
         ORDER BY b.payload->'query'->>'cutoff_at' DESC LIMIT 30""",(listing,)).fetchall()
-    for run_id,result,raw_bundle in rows:
+    for run_id,result,raw_bundle,arm in rows:
         bundle=Bundle.model_validate_json(json.dumps(raw_bundle))
         if at(bundle.query.cutoff_at)>at(cutoff):continue
         recheck(conn,bundle,access)
-        history.append(dict(run_id=run_id,cutoff_at=bundle.query.cutoff_at,horizon=bundle.query.horizon,
+        history.append(dict(run_id=run_id,cohort=arm,cutoff_at=bundle.query.cutoff_at,horizon=bundle.query.horizon,
             result=result,citations=[c.model_dump(mode='json') for h in bundle.hits for c in h.citations]
                 +[f.citation.model_dump(mode='json') for f in bundle.facts]))
     def provenance(r):
@@ -91,19 +93,22 @@ def company(conn,config,listing,*,clock=now):
     registry=PolicyRegistry();policies={}
     if config.policy_file:
         for raw in json.loads(Path(config.policy_file).read_text()):
-            p=Policy.model_validate_json(json.dumps(raw));registry.register(p)
+            p=Policy.model_validate_json(json.dumps(raw))
+            if p.kind!='strategy':continue
+            registry.register(p)
             check(p.profile not in policies,'ambiguous_strategy_policy');policies[p.profile]=p
-    quantitative={}
+    quantitative={};inputs={}
     for horizon in ('swing','short_term','long_term'):
         ref=policies[horizon].ref if horizon in policies else Ref(id='unconfigured-real-'+horizon,version='1',content_hash=digest(['missing',horizon]))
         # Coverage, eligibility and instrument risk remain unknown until separately
         # verified. Complete filing parsing alone cannot attest feed completeness.
-        quantitative[horizon]=assess(registry,ref,profile=horizon,instrument_id=listing,cutoff=cutoff,mode='live_paper',
+        inputs[horizon]=dict(profile=horizon,instrument_id=listing,cutoff=cutoff,mode='live_paper',
             calendar=calendar,bars=candles,statements=tuple(statements),coverage=(),eligible=None,risk_prohibited=None)
+        quantitative[horizon]=assess(registry,ref,**inputs[horizon])
     # Final recheck so a mid-read revocation never returns cached content.
     for r in records:access.require(stored_stream(conn,r.revision_id),('derive',))
     for doc in documents:read_evidence(conn,doc['revision']['revision_id'],access=access,cutoff=cutoff,mode='live_paper')
-    return dict(mode='real_research',listing_id=listing,symbol=identity.data.symbol,isin=identity.data.isin,
+    detail=dict(mode='real_research',listing_id=listing,symbol=identity.data.symbol,isin=identity.data.isin,
         cutoff_at=cutoff,actionable=False,qualified=False,price_series=[dict(time=r.data.ends_at[:10],
             open=r.data.open,high=r.data.high,low=r.data.low,close=r.data.close,volume=r.data.volume,
             revision_id=r.revision_id,fetched_at=r.fetched_at) for r in bars],documents=documents,financial_facts=facts,
@@ -111,3 +116,18 @@ def company(conn,config,listing,*,clock=now):
         publication_status='not_published',prospective_status='not_configured',
         limitations=['Analysis history is not a published prediction.','Source and corporate-action coverage is not qualified.',
             'Company name is unavailable in the current stored identity contract.','Paper position admission remains blocked.'])
+
+    if publication_inputs:
+        return detail,inputs,records
+    from .publication_store import read_artifact
+    from .shadow_tracking import history as tracking_history
+    published=[]
+    for rid, in conn.execute("SELECT recommendation_id FROM discovery.recommendations WHERE listing_id=%s AND payload->>'mode'='live_paper' ORDER BY payload->>'decision_available_at' DESC LIMIT 30",(listing,)):
+        artifact=read_artifact(conn,rid,access)
+        published.append(dict(recommendation=artifact['recommendation'],quantitative=artifact['quantitative'],
+            research=artifact['research'],citations=artifact['citations'],tracking=tracking_history(conn,rid,access)))
+    detail['recommendations']=published
+    if published:
+        detail['publication_status']='published_shadow'
+        detail['prospective_status']='configured_shadow'
+    return detail

@@ -1,0 +1,47 @@
+{
+  "checked_at": "2026-10-19T19:45:37.354147+00:00",
+  "scope": "local_inventory_only",
+  "inference_executed": false,
+  "financial_qualification": "unqualified",
+  "filing_network_requests": 0,
+  "previous_model_directory": "/Volumes/T9/ollama-models",
+  "previous_model_directory_exists": true,
+  "prior_check": {
+    "checked_at": "2026-10-19T19:43:22.272029+00:00",
+    "scope": "local_inventory_only",
+    "inference_executed": false,
+    "financial_qualification": "unqualified",
+    "filing_network_requests": 0,
+    "reason": "No permitted ingested financial corpus; no repeated SEC request or supplied-excerpt research substitute",
+    "status": "unavailable",
+    "error_type": "HTTPStatusError",
+    "previous_model_directory": "/Volumes/T9/ollama-models",
+    "previous_model_directory_exists": true,
+    "note": "Previous model execution evidence remains historical; no current inventory or inference success is asserted."
+  },
+  "reason": "No permitted ingested financial corpus; no supplied-excerpt substitute",
+  "http_status": 200,
+  "models": [
+    {
+      "name": "qwen3-coder:30b",
+      "digest": "06c1097efce0431c2045fe7b2e5108366e43bee1b4603a7aded8f21689e90bca",
+      "size": 18556700761
+    },
+    {
+      "name": "nomic-embed-text:latest",
+      "digest": "0a109f422b47e3a30ba2b10eca18548e944e8a23073ee3f3e947efcf3c45e59f",
+      "size": 274302450
+    },
+    {
+      "name": "qwen2.5-coder:7b",
+      "digest": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+      "size": 4683087561
+    },
+    {
+      "name": "qwen2.5-coder:14b",
+      "digest": "9ec8897f747e246e970bc5cfdda85d22f1123dc2e3d34978a010a75968716849",
+      "size": 8988124298
+    }
+  ],
+  "status": "reachable"
+}

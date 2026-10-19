@@ -1,6 +1,8 @@
 # REAL-001 — real integration acceptance record
 
-**19 October 2026 · PARTIAL · not end-to-end acceptance.**
+**20 October 2026 · PARTIAL · not end-to-end acceptance.**
+
+**Phase 3 update:** [Detailed acceptance and blockers](REAL-001-phase3.md). Conditional real D3-09 publication, immutable shadow references/observation receipts and dashboard history are implemented. Actual INFY A1–A14 acceptance remains blocked; no genuine filing/facts, grounded research, real publication or outcome was produced. Local validation: 606 tests, 164 PostgreSQL integration cases (zero skips), five browser workflows, migration checks and build passed. The historical records below remain Phase 1/2 evidence.
 **Phase 2 update:** See [Phase 2 progress](REAL-001-phase2.md) for the newer conditional filing/RAG/company-view implementation and its separate validation. The record below preserves Phase 1 actual execution. Phase 2 validation: 601 tests, 163 PostgreSQL cases (zero skips), five browser workflows and frontend build passed. Overall acceptance is still PARTIAL.
 
 Baseline: D3-10 merged PR #11, `a0846b5`. Existing unrelated WIP preserved.

@@ -101,3 +101,12 @@ REAL-001 Phase 2 remains **PARTIAL**: configured official-document ingestion now
 connects D3-06 to local D3-07/08 research, with rights-aware company views and
 three-horizon input mapping. Real INFY filing access returned 403; publication
 and prospective integration are unfinished. [Phase 2 details](docs/REAL-001-phase2.md).
+
+### REAL-001 Phase 3 — PARTIAL
+
+The existing publication engine now supports explicitly configured, permitted real
+shadow research, with immutable prospective references and a rights-aware history
+view. No genuine INFY publication or outcome has passed acceptance. Source rights,
+calendar/action coverage, real policies and grounded model qualification remain
+blocked. The T9 model folder and Ollama inventory passed the final recheck. See
+[Phase 3 acceptance](docs/REAL-001-phase3.md) for commands, validation and A1–A14.

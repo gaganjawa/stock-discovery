@@ -12,7 +12,7 @@ test('real research never renders synthetic values and remains separate from for
  await expect(section).toContainText('Real filing and event coverage requires source-specific acceptance.')
  for(const name of ['Swing','Short-term','Long-term']){
   await section.getByRole('tab',{name:new RegExp(name)}).click()
-  await expect(section).toContainText('No published research, price chart, entry conditions, targets or performance results')
+  await expect(section).toContainText('Only permitted records appear above.')
  }
  await expect(section).not.toContainText('SYN-D309')
  await expect(section).not.toContainText('₹')
@@ -30,7 +30,7 @@ test('configured evidence renders and permission denial removes cached company d
   price_series:[{time:'2026-10-16',open:'100',high:'110',low:'90',close:'105',volume:100}],
   financial_facts:[{fact_id:'test',metric:'revenue',value:'10000000',unit:'INR',period_end_at:'2026-03-31',scope:'consolidated',source_locator:'test page 3'}],
   documents:[{title:'Fabricated browser-test filing',revision:{data:{url:'https://www.sec.gov/Archives/edgar/data/test.htm'},published_at:'2026-06-15T00:00:00Z'}}],events:[],
-  quantitative:{swing:{action:'INSUFFICIENT_EVIDENCE',reasons:['policy_not_configured'],metrics:{}}},analysis_history:[],limitations:['Browser fixture only']}}))
+  quantitative:{swing:{action:'INSUFFICIENT_EVIDENCE',reasons:['policy_not_configured'],metrics:{}}},analysis_history:[],recommendations:[{recommendation:{recommendation_id:'UI-ONLY',action:'INSUFFICIENT_EVIDENCE',decision_available_at:'2026-10-20T12:00:00Z',information_cutoff_at:'2026-10-19T12:00:00Z',horizon:{profile:'swing'},rationale:{summary:'Fabricated browser publication'},missing_evidence:[{requirement:'rights',reason:'TEST missing input'}]},tracking:{status:'pending_future_observation',outcomes:[]}}],limitations:['Browser fixture only']}}))
  await page.goto('/')
  await page.getByLabel('Owner access key').fill(process.env.AUTH_TOKEN!)
  await page.getByRole('button',{name:'Sign in',exact:true}).click()
@@ -39,7 +39,10 @@ test('configured evidence renders and permission denial removes cached company d
  await expect(section).toContainText('UI-TEST · TEST-ONLY')
  await expect(section).toContainText('10000000 INR')
  await expect(section.getByLabel('Daily candlestick chart, 1 observed candles')).toBeVisible()
- await expect(section).toContainText('Experimental analysis · no published prediction')
+ await expect(section).toContainText('REAL RESEARCH / SHADOW / NON-ACTIONABLE')
+ await expect(section).toContainText('Published 2026-10-20T12:00:00Z')
+ await expect(section).toContainText('pending future observation')
+ await expect(section).toContainText('No portfolio position or simulated fill')
  await page.route('**/v1/real-research/companies/NSE%3AUI-TEST',route=>route.fulfill({status:403,json:{detail:'denied'}}))
  await section.getByRole('button',{name:'Refresh real evidence'}).click()
  await expect(section.getByRole('alert')).toContainText('Source permission denied')

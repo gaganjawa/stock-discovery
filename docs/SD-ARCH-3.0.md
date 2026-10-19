@@ -565,3 +565,11 @@ through configured real-source adapters and permission-aware reads. D3-07 result
 remain analysis history, not D3-09 publication or D3-10 prospective records.
 Actual acceptance is blocked and publication/tracking are unfinished; see
 [Phase 2 progress](REAL-001-phase2.md). No architecture qualification gate changed.
+
+REAL-001 Phase 3 adds a real-context branch to the existing D3-09 assembler and
+uses its existing publication storage/outbox. D3-10 shadow references/observation
+receipts freeze research independently of portfolios, fills and performance
+formulas. No admission gate changed. Mature real returns remain blocked by
+missing qualified corporate-action coverage. Current source rights protect
+original and subsequent evidence reads. [Phase 3 acceptance](REAL-001-phase3.md)
+records partial software delivery separately from blocked actual INFY acceptance.
