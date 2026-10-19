@@ -80,4 +80,4 @@ publication or outcome**: unresolved provider rights, observed coverage/policies
 and model qualification. T9/Ollama inventory passed the final recheck. [Phase 3/A1–A14](REAL-001-phase3.md).
 D3-11/12/13 remain unstarted.
 
-Phase 4 (20 October): **PARTIAL / permission stop condition reached**. New provider replies establish private Upstox market-data storage/research/replay rights. Financial-corpus rights, derived recommendation/forward-evaluation clarification and price-adjustment semantics remain blockers. No actual filing, RAG, publication or outcome; no infrastructure added. [Operation matrix and unsent owner drafts](REAL-001-phase4.md). D3-11/12/13 untouched.
+Phase 4 (20 October): **PARTIAL / permission stop condition reached**. New provider replies establish private Upstox market-data storage/research/replay rights. Financial/news corpus rights and price-adjustment semantics remain blockers. No actual filing, RAG, publication or outcome; no infrastructure added. [Operation matrix and unsent owner drafts](REAL-001-phase4.md). D3-11/12/13 untouched.

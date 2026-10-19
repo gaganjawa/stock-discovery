@@ -53,12 +53,12 @@ No login, bypass, posted message, market-data request or token use occurred.
 | Local financial analysis | **PERMITTED for historical market-data analysis; UNCLEAR for fundamentals/news/filings** | U1/U2 cover market-data research. Their answers do not establish rights in third-party financial/news bodies or issuer documents. |
 | Local Ollama inference | **PERMITTED within private market-data ML/AI research (inference from U1/U2); UNCLEAR for the financial corpus** | Model brand is immaterial to private processing, but corpus permissions are not transferable. No external processor, publication or redistribution. |
 | Embedding generation | **PERMITTED for the same private market-data features (inference from U1/U2); UNCLEAR for filing/news text** | Broad private ML/feature permission supports that use; it does not license another source's documents. |
-| Derived recommendation storage | **UNCLEAR / NEEDS CONFIRMATION** | U1 permits derived features/statistics/model artifacts. Persistent narrative/signal recommendations are not expressly addressed; request this narrow extension, not another token or blanket market-data licence. |
-| Prospective paper-performance evaluation | **UNCLEAR / NEEDS CONFIRMATION** | Private backtesting/replay is explicit. Confirm ongoing forward shadow evaluation and retention of its derived records. Never infer real order authority. |
+| Derived recommendation storage | **PERMITTED for private market-data research outputs (inference from U1/U2)** | U1 answers a private research question explicitly excluding signal redistribution; U2 allows strategy development and own-account use of findings. Private retained analytical outputs fit that scope. No financial/news corpus rights or public signal service inferred. |
+| Prospective paper-performance evaluation | **PERMITTED as private market-data research (inference from U1/U2/U3)** | Evaluating private strategy findings against subsequently retrieved observations fits the confirmed research/analysis scope. This does not qualify inputs, authorize orders or admit paper positions. |
 
 No reviewed clause expressly prohibits these nine private operations as a whole.
 Commercial/public redistribution is outside the confirmed scope; news/filing
-rights and output/evaluation ambiguities stay blocked. No active grant was
+corpus rights stay blocked. No active grant was
 created with invented expiry, attribution or deletion conditions.
 
 ## Minimum financial-source requirement and decisive blocker
@@ -111,12 +111,10 @@ To Upstox Support / Developer API team:
 I use an authenticated Analytics Token for a private, single-owner application on
 my Mac, with no redistribution, public display, cloud AI or broker orders. Your
 community replies in topics 17302, 18061 and 18112 confirm local market-data
-retention, private ML/AI research and replay. Please confirm the remaining scope:
-(1) may I retain private narrative/signal recommendations and use later observations
-for prospective shadow/paper-performance evaluation; (2) do the same permissions
-cover your income-statement, balance-sheet, cash-flow and news APIs, including
+retention, private ML/AI research and replay. Please confirm the remaining corpus scope:
+(1) do the same permissions cover your income-statement, balance-sheet, cash-flow and news APIs, including
 local fact extraction, document/text retention, embeddings and Ollama inference;
-(3) what attribution, deletion-on-revocation/account-closure or third-party-content
+(2) what attribution, deletion-on-revocation/account-closure or third-party-content
 conditions apply? Please link the applicable clauses and distinguish any excluded
 content. Separately, can Historical Candle V3 supply original unadjusted prices or
 point-in-time adjustment factors/effective dates? The current guidance says splits

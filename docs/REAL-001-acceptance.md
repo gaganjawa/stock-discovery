@@ -1,6 +1,6 @@
 # REAL-001 — real integration acceptance record
 
-**Phase 4 update (20 October):** [Permission findings and stop condition](REAL-001-phase4.md). New Upstox developer-community evidence confirms private market-data storage, research/ML and replay, superseding the earlier blanket rights blocker. Financial-corpus rights and recommendation/forward-evaluation scope remain unresolved. Historical candles are back-adjusted, conflicting with the current raw-data representation. No financial document or actual research was processed; no infrastructure was added. REAL-001 remains PARTIAL.
+**Phase 4 update (20 October):** [Permission findings and stop condition](REAL-001-phase4.md). New Upstox developer-community evidence confirms private market-data storage, research/ML and replay, superseding the earlier blanket rights blocker. Financial/news corpus rights remain unresolved; private market-data research outputs and evaluation fit the confirmed research scope. Historical candles are back-adjusted, conflicting with the current raw-data representation. No financial document or actual research was processed; no infrastructure was added. REAL-001 remains PARTIAL.
 
 **20 October 2026 · PARTIAL · not end-to-end acceptance.**
 
