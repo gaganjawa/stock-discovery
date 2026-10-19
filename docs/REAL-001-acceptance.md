@@ -1,6 +1,8 @@
 # REAL-001 — real integration acceptance record
 
 **19 October 2026 · PARTIAL · not end-to-end acceptance.**
+**Phase 2 update:** See [Phase 2 progress](REAL-001-phase2.md) for the newer conditional filing/RAG/company-view implementation and its separate validation. The record below preserves Phase 1 actual execution. Phase 2 validation: 601 tests, 163 PostgreSQL cases (zero skips), five browser workflows and frontend build passed. Overall acceptance is still PARTIAL.
+
 Baseline: D3-10 merged PR #11, `a0846b5`. Existing unrelated WIP preserved.
 Tickets: STK-004–007/014/015/046/048/052/059/060; reuses D3-02/03/04/06/07/08/09/10.
 No D3-11, D3-12 or D3-13 work is included.

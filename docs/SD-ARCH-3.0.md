@@ -559,3 +559,9 @@ The subsequent owner instruction supersedes the implementation hold recorded in 
 ## REAL-001 implementation note — 19 October 2026
 
 The owner authorized REAL-001 after D3-10 merged at `a0846b5`, reusing D3-01 through D3-10. [Real integration acceptance](REAL-001-acceptance.md) supersedes older activation status only for its explicitly recorded checks. Documented Upstox endpoints were reached using an owner-provided read-only Analytics Token; native Ollama performed bounded generation and embedding calls. This does not grant storage/AI/replay rights, qualify a financial model, or complete G2/G4/G5. The new infrastructure adapters use D3-02/03 boundaries and a D3-04 price handler; the existing D3-09 React app exposes blocked real readiness. D3-10 remains unchanged and no real forward publication/outcome is claimed. REAL-001 is PARTIAL; D3-11/12/13 are out of scope.
+
+REAL-001 Phase 2 reuses D3-06 ingestion, D3-07/08 execution and D3-05 assessments
+through configured real-source adapters and permission-aware reads. D3-07 results
+remain analysis history, not D3-09 publication or D3-10 prospective records.
+Actual acceptance is blocked and publication/tracking are unfinished; see
+[Phase 2 progress](REAL-001-phase2.md). No architecture qualification gate changed.

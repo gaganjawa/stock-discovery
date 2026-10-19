@@ -1,3 +1,4 @@
+import { RealCompany } from './RealCompany'
 import { useEffect, useState } from 'react'
 
 type Status = {status:string;providers:{id:string;adapter:string;coverage:string;blockers:string[]}[];blockers:string[];limitations:string[];models:{note:string};scheduler:{prices:string};forward_paper:{reason:string}}
@@ -11,6 +12,7 @@ export function RealResearch({onUnauthorized}:{onUnauthorized:()=>void}) {
  return <section className="discovery" aria-label="Real research">
   <div className="discovery-heading"><div><p className="eyebrow">REAL RESEARCH</p><h2>Indian market research</h2><p>Actual-company research requires connected, permitted sources and verified evidence.</p></div><span className="badge">BLOCKED · NON-ACTIONABLE</span></div>
   <div role="tablist" aria-label="Real investment horizon" className="horizon-tabs">{horizons.map(([id,name])=><button key={id} role="tab" aria-selected={horizon===id} onClick={()=>setHorizon(id)}>{name}</button>)}</div>
+  <RealCompany horizon={horizon} onUnauthorized={onUnauthorized}/>
   {error&&<p role="alert" className="error">{error}</p>}
   {!data&&!error&&<p role="status">Checking real research availability…</p>}
   {data&&<>

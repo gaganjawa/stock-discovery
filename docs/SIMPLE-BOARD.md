@@ -62,3 +62,11 @@ D3-10 validation (18 October 2026): **546 application/worker tests passed**, inc
 ## REAL-001 — STK-004–007/014/015/046/048/052/059/060
 
 **PARTIAL, not real-market readiness.** [Acceptance](REAL-001-acceptance.md) · [Provider matrix](REAL-001-provider-matrix.md) · [Runbook](REAL-001-runbook.md). Upstox access verified for INFY: identity, 11 actual daily candles, calendar, financial responses and 10 news items (availability/count metadata only retained). Native qwen2.5-coder:7b and nomic-embed-text ran; financial qualification remains unapproved. New opt-in price adapter uses existing grants, revision ingestion and scheduler; downstream real research stages block. Existing UI has an authenticated blocked REAL RESEARCH mode. No actual filing, real recommendation or forward outcome has been persisted. Remaining owner/source action is use-specific permission evidence; credentials have been supplied and secured. No paid API, deployment, model download or broker order. D3-11/12/13 remain unstarted.
+
+Phase 2 (19 October): **PARTIAL**, continuing PR #12. Added configured official
+document acquisition/extraction to D3-06, native-provider D3-07/08 orchestration,
+rights-aware company/analysis readers, D3-05 input mapping and existing UI panels.
+601 tests and 163 PostgreSQL cases pass with zero skips. Actual SEC filing fetch
+returned 403; Upstox use evidence remains unknown. No actual filing, new model
+run, real recommendation or prospective outcome accepted. Publication/tracking
+still require implementation. [Phase 2 record](REAL-001-phase2.md).

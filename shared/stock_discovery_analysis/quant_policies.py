@@ -247,6 +247,7 @@ def _assess(registry, reference, profile, instrument, cutoff, mode, calendar, ba
 
     if values and 'policy_not_configured' not in missing:
         try:
+            check(calendar is not None, 'calendar unavailable')
             check(calendar.provenance.availability_basis == {'synthetic':'fictional_fixture','live_paper':'observed_live','historical_reconstructed':'verified_archive'}[mode], 'calendar mode')
             check(calendar.provenance.eligible(known.replace(tzinfo=timezone.utc),live=mode=='live_paper'), 'calendar availability')
             horizon = horizon_for(profile,values,calendar,cutoff)
@@ -277,6 +278,7 @@ def _assess(registry, reference, profile, instrument, cutoff, mode, calendar, ba
                               and b.provenance.availability_basis == {'synthetic':'fictional_fixture','live_paper':'observed_live','historical_reconstructed':'verified_archive'}[mode])
         selected_bars = tuple(sorted(selected_bars,key=lambda b:b.ends_at))
         try:
+            check(calendar is not None, 'calendar unavailable')
             check(len(selected_bars)>=30,'warmup')
             expected={(s.opens_at,s.closes_at) for s in calendar.through(point)[-30:]}
             actual={(b.starts_at,b.ends_at) for b in selected_bars[-30:]}

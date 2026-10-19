@@ -260,3 +260,11 @@ def test_review_after_period_close_uses_next_period_last_session():
     policy=fixture_policy('short_term')
     horizon=horizon_for('short_term',{p.name:D(p.value) for p in policy.parameters},args['calendar'],cutoff)
     assert horizon.next_review_at==(friday.closes_at+timedelta(days=7)).strftime('%Y-%m-%dT%H:%M:%SZ')
+
+
+@pytest.mark.parametrize('profile',PROFILES)
+def test_absent_calendar_abstains_instead_of_crashing(profile):
+    result=run(profile,calendar=None)
+    assert result['action']=='INSUFFICIENT_EVIDENCE'
+    assert 'calendar_horizon_unavailable' in result['reasons']
+    assert 'price_features_unavailable' in result['reasons']

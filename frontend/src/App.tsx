@@ -1,10 +1,10 @@
 import { RealResearch } from './RealResearch'
 import { PaperPortfolio } from './PaperPortfolio'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Discovery } from './Discovery'
 import { ChronologicalReport, type ChronologicalData } from './ChronologicalReport'
 import { ValidationReport, type ValidationData } from './ValidationReport'
-import { CandlestickSeries, ColorType, createChart } from 'lightweight-charts'
+import { Chart } from './PriceChart'
 
 type Bar={time:string;open:number;high:number;low:number;close:number}
 type Rec={recommendation_id:string;instrument:{symbol:string};action:string;information_cutoff_at:string;strategy:{version:string;config_version:string};versions:{dataset:string;code:string};rationale:{summary:string;invalidation:string};execution:null|{entry:{trigger_price:string;condition:string};stop:{price:string};targets:{price:string}[];quantity:number;entry_expires_at:string};evidence:{summary:string;source_ref:string}[];missing_evidence:{reason:string}[]}
@@ -18,11 +18,6 @@ type Scores={chronological_validation:ChronologicalData;validation_report:Valida
 type Explanation={mode:string;text:string;reason:string|null;model:string|null;input_hash:string;prompt_version:string}
 const pages=['Real research','Dashboard','Research','Replay','Scorecard','Portfolio','IPO']
 const fmt=(n:unknown)=>n===null||n===undefined?'Not available':Number.isFinite(Number(n))?Number(n).toLocaleString('en-IN',{maximumFractionDigits:4}):String(n)
-function Chart({bars}:{bars:Bar[]}){
- const ref=useRef<HTMLDivElement>(null)
- useEffect(()=>{if(!ref.current)return;const c=createChart(ref.current,{height:340,autoSize:true,layout:{background:{type:ColorType.Solid,color:'#101922'},textColor:'#aec1cf',attributionLogo:true},grid:{vertLines:{color:'#1e2c36'},horzLines:{color:'#1e2c36'}}});c.addSeries(CandlestickSeries,{upColor:'#91dfbf',downColor:'#ec9a92',borderVisible:false}).setData(bars);c.timeScale().fitContent();return()=>c.remove()},[bars])
- return <><div className="candle-chart" ref={ref} aria-label={`Daily candlestick chart, ${bars.length} fictional candles`}/><p className="attribution">Charts by <a href="https://www.tradingview.com/" target="_blank" rel="noreferrer">TradingView</a> · Lightweight Charts™. Copyright © 2025 TradingView, Inc. · <a href="/THIRD-PARTY-NOTICES.txt" target="_blank" rel="noreferrer">Third-party licences</a></p></>
-}
 export function App(){
  const [page,setPage]=useState('Dashboard'),[signed,setSigned]=useState(false),[token,setToken]=useState(''),[error,setError]=useState(''),[busy,setBusy]=useState(false)
  const [dash,setDash]=useState<Dashboard|null>(null),[info,setInfo]=useState<Info|null>(null),[strategy,setStrategy]=useState(''),[symbol,setSymbol]=useState(''),[date,setDate]=useState(''),[analysis,setAnalysis]=useState<Analysis|null>(null),[outcome,setOutcome]=useState<Outcome|null>(null),[explanation,setExplanation]=useState<Explanation|null>(null),[scores,setScores]=useState<Scores|null>(null),[jobDetail,setJobDetail]=useState<(Job&{payload:Record<string,string>;result:unknown})|null>(null)

@@ -1,0 +1,76 @@
+"""Fabricated observed-mode contract acceptance; no real-source qualification."""
+import json
+from dataclasses import replace
+import httpx
+import psycopg
+import pytest
+from test_rag_research import isolated_url
+from stock_discovery_contracts.rights import Grant
+from stock_discovery_analysis.real_access import SourceConfig,source_access
+from stock_discovery_analysis.real_views import ViewConfig,company
+from stock_discovery_analysis.revisions import Revision,InstrumentData
+from stock_discovery_analysis.revision_storage import Stream,Page,ingest_page
+from stock_discovery_analysis.rag_research import MockResearchProvider
+from stock_discovery_analysis.rag_retrieval import MockEmbeddings
+from stock_discovery_analysis.rag_contracts import Query,Budget
+from worker.real_evidence import EvidenceConfig,run
+from worker.providers.documents import FilingSpec,OfficialDocument
+
+NOW='2026-10-19T12:00:00Z'
+HTML='<h1>Consolidated annual earnings INR crore</h1><table><tr><th>Metric</th><th>2026</th></tr><tr><td>Revenue</td><td>100</td></tr><tr><td>Earnings</td><td>20</td></tr></table>'
+
+
+def setup(conn,tmp_path):
+    grant=Grant(schema_version='1.0.0',grant_id='p2-test',version='1',source_id='test-official',account_ref='test',status='active',synthetic=False,
+        approval_evidence_ref='FABRICATED TEST ONLY',valid_from_at='2026-01-01T00:00:00Z',expires_at='2027-01-01T00:00:00Z',revoked_at=None,
+        allowed_uses=('acquire','store','extract','derive','embed'),scopes=('universe','filings','financial_facts'),regions=('IN',),external_processors=(),
+        retention_days=365,deletion_deadline_days=0,attribution='Test attribution',max_units_per_operation=100,audit_tombstones_permitted=True)
+    path=tmp_path/'grants.json';path.write_text(json.dumps([grant.model_dump(mode='json')]))
+    sources=SourceConfig(grant_file=str(path),retention_days=365,primary_source_ids=('test-official',))
+    access=source_access(sources,lambda:NOW)
+    identity=Revision(schema_version='1.0.0',revision_id='P2-identity',source_id='test-official',source_revision='1',sequence=1,
+        listing_id='NSE:test',instrument_revision_id=None,published_at=NOW,available_at=NOW,fetched_at=NOW,availability_basis='observed',
+        archive_evidence_ref=None,archive_revision_id=None,supersedes_id=None,
+        data=InstrumentData(kind='instrument',issuer_id='test-issuer',symbol='TEST',isin='INE009A01021',series='EQ',status='active',lot_size=1,tick_size='0.05',effective_at=NOW))
+    stream=Stream(stream_id='P2-identity',source_id='test-official',account_ref='test',scope='universe')
+    g,request=access.require(stream,('store',))
+    ingest_page(conn,stream,Page(cursor=None,next_cursor=None,complete=True,records=(identity.model_dump(mode='json'),)),load_grant=lambda:g,request=request,audit=lambda d:None)
+    extraction=dict(table_header=['Metric','2026'],column_header='2026',unit_marker='INR crore',scope_marker='Consolidated',unit='INR_crore',scope='consolidated',
+        period_start_at='2025-04-01T00:00:00Z',period_end_at='2026-03-31T00:00:00Z',period_kind='annual',rows={'revenue':'Revenue','earnings':'Earnings'})
+    spec=FilingSpec(source_id='test-official',account_ref='test',url='https://www.sec.gov/Archives/edgar/data/1067491/test.htm',issuer_id='test-issuer',listing_id='NSE:test',
+        instrument_revision_id='P2-identity',document_id='P2-doc',title='Fabricated annual results',attribution='Test attribution',published_at='2026-06-15T15:03:56Z',category='annual_report',format='html_table',extraction=extraction)
+    query=Query(issuer_id='test-issuer',listing_id='NSE:test',horizon='short_term',mode='live_paper',cutoff_at=NOW,text='earnings',categories=('annual_report',),
+        required_metrics=('revenue','earnings'),period_start_at=extraction['period_start_at'],period_end_at=extraction['period_end_at'],period_kind='annual')
+    return EvidenceConfig(sources=sources,filings=(spec,),queries=(query,),budget=Budget(account='P2-test'))
+
+
+def test_document_to_existing_rag_and_rights_aware_view(isolated_url,tmp_path):
+    def adapter(spec,**kw):return OfficialDocument(spec,transport=httpx.MockTransport(lambda r:httpx.Response(200,text=HTML)),**kw)
+    def model(name,**kw):
+        instance=MockEmbeddings() if 'embed' in name else MockResearchProvider()
+        instance.close=lambda:None
+        return instance
+    with psycopg.connect(isolated_url,autocommit=True) as conn:
+        config=setup(conn,tmp_path)
+        bad=config.model_copy(update={'queries':(config.queries[0].model_copy(update={'mode':'synthetic'}),)})
+        with pytest.raises(ValueError,match='real_queries_only'):run(conn,bad,clock=lambda:NOW,adapter_factory=adapter,model_factory=model)
+        result=run(conn,config,clock=lambda:NOW,adapter_factory=adapter,model_factory=model)
+        research=result['research'][0]['result']
+        assert research['status']=='completed' and research['provider_called'] is True
+        assert research['validator']['deterministic']=='passed'
+        assert result['publication']=='not_published' and result['actionable'] is False
+        view=ViewConfig(sources=config.sources,listing_ids=('NSE:test',))
+        detail=company(conn,view,'NSE:test',clock=lambda:NOW)
+        assert detail['symbol']=='TEST' and detail['price_series']==[]
+        assert len(detail['financial_facts'])==3  # two reported facts plus deterministic margin
+        assert all(f['source_unit']=='INR_crore' for f in detail['financial_facts'] if f['metric']!='net_margin')
+        assert detail['analysis_history'][0]['result']['validator']['deterministic']=='passed'
+        assert all(q['action']=='INSUFFICIENT_EVIDENCE' for q in detail['quantitative'].values())
+        assert detail['recommendations']==[] and detail['prospective_status']=='not_configured'
+        assert conn.execute('SELECT count(*) FROM discovery.recommendations').fetchone()[0]==0
+        with pytest.raises(psycopg.Error):
+            with conn.transaction():conn.execute("UPDATE discovery.rag_results SET payload='{}'::jsonb")
+        # Current grant removal hides already-stored facts and model output.
+        from pathlib import Path
+        Path(config.sources.grant_file).write_text('[]')
+        with pytest.raises(PermissionError):company(conn,view,'NSE:test',clock=lambda:NOW)

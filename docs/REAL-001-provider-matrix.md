@@ -33,3 +33,12 @@ Keep external AI, training, redistribution/export, backups and reconstructed rep
 disabled unless separately supported. A working token must never auto-create an
 active grant. A provider permission blocker is not a claim that private use is
 prohibited; it means the required use-specific evidence has not been established.
+
+## Phase 2 SEC clarification
+
+SEC's [webmaster FAQ](https://www.sec.gov/about/webmaster-frequently-asked-questions)
+expressly permits reuse of public EDGAR filing content. The genuine 2026 INFY
+20-F direct request still returned HTTP 403 in this runtime. This distinguishes
+reuse permission from technical access; no access-control workaround or active
+grant was created. Upstox retention/AI evidence remains unresolved; the owner
+confirmed no additional evidence is available. See [Phase 2](REAL-001-phase2.md).

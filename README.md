@@ -96,3 +96,8 @@ fictional simulation contract never changes their original admission status.
 Forward source/model/policy approvals and observation adapters remain
 unconfigured; no broker orders or real-market activation are included.
 See [D3-10 contracts, execution assumptions and API](docs/D3-10-paper-portfolio.md).
+
+REAL-001 Phase 2 remains **PARTIAL**: configured official-document ingestion now
+connects D3-06 to local D3-07/08 research, with rights-aware company views and
+three-horizon input mapping. Real INFY filing access returned 403; publication
+and prospective integration are unfinished. [Phase 2 details](docs/REAL-001-phase2.md).

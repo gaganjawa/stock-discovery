@@ -9,7 +9,7 @@ test('real research never renders synthetic values and remains separate from for
  await page.getByRole('link',{name:'Real research',exact:true}).click()
  const section=page.getByRole('region',{name:'Real research',exact:true})
  await expect(section).toContainText('Research unavailable')
- await expect(section).toContainText('No real-company financial statements or events have been ingested.')
+ await expect(section).toContainText('Real filing and event coverage requires source-specific acceptance.')
  for(const name of ['Swing','Short-term','Long-term']){
   await section.getByRole('tab',{name:new RegExp(name)}).click()
   await expect(section).toContainText('No published research, price chart, entry conditions, targets or performance results')
@@ -21,4 +21,28 @@ test('real research never renders synthetic values and remains separate from for
  await page.getByRole('button',{name:'Sign out',exact:true}).click()
  await expect(section).toHaveCount(0)
  expect((await page.request.get('/v1/real-research/status')).status()).toBe(401)
+})
+
+// Fabricated HTTP responses test UI rendering/revocation only, not real integration.
+test('configured evidence renders and permission denial removes cached company data',async({page})=>{
+ await page.route('**/v1/real-research/companies',route=>route.fulfill({json:{listing_ids:['NSE:UI-TEST']}}))
+ await page.route('**/v1/real-research/companies/NSE%3AUI-TEST',route=>route.fulfill({json:{symbol:'UI-TEST',isin:'TEST-ONLY',cutoff_at:'2026-10-19T12:00:00Z',
+  price_series:[{time:'2026-10-16',open:'100',high:'110',low:'90',close:'105',volume:100}],
+  financial_facts:[{fact_id:'test',metric:'revenue',value:'10000000',unit:'INR',period_end_at:'2026-03-31',scope:'consolidated',source_locator:'test page 3'}],
+  documents:[{title:'Fabricated browser-test filing',revision:{data:{url:'https://www.sec.gov/Archives/edgar/data/test.htm'},published_at:'2026-06-15T00:00:00Z'}}],events:[],
+  quantitative:{swing:{action:'INSUFFICIENT_EVIDENCE',reasons:['policy_not_configured'],metrics:{}}},analysis_history:[],limitations:['Browser fixture only']}}))
+ await page.goto('/')
+ await page.getByLabel('Owner access key').fill(process.env.AUTH_TOKEN!)
+ await page.getByRole('button',{name:'Sign in',exact:true}).click()
+ await page.getByRole('link',{name:'Real research',exact:true}).click()
+ const section=page.getByRole('region',{name:'Observed company research'})
+ await expect(section).toContainText('UI-TEST · TEST-ONLY')
+ await expect(section).toContainText('10000000 INR')
+ await expect(section.getByLabel('Daily candlestick chart, 1 observed candles')).toBeVisible()
+ await expect(section).toContainText('Experimental analysis · no published prediction')
+ await page.route('**/v1/real-research/companies/NSE%3AUI-TEST',route=>route.fulfill({status:403,json:{detail:'denied'}}))
+ await section.getByRole('button',{name:'Refresh real evidence'}).click()
+ await expect(section.getByRole('alert')).toContainText('Source permission denied')
+ await expect(section).not.toContainText('10000000 INR')
+ await expect(section.locator('canvas')).toHaveCount(0)
 })

@@ -1,0 +1,12 @@
+{
+  "checked_date": "2026-10-19",
+  "precise_request_timestamp_recorded": false,
+  "url": "https://www.sec.gov/Archives/edgar/data/1067491/000119312526270520/infy-20260331.htm",
+  "status": 403,
+  "response_bytes": 4819,
+  "body_retained": false,
+  "permission_evidence": "https://www.sec.gov/about/webmaster-frequently-asked-questions",
+  "filing_ingested": false,
+  "bypass_attempted": false,
+  "upstox_additional_permission_evidence": "owner_does_not_have_evidence"
+}
