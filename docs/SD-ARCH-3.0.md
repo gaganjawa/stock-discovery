@@ -555,3 +555,7 @@ Document checks cover required sections/actions/horizons, internal section refer
 ## 19. D3-01 implementation authorization — 15 October 2026
 
 The subsequent owner instruction supersedes the implementation hold recorded in §18: integrate this specification and implement, test, commit and push **D3-01 only**, mapped to STK-001/002/003. The original design-delivery record above is retained as history. [D3-01 contract amendment](contracts/v2/README.md) documents the additive v2 schemas, validators, fixtures and compatibility boundary. Existing v1 runtime and historical evaluation fixtures remain unchanged. D3-02 is not authorized in this task. No paid API, purchase, external deployment or broker order is included.
+
+## REAL-001 implementation note — 19 October 2026
+
+The owner authorized REAL-001 after D3-10 merged at `a0846b5`, reusing D3-01 through D3-10. [Real integration acceptance](REAL-001-acceptance.md) supersedes older activation status only for its explicitly recorded checks. Documented Upstox endpoints were reached using an owner-provided read-only Analytics Token; native Ollama performed bounded generation and embedding calls. This does not grant storage/AI/replay rights, qualify a financial model, or complete G2/G4/G5. The new infrastructure adapters use D3-02/03 boundaries and a D3-04 price handler; the existing D3-09 React app exposes blocked real readiness. D3-10 remains unchanged and no real forward publication/outcome is claimed. REAL-001 is PARTIAL; D3-11/12/13 are out of scope.

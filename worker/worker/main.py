@@ -33,7 +33,10 @@ def main() -> None:
     parser.add_argument('--synthetic-evidence', action='store_true', help='automatically ingest fictional filings/news; requires --synthetic-schedule')
     parser.add_argument('--synthetic-schedule', action='store_true', help='use fictional D3-04 acceptance adapter')
     parser.add_argument('--schedule-config', type=Path, help='versioned D3-04 calendar/policy JSON')
+    parser.add_argument('--real-market-config', type=Path, help='opt-in REAL-001 price adapter config; downstream research stays blocked')
     args = parser.parse_args()
+    if args.real_market_config and (args.synthetic_schedule or args.synthetic_evidence):
+        parser.error('real and synthetic adapters cannot be combined')
     if args.interval_seconds < 1:
         parser.error('interval must be positive')
     if args.synthetic_evidence and not args.synthetic_schedule:
@@ -52,6 +55,11 @@ def main() -> None:
         if args.synthetic_evidence:
             from stock_discovery_analysis.evidence_fixtures import scheduled_handlers
             schedule_handlers = scheduled_handlers(config)
+    if args.real_market_config:
+        from .real_market import handlers, MarketConfig
+        if config is None: parser.error('--real-market-config requires --schedule-config')
+        market = MarketConfig.model_validate_json(args.real_market_config.read_text())
+        schedule_handlers = handlers(config, market)
     while True:
         if config:
             with psycopg.connect(setting('DATABASE_URL'), autocommit=True, connect_timeout=5) as conn:

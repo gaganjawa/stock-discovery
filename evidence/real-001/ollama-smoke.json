@@ -1,0 +1,57 @@
+{
+  "checked_at": "2026-10-19T03:25:38.937302+00:00",
+  "scope": "local_protocol_smoke_only",
+  "financial_qualification": "unqualified",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1067491/000095017025091925/infy-20250331.htm",
+  "automated_filing_ingestion": false,
+  "generation": "passed",
+  "model": {
+    "id": "qwen2.5-coder:7b",
+    "version": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+    "content_hash": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364"
+  },
+  "output": {
+    "quote": "We were incorporated on July 2, 1981, in Pune, Maharashtra, India, as Infosys Consultants Private Limited",
+    "citation": "https://www.sec.gov/Archives/edgar/data/1067491/000095017025091925/infy-20250331.htm",
+    "action": "INSUFFICIENT_EVIDENCE"
+  },
+  "usage": [
+    {
+      "model": {
+        "id": "qwen2.5-coder:7b",
+        "version": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+        "content_hash": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364"
+      },
+      "status": "returned",
+      "prompt_eval_count": 217,
+      "eval_count": 106,
+      "total_duration": 11638687083,
+      "load_duration": 8726617375,
+      "wall_ms": 11643,
+      "cost": "0"
+    }
+  ],
+  "embeddings": "passed",
+  "embedding_model": {
+    "id": "nomic-embed-text:latest",
+    "version": "0a109f422b47e3a30ba2b10eca18548e944e8a23073ee3f3e947efcf3c45e59f",
+    "content_hash": "0a109f422b47e3a30ba2b10eca18548e944e8a23073ee3f3e947efcf3c45e59f"
+  },
+  "dimensions": 768,
+  "embedding_usage": [
+    {
+      "model": {
+        "id": "nomic-embed-text:latest",
+        "version": "0a109f422b47e3a30ba2b10eca18548e944e8a23073ee3f3e947efcf3c45e59f",
+        "content_hash": "0a109f422b47e3a30ba2b10eca18548e944e8a23073ee3f3e947efcf3c45e59f"
+      },
+      "status": "returned",
+      "prompt_eval_count": 25,
+      "eval_count": null,
+      "total_duration": 874531500,
+      "load_duration": 779522792,
+      "wall_ms": 875,
+      "cost": "0"
+    }
+  ]
+}
