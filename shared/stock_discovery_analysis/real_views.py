@@ -133,8 +133,15 @@ def company(conn,config,listing,*,clock=now,publication_inputs=False,cutoff_at=N
             adjustment_observed_at=r.fetched_at,volume_adjustment='unverified' if r.source_id=='upstox' else 'raw') for r in bars],documents=documents,financial_facts=facts,
         events=events,quantitative=quantitative,price_features=dict(metrics=observed_features,reason=feature_reason,actionable=False),analysis_history=history,recommendations=[],
         publication_status='not_published',prospective_status='not_configured',
+        publication_blockers=['real_policies_required','financial_publication_timestamps_unknown',
+            'cash_flow_reconciliation_unresolved','balance_sheet_and_valuation_fields_unverified',
+            'official_event_coverage_missing','price_action_and_volume_basis_unqualified',
+            'eligibility_and_instrument_risk_unknown','semantic_financial_research_unqualified'],
         limitations=['Analysis history is not a published prediction.','Source and corporate-action coverage is not qualified.',
             'Provider-adjusted and legacy Upstox prices are display-only until action/basis coverage is verified; raw-price quantitative inputs exclude them.',
+            'Original financial publication timestamps are unknown; observation clocks are not filing dates.',
+            'Cash-flow lines do not reconcile to observed cash-balance movements; no balancing item is inferred.',
+            'Debt, equity, EPS units, capex, diluted shares and valuation inputs are missing or unverified.',
             'Company name is unavailable in the current stored identity contract.','Paper position admission remains blocked.'])
 
     if publication_inputs:

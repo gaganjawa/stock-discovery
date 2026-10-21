@@ -21,6 +21,10 @@ def status():
         blockers=['Real provider activation and end-to-end company acceptance are pending.',
                   'Real publication and shadow observation handlers require permitted inputs and explicit policies.',
                   'Real filing and event coverage requires source-specific acceptance.'],
+        publication_blockers=['real_policies_required','financial_publication_timestamps_unknown',
+            'cash_flow_reconciliation_unresolved','balance_sheet_and_valuation_fields_unverified',
+            'official_event_coverage_missing','price_action_and_volume_basis_unqualified',
+            'eligibility_and_instrument_risk_unknown','semantic_financial_research_unqualified'],
         scheduler=dict(status='partial',prices='D3-04 handler available with explicit real configuration',
                        research='blocked',events='blocked',outcomes='blocked'),
         forward_paper=dict(status='blocked',reason='Existing D3-10 admission gates remain in force; research cannot create a position.'),
@@ -38,6 +42,7 @@ def status():
             with psycopg.connect(setting('DATABASE_URL'),connect_timeout=5) as conn:
                 detail=company(conn,config,config.listing_ids[0])
             if detail['price_series'] or detail['financial_facts']:
+                result['publication_blockers']=detail['publication_blockers']
                 result['status']='partial'
                 result['providers'][0].update(adapter='observations_available',
                     coverage='Permitted observed prices and structured numerical financial APIs',

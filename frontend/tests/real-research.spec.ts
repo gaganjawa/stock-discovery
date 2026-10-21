@@ -9,6 +9,8 @@ test('real research never renders synthetic values and remains separate from for
  await page.getByRole('link',{name:'Real research',exact:true}).click()
  const section=page.getByRole('region',{name:'Real research',exact:true})
  await expect(section).toContainText('Qualification and publication gates')
+ await expect(section).toContainText('Exact publication blockers')
+ await expect(section).toContainText('real policies required')
  await expect(section).toContainText('Real filing and event coverage requires source-specific acceptance.')
  for(const name of ['Swing','Short-term','Long-term']){
   await section.getByRole('tab',{name:new RegExp(name)}).click()

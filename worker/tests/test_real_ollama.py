@@ -21,10 +21,13 @@ def transport(response=None, *, changed=False):
 def test_real_protocol_request_and_accounting():
     t,calls=transport()
     p=Ollama('local:7b',transport=t)
-    assert json.loads(p.assess(json.dumps({'schema':{'type':'object'}}),max_output_units=300,deadline=time.monotonic()+10))=={'action':'WATCH'}
+    payload={'schema':{'type':'object'},'instruction':'use the bundle','bundle':{'evidence':'source'}}
+    assert json.loads(p.assess(json.dumps(payload),max_output_units=300,deadline=time.monotonic()+10))=={'action':'WATCH'}
     request=json.loads(calls[2].content)
     assert request['stream'] is False and request['keep_alive']==0
     assert request['options']['num_ctx']==8192
+    assert json.loads(request['prompt'])=={'instruction':'use the bundle','bundle':{'evidence':'source'}}
+    assert request['format']=={'type':'object'}
     assert p.ref.content_hash==DIGEST and p.usage[0]['eval_count']==5
 
 
@@ -34,14 +37,15 @@ def test_remote_rejected(url):
 
 
 def test_changed_model_and_truncation_fail_closed():
+    request=json.dumps({'schema':{'type':'object'},'instruction':'test','bundle':{}})
     t,_=transport(changed=True)
     p=Ollama('local:7b',transport=t)
     with pytest.raises(ValueError,match='digest_changed'):
-        p.assess('{"schema":{}}',max_output_units=300,deadline=time.monotonic()+10)
+        p.assess(request,max_output_units=300,deadline=time.monotonic()+10)
     t,_=transport(dict(model='local:7b',done=True,done_reason='length',response='{}'))
     p=Ollama('local:7b',transport=t)
     with pytest.raises(ValueError,match='incomplete'):
-        p.step('{"schema":{}}',max_output_units=300,deadline=time.monotonic()+10)
+        p.step(request,max_output_units=300,deadline=time.monotonic()+10)
     assert p.usage[-1]['status']=='failed_ambiguous_usage'
 
 
@@ -64,10 +68,21 @@ def test_bad_vectors(response):
 def test_context_reservation_rejects_silent_truncation_before_generation():
     t,calls=transport()
     p=Ollama('local:7b',transport=t,context=1024,max_input_bytes=2000)
-    request=json.dumps({'schema':{'type':'object'},'evidence':'x'*600})
+    request=json.dumps({'schema':{'type':'object'},'instruction':'use evidence','bundle':{'evidence':'x'*600}})
     with pytest.raises(ValueError,match='context_limit'):
         p.assess(request,max_output_units=300,deadline=time.monotonic()+10)
     assert len(calls)==1  # Only installed-model inventory; no inference request.
+
+
+def test_structured_schema_is_not_counted_as_model_prompt_tokens():
+    t,calls=transport()
+    p=Ollama('local:7b',transport=t,context=1024,max_input_bytes=2000)
+    schema={'type':'object','description':'schema metadata '*100}
+    request=json.dumps({'schema':schema,'instruction':'short','bundle':{}})
+    p.assess(request,max_output_units=300,deadline=time.monotonic()+10)
+    payload=json.loads(calls[2].content)
+    assert len(payload['prompt'].encode())<1024
+    assert len(payload['format']['description'])>1024
 
 
 def test_generation_schema_compatibility_does_not_mutate_validation_contract():

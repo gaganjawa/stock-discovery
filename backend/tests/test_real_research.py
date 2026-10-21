@@ -18,3 +18,5 @@ def test_real_research_auth_and_no_synthetic_fallback(monkeypatch):
     assert body['recommendations']==[] and body['price_series']==[] and body['analysis_history']==[]
     assert body['forward_paper']['status']=='blocked'
     assert body['scheduler']['outcomes']=='blocked'
+    assert 'real_policies_required' in body['publication_blockers']
+    assert 'cash_flow_reconciliation_unresolved' in body['publication_blockers']

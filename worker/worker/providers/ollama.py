@@ -99,15 +99,22 @@ class Ollama:
     def assess(self, request, *, max_output_units, deadline):
         check(len(request.encode()) <= self.max_input_bytes, 'ollama_input_limit')
         check(0 < max_output_units <= 32000, 'ollama_output_limit')
-        # A byte is a conservative token upper bound. Reserve output plus template
-        # overhead so Ollama cannot silently truncate the grounded source bundle.
-        check(len(request.encode())+min(4096,max_output_units)+256 <= self.context, 'ollama_context_limit')
         data = json.loads(request)
         check(isinstance(data.get('schema'), dict), 'structured_schema_required')
+        check(isinstance(data.get('instruction'), str) and isinstance(data.get('bundle'), dict),
+              'structured_research_request_required')
+        # The JSON schema is passed as Ollama's grammar, not repeated in the model
+        # prompt. Count the actual prompt against context while retaining the full
+        # request-byte limit and output reservation.
+        prompt = json.dumps(dict(instruction=data['instruction'],bundle=data['bundle']),
+                            sort_keys=True,ensure_ascii=False,separators=(',',':'))
+        prompt_bytes = len(prompt.encode())
+        check(prompt_bytes <= self.max_input_bytes, 'ollama_input_limit')
+        check(prompt_bytes+min(4096,max_output_units)+256 <= self.context, 'ollama_context_limit')
         self._pin(deadline)
         started = time.monotonic()
         try:
-            result = self._call('POST', '/api/generate', dict(model=self.model, prompt=request,
+            result = self._call('POST', '/api/generate', dict(model=self.model, prompt=prompt,
                 stream=False, format=generation_schema(data['schema']), keep_alive=0,
                 options=dict(temperature=0, seed=0, num_ctx=self.context,
                              num_predict=min(4096, max_output_units))), deadline)

@@ -23,7 +23,7 @@ class EvidenceConfig(Strict):
     embedding_model: Text = 'nomic-embed-text:latest'
     judge_model: Text | None = None
     mode: Literal['rag','agent'] = 'rag'
-    retrieval: RetrievalPolicy = RetrievalPolicy(max_chunks=2,max_documents=2,max_bytes=12000)
+    retrieval: RetrievalPolicy = RetrievalPolicy(max_chunks=2,max_documents=3,max_bytes=12000)
     budget: Budget
     context: Annotated[int,Field(ge=1024,le=16384)] = 16384
 
