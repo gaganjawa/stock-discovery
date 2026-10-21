@@ -52,6 +52,7 @@ def test_real_endpoint_daily_timezone_and_decimal_validation():
     # Fabricated contract response; not a real-market integration claim.
     client,calls,_=make(httpx.Response(200,json={'status':'success','data':{'candles':[['2026-10-16T00:00:00+05:30',100,110,90,105,123,0]]}}))
     bars=client.candles(S,identity(),'2026-10-15','2026-10-16',{'2026-10-16':('2026-10-16T03:45:00Z','2026-10-16T10:00:00Z')})
+    assert bars[0][0].adjustment_basis=='split_bonus_adjusted'
     assert bars[0][0].close=='105' and bars[0][0].ends_at=='2026-10-16T10:00:00Z'
     assert '/v3/historical-candle/NSE_EQ%7CINE009A01021/days/1/2026-10-16/2026-10-15' in str(calls[0].url)
     assert calls[0].headers['authorization']=='Bearer test-only-not-a-credential'
@@ -81,3 +82,24 @@ def test_revisions_preserve_first_observation_and_page():
     assert changed.available_at=='2026-10-20T00:00:00Z'
     pages=RevisionPages((first,changed))
     assert pages.fetch(None,1).next_cursor=='1' and pages.fetch('1',1).complete
+
+
+def test_dated_session_is_observed_not_inferred():
+    client,_,_=make(httpx.Response(200,json={'status':'success','data':[]}))
+    assert client.session(S.model_copy(update={'scope':'calendar'}),'2026-10-16') is None
+    client,_,_=make(httpx.Response(200,json={'status':'success','data':[{'exchange':'NSE','start_time':0,'end_time':1000}]}))
+    with pytest.raises(ValueError,match='session_date_mismatch'):
+        client.session(S.model_copy(update={'scope':'calendar'}),'2026-10-16')
+
+
+def test_adjustment_correction_appends_without_rewriting_old_observation():
+    client,_,_=make(httpx.Response(200,json={'status':'success','data':{'candles':[['2026-10-16T00:00:00+05:30',100,110,90,105,123,0]]}}))
+    data,fetched=client.candles(S,identity(),'2026-10-16','2026-10-16',{'2026-10-16':('2026-10-16T03:45:00Z','2026-10-16T10:00:00Z')})[0]
+    old=observed_revision(data.model_copy(update={'adjustment_basis':'raw'}),listing=identity().listing_id,fetched=fetched,parent=identity().revision_id)
+    new=observed_revision(data,listing=old.listing_id,fetched=fetched,parent=identity().revision_id,previous=old)
+    assert old.data.adjustment_basis=='raw'
+    assert new.sequence==2 and new.supersedes_id==old.revision_id
+    from stock_discovery_analysis.revisions import eligible,adjusted_close
+    assert not eligible(new,NOW,'historical_reconstructed')
+    with pytest.raises(ValueError,match='provider_adjusted_candle_requires_action_coverage'):
+        adjusted_close(new,SimpleNamespace(revisions=(new,)))

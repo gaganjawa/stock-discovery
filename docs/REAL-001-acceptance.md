@@ -1,5 +1,8 @@
 # REAL-001 — real integration acceptance record
 
+**Current — Phase 5, 21 October: PARTIAL.** [Actual numerical evidence and validation](REAL-001-phase5.md). Genuine Upstox observations are now privately stored: 27 explicitly adjusted candles, three numerical financial snapshots and 24 facts. Actual retrieval/embeddings/local generation executed; research validation and real policy gates prevent publication. The records below preserve earlier phases and their then-current blockers.
+Phase 5 final checks: 617 backend/worker tests and 164 PostgreSQL tests (zero skips) passed; actual fact-only Ollama parity passed, broader research failed citation validation; all three actual publication attempts remain blocked by `real_policies_required`. See [Phase 5 evidence](REAL-001-phase5.md).
+
 **Phase 4 update (20 October):** [Permission findings and stop condition](REAL-001-phase4.md). New Upstox developer-community evidence confirms private market-data storage, research/ML and replay, superseding the earlier blanket rights blocker. Financial/news corpus rights remain unresolved; private market-data research outputs and evaluation fit the confirmed research scope. Historical candles are back-adjusted, conflicting with the current raw-data representation. No financial document or actual research was processed; no infrastructure was added. REAL-001 remains PARTIAL.
 
 **20 October 2026 · PARTIAL · not end-to-end acceptance.**

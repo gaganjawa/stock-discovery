@@ -17,7 +17,7 @@ from .providers.ollama import Ollama
 
 class EvidenceConfig(Strict):
     sources: SourceConfig
-    filings: Annotated[tuple[FilingSpec,...],Field(min_length=1,max_length=100)]
+    filings: Annotated[tuple[FilingSpec,...],Field(min_length=0,max_length=100)]
     queries: Annotated[tuple[Query,...],Field(min_length=1,max_length=300)]
     model: Text = 'qwen2.5-coder:7b'
     embedding_model: Text = 'nomic-embed-text:latest'

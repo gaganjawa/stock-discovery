@@ -9,7 +9,7 @@ router=APIRouter(prefix='/v1/real-research',dependencies=[Depends(require_auth)]
 def status():
     # These are implementation gates, not inferred from the presence of a token
     # or a model. Only a demonstrated complete pipeline may clear them.
-    return dict(mode='real_research',status='blocked',actionable=False,qualified=False,
+    result=dict(mode='real_research',status='blocked',actionable=False,qualified=False,
         default_mode='synthetic',recommendations=[],price_series=[],analysis_history=[],
         providers=[dict(id='upstox',adapter='implemented_unactivated',coverage='NSE EQ instruments and daily candles',
             blockers=['credential_and_use_specific_grant_required','observed_calendar_required']),
@@ -26,6 +26,28 @@ def status():
         forward_paper=dict(status='blocked',reason='Existing D3-10 admission gates remain in force; research cannot create a position.'),
         limitations=['No prices or financial values are substituted from synthetic data.',
                      'No performance results exist for this feature.'])
+
+    import os
+    if os.getenv('REAL_RESEARCH_VIEW_CONFIG'):
+        # Configuration alone is not activation: inspect currently permitted rows.
+        try:
+            import psycopg
+            from stock_discovery_analysis.runtime import setting
+            from stock_discovery_analysis.real_views import company
+            config=view_config()
+            with psycopg.connect(setting('DATABASE_URL'),connect_timeout=5) as conn:
+                detail=company(conn,config,config.listing_ids[0])
+            if detail['price_series'] or detail['financial_facts']:
+                result['status']='partial'
+                result['providers'][0].update(adapter='observations_available',
+                    coverage='Permitted observed prices and structured numerical financial APIs',
+                    blockers=['corporate_action_and_volume_basis_unqualified'])
+                result['blockers'][0]='Observed company inputs are available; full research acceptance remains incomplete.'
+                result['models']['note']='Actual local research attempts and validation outcomes appear in company history. Model financial qualification remains pending.'
+        except Exception:
+            # Never leak a private configuration path, provider data or secret.
+            result['blockers'][0]='Configured company inputs cannot currently be read with verified permissions.'
+    return result
 
 
 def view_config():

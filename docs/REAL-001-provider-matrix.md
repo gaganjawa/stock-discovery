@@ -1,5 +1,8 @@
 # REAL-001 — provider verification and activation matrix
 
+**Current Phase 5:** [Narrow numerical-data activation](REAL-001-phase5.md#source-rights-decision) supersedes earlier blanket financial-corpus blockers for private structured Upstox numerical API facts. This is explicitly an inference from the broad private API market-data guidance and documented fundamentals scope. Issuer PDF and article-body rights are not activated. Provider conflicts, corporate-action/volume semantics and original publication dates remain unqualified. The historical rows below are preserved as prior findings, not current activation status.
+Phase 5 final checks: 617 backend/worker tests and 164 PostgreSQL tests (zero skips) passed; actual fact-only Ollama parity passed, broader research failed citation validation; all three actual publication attempts remain blocked by `real_policies_required`. See [Phase 5 evidence](REAL-001-phase5.md).
+
 **Phase 4 supersedes the earlier Upstox market-data uncertainty:** [Nine-operation matrix, exact clauses and owner drafts](REAL-001-phase4.md). Provider developer replies permit private local market-data retention, ML/AI research and replay. This does not establish filing/news corpus rights or every output/evaluation use. Historical-candle adjustment semantics require technical correction before raw-data ingestion. No active grant created.
 
 Verified **19 October 2026**. STK-004/005/006/007, D3-02. API reachability,

@@ -49,6 +49,10 @@ def company(conn,config,listing,*,clock=now,publication_inputs=False,cutoff_at=N
     bars=sorted((r for r in records if r.data.kind=='candle'),key=lambda r:r.data.ends_at)
     check(len({r.data.ends_at for r in bars})==len(bars),'ambiguous_price_sources')
     check(len(bars)<=5000,'price_read_limit')
+    # Never chart mixed back-adjustment observation batches or legacy raw labels.
+    anchors=[r.fetched_at for r in bars if r.source_id=='upstox' and r.data.adjustment_basis=='split_bonus_adjusted']
+    latest_anchor=max(anchors) if anchors else None
+    bars=[r for r in bars if r.source_id!='upstox' or (r.data.adjustment_basis=='split_bonus_adjusted' and r.fetched_at==latest_anchor)]
     documents=[];facts=[];events=[];evidence_bundles=[]
     for r in records:
         if r.data.kind!='document':continue
@@ -76,7 +80,21 @@ def company(conn,config,listing,*,clock=now,publication_inputs=False,cutoff_at=N
             fetched_at=at(r.fetched_at).replace(tzinfo=timezone.utc),availability_basis='observed_live')
     candles=tuple(Candle(instrument_id=listing,starts_at=at(r.data.starts_at).replace(tzinfo=timezone.utc),
         ends_at=at(r.data.ends_at).replace(tzinfo=timezone.utc),open=Decimal(r.data.open),high=Decimal(r.data.high),
-        low=Decimal(r.data.low),close=Decimal(r.data.close),volume=r.data.volume,provenance=provenance(r)) for r in bars)
+        low=Decimal(r.data.low),close=Decimal(r.data.close),volume=r.data.volume,provenance=provenance(r)) for r in bars
+        if r.data.adjustment_basis == 'raw' and r.source_id != 'upstox')
+    # Descriptive indicators may use one current provider-adjusted observation
+    # batch. They never become raw execution inputs or historical PIT evidence.
+    observed_features={}; feature_reason='no_coherent_adjusted_observation_batch'
+    adjusted=[r for r in bars if r.source_id=='upstox' and r.data.adjustment_basis=='split_bonus_adjusted']
+    if adjusted and len(adjusted)==len(bars) and len({r.fetched_at for r in adjusted})==1:
+        from .indicators import features
+        series=tuple(Candle(instrument_id=listing,starts_at=at(r.data.starts_at).replace(tzinfo=timezone.utc),
+            ends_at=at(r.data.ends_at).replace(tzinfo=timezone.utc),open=Decimal(r.data.open),high=Decimal(r.data.high),
+            low=Decimal(r.data.low),close=Decimal(r.data.close),volume=r.data.volume,provenance=provenance(r),
+            adjustment_version='upstox-split-bonus-observed:'+r.fetched_at) for r in adjusted)
+        observed_features={k:format(v,'f') if v is not None else None for k,v in features(series).items()}
+        observed_features['relative_volume20']=None  # Provider volume adjustment not established.
+        feature_reason='descriptive_only_action_coverage_and_volume_basis_unqualified'
     sessions=sorted((r for r in records if r.data.kind=='session'),key=lambda r:r.data.opens_at)
     calendar=None
     if sessions:
@@ -111,10 +129,12 @@ def company(conn,config,listing,*,clock=now,publication_inputs=False,cutoff_at=N
     detail=dict(mode='real_research',listing_id=listing,symbol=identity.data.symbol,isin=identity.data.isin,
         cutoff_at=cutoff,actionable=False,qualified=False,price_series=[dict(time=r.data.ends_at[:10],
             open=r.data.open,high=r.data.high,low=r.data.low,close=r.data.close,volume=r.data.volume,
-            revision_id=r.revision_id,fetched_at=r.fetched_at) for r in bars],documents=documents,financial_facts=facts,
-        events=events,quantitative=quantitative,analysis_history=history,recommendations=[],
+            revision_id=r.revision_id,fetched_at=r.fetched_at,adjustment_basis=r.data.adjustment_basis,
+            adjustment_observed_at=r.fetched_at,volume_adjustment='unverified' if r.source_id=='upstox' else 'raw') for r in bars],documents=documents,financial_facts=facts,
+        events=events,quantitative=quantitative,price_features=dict(metrics=observed_features,reason=feature_reason,actionable=False),analysis_history=history,recommendations=[],
         publication_status='not_published',prospective_status='not_configured',
         limitations=['Analysis history is not a published prediction.','Source and corporate-action coverage is not qualified.',
+            'Provider-adjusted and legacy Upstox prices are display-only until action/basis coverage is verified; raw-price quantitative inputs exclude them.',
             'Company name is unavailable in the current stored identity contract.','Paper position admission remains blocked.'])
 
     if publication_inputs:

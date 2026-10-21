@@ -68,3 +68,17 @@ def test_context_reservation_rejects_silent_truncation_before_generation():
     with pytest.raises(ValueError,match='context_limit'):
         p.assess(request,max_output_units=300,deadline=time.monotonic()+10)
     assert len(calls)==1  # Only installed-model inventory; no inference request.
+
+
+def test_generation_schema_compatibility_does_not_mutate_validation_contract():
+    from worker.providers.ollama import generation_schema
+    from stock_discovery_analysis.rag_contracts import Assessment
+    import copy
+    original=Assessment.model_json_schema();snapshot=copy.deepcopy(original)
+    projected=generation_schema(original)
+    assert original==snapshot and projected!=original
+    assert generation_schema({'pattern':r'^[0-9]+$'})=={}
+    assert generation_schema({'pattern':r'\S','minLength':1})=={}
+    from pydantic import TypeAdapter
+    from stock_discovery_contracts.v2 import Text
+    with pytest.raises(ValueError):TypeAdapter(Text).validate_python('   ')

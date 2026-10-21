@@ -64,7 +64,9 @@ def observe(conn,reference_id,access,*,clock=now):
         expected={s['closes_at'].replace('+00:00','Z') for s in calendar if at(ref['publication_at'])<at(s['opens_at'].replace('+00:00','Z')) and at(s['closes_at'].replace('+00:00','Z'))<=at(observed)}
         actual={b.data.ends_at for b in observations}
         reason='waiting_for_horizon_endpoint';status='provisional';price_return=matches=None
-        if expected!=actual:status='unavailable';reason='missing_or_unverified_session'
+        if any(b.data.adjustment_basis != 'raw' or b.source_id == 'upstox' for b in observations):
+            status='unavailable';reason='observation_adjustment_basis_unqualified'
+        elif expected!=actual:status='unavailable';reason='missing_or_unverified_session'
         elif actions:status='unavailable';reason='corporate_action_requires_qualified_adjustment'
         elif ref['prediction'] is None:status='not_applicable';reason='no_directional_prediction_was_published'
         elif ref['forecast_reference_price'] is None:status='unavailable';reason='no_reference_price'

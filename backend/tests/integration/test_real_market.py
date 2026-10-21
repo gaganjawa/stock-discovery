@@ -26,20 +26,20 @@ def grant():
         max_units_per_operation=100,audit_tombstones_permitted=True)
 
 
-def test_existing_storage_ingestion_incremental_and_revocation(isolated_url,tmp_path):
+def test_adjusted_full_window_ingestion_and_revocation(isolated_url,tmp_path):
     g=grant(); gf=tmp_path/'grants.json';gf.write_text(json.dumps([g.model_dump()]))
     tf=tmp_path/'token';tf.write_text('test-token-not-real')
     config=MarketConfig(account_ref='test',grant_file=str(gf),token_file=str(tf),retention_days=365)
     calls=[]
     class Provider:
-        def __init__(self,**kw):pass
+        def __init__(self,**kw):self.access=kw['access']
         def close(self):pass
         def instruments(self,stream,symbols):
             return [dict(symbol='INFY',name='Test Infosys identity',isin='INE009A01021',instrument_key='NSE_EQ|INE009A01021',lot_size=1,tick_size='0.05')]
         def candles(self,stream,instrument,start,end,sessions):
             calls.append((start,end))
             return ((CandleData(kind='candle',interval='1d',starts_at='2026-10-16T03:45:00Z',ends_at='2026-10-16T10:00:00Z',
-                open='100',high='110',low='90',close='105',volume=100,adjustment_basis='raw'),NOW),)
+                open='100',high='110',low='90',close='105',volume=100,adjustment_basis='split_bonus_adjusted'),self.access.clock()),)
     with psycopg.connect(isolated_url,autocommit=True) as conn:
         session=observed_revision(SessionData(kind='session',calendar_version='test-calendar',opens_at='2026-10-16T03:45:00Z',closes_at='2026-10-16T10:00:00Z'),listing='NSE',fetched=NOW)
         stream=Stream(stream_id='test-real-calendar',source_id='upstox',account_ref='test',scope='calendar')
@@ -49,8 +49,8 @@ def test_existing_storage_ingestion_incremental_and_revocation(isolated_url,tmp_
         assert first['status']=='ingested' and first['instruments'][0]['candles']==1
         assert first['research_status']=='not_run' and first['actionable'] is False
         second=ingest_prices(conn,config,clock=lambda:'2026-10-20T12:00:00Z',adapter_factory=Provider)
-        assert calls[-1][0]=='2026-10-09'
-        assert conn.execute("SELECT count(*) FROM discovery.revisions WHERE kind='candle' AND source_id='upstox'").fetchone()[0]==1
+        assert calls[-1]==calls[0]  # Full window, not a seven-day overlap.
+        assert conn.execute("SELECT count(*) FROM discovery.revisions WHERE kind='candle' AND source_id='upstox'").fetchone()[0]==2
         assert conn.execute('SELECT count(*) FROM discovery.recommendations').fetchone()[0]==0
         gf.write_text('[]')
         with pytest.raises(PermissionError,match='grant_missing'):

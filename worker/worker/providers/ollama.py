@@ -13,6 +13,25 @@ import httpx
 from stock_discovery_contracts.v2 import Ref, check
 
 
+def generation_schema(schema):
+    """Ollama grammar uses a portable structural subset of JSON Schema.
+
+    This is a generation hint, not the validation schema: keep the original
+    contract in the prompt and validate every returned value in D3-07/08.
+    The native grammar compiler rejects unanchored patterns and some combined
+    bounds. Those constraints remain mandatory in the post-generation contract.
+    """
+    if isinstance(schema, list):return [generation_schema(v) for v in schema]
+    if not isinstance(schema, dict):return schema
+    projected={k:generation_schema(v) for k,v in schema.items()
+               if k not in ('pattern','minLength','maxLength','minItems','maxItems')}
+    # Defaults are accepted by Pydantic, but omitting the financial Fact payload
+    # makes a numeric claim unverifiable. Emit explicit fields, including nulls.
+    if projected.get('type')=='object' and 'properties' in projected:
+        projected['required']=list(projected['properties'])
+    return projected
+
+
 class Ollama:
     local_only = True
     cost_per_unit = Decimal('0')
@@ -82,16 +101,16 @@ class Ollama:
         check(0 < max_output_units <= 32000, 'ollama_output_limit')
         # A byte is a conservative token upper bound. Reserve output plus template
         # overhead so Ollama cannot silently truncate the grounded source bundle.
-        check(len(request.encode())+min(2048,max_output_units)+256 <= self.context, 'ollama_context_limit')
+        check(len(request.encode())+min(4096,max_output_units)+256 <= self.context, 'ollama_context_limit')
         data = json.loads(request)
         check(isinstance(data.get('schema'), dict), 'structured_schema_required')
         self._pin(deadline)
         started = time.monotonic()
         try:
             result = self._call('POST', '/api/generate', dict(model=self.model, prompt=request,
-                stream=False, format=data['schema'], keep_alive=0,
+                stream=False, format=generation_schema(data['schema']), keep_alive=0,
                 options=dict(temperature=0, seed=0, num_ctx=self.context,
-                             num_predict=min(2048, max_output_units))), deadline)
+                             num_predict=min(4096, max_output_units))), deadline)
             self._account(result, started, 'returned')
             check(result.get('model') == self.model and result.get('done') is True
                   and result.get('done_reason') == 'stop', 'ollama_incomplete_generation')

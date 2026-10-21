@@ -124,3 +124,19 @@ def test_versioned_policy_candidate_cap_and_event_reservation():
     with pytest.raises(ValueError):RetrievalPolicy(lexical_weight='-1')
     with pytest.raises(ValueError):Budget(account='test',max_run_cost='-1')
     with pytest.raises(ValueError):query(period_end_at='2027-01-01T00:00:00Z')
+
+
+def test_numeric_inferences_cannot_bypass_financial_fact_parity():
+    b=bundle();f=b.facts[0]
+    a=Assessment(issuer_id=b.query.issuer_id,horizon=b.query.horizon,action='WATCH',
+        claims=(Claim(kind='inference',text='Revenue grew 999 percent.',citations=(f.citation,),fact=None),),missing=(),contradictions=())
+    with pytest.raises(ValueError,match='numeric_inference_requires_structured_fact'):
+        validate_assessment(a.model_dump_json(),b)
+
+
+def test_valid_citations_do_not_promote_model_abstention_to_watch():
+    b=bundle()
+    original=financial_assessment(b).model_copy(update={'action':'INSUFFICIENT_EVIDENCE'})
+    result,report=validate_assessment(original.model_dump_json(),b)
+    assert result.action=='INSUFFICIENT_EVIDENCE'
+    assert report['deterministic']=='passed' and report['proposed_action']=='INSUFFICIENT_EVIDENCE'

@@ -16,7 +16,7 @@ export function RealResearch({onUnauthorized}:{onUnauthorized:()=>void}) {
   {error&&<p role="alert" className="error">{error}</p>}
   {!data&&!error&&<p role="status">Checking real research availability…</p>}
   {data&&<>
-   <section className="panel" aria-label="Real research blockers"><h3>Research unavailable</h3><ul>{data.blockers.map(s=><li key={s}>{s}</li>)}</ul><p>Only permitted records appear above. Unavailable inputs cannot produce entry conditions, targets or performance results.</p></section>
+   <section className="panel" aria-label="Real research blockers"><h3>Qualification and publication gates</h3><ul>{data.blockers.map(s=><li key={s}>{s}</li>)}</ul><p>Only permitted records appear above. Unavailable inputs cannot produce entry conditions, targets or performance results.</p></section>
    <section className="panel"><h3>Source coverage</h3><table><thead><tr><th>Source</th><th>Coverage</th><th>Status</th></tr></thead><tbody>{data.providers.map(p=><tr key={p.id}><td>{p.id}</td><td>{p.coverage}</td><td>{p.adapter.replaceAll('_',' ')}<ul>{p.blockers.map(b=><li key={b}>{b.replaceAll('_',' ')}</li>)}</ul></td></tr>)}</tbody></table></section>
    <section className="panel"><h3>Local AI and automatic operation</h3><p>{data.models.note}</p><p>{data.scheduler.prices}. Automatic research, events and outcomes remain blocked.</p><h3>Forward paper</h3><p>{data.forward_paper.reason}</p></section>
    <ul>{data.limitations.map(s=><li key={s}>{s}</li>)}</ul>

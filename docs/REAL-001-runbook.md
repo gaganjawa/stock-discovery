@@ -95,3 +95,45 @@ the synthetic workspace because no real research pipeline is qualified yet.
 
 No real publication or outcome is produced by these commands. D3-10 forward-paper
 admission stays blocked, and actual research-only tracking is still to be integrated.
+
+## Phase 5: numerical financial observations (private local use)
+
+Continue the existing REAL-001 branch. The narrow numerical-data permission
+finding and exclusions are in [Phase 5](REAL-001-phase5.md). Do not copy an
+example grant into active configuration or infer issuer-PDF rights from it.
+Keep source configuration, credentials, provider values and model output outside
+this public repository. Existing `SourceConfig` points to the private grant file.
+
+Use the existing local PostgreSQL installation with a separate real-research
+database. Never point migration lifecycle tests at that database. Set
+`PYTHONPATH=backend:shared:worker` and supply the existing `DATABASE_URL` securely.
+
+- `scripts/ingest_real_prices.py --config /private/path/market.json --refresh-calendar`
+  acquires dated sessions before the configured bounded price window. The calendar
+  refresh currently supports `lookback_days` from 40 to 44, with a closure buffer.
+  Full adjusted windows are re-observed; old stored revisions remain immutable.
+- `scripts/ingest_real_financials.py --sources /private/path/sources.json --token-file /private/path/token --listing NSE:INE009A01021 --account-ref OWNER_REFERENCE`
+  reads the already observed identity and routes the three numerical statements
+  into D3-06. It checks both financial-fact and evidence-container permissions.
+- For existing D3-04 configuration, the optional market settings
+  `refresh_calendar: true` and `financial_statements: true` enable these operations
+  in its ingestion stage. Recompute its configuration hash explicitly. This does
+  not activate unqualified downstream research/publication stages.
+- `scripts/run_real_evidence.py --config /private/path/research.json` may use
+  `filings: []` to research already stored numerical evidence. Queries must be
+  `live_paper`; configure permitted annual periods/metrics, installed local models,
+  bounded retrieval and the existing durable budget. Empty or insufficient evidence
+  still abstains. Failed runs are not silently retried or overwritten.
+- Set `REAL_RESEARCH_VIEW_CONFIG` to the private existing `ViewConfig` to see
+  currently permitted observations and immutable analysis history. A readable
+  configuration or successful generation is not publication/financial qualification.
+- Existing `scripts/real_research_publication.py` still requires actual real
+  policy/horizon configuration. Do not manufacture approval references to make an
+  insufficient-evidence publication appear successful. Its `observe` action has
+  nothing to evaluate until an actual publication/reference exists.
+
+The actual Phase 5 data was stored in `stk_real001_private` in the pre-existing
+local PostgreSQL container. Local grant review/retention is 30 days; it is an
+operational limit, not a provider-imposed term. No unattended scheduler or automatic
+retention-cleanup success is claimed. Recheck rights before further use and honor
+expiry/revocation with the existing retention/deletion controls.

@@ -6,7 +6,7 @@
 
 ## REAL-001 — actual-source integration (PARTIAL)
 
-The read-only Upstox access probe resolved **INFY / Infosys** and returned actual daily candles, consolidated financial responses and news. Native Ollama generation and embeddings executed with recorded model digests. This does **not** complete real research: source-use grants, real filing ingestion, grounded publication and prospective tracking are still pending. No financial recommendation or real performance result has been produced.
+Phase 5 has privately ingested actual INFY adjusted prices and structured numerical financial observations through the existing Upstox integration. The Real Research view displays those records, source locations and insufficient-evidence assessments. Genuine PostgreSQL retrieval, Nomic embeddings and local Ollama generation executed. Financial claim validation, action coverage and real policy gates still prevent a completed publication/tracking workflow. See [Phase 5 acceptance and exact blockers](docs/REAL-001-phase5.md). Provider data and generated research are not redistributed in this public repository.
 
 The existing app now has a distinct **Real research** view with explicit blocked coverage and three horizons. Operational adapters are opt-in; no synthetic fallback or paper-admission bypass is added. See the [acceptance record](docs/REAL-001-acceptance.md), [provider/permission matrix](docs/REAL-001-provider-matrix.md) and [local runbook](docs/REAL-001-runbook.md). Keep tokens outside Git and never put values in `.env.example`.
 

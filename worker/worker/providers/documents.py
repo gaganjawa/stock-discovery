@@ -92,6 +92,7 @@ def pdf_report(raw, profile, *, executable='pdftotext'):
 class OfficialDocument:
     def __init__(self, spec, *, access, stream, previous=None, transport=None, pdf_executable='pdftotext'):
         self.spec=FilingSpec.model_validate(spec);self.access=access;self.stream=stream;self.previous=previous
+        check(self.spec.source_id!='upstox','structured_api_grant_cannot_authorize_issuer_documents')
         self.pdf_executable=pdf_executable
         self.client=httpx.Client(transport=transport,trust_env=False,follow_redirects=False,timeout=30)
     def close(self):self.client.close()

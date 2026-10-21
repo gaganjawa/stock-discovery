@@ -25,6 +25,8 @@ class MarketConfig(Strict):
     lookback_days: Annotated[int,Field(ge=40,le=366)] = 365
     retention_days: Annotated[int,Field(ge=1,le=3650)]
     region: Text = 'IN'
+    refresh_calendar: bool = False
+    financial_statements: bool = False
 
 
 def access_for(config, clock=now, audit=lambda decision:None):
@@ -42,14 +44,14 @@ def access_for(config, clock=now, audit=lambda decision:None):
 
 def latest(conn, data, listing):
     # Use the domain logical key, shared by all revision kinds.
-    probe=observed_revision(data,listing=listing,fetched=now(),parent='probe' if data.kind!='instrument' else None)
+    probe=observed_revision(data,listing=listing,fetched=now(),parent='probe' if data.kind not in ('instrument','session') else None)
     row=conn.execute('SELECT payload FROM discovery.revisions WHERE source_id=%s AND logical_key=%s ORDER BY sequence DESC LIMIT 1',
                      ('upstox',probe.logical_key)).fetchone()
     return Revision.model_validate(row[0]) if row else None
 
 
 def ingest_prices(conn, config, *, clock=now, adapter_factory=Upstox):
-    """One bounded cycle, with a 7-day correction overlap and explicit gaps."""
+    """One bounded observation batch; adjusted history is refreshed in full."""
     config=MarketConfig.model_validate(config)
     audit=[]; access=access_for(config,clock,audit.append)
     lock='REAL-001:'+config.account_ref
@@ -103,8 +105,8 @@ def ingest_prices(conn, config, *, clock=now, adapter_factory=Upstox):
             access.require(price_stream,('acquire','derive','store'))
             end=max(date.fromisoformat(day) for day,(_,closes) in sessions.items() if at(closes)<=at(cycle))
             start=end-timedelta(days=config.lookback_days)
-            last=conn.execute("SELECT max((payload->'data'->>'ends_at')::timestamptz) FROM discovery.revisions WHERE source_id='upstox' AND listing_id=%s AND kind='candle'",(listing,)).fetchone()[0]
-            if last:start=max(start,last.date()-timedelta(days=7))
+            # V3 back-adjustments can change any earlier bar; refresh the full
+            # configured window rather than merging a short overlap with old bases.
             observations=adapter.candles(price_stream,instrument,start.isoformat(),end.isoformat(),sessions)
             records=tuple(observed_revision(d,listing=listing,fetched=f,parent=instrument.revision_id,previous=latest(conn,d,listing)) for d,f in observations)
             stored=save(price_stream,records)
@@ -128,7 +130,10 @@ def handlers(schedule, config):
     check(schedule.input_hash==digest(config.model_dump(mode='json')),'real_config_hash_mismatch')
     def ingest(conn, job, clock):
         try:
+            if config.refresh_calendar:ingest_calendar(conn,config,clock=clock)
             result=ingest_prices(conn,config,clock=clock)
+            if config.financial_statements and result['status']!='busy':
+                result['financials']=ingest_configured_financials(conn,config,result,clock=clock)
         except FileNotFoundError:
             raise JobFailure('credentials') from None
         if result['status']=='busy':raise JobFailure('readiness')
@@ -136,3 +141,61 @@ def handlers(schedule, config):
     def blocked(conn, job, clock):
         raise JobFailure('policy')
     return {'ingest':ingest,'snapshot':blocked,'screen':blocked,'event_poll':blocked,'reassess':blocked}
+
+
+def ingest_calendar(conn, config, *, clock=now):
+    """Explicit bounded refresh of dated sessions for the configured price window."""
+    import time
+    from zoneinfo import ZoneInfo
+    config=MarketConfig.model_validate(config)
+    check(conn.autocommit,'dedicated_autocommit_connection_required')
+    access=access_for(config,clock)
+    cycle=clock();end=at(cycle).replace(tzinfo=timezone.utc).astimezone(ZoneInfo('Asia/Kolkata')).date()-timedelta(days=1)
+    start=end-timedelta(days=config.lookback_days+7)
+    # Include a closure buffer before the latest observed trading session.
+    # At most 52 dates keeps a run within the documented conservative per-minute budget.
+    check(config.lookback_days<=44,'calendar_refresh_limit_44_days')
+    stream=Stream(stream_id='REAL-CALENDAR-'+digest([cycle,config.account_ref]),source_id='upstox',account_ref=config.account_ref,scope='calendar')
+    access.require(stream,('acquire','derive','store'))
+    client=None
+    lock='REAL-001:'+config.account_ref
+    check(conn.execute('SELECT pg_try_advisory_lock(hashtextextended(%s,0))',(lock,)).fetchone()[0],'real_ingestion_busy')
+    try:
+        client=Upstox(access=access,token=Path(config.token_file).read_text().strip())
+        records=[];closed=[]
+        for offset in range((end-start).days+1):
+            day=(start+timedelta(days=offset)).isoformat()
+            data=client.session(stream,day)
+            if data is None:closed.append(day)
+            else:
+                records.append(observed_revision(data,listing='NSE',fetched=clock(),previous=latest(conn,data,'NSE')))
+            time.sleep(.65)
+        _,request=access.require(stream,('store',))
+        result=ingest_next(conn,stream,RevisionPages(records),load_grant=lambda:access.load_grant(stream),request=request,audit=access.audit,clock=clock)
+        check(not result.get('quarantined'),'calendar_quarantined')
+        return dict(from_date=start.isoformat(),to_date=end.isoformat(),observed_sessions=len(records),closed_dates=closed,storage=result)
+    finally:
+        if client:client.close()
+        conn.execute('SELECT pg_advisory_unlock(hashtextextended(%s,0))',(lock,))
+
+
+def ingest_configured_financials(conn,config,market_result,*,clock=now):
+    """Eligible D3-04 ingestion only; publication still requires actual policies."""
+    from .providers.upstox_financials import ingest_financials
+    config=MarketConfig.model_validate(config)
+    access=access_for(config,clock);lock='REAL-001:'+config.account_ref
+    check(conn.execute('SELECT pg_try_advisory_lock(hashtextextended(%s,0))',(lock,)).fetchone()[0],'real_ingestion_busy')
+    client=None
+    try:
+        results=[]
+        for item in market_result['instruments']:
+            row=conn.execute("SELECT payload FROM discovery.revisions WHERE source_id='upstox' AND listing_id=%s AND kind='instrument' ORDER BY sequence DESC LIMIT 1",(item['listing_id'],)).fetchone()
+            check(row is not None,'observed_instrument_required')
+            identity=Revision.model_validate(row[0])
+            access.require(stored_stream(conn,identity.revision_id),('derive',))
+            if client is None:client=Upstox(access=access,token=Path(config.token_file).read_text().strip())
+            results.extend(ingest_financials(conn,client,identity,config.account_ref))
+        return results
+    finally:
+        if client:client.close()
+        conn.execute('SELECT pg_advisory_unlock(hashtextextended(%s,0))',(lock,))

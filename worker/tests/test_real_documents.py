@@ -102,3 +102,9 @@ def test_pdf_exact_page_context_and_number(monkeypatch):
     assert report.facts[0].value=='1234' and report.facts[0].locator.startswith('pdf:page[3]')
     rule['markers']=['USD']
     with pytest.raises(ValueError,match='pdf_context_missing'):pdf_report(b'%PDF-test',{'pages':[3],'rules':[rule]})
+
+
+def test_numeric_provider_grant_cannot_be_reused_for_issuer_pdf():
+    source=fixture()[0].model_copy(update={'source_id':'upstox'})
+    with pytest.raises(ValueError,match='structured_api_grant_cannot_authorize_issuer_documents'):
+        OfficialDocument(source,access=None,stream=None)

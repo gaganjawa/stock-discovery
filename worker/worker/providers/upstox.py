@@ -16,7 +16,7 @@ from zoneinfo import ZoneInfo
 
 import httpx
 from stock_discovery_contracts.v2 import at, check, digest
-from stock_discovery_analysis.revisions import CandleData, InstrumentData, Revision
+from stock_discovery_analysis.revisions import CandleData, InstrumentData, Revision, SessionData
 from stock_discovery_analysis.revision_storage import Page
 
 SOURCE = 'upstox'
@@ -99,6 +99,24 @@ class Upstox:
                                instrument_key=row['instrument_key'], lot_size=row['lot_size'], tick_size=str(tick)))
         return result
 
+    def session(self, stream, day):
+        """Observe the dated NSE cash session; absence is not a weekday guess."""
+        check(stream.scope == 'calendar', 'calendar_scope_required')
+        date.fromisoformat(day)
+        payload = json.loads(self._get('https://api.upstox.com/v2/market/timings/'+day, stream))
+        check(payload.get('status') == 'success' and isinstance(payload.get('data'), list), 'invalid_market_timings')
+        matches = [r for r in payload['data'] if r.get('exchange') == 'NSE']
+        check(len(matches) <= 1, 'ambiguous_market_timings')
+        if not matches: return None
+        row = matches[0]
+        check(type(row['start_time']) is int and type(row['end_time']) is int, 'invalid_session_timestamp')
+        opens = datetime.fromtimestamp(row['start_time']/1000, timezone.utc)
+        closes = datetime.fromtimestamp(row['end_time']/1000, timezone.utc)
+        check(opens.astimezone(IST).date().isoformat() == day and closes.astimezone(IST).date().isoformat() == day, 'session_date_mismatch')
+        self.access.require(stream, ('derive',))
+        return SessionData(kind='session', calendar_version='upstox-dated-NSE-v1',
+            opens_at=opens.isoformat().replace('+00:00','Z'), closes_at=closes.isoformat().replace('+00:00','Z'))
+
     def candles(self, stream, instrument, start, end, sessions):
         check(stream.scope == 'prices', 'prices_scope_required')
         check(instrument.source_id == SOURCE and instrument.data.kind == 'instrument'
@@ -129,7 +147,7 @@ class Upstox:
             check(type(row[5]) is int, 'invalid_volume')
             data = CandleData(kind='candle', interval='1d', starts_at=opens, ends_at=closes,
                               open=str(row[1]), high=str(row[2]), low=str(row[3]), close=str(row[4]),
-                              volume=row[5], adjustment_basis='raw')
+                              volume=row[5], adjustment_basis='split_bonus_adjusted')
             result.append((data, fetched))
         return tuple(sorted(result, key=lambda r:r[0].ends_at))
 
@@ -140,7 +158,7 @@ def observed_revision(data, *, listing, fetched, parent=None, previous=None):
     Caller selects the previous revision by source + logical key under the
     existing ingestion lock. Identical content reuses its first observed clock.
     """
-    if previous and previous.data == data:
+    if previous and previous.data == data and not (data.kind == 'candle' and data.adjustment_basis != 'raw'):
         return previous
     raw = data.model_dump(mode='json')
     sequence = previous.sequence+1 if previous else 1
