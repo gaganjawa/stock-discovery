@@ -51,6 +51,7 @@ def load_inputs(conn,config,listing,horizon,clock):
         chosen=candidates[0];cutoff=chosen['cutoff_at']
         detail,inputs,records=company(conn,config,listing,clock=clock,cutoff_at=cutoff,publication_inputs=True)
         research=chosen['result']
+        check(not research.get('research_only'),'factual_research_not_recommendation')
         row=conn.execute('SELECT payload FROM discovery.rag_bundles WHERE bundle_hash=%s',(research.get('bundle_hash') or research.get('final_bundle_hash') or research.get('baseline_hash'),)).fetchone()
         check(row is not None,'research_bundle_unavailable')
         bundle=Bundle.model_validate_json(json.dumps(row[0]))

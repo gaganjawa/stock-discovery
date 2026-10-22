@@ -1,0 +1,148 @@
+{
+  "phase": 7,
+  "date": "2026-10-22",
+  "real001_status": "PARTIAL",
+  "historical_acceptance": "A1-A9 passed; narrow structured directional inference only",
+  "provider": "existing privately retained Upstox numerical observations",
+  "fact_count": 24,
+  "period_count": 4,
+  "candidate_count": 44,
+  "price_count": 27,
+  "runs": [
+    {
+      "horizon": "swing",
+      "status": "completed",
+      "accepted_facts": 2,
+      "accepted_directional_relations": 1,
+      "pending_prose": 1,
+      "rejected": 1
+    },
+    {
+      "horizon": "short_term",
+      "status": "completed",
+      "accepted_facts": 2,
+      "accepted_directional_relations": 0,
+      "pending_prose": 1,
+      "rejected": 2
+    },
+    {
+      "horizon": "long_term",
+      "status": "completed",
+      "accepted_facts": 2,
+      "accepted_directional_relations": 0,
+      "pending_prose": 1,
+      "rejected": 2
+    }
+  ],
+  "model_usage": [
+    {
+      "model": {
+        "id": "qwen2.5-coder:7b",
+        "version": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+        "content_hash": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364"
+      },
+      "status": "returned",
+      "prompt_eval_count": 3312,
+      "eval_count": 1166,
+      "total_duration": 42897344916,
+      "load_duration": 1444948958,
+      "wall_ms": 42904,
+      "cost": "0"
+    },
+    {
+      "model": {
+        "id": "qwen2.5-coder:7b",
+        "version": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+        "content_hash": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364"
+      },
+      "status": "returned",
+      "prompt_eval_count": 3313,
+      "eval_count": 1165,
+      "total_duration": 40613540459,
+      "load_duration": 942989292,
+      "wall_ms": 40617,
+      "cost": "0"
+    },
+    {
+      "model": {
+        "id": "qwen2.5-coder:7b",
+        "version": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+        "content_hash": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364"
+      },
+      "status": "returned",
+      "prompt_eval_count": 3313,
+      "eval_count": 1165,
+      "total_duration": 40358982959,
+      "load_duration": 918828209,
+      "wall_ms": 40364,
+      "cost": "0"
+    },
+    {
+      "model": {
+        "id": "nomic-embed-text:latest",
+        "version": "0a109f422b47e3a30ba2b10eca18548e944e8a23073ee3f3e947efcf3c45e59f",
+        "content_hash": "0a109f422b47e3a30ba2b10eca18548e944e8a23073ee3f3e947efcf3c45e59f"
+      },
+      "status": "returned",
+      "prompt_eval_count": 864,
+      "eval_count": null,
+      "total_duration": 399854791,
+      "load_duration": 297738333,
+      "wall_ms": 401,
+      "cost": "0"
+    },
+    {
+      "model": {
+        "id": "nomic-embed-text:latest",
+        "version": "0a109f422b47e3a30ba2b10eca18548e944e8a23073ee3f3e947efcf3c45e59f",
+        "content_hash": "0a109f422b47e3a30ba2b10eca18548e944e8a23073ee3f3e947efcf3c45e59f"
+      },
+      "status": "returned",
+      "prompt_eval_count": 864,
+      "eval_count": null,
+      "total_duration": 357775125,
+      "load_duration": 282007334,
+      "wall_ms": 360,
+      "cost": "0"
+    },
+    {
+      "model": {
+        "id": "nomic-embed-text:latest",
+        "version": "0a109f422b47e3a30ba2b10eca18548e944e8a23073ee3f3e947efcf3c45e59f",
+        "content_hash": "0a109f422b47e3a30ba2b10eca18548e944e8a23073ee3f3e947efcf3c45e59f"
+      },
+      "status": "returned",
+      "prompt_eval_count": 864,
+      "eval_count": null,
+      "total_duration": 343474125,
+      "load_duration": 270872625,
+      "wall_ms": 345,
+      "cost": "0"
+    }
+  ],
+  "private_artifact_sha256": {
+    "phase7-run-directional.json": "509c1c57f93e997aa9a565f8aa443db52fa0b09c82e2ff88e98edca0fad033be",
+    "phase7-browser.json": "e2fa9e6240657a3f6fa6ca9f7401c63068bd4f735108ebd8eab83c165dba44cd",
+    "phase7-publication.json": "61c69c623e9b1b60dab54fe641350eb82309c254c65ddc2b5f879b3732eba6e3"
+  },
+  "browser": {
+    "mocked": false,
+    "horizons": 3,
+    "page_errors": 0
+  },
+  "recommendations": 0,
+  "prospective_references": 0,
+  "paid_cost_inr": 0,
+  "semantic_qualification": false,
+  "owner_policy_approval": false,
+  "local_validation": {
+    "backend_worker_passed": 653,
+    "postgresql_passed": 167,
+    "postgresql_skipped": 0,
+    "migration_lifecycle": "passed",
+    "contract_validators": "passed",
+    "script_unittests_passed": 10,
+    "frontend_build": "passed",
+    "browser_regression_passed": 5
+  }
+}

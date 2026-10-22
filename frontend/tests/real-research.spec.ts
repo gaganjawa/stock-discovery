@@ -32,7 +32,7 @@ test('configured evidence renders and permission denial removes cached company d
   price_series:[{time:'2026-10-16',open:'100',high:'110',low:'90',close:'105',volume:100}],
   financial_facts:[{fact_id:'test',metric:'revenue',value:'10000000',unit:'INR',period_end_at:'2026-03-31',scope:'consolidated',source_locator:'test page 3'}],
   documents:[{title:'Fabricated browser-test filing',revision:{data:{url:'https://www.sec.gov/Archives/edgar/data/test.htm'},published_at:'2026-06-15T00:00:00Z'}}],events:[],
-  quantitative:{swing:{action:'INSUFFICIENT_EVIDENCE',reasons:['policy_not_configured'],metrics:{}}},analysis_history:[],recommendations:[{recommendation:{recommendation_id:'UI-ONLY',action:'INSUFFICIENT_EVIDENCE',decision_available_at:'2026-10-20T12:00:00Z',information_cutoff_at:'2026-10-19T12:00:00Z',horizon:{profile:'swing'},rationale:{summary:'Fabricated browser publication'},missing_evidence:[{requirement:'rights',reason:'TEST missing input'}]},tracking:{status:'pending_future_observation',outcomes:[]}}],limitations:['Browser fixture only']}}))
+  quantitative:{swing:{action:'INSUFFICIENT_EVIDENCE',reasons:['policy_not_configured'],metrics:{}}},analysis_history:[{run_id:'UI-FACTUAL',horizon:'swing',cutoff_at:'2026-10-19T12:00:00Z',citations:[],result:{status:'completed',factual_report:{label:'VALIDATED FACTUAL RESEARCH',candidates:[],accepted_claims:[{text:'Fabricated historical test finding',citations:[],validation:'exact_fact_and_citation_passed'}],interpretive_findings:[],pending_interpretations:[],rejected_claims:[{kind:'interpretation',claim:{text:'Fabricated unsafe conclusion'},reason:'unsupported_quality_materiality_or_reconciliation_claim'}],limitations:['Fixture cash reconciliation conflict'],validation:{numerical:'passed',citations:'passed',semantic:'not_evaluated',recommendation:'unqualified'},source_observations:{}}}}],recommendations:[{recommendation:{recommendation_id:'UI-ONLY',action:'INSUFFICIENT_EVIDENCE',decision_available_at:'2026-10-20T12:00:00Z',information_cutoff_at:'2026-10-19T12:00:00Z',horizon:{profile:'swing'},rationale:{summary:'Fabricated browser publication'},missing_evidence:[{requirement:'rights',reason:'TEST missing input'}]},tracking:{status:'pending_future_observation',outcomes:[]}}],limitations:['Browser fixture only']}}))
  await page.goto('/')
  await page.getByLabel('Owner access key').fill(process.env.AUTH_TOKEN!)
  await page.getByRole('button',{name:'Sign in',exact:true}).click()
@@ -45,9 +45,16 @@ test('configured evidence renders and permission denial removes cached company d
  await expect(section).toContainText('Published 2026-10-20T12:00:00Z')
  await expect(section).toContainText('pending future observation')
  await expect(section).toContainText('No portfolio position or simulated fill')
+ await expect(section).toContainText('VALIDATED FACTUAL RESEARCH')
+ await expect(section).toContainText('NOT AN ACTIONABLE RECOMMENDATION')
+ await expect(section).toContainText('Fabricated historical test finding')
+ await expect(section).toContainText('Fixture cash reconciliation conflict')
+ await section.getByText('Rejected model statements (1)',{exact:true}).click()
+ await expect(section).toContainText('Rejected — Fabricated unsafe conclusion')
  await page.route('**/v1/real-research/companies/NSE%3AUI-TEST',route=>route.fulfill({status:403,json:{detail:'denied'}}))
  await section.getByRole('button',{name:'Refresh real evidence'}).click()
  await expect(section.getByRole('alert')).toContainText('Source permission denied')
  await expect(section).not.toContainText('1,00,00,000 INR')
  await expect(section.locator('canvas')).toHaveCount(0)
+ await expect(section).not.toContainText('Fabricated historical test finding')
 })

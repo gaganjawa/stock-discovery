@@ -66,7 +66,7 @@ def company(conn,config,listing,*,clock=now,publication_inputs=False,cutoff_at=N
           UNION ALL SELECT run_id,payload,coalesce(final_bundle_hash,baseline_hash),'quant_agent' AS arm FROM discovery.agent_results
         ) r JOIN discovery.rag_bundles b USING(bundle_hash)
         WHERE b.payload->'query'->>'listing_id'=%s AND b.payload->'query'->>'mode'='live_paper'
-        ORDER BY b.payload->'query'->>'cutoff_at' DESC LIMIT 30""",(listing,)).fetchall()
+        ORDER BY b.payload->'query'->>'cutoff_at' DESC, r.payload->>'reviewed_at' DESC NULLS LAST, r.run_id DESC LIMIT 30""",(listing,)).fetchall()
     for run_id,result,raw_bundle,arm in rows:
         bundle=Bundle.model_validate_json(json.dumps(raw_bundle))
         if at(bundle.query.cutoff_at)>at(cutoff):continue

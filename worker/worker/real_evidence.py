@@ -9,7 +9,7 @@ from stock_discovery_analysis.revision_storage import Stream
 from stock_discovery_analysis.revisions import Revision
 from stock_discovery_analysis.evidence_storage import ingest_next_evidence
 from stock_discovery_analysis.rag_contracts import Query, RetrievalPolicy, Budget
-from stock_discovery_analysis.rag_research import run_research
+from stock_discovery_analysis.rag_research import run_research,review_factual_run
 from stock_discovery_analysis.agent_storage import run_investigation
 from stock_discovery_analysis.publication_store import now
 from .providers.documents import FilingSpec, OfficialDocument
@@ -23,6 +23,8 @@ class EvidenceConfig(Strict):
     embedding_model: Text = 'nomic-embed-text:latest'
     judge_model: Text | None = None
     mode: Literal['rag','agent'] = 'rag'
+    factual_report: bool = False
+    max_model_bytes: Annotated[int,Field(gt=0,le=10_000_000_000)] = 6_000_000_000
     retrieval: RetrievalPolicy = RetrievalPolicy(max_chunks=2,max_documents=3,max_bytes=12000)
     budget: Budget
     context: Annotated[int,Field(ge=1024,le=16384)] = 16384
@@ -50,11 +52,12 @@ def run(conn, config, *, clock=now, adapter_factory=OfficialDocument, model_fact
             ingestion.append(result)
         # Clock is frozen only after the documents have actually been observed.
         cutoff=clock(); results=[]
-        provider=model_factory(config.model,context=config.context,max_input_bytes=config.context*2);providers.append(provider)
+        provider=model_factory(config.model,context=config.context,max_input_bytes=config.context*2,max_model_bytes=config.max_model_bytes);providers.append(provider)
         embeddings=model_factory(config.embedding_model);providers.append(embeddings)
         judge=None
-        if config.mode=='agent':
-            judge=model_factory(config.judge_model,context=config.context,max_input_bytes=config.context*2);providers.append(judge)
+        if config.mode=='agent' or (config.factual_report and config.judge_model):
+            check(config.judge_model!=config.model,'independent_judge_required')
+            judge=model_factory(config.judge_model,context=config.context,max_input_bytes=config.context*2,max_model_bytes=config.max_model_bytes);providers.append(judge)
         for query in config.queries:
             # Configuration supplies query intent, never a backdated availability claim.
             query=Query.model_validate_json(json.dumps({**query.model_dump(mode='json'),'cutoff_at':cutoff}))
@@ -64,7 +67,10 @@ def run(conn, config, *, clock=now, adapter_factory=OfficialDocument, model_fact
                     budget=config.budget,provider=provider,judge=judge,embeddings=embeddings)
             else:
                 result=run_research(conn,run_id=key,query=query,policy=config.retrieval,access=access,
-                    budget=config.budget,provider=provider,embeddings=embeddings)
+                    budget=config.budget,provider=provider,embeddings=embeddings,factual_report=config.factual_report)
+                if config.factual_report and judge and result.get('factual_report',{}).get('pending_interpretations'):
+                    parent_key=key;key=key+'-REVIEW'
+                    result=review_factual_run(conn,parent_run_id=parent_key,run_id=key,access=access,budget=config.budget,judge=judge)
             results.append(dict(run_id=key,listing_id=query.listing_id,horizon=query.horizon,result=result))
         return dict(status='partial',actionable=False,ingestion=ingestion,research=results,
             publication='not_published',tracking='not_configured',
