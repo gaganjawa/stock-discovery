@@ -1,0 +1,82 @@
+{
+  "phase": 8,
+  "status": "PARTIAL",
+  "baseline": "5ee88e21d521a1b1af10a17769e4b659acdc2450",
+  "baseline_local_tests": 653,
+  "pr_head_observed": "846f99cad947ea9879d318b7296d663d63869f97",
+  "pr_sync": "unresolved",
+  "phase7_ci": "not_registered",
+  "market": {
+    "observed_bars": 33,
+    "required_sessions": 30,
+    "warmup_complete": true,
+    "latest_session_present": false,
+    "duplicate_bars": false,
+    "within_proposed_age": false,
+    "volume_basis": "unverified",
+    "corporate_actions": "coverage_unverified",
+    "historical_pit": "unqualified"
+  },
+  "financial_facts": 24,
+  "new_verified_financial_facts": 0,
+  "ratios": "observed_but_period_join_unverified",
+  "model_execution": "reused_actual_phase7_outputs_no_new_inference",
+  "ai_validation": [
+    {
+      "horizon": "swing",
+      "real_model_facts_revalidated": 2,
+      "real_model_relations_revalidated": 1,
+      "real_model_rejections_revalidated": 1,
+      "controlled_adversarial_probes_rejected": 4
+    },
+    {
+      "horizon": "short_term",
+      "real_model_facts_revalidated": 2,
+      "real_model_relations_revalidated": 0,
+      "real_model_rejections_revalidated": 2,
+      "controlled_adversarial_probes_rejected": 4
+    },
+    {
+      "horizon": "long_term",
+      "real_model_facts_revalidated": 2,
+      "real_model_relations_revalidated": 0,
+      "real_model_rejections_revalidated": 2,
+      "controlled_adversarial_probes_rejected": 4
+    }
+  ],
+  "policy": {
+    "id": "REAL-001-SWING-PROPOSED",
+    "version": "2.0.0",
+    "status": "unconfigured",
+    "approval_ref": null
+  },
+  "assessment": {
+    "action": "INSUFFICIENT_EVIDENCE",
+    "reasons": [
+      "eligibility_or_instrument_risk_unavailable",
+      "policy_not_configured"
+    ]
+  },
+  "publication_blocker": "factual_research_not_recommendation",
+  "corporate_action_scope": "scope_denied",
+  "prospective_reference_count": 0,
+  "paid_cost_inr": 0,
+  "private_artifact_sha256": {
+    "phase8-acceptance.json": "d61af29b1f193eb3bb166ba67076f290fb61a57b53e6835f305ad2965d515669",
+    "phase8-prices-final.json": "ba6d54889c6e088052bc2384361fa1deff67c35dcbfa90971c8df584dc1dea01",
+    "phase8-browser.json": "2e7efbb1f85987af54397e1fad5cee31e942d92bd9f683cb6037a7c31a7999b0",
+    "phase8-ratios.json": "a3aad16ef38d8629ed81216550890fed0a0d3220168dcf66996ba1dba57e24ca"
+  },
+  "local_validation": {
+    "backend_worker_passed": 658,
+    "postgresql_passed": 168,
+    "postgresql_skipped": 0,
+    "migration_lifecycle": "passed",
+    "contract_evaluation_risk_validators": "passed",
+    "script_tests_passed": 10,
+    "production_build": "passed",
+    "actual_browser": "passed_no_mocks",
+    "browser_fixture_workflows_passed": 5,
+    "browser_retry": "initial retained fixture source-inspection failure; clean isolated fixture database passed all five"
+  }
+}

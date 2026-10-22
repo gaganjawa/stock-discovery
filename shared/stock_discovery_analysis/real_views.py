@@ -38,6 +38,26 @@ def eligible_revisions(conn,listing,cutoff,access):
     return result
 
 
+def market_readiness(bars,sessions,cutoff):
+    """Describe coverage against D3-05, without approving adjusted execution."""
+    known=at(cutoff)
+    closed=[s for s in sessions if at(s.data.closes_at)<=known]
+    latest=max((s.data.closes_at for s in closed),default=None)
+    ends=[b.data.ends_at for b in bars]
+    expected=[s.data.closes_at for s in closed if not ends or s.data.closes_at>=min(ends)]
+    gaps=sorted(set(expected)-set(ends))
+    extra=sorted(set(ends)-{s.data.closes_at for s in closed})
+    age=None if not ends else max(0,int((known-at(max(ends))).total_seconds()))
+    return dict(required_sessions=30,observed_bars=len(bars),latest_verified_session=latest,
+        latest_bar=max(ends) if ends else None,missing_sessions=gaps,unverified_bar_sessions=extra,
+        duplicate_bars=len(ends)!=len(set(ends)),warmup_complete=len(ends)>=30,
+        latest_session_present=bool(ends and latest and max(ends)==latest),price_age_seconds=age,
+        proposed_max_age_seconds=86400,within_proposed_age=age is not None and age<=86400,
+        adjustment_basis=sorted({b.data.adjustment_basis for b in bars}),
+        execution_qualified=False,volume_basis='unverified',corporate_actions='coverage_unverified',
+        historical_pit='unqualified',input_revision_ids=[b.revision_id for b in bars])
+
+
 def company(conn,config,listing,*,clock=now,publication_inputs=False,cutoff_at=None):
     config=ViewConfig.model_validate(config)
     check(listing in config.listing_ids,'listing_not_configured')
@@ -96,6 +116,10 @@ def company(conn,config,listing,*,clock=now,publication_inputs=False,cutoff_at=N
         observed_features['relative_volume20']=None  # Provider volume adjustment not established.
         feature_reason='descriptive_only_action_coverage_and_volume_basis_unqualified'
     sessions=sorted((r for r in records if r.data.kind=='session'),key=lambda r:r.data.opens_at)
+    readiness=market_readiness(bars,sessions,cutoff)
+    if any(day<=readiness['latest_bar'] for day in readiness['missing_sessions'] if readiness['latest_bar']) or readiness['unverified_bar_sessions'] or readiness['duplicate_bars']:
+        observed_features={k:None for k in observed_features}
+        feature_reason='descriptive_indicators_blocked_by_session_coverage'
     calendar=None
     if sessions:
         check(len({r.data.opens_at for r in sessions})==len(sessions),'ambiguous_calendar_sources')
@@ -131,7 +155,9 @@ def company(conn,config,listing,*,clock=now,publication_inputs=False,cutoff_at=N
             open=r.data.open,high=r.data.high,low=r.data.low,close=r.data.close,volume=r.data.volume,
             revision_id=r.revision_id,fetched_at=r.fetched_at,adjustment_basis=r.data.adjustment_basis,
             adjustment_observed_at=r.fetched_at,volume_adjustment='unverified' if r.source_id=='upstox' else 'raw') for r in bars],documents=documents,financial_facts=facts,
-        events=events,quantitative=quantitative,price_features=dict(metrics=observed_features,reason=feature_reason,actionable=False),analysis_history=history,recommendations=[],
+        events=events,quantitative=quantitative,market_readiness=readiness,
+        policy_states={h:dict(ref=p.ref.model_dump(),status=p.status,approval_ref=p.approval_ref) for h,p in policies.items()},
+        assessment_state='RESEARCH_ONLY_ASSESSMENT',paper_position_status='not_created',price_features=dict(metrics=observed_features,reason=feature_reason,actionable=False),analysis_history=history,recommendations=[],
         publication_status='not_published',prospective_status='not_configured',
         publication_blockers=['real_policies_required','financial_publication_timestamps_unknown',
             'cash_flow_reconciliation_unresolved','balance_sheet_and_valuation_fields_unverified',

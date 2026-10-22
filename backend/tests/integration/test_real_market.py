@@ -64,3 +64,31 @@ def test_scheduler_rejects_mode_and_configuration_drift(tmp_path):
     installed=handlers(SimpleNamespace(mode='live_paper',input_hash=digest(config.model_dump(mode='json'))),config)
     from stock_discovery_analysis.schedule_runner import JobFailure
     with pytest.raises(JobFailure):installed['snapshot'](None,None,None)
+
+
+def test_calendar_includes_current_ist_date_without_admitting_open_candle(isolated_url,tmp_path,monkeypatch):
+    from worker import real_market
+    g=grant();gf=tmp_path/'grants.json';gf.write_text(json.dumps([g.model_dump()]))
+    tf=tmp_path/'token';tf.write_text('test-only')
+    config=MarketConfig(account_ref='test',grant_file=str(gf),token_file=str(tf),retention_days=365,lookback_days=40)
+    requested=[]
+    class CalendarProvider:
+        def __init__(self,**kwargs):pass
+        def close(self):pass
+        def session(self,stream,day):
+            requested.append(day)
+            if day not in ('2026-10-20','2026-10-21'):return None
+            return SessionData(kind='session',calendar_version='fabricated',opens_at=day+'T03:45:00Z',closes_at=day+'T10:00:00Z')
+    monkeypatch.setattr(real_market,'Upstox',CalendarProvider)
+    monkeypatch.setattr('time.sleep',lambda seconds:None)
+    with psycopg.connect(isolated_url,autocommit=True) as conn:
+        result=real_market.ingest_calendar(conn,config,clock=lambda:'2026-10-21T09:00:00Z')
+        assert result['to_date']=='2026-10-21' and requested[-1]=='2026-10-21'
+        assert len(requested)==48
+        class Prices(CalendarProvider):
+            def instruments(self,stream,symbols):
+                return [dict(symbol='INFY',name='Test',isin='INE009A01021',lot_size=1,tick_size='0.05')]
+            def candles(self,stream,instrument,start,end,sessions):
+                assert end=='2026-10-20'  # Today's observed calendar is not today's closed bar.
+                return ()
+        real_market.ingest_prices(conn,config,clock=lambda:'2026-10-21T09:00:00Z',adapter_factory=Prices)

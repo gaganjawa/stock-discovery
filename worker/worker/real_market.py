@@ -150,8 +150,9 @@ def ingest_calendar(conn, config, *, clock=now):
     config=MarketConfig.model_validate(config)
     check(conn.autocommit,'dedicated_autocommit_connection_required')
     access=access_for(config,clock)
-    cycle=clock();end=at(cycle).replace(tzinfo=timezone.utc).astimezone(ZoneInfo('Asia/Kolkata')).date()-timedelta(days=1)
+    cycle=clock();end=at(cycle).replace(tzinfo=timezone.utc).astimezone(ZoneInfo('Asia/Kolkata')).date()
     start=end-timedelta(days=config.lookback_days+7)
+    # Include today's dated session; ingest_prices excludes it until its close.
     # Include a closure buffer before the latest observed trading session.
     # At most 52 dates keeps a run within the documented conservative per-minute budget.
     check(config.lookback_days<=44,'calendar_refresh_limit_44_days')

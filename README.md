@@ -6,7 +6,7 @@
 
 ## REAL-001 — actual-source integration (PARTIAL)
 
-Phase 7 now produces useful private INFY historical financial research: non-empty local-model factual claims and a narrowly validated directional inference, deterministic comparisons, exact citations and explicit data gaps. The Real Research dashboard displays the genuine results. Investment qualification, approved policies, publication and prospective acceptance remain blocked. See [Phase 7 execution and blockers](docs/REAL-001-phase7.md). Provider values and generated claims are not redistributed in this public repository.
+Phase 8 evaluates actual INFY Swing readiness using 33 observed candles and the existing verified financial report. The dashboard now shows session gaps, freshness and explicit policy approval state. The latest verified session is missing from the returned prices, action/volume/risk qualification is incomplete, and the versioned Swing proposal is unapproved. The real assessment is INSUFFICIENT_EVIDENCE; no publication or prospective reference exists. See [Phase 8 execution](docs/REAL-001-phase8.md) and the [policy decision record](docs/REAL-001-phase8-policy-decision.md). Provider values remain private.
 
 The existing app now has a distinct **Real research** view with explicit blocked coverage and three horizons. Operational adapters are opt-in; no synthetic fallback or paper-admission bypass is added. See the [acceptance record](docs/REAL-001-acceptance.md), [provider/permission matrix](docs/REAL-001-provider-matrix.md) and [local runbook](docs/REAL-001-runbook.md). Keep tokens outside Git and never put values in `.env.example`.
 
