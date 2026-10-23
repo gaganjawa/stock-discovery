@@ -6,7 +6,7 @@
 
 ## REAL-001 — actual-source integration (PARTIAL)
 
-Phase 8 evaluates actual INFY Swing readiness using 33 observed candles and the existing verified financial report. The dashboard now shows session gaps, freshness and explicit policy approval state. The latest verified session is missing from the returned prices, action/volume/risk qualification is incomplete, and the versioned Swing proposal is unapproved. The real assessment is INSUFFICIENT_EVIDENCE; no publication or prospective reference exists. See [Phase 8 execution](docs/REAL-001-phase8.md) and the [policy decision record](docs/REAL-001-phase8-policy-decision.md). Provider values remain private.
+Phase 9 verifies a **limited research-only local beta**: genuine INFY charts, 24 financial facts, cited historical findings and explicit missing-session/qualification labels. Open `/#real-research` using the [local runbook](docs/REAL-001-runbook.md). The prospective Swing pilot remains **BLOCKED**: the final October 23 check lacks that session’s candle, and policy/action/volume/risk/research gates are unresolved. No real recommendation or prospective reference exists. [Phase 9 execution and launch checklist](docs/REAL-001-phase9.md) · [Policy review](docs/REAL-001-phase8-policy-decision.md). Provider values remain private.
 
 The existing app now has a distinct **Real research** view with explicit blocked coverage and three horizons. Operational adapters are opt-in; no synthetic fallback or paper-admission bypass is added. See the [acceptance record](docs/REAL-001-acceptance.md), [provider/permission matrix](docs/REAL-001-provider-matrix.md) and [local runbook](docs/REAL-001-runbook.md). Keep tokens outside Git and never put values in `.env.example`.
 

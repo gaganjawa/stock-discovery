@@ -48,10 +48,13 @@ def market_readiness(bars,sessions,cutoff):
     gaps=sorted(set(expected)-set(ends))
     extra=sorted(set(ends)-{s.data.closes_at for s in closed})
     age=None if not ends else max(0,int((known-at(max(ends))).total_seconds()))
-    return dict(required_sessions=30,observed_bars=len(bars),latest_verified_session=latest,
+    matches=bool(ends and latest and max(ends)==latest)
+    freshness='calendar_or_prices_unavailable' if not latest or not ends else 'matches_latest_verified_closed_session' if matches else 'missing_latest_verified_closed_session'
+    return dict(session_freshness=freshness,calendar_completeness='not_attested_by_session_list',
+        elapsed_age_policy_status='unapproved_proposal_under_review',required_sessions=30,observed_bars=len(bars),latest_verified_session=latest,
         latest_bar=max(ends) if ends else None,missing_sessions=gaps,unverified_bar_sessions=extra,
         duplicate_bars=len(ends)!=len(set(ends)),warmup_complete=len(ends)>=30,
-        latest_session_present=bool(ends and latest and max(ends)==latest),price_age_seconds=age,
+        latest_session_present=matches,price_age_seconds=age,
         proposed_max_age_seconds=86400,within_proposed_age=age is not None and age<=86400,
         adjustment_basis=sorted({b.data.adjustment_basis for b in bars}),
         execution_qualified=False,volume_basis='unverified',corporate_actions='coverage_unverified',

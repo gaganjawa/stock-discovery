@@ -1,0 +1,96 @@
+{
+  "phase": 9,
+  "status": "PARTIAL",
+  "baseline": "1c4ce3053d1137f6229cbfeece659de8965a5f31",
+  "baseline_ci": "success",
+  "baseline_ci_run": 39830721794,
+  "beta": "READY_LIMITED_MANUAL_LOCAL_RESEARCH",
+  "prospective_pilot": "BLOCKED",
+  "three_horizon_go_live": "NOT_YET_ACCEPTED",
+  "market": {
+    "initial_observed_bars": 34,
+    "final_coherent_window_bars": 33,
+    "final_latest_date": "2026-10-22",
+    "missing_closed_date": "2026-10-23",
+    "cutoff": "2026-10-23T10:40:18Z",
+    "adjustment_basis": "split_bonus_adjusted",
+    "execution_qualified": false,
+    "volume_basis": "unverified",
+    "corporate_actions": "scope_denied"
+  },
+  "financial_facts": 24,
+  "model_execution": "reused_actual_phase7_outputs_no_new_inference",
+  "ai_validation": [
+    {
+      "horizon": "swing",
+      "accepted": 2,
+      "relations": 1,
+      "rejected": 1,
+      "cash_conflict_preserved": true,
+      "abstention_preserved": true
+    },
+    {
+      "horizon": "short_term",
+      "accepted": 2,
+      "relations": 0,
+      "rejected": 2,
+      "cash_conflict_preserved": true,
+      "abstention_preserved": true
+    },
+    {
+      "horizon": "long_term",
+      "accepted": 2,
+      "relations": 0,
+      "rejected": 2,
+      "cash_conflict_preserved": true,
+      "abstention_preserved": true
+    }
+  ],
+  "policy": {
+    "version": "2.0.0",
+    "modified": false,
+    "approved": false
+  },
+  "action": "INSUFFICIENT_EVIDENCE",
+  "reasons": [
+    "eligibility_or_instrument_risk_unavailable",
+    "policy_not_configured"
+  ],
+  "publication_blocker": "factual_research_not_recommendation",
+  "counts": {
+    "discovery.recommendations": 0,
+    "paper.shadow_references": 0,
+    "paper.shadow_outcomes": 0,
+    "paper.portfolios": 0,
+    "paper.ledger": 0
+  },
+  "grants_changed": false,
+  "local_checklist": {
+    "Application start": "PASS_LIMITED_SCOPE",
+    "Authentication": "PASS_LIMITED_SCOPE",
+    "PostgreSQL": "PASS_LIMITED_SCOPE",
+    "Provider availability": "PASS_LIMITED_SCOPE",
+    "Ollama availability": "PASS_LIMITED_SCOPE",
+    "Actual data": "PASS_LIMITED_SCOPE",
+    "Research and citations": "PASS_LIMITED_SCOPE",
+    "Stale/missing data": "PASS_LIMITED_SCOPE",
+    "Exact blockers": "PASS_LIMITED_SCOPE",
+    "Refresh without duplicates": "PASS_LIMITED_SCOPE",
+    "Interrupted run": "PASS_LIMITED_SCOPE",
+    "Private data": "PASS_LIMITED_SCOPE",
+    "History and corrections": "PASS_LIMITED_SCOPE",
+    "Start/stop safety": "PASS_LIMITED_SCOPE"
+  },
+  "tests": {
+    "backend_worker": 662,
+    "postgresql": 168,
+    "postgresql_skips": 0,
+    "script_tests": 10,
+    "build": "passed",
+    "migrations": "passed",
+    "browser_fixture_workflows": 5,
+    "genuine_browser": "passed_before_restart_after_restart_and_final_post_close",
+    "final_ci": "reported_at_delivery_for_exact_pushed_commit"
+  },
+  "cost_inr": 0
+}

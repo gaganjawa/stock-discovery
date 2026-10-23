@@ -34,3 +34,25 @@ def test_shipped_swing_proposal_cannot_activate_or_supply_entry_terms():
     assert p.status=='unconfigured' and p.approval_ref is None
     assert r['action']=='INSUFFICIENT_EVIDENCE' and 'policy_not_configured' in r['reasons']
     assert not r['entry_terms'] and r['paper_admission']['status']=='blocked'
+
+
+import pytest
+@pytest.mark.parametrize('cutoff,next_session',[
+    ('2026-10-18T12:00:00Z','2026-10-19'),  # Sunday after Friday close
+    ('2026-10-19T09:59:59Z','2026-10-19'),  # Monday before close
+    ('2026-10-19T12:00:00Z','2026-10-20'),  # declared holiday: next dated session Tuesday
+])
+def test_session_freshness_does_not_confuse_elapsed_age_with_weekends_or_holidays(cutoff,next_session):
+    r=market_readiness([bar('2026-10-16')],[session('2026-10-16'),session(next_session)],cutoff)
+    assert r['session_freshness']=='matches_latest_verified_closed_session'
+    assert not r['within_proposed_age']  # Legacy unapproved proposal is not silently rewritten.
+    assert not r['execution_qualified'] and r['calendar_completeness']=='not_attested_by_session_list'
+
+
+def test_session_close_requires_new_candle_and_provider_lag_is_explicit():
+    sessions=[session('2026-10-16'),session('2026-10-19')]
+    before=market_readiness([bar('2026-10-16')],sessions,'2026-10-19T09:59:59Z')
+    after=market_readiness([bar('2026-10-16')],sessions,'2026-10-19T10:00:00Z')
+    assert before['latest_session_present']
+    assert after['session_freshness']=='missing_latest_verified_closed_session'
+    assert after['missing_sessions']==['2026-10-19T10:00:00Z']
