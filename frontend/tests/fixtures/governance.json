@@ -1,0 +1,71 @@
+{
+  "experiment_id": "SYN-BROWSER-GOVERNANCE",
+  "hypothesis": "Fixture safeguards, not investment research",
+  "horizon": "swing",
+  "mode": "synthetic",
+  "comparison": "paired",
+  "universe": [
+    "SYN-A"
+  ],
+  "universe_ref": {
+    "id": "test",
+    "version": "1",
+    "content_hash": "88970d39625e7dbf3d8c53037e71049d41a348d3060bc9b7180c1f103d51279c"
+  },
+  "train": {
+    "start": "2000-01-01T00:00:00Z",
+    "end": "2001-01-01T00:00:00Z"
+  },
+  "validation": {
+    "start": "2002-01-01T00:00:00Z",
+    "end": "2003-01-01T00:00:00Z"
+  },
+  "test": {
+    "start": "2004-01-01T00:00:00Z",
+    "end": "2005-01-01T00:00:00Z"
+  },
+  "samples": [],
+  "embargo_seconds": 86400,
+  "arms": [
+    {
+      "arm": "quant",
+      "strategy_hash": "88970d39625e7dbf3d8c53037e71049d41a348d3060bc9b7180c1f103d51279c",
+      "model_hash": null,
+      "retrieval_hash": null,
+      "prompt_hash": null,
+      "policy_hash": "88970d39625e7dbf3d8c53037e71049d41a348d3060bc9b7180c1f103d51279c",
+      "cost_hash": "88970d39625e7dbf3d8c53037e71049d41a348d3060bc9b7180c1f103d51279c",
+      "risk_hash": "88970d39625e7dbf3d8c53037e71049d41a348d3060bc9b7180c1f103d51279c",
+      "candidate_selection": "same frozen members"
+    },
+    {
+      "arm": "quant_rag",
+      "strategy_hash": "88970d39625e7dbf3d8c53037e71049d41a348d3060bc9b7180c1f103d51279c",
+      "model_hash": "88970d39625e7dbf3d8c53037e71049d41a348d3060bc9b7180c1f103d51279c",
+      "retrieval_hash": "88970d39625e7dbf3d8c53037e71049d41a348d3060bc9b7180c1f103d51279c",
+      "prompt_hash": "88970d39625e7dbf3d8c53037e71049d41a348d3060bc9b7180c1f103d51279c",
+      "policy_hash": "88970d39625e7dbf3d8c53037e71049d41a348d3060bc9b7180c1f103d51279c",
+      "cost_hash": "88970d39625e7dbf3d8c53037e71049d41a348d3060bc9b7180c1f103d51279c",
+      "risk_hash": "88970d39625e7dbf3d8c53037e71049d41a348d3060bc9b7180c1f103d51279c",
+      "candidate_selection": "same frozen members"
+    },
+    {
+      "arm": "quant_agent",
+      "strategy_hash": "88970d39625e7dbf3d8c53037e71049d41a348d3060bc9b7180c1f103d51279c",
+      "model_hash": "88970d39625e7dbf3d8c53037e71049d41a348d3060bc9b7180c1f103d51279c",
+      "retrieval_hash": "88970d39625e7dbf3d8c53037e71049d41a348d3060bc9b7180c1f103d51279c",
+      "prompt_hash": "88970d39625e7dbf3d8c53037e71049d41a348d3060bc9b7180c1f103d51279c",
+      "policy_hash": "88970d39625e7dbf3d8c53037e71049d41a348d3060bc9b7180c1f103d51279c",
+      "cost_hash": "88970d39625e7dbf3d8c53037e71049d41a348d3060bc9b7180c1f103d51279c",
+      "risk_hash": "88970d39625e7dbf3d8c53037e71049d41a348d3060bc9b7180c1f103d51279c",
+      "candidate_selection": "same frozen members"
+    }
+  ],
+  "metrics": [
+    "net_expectancy_after_costs",
+    "forecast_maturity"
+  ],
+  "stopping_rule": "fixed cohort; no performance-based extension",
+  "tuning_budget": 10,
+  "historical_llm_contamination": "possible_uncontrolled_model_knowledge"
+}
