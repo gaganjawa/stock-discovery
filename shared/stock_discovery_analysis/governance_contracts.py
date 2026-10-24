@@ -102,7 +102,7 @@ class Experiment(Wire):
         span=max(((at(s.label_end)-at(s.cutoff)).total_seconds() for s in self.samples),default=0)
         check(self.embargo_seconds>=span,'embargo_below_actual_maximum_label_span')
         if self.comparison=='paired':
-            check(len({(a.cost_hash,a.risk_hash,a.candidate_selection) for a in self.arms})==1,'paired_assumptions_mismatch')
+            check(len({(a.strategy_hash,a.policy_hash,a.cost_hash,a.risk_hash,a.candidate_selection) for a in self.arms})==1,'paired_assumptions_mismatch')
         return self
 
 

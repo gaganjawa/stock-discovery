@@ -93,3 +93,14 @@ def test_no_entries_ambiguity_and_forecasts_use_separate_denominators():
     assert r['resolved_trades']==0 and r['expectancy_after_costs'] is None
     assert r['forecast_quality']['provisional']==3 and r['forecast_quality']['missing']==1
     assert r['forecast_quality']['observed_endpoint_return']['mean'] is None
+
+
+def test_paired_baseline_hashes_match_while_research_hashes_may_differ():
+    m=manifest()
+    for i,arm in enumerate(m['arms'][1:]):
+        for field in ('model_hash','retrieval_hash','prompt_hash'):arm[field]=digest([field,i])
+    assert parse(m).comparison=='paired'
+    for field in ('strategy_hash','policy_hash'):
+        changed=deepcopy(m);changed['arms'][1][field]=digest('different baseline')
+        with pytest.raises(ValueError,match='paired_assumptions_mismatch'):parse(changed)
+        changed['comparison']='end_to_end';assert parse(changed).comparison=='end_to_end'

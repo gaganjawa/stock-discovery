@@ -63,8 +63,8 @@ def begin_trial(conn,body):
             check(previous[0]==digest(wire),'immutable_trial_conflict');return dict(trial_id=body.trial_id,status='already_registered')
         control=conn.execute("SELECT kind,payload FROM discovery.experiment_events WHERE experiment_id=%s AND kind IN ('pause','rollback') ORDER BY sequence DESC LIMIT 1",(body.experiment_id,)).fetchone()
         if control:error='future_trials_paused' if control[0]=='pause' else 'rollback_requires_target_experiment'
-        count=conn.execute('SELECT count(*) FROM discovery.experiment_trials WHERE experiment_id=%s',(body.experiment_id,)).fetchone()[0]
-        if count>=experiment.tuning_budget:error='tuning_budget_exhausted'
+        count=conn.execute("SELECT count(*) FROM discovery.experiment_trials WHERE experiment_id=%s AND request->>'split'='validation'",(body.experiment_id,)).fetchone()[0]
+        if body.split=='validation' and count>=experiment.tuning_budget:error='tuning_budget_exhausted'
         if body.split=='forward':
             if experiment.forward is None:error='forward_window_not_registered'
             else:
@@ -210,7 +210,8 @@ def evaluate(conn,tid,*,fault=None):
                     ledger=conn.execute('SELECT state,event_hash FROM paper.ledger WHERE portfolio_id=%s AND sequence=%s',(arm.portfolio_id,arm.ledger_sequence)).fetchone()
                     check(ledger is not None,'ledger_revision_unavailable');state,ledger_hash=ledger;authorize(conn,state)
                     check(instant(state['available_at'])<=instant(trial.outcome_cutoff),'future_outcome_revision')
-                    orders=[o for o in state['orders'].values() if o['recommendation_id'] in arm.recommendation_ids]
+                    check(set(state['orders'])<=set(arm.recommendation_ids),'portfolio_includes_other_decisions')
+                    orders=list(state['orders'].values())
                     portfolio_policy=conn.execute('SELECT config FROM paper.portfolios WHERE portfolio_id=%s',(arm.portfolio_id,)).fetchone()[0]
                     observation_times=tuple(row[0].isoformat() for row in conn.execute(
                         "SELECT event_at FROM paper.ledger WHERE portfolio_id=%s AND sequence<=%s AND kind='observation' ORDER BY sequence",

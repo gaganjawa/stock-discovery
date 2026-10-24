@@ -311,3 +311,32 @@ def test_paired_outcomes_cannot_change_capital_cost_risk_assumptions(database):
         arm.update(portfolio_id=pid,ledger_sequence=1)
     t=Trial.model_validate_json(json.dumps(wire));g.begin_trial(conn,t)
     assert g.evaluate(conn,t.trial_id)['error_code']=='paired_ledger_cost_risk_or_observation_window_mismatch'
+
+
+def test_mixed_portfolio_seals_failure_without_arm_metrics(database):
+    conn,_,_=database;e,arms,run=fixture_experiment(database);g.register(conn,e);t=trial(e,arms,run);wire=t.model_dump(mode='json')
+    pid=paper_store.create(conn,PortfolioConfig(name='Mixed fixture',mode='fictional_simulation',contract_version=FICTIONAL,starting_capital='100000',simulation_start_at='2025-06-25T10:01:01Z'),uuid4().hex)
+    unrelated=arms['quant_rag'][0]['recommendation']['recommendation_id']
+    paper_store.admit(conn,pid,unrelated,unrelated)
+    for rid in wire['arms'][0]['recommendation_ids']:paper_store.admit(conn,pid,rid,rid)
+    _,last=paper_store.config_state(conn,pid);wire['arms'][0].update(portfolio_id=pid,ledger_sequence=last[0])
+    t=Trial.model_validate_json(json.dumps(wire));g.begin_trial(conn,t);result=g.evaluate(conn,t.trial_id)
+    assert result['status']=='failed' and result['error_code']=='portfolio_includes_other_decisions'
+    assert 'arms' not in result and 'comparisons' not in result
+    assert g.evaluate(conn,t.trial_id)==result
+    assert paper_store.config_state(conn,pid)[1]==last
+
+
+def test_validation_budget_leaves_train_holdout_and_forward_trials_available(database):
+    conn,_,_=database;e=empty(conn,tuning_budget=1,forward={'start':'2070-01-01T00:00:00Z','end':'2071-01-01T00:00:00Z'})
+    g.begin_trial(conn,trial(e,split='train'))
+    validation=trial(e);g.begin_trial(conn,validation);assert g.evaluate(conn,validation.trial_id)['status']=='completed'
+    with pytest.raises(ValueError,match='tuning_budget_exhausted'):g.begin_trial(conn,trial(e))
+    holdout=trial(e,split='test',selected_validation_trial=validation.trial_id)
+    assert g.begin_trial(conn,holdout)['status']=='registered'
+    assert g.begin_trial(conn,holdout)['status']=='already_registered'
+    with pytest.raises(ValueError,match='holdout_already_exposed'):g.begin_trial(conn,trial(e,split='test',selected_validation_trial=validation.trial_id))
+    forward=trial(e,split='forward',outcome_cutoff='2070-01-01T00:00:00Z')
+    assert g.begin_trial(conn,forward)['status']=='registered'
+    assert g.begin_trial(conn,forward)['status']=='already_registered'
+    assert conn.execute("SELECT count(*) FROM discovery.experiment_events WHERE experiment_id=%s AND kind='holdout_reserved'",(e.experiment_id,)).fetchone()[0]==1
