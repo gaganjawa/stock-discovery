@@ -90,3 +90,7 @@ fictional simulation contract never changes their original admission status.
 Forward source/model/policy approvals and observation adapters remain
 unconfigured; no broker orders or real-market activation are included.
 See [D3-10 contracts, execution assumptions and API](docs/D3-10-paper-portfolio.md).
+
+### D3-11 experiment governance
+
+[Experiment governance and API runbook](docs/D3-11-EXPERIMENT-GOVERNANCE.md) · [Acceptance record](docs/D3-11-ACCEPTANCE.md). Immutable preregistration and Q / Q+R / Q+A comparisons reuse the existing publication and paper ledgers. Scorecard displays trial history and explicit missing/mature outcomes. Holdout reuse, leakage and unqualified promotion fail closed. Synthetic acceptance is not investment performance; EP-1 remains unratified and no live operation is activated.
