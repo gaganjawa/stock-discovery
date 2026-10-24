@@ -303,3 +303,11 @@ def test_future_fact_in_retrieved_content_fails_evaluation(database,monkeypatch)
     monkeypatch.setattr(g,'read_artifact',future)
     r=g.evaluate(conn,t.trial_id)
     assert r['status']=='failed' and r['error_code']=='post_cutoff_financial_observation'
+
+def test_paired_outcomes_cannot_change_capital_cost_risk_assumptions(database):
+    conn,_,_=database;e,arms,run=fixture_experiment(database);g.register(conn,e);t=trial(e,arms,run);wire=t.model_dump(mode='json')
+    for i,arm in enumerate(wire['arms']):
+        pid=paper_store.create(conn,PortfolioConfig(name='Different bookkeeping name '+str(i),mode='fictional_simulation',contract_version=FICTIONAL,starting_capital='100000',fixed_fee=str(i+1),simulation_start_at='2025-06-25T10:01:01Z'),uuid4().hex)
+        arm.update(portfolio_id=pid,ledger_sequence=1)
+    t=Trial.model_validate_json(json.dumps(wire));g.begin_trial(conn,t)
+    assert g.evaluate(conn,t.trial_id)['error_code']=='paired_ledger_cost_risk_or_observation_window_mismatch'

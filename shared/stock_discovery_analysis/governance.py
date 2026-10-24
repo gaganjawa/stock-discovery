@@ -166,7 +166,7 @@ def evaluate(conn,tid,*,fault=None):
         try:
             check(trial.split in audit['accepted'],'forward_window_not_registered')
             accepted=set(audit['accepted'][trial.split]);samples={(s.listing_id,s.cutoff):s for s in (trial.forward_samples if trial.split=='forward' else experiment.samples) if trial.split=='forward' or s.sample_id in accepted}
-            arm_reports={};pair_sets={};lineage={}
+            arm_reports={};pair_sets={};lineage={};ledger_assumptions=set()
             registered=conn.execute('SELECT registered_at FROM discovery.experiments WHERE experiment_id=%s',(experiment.experiment_id,)).fetchone()[0]
             check(all(at(s.cutoff)<=at(trial.outcome_cutoff) for s in samples.values()),'outcome_cutoff_before_decision')
             for arm in trial.arms:
@@ -211,13 +211,20 @@ def evaluate(conn,tid,*,fault=None):
                     check(ledger is not None,'ledger_revision_unavailable');state,ledger_hash=ledger;authorize(conn,state)
                     check(instant(state['available_at'])<=instant(trial.outcome_cutoff),'future_outcome_revision')
                     orders=[o for o in state['orders'].values() if o['recommendation_id'] in arm.recommendation_ids]
-                    ledger_ref=dict(portfolio_id=arm.portfolio_id,sequence=arm.ledger_sequence,event_hash=ledger_hash)
+                    portfolio_policy=conn.execute('SELECT config FROM paper.portfolios WHERE portfolio_id=%s',(arm.portfolio_id,)).fetchone()[0]
+                    observation_times=tuple(row[0].isoformat() for row in conn.execute(
+                        "SELECT event_at FROM paper.ledger WHERE portfolio_id=%s AND sequence<=%s AND kind='observation' ORDER BY sequence",
+                        (arm.portfolio_id,arm.ledger_sequence)).fetchall())
+                    ledger_assumptions.add((digest({k:v for k,v in portfolio_policy.items() if k!='name'}),state['asof'],observation_times))
+                    ledger_ref=dict(portfolio_id=arm.portfolio_id,sequence=arm.ledger_sequence,event_hash=ledger_hash,policy_hash=digest(portfolio_policy))
                     for o in orders:
                         check(o['horizon']==experiment.horizon and o['cohort']==arm.arm,'outcome_cohort_mismatch')
                 arm_reports[arm.arm]=summarize_arm(artifacts,orders,len(experiment.universe),unavailable=missing_run)
                 arm_reports[arm.arm].update(pinned_portfolio(conn,arm,trial.outcome_cutoff))
                 lineage[arm.arm]=dict(recommendation_ids=list(arm.recommendation_ids),artifact_hashes=[digest(a) for a in artifacts],ledger=ledger_ref)
-            if experiment.comparison=='paired':check(all(s==pair_sets['quant'] for s in pair_sets.values()),'paired_candidates_or_snapshots_differ')
+            if experiment.comparison=='paired':
+                check(all(s==pair_sets['quant'] for s in pair_sets.values()),'paired_candidates_or_snapshots_differ')
+                check(len(ledger_assumptions)<=1,'paired_ledger_cost_risk_or_observation_window_mismatch')
             result=dict(status='completed',trial_id=tid,experiment_id=experiment.experiment_id,split=trial.split,comparison=experiment.comparison,
                 evaluator_hash=evaluator_hash(),arms=arm_reports,comparisons=comparisons(arm_reports),lineage=lineage,split_audit=audit,selection_differences={k:len(v^pair_sets['quant']) for k,v in pair_sets.items()},
                 evidence_class='synthetic_software_only' if experiment.mode=='synthetic' else 'prospective_unqualified' if trial.split=='forward' else 'historical_exploratory',

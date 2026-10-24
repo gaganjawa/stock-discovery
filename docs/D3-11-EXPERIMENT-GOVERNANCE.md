@@ -12,7 +12,7 @@ Built on merged D3-01–D3-10 at `a0846b5784a44bde3a8b9a6b172600a1a98259c3`. No 
 
 The execution path reuses existing D3-09 publication runs, their worker/scheduler and the D3-05 quantitative reproduction function; it does not create another scheduler or call models. Q is `quant`, Q+R is `quant_rag`, Q+A is `quant_agent`. The three existing arms must all be present in every registration and trial. D3-10 supplies immutable order, observation and ledger records. Governance reads a specified ledger sequence, never “latest”. Evaluations are bounded reads of already published artifacts, not synchronous scans or inference jobs.
 
-Paired trials require identical candidate/snapshot sets and cost/risk/selection assumptions. End-to-end trials expose candidate-set differences and failure counts alongside descriptive deltas against Q. Differences in selection are not attributed to improved research judgment. The complete set of published decisions in the registered universe/window must be represented; omitting a failed decision or its sample is rejected. Explicit purge exclusions remain visible.
+Paired trials require identical candidate/snapshot sets and cost/risk/selection assumptions. Pinned paper portfolios must also share capital, fee, risk and observation-window assumptions; their immutable policy hashes are recorded. End-to-end trials expose candidate-set differences and failure counts alongside descriptive deltas against Q. Differences in selection are not attributed to improved research judgment. The complete set of published decisions in the registered universe/window must be represented; omitting a failed decision or its sample is rejected. Explicit purge exclusions remain visible.
 
 ## Leakage and access controls
 

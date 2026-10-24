@@ -19,8 +19,8 @@ Scope: STK-041/042/044/069/072/076–078; SD-ARCH-3.0 T14/T15. Separate branch f
 
 Local validation on 24 October 2026:
 
-- 394 backend/worker non-database regression tests passed before final additions; the final targeted run passed all 43 D3-11 cases (10 unit and 33 PostgreSQL cases). Together with unchanged baseline coverage, **589 unique application/worker tests were exercised**: 396 non-database and 193 database integration cases, zero skips.
-- Full migration acceptance executed **190 database tests with zero skips** before the three final targeted database additions. Upgrade, repeat upgrade, downgrade to base, re-upgrade and deliberate atomic failure rollback passed. The three additions also used freshly migrated isolated databases.
+- 394 backend/worker non-database regression tests passed before final additions; the final targeted run passed 43 D3-11 cases (10 unit and 33 PostgreSQL cases), followed by the paired ledger-assumptions regression. Together with unchanged baseline coverage, **590 unique application/worker tests were exercised**: 396 non-database and 194 database integration cases, zero skips.
+- Full migration acceptance executed **190 database tests with zero skips** before the four final targeted database additions. Upgrade, repeat upgrade, downgrade to base, re-upgrade and deliberate atomic failure rollback passed. The four additions also used freshly migrated isolated databases.
 - **10 script tests**, all three existing contract/evaluation/capital-risk validators and the production frontend build passed.
 - **4 browser workflows passed** against the isolated local API, worker and UI: discovery, governance, paper portfolio and replay/scorecard.
 - Exact-commit CI is tracked by the new draft PR's checks. Its verified run link and commit are supplied with delivery; no self-referential commit hash is embedded here.
