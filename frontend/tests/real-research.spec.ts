@@ -67,13 +67,15 @@ test('configured evidence renders and permission denial removes cached company d
 // Fabricated response exercises new scan rendering and revocation, not genuine scanning.
 test('real homepage shows scan failures separately and clears cached scan on permission denial',async({page})=>{
  const row={listing_id:'NSE:SCAN-TEST',symbol:'SCAN-TEST',name:'Fictional UI-only identity',status:'stale',errors:['income-statement:tax_reconciliation'],financial_fact_count:0,research:{status:'not_selected'},screening:{swing:{rank:null,score:null,ranking_eligible:false,ranking_basis:[],missing:['latest_closed_session_missing'],assessment:{action:'INSUFFICIENT_EVIDENCE',reasons:['policy_not_configured']}}}}
- await page.route('**/v1/real-research/scan',route=>route.fulfill({json:{status:'observed',queue_depth:1,jobs:[],scan:{universe:{label:'LIMITED RESEARCH WATCHLIST',selection:'Fabricated UI fixture only',version:'test',members:[{symbol:row.symbol}]},completed_at:'2026-10-23T10:40:00Z',started_at:'2026-10-23T10:39:00Z',attempt:1,duration_seconds:60,api_requests:0,counts:{total:1,observed:0,stale:1,failed:0},rows:[row],publication:'blocked'}}}))
+ await page.route('**/v1/real-research/scan',route=>route.fulfill({json:{operations:{status:'stale_or_stopped',calendar_through:'2026-11-07',next_occurrence_at:'2026-10-26T10:30:00Z'},status:'observed',queue_depth:1,jobs:[],scan:{universe:{label:'LIMITED RESEARCH WATCHLIST',selection:'Fabricated UI fixture only',version:'test',members:[{symbol:row.symbol}]},completed_at:'2026-10-23T10:40:00Z',started_at:'2026-10-23T10:39:00Z',attempt:1,duration_seconds:60,api_requests:0,counts:{total:1,observed:0,stale:1,failed:0},rows:[row],publication:'blocked'}}}))
  await page.setExtraHTTPHeaders({Authorization:'Bearer '+process.env.AUTH_TOKEN!})
  await page.goto('/')
  const scan=page.getByRole('region',{name:'Automated real stock discovery'})
  await expect(scan).toContainText('LIMITED RESEARCH WATCHLIST')
  await expect(scan).toContainText('Not rankable')
  await expect(scan).toContainText('tax reconciliation')
+ await expect(scan).toContainText('Worker: stale or stopped')
+ await expect(scan).toContainText('Calendar verified through 2026-11-07')
  await expect(scan).toContainText('INSUFFICIENT EVIDENCE')
  await page.route('**/v1/real-research/scan',route=>route.fulfill({status:403,json:{detail:'Source permission denied'}}))
  await scan.getByRole('button',{name:'Refresh scan status'}).click()

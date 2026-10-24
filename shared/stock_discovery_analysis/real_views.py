@@ -22,6 +22,7 @@ class ViewConfig(Strict):
     listing_ids: Annotated[tuple[Text,...],Field(min_length=1,max_length=100)]
     policy_file: Text | None = None
     pilot_scope_id: Text | None = None
+    pilot_health_file: Text | None = None
 
 
 def eligible_revisions(conn,listing,cutoff,access):

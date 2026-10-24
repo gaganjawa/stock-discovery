@@ -1,3 +1,6 @@
+import json
+from pathlib import Path
+from datetime import datetime, timezone
 """Read saved factual scans with current source checks; no publication semantics."""
 from .real_access import source_access
 from .revision_storage import Stream
@@ -24,6 +27,16 @@ def scan_view(conn,config):
             for f in item.get('financial_findings',[]):
                 for c in f['citations']:require(stored_stream(conn,c['revision_id']))
         for stream in checked.values():access.require(stream,('derive',))
-    return dict(status='observed' if scan else 'awaiting_scheduled_scan',scan=scan,read_at=now(),
+    health={'status':'not_configured'}
+    if getattr(config,'pilot_health_file',None):
+        try:
+            health=json.loads(Path(config.pilot_health_file).read_text())
+            if health.get('scope_id')!=config.pilot_scope_id:raise ValueError('scope')
+            age=(datetime.now(timezone.utc)-datetime.fromisoformat(health['at'].replace('Z','+00:00'))).total_seconds()
+            health['age_seconds']=round(age)
+            if not 0<=age<=120:health['status']='stale_or_stopped'
+        except (OSError,ValueError,KeyError,TypeError):health={'status':'unavailable'}
+    successful=conn.execute("SELECT max(o.created_at) FROM discovery.schedule_outbox o JOIN discovery.schedule_jobs j USING(job_id) WHERE j.payload->>'scope_id'=%s AND o.kind='pilot_scan' AND o.payload->>'status'='completed'",(config.pilot_scope_id,)).fetchone()[0]
+    return dict(last_successful_scan_at=successful.isoformat() if successful else None,operations=health,status='observed' if scan else 'awaiting_scheduled_scan',scan=scan,read_at=now(),
         jobs=[dict(job_id=j[0],stage=j[1],status=j[2],error=j[3],attempts=j[4],due_at=j[5].isoformat(),updated_at=j[6].isoformat()) for j in jobs],
         queue_depth=conn.execute("SELECT count(*) FROM discovery.schedule_jobs WHERE payload->>'scope_id'=%s AND status IN ('queued','running','retry_wait')",(config.pilot_scope_id,)).fetchone()[0],qualification='Levels 1 and 2 only; Levels 3 and 4 remain independently gated')

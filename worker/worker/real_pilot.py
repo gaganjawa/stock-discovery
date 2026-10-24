@@ -137,9 +137,15 @@ def receipt(conn,job,kind,key,payload,clock):
     return conn.execute('SELECT payload FROM discovery.schedule_outbox WHERE event_key=%s',(eid,)).fetchone()[0]
 
 
+def pilot_hash(config):
+    wire=config.model_dump(mode='json')
+    if wire['view'].get('pilot_health_file') is None:wire['view'].pop('pilot_health_file',None)
+    return digest(wire)
+
+
 def handlers(schedule,config):
     config=PilotConfig.model_validate(config)
-    check(schedule.mode=='live_paper' and schedule.input_hash==digest(config.model_dump(mode='json')),'pilot_schedule_configuration_mismatch')
+    check(schedule.mode=='live_paper' and schedule.input_hash==pilot_hash(config),'pilot_schedule_configuration_mismatch')
     def scan(conn,job,clock):
         # Independent committed receipts survive a worker crash / outer lease rollback.
         with psycopg.connect(setting('DATABASE_URL'),autocommit=True) as store:
@@ -149,6 +155,13 @@ def handlers(schedule,config):
             access=access_for(config.market,clock)
             source=Stream(stream_id='PILOT-universe',source_id='upstox',account_ref=config.market.account_ref,scope='universe')
             access.require(source,('derive','store'))
+            # A calendar renewal changes D3-04 occurrence hashes, never the logical research cutoff.
+            # Reuse a complete genuine scan before any provider or inference calls.
+            prior=store.execute("""SELECT o.event_key FROM discovery.schedule_outbox o JOIN discovery.schedule_jobs j USING(job_id)
+                WHERE o.kind='pilot_scan' AND j.payload->>'scope_id'=%s AND j.payload->>'input_hash'=%s
+                AND o.payload->>'scheduled_cutoff'=%s AND o.payload->>'status'='completed'
+                ORDER BY o.created_at DESC LIMIT 1""",(schedule.scope_id,schedule.input_hash,job['payload']['information_cutoff_at'])).fetchone()
+            if prior:return dict(status='completed',reused_scan=prior[0],actionable=False),None
             receipt(store,job,'pilot_universe','frozen',config.universe,clock)
             def gate():
                 nonlocal calls

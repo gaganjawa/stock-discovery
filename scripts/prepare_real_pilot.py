@@ -10,7 +10,7 @@ from stock_discovery_contracts.v2 import Ref,digest,check
 from stock_discovery_analysis.revision_storage import Stream,ingest_next
 from worker.providers.upstox import Upstox,RevisionPages,observed_revision
 from worker.real_market import MarketConfig,access_for,ingest_calendar,latest
-from worker.real_pilot import PilotConfig,select_watchlist
+from worker.real_pilot import PilotConfig,select_watchlist,pilot_hash
 from worker.real_evidence import EvidenceConfig
 from stock_discovery_analysis.real_views import ViewConfig
 
@@ -42,7 +42,7 @@ def main():
   calendar=ScheduleCalendar(ref=ref,available_at=available,starts_on=today.isoformat(),ends_on=max(future),sessions=sessions)
  evidence=EvidenceConfig.model_validate_json(a.evidence.read_text());view=ViewConfig.model_validate_json(a.view.read_text()).model_copy(update={'listing_ids':tuple(m['listing_id'] for m in universe['members']),'pilot_scope_id':'REAL-001-PILOT-'+universe['version']})
  config=PilotConfig(market=market.model_copy(update={'symbols':tuple(m['symbol'] for m in universe['members']),'lookback_days':50}),view=view,evidence=evidence,universe=universe)
- schedule=ScheduleConfig(schema_version='1.0.0',schedule_id='REAL-001-PILOT',scope_id=view.pilot_scope_id,input_hash=digest(config.model_dump(mode='json')),code_version=a.code_version,mode='live_paper',calendar=calendar,policy=SchedulePolicy(version='D3-04-pilot-1',ready_delay_minutes=30,readiness_retry_minutes=15,swing_stop_before_open_minutes=60,short_term_window_minutes=1440,long_term_window_minutes=1440,event_window_start_hour=8,event_window_end_hour=20,max_events_per_call=1),horizons=('swing',),starts_on=today.isoformat())
+ schedule=ScheduleConfig(schema_version='1.0.0',schedule_id='REAL-001-PILOT',scope_id=view.pilot_scope_id,input_hash=pilot_hash(config),code_version=a.code_version,mode='live_paper',calendar=calendar,policy=SchedulePolicy(version='D3-04-pilot-1',ready_delay_minutes=30,readiness_retry_minutes=15,swing_stop_before_open_minutes=60,short_term_window_minutes=1440,long_term_window_minutes=1440,event_window_start_hour=8,event_window_end_hour=20,max_events_per_call=1),horizons=('swing',),starts_on=today.isoformat())
  for name,value in [('pilot.json',config.model_dump(mode='json')),('schedule.json',schedule.model_dump(mode='json')),('view.json',view.model_dump(mode='json')),('preparation.json',dict(calendar=report,future= future,universe=universe,bootstrap_requests=61))]:
   f=a.output/name;f.write_text(json.dumps(value,indent=2));f.chmod(0o600)
  print(json.dumps({'members':len(universe['members']),'label':universe['label'],'calendar_through':max(future),'schedule_id':schedule.schedule_id,'automatic_run':'not_yet_observed'}))

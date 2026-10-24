@@ -235,3 +235,30 @@ The account lock serializes pilot workers. The durable request ledger caps each 
 Saved per-stock receipts, immutable model intents/results and scan snapshots use existing D3-04 storage. Duplicate ticks preserve them. A prior unresolved model intent is marked `ambiguous_prior_attempt`; inspect it rather than deleting receipts or blindly replaying an expensive call. Model input fingerprints allow unchanged historical research reuse. Maximum configured research is one sequential candidate per occurrence in acceptance (hard limit two); factual RAG only, no judge activation. Existing source revocation checks apply both on execution and scan reads. Inspect the authenticated homepage's scheduled jobs and private worker log for failures; denied scope is not a request to widen the grant.
 
 The real homepage shows the last **saved** scan and its cutoff, including current/stale/failed price counts and financial validation failures. Open company detail for current freshness, historical findings, citations and immutable research history. `/#dashboard` explicitly opens fictional workflows. Level 1 factual reports and Level 2 research-only metrics never bypass independent Level 3 publication or Level 4 forward-paper admission gates.
+
+## Local operational continuity milestone
+
+See [actual operations acceptance](REAL-001-operations.md). Operations remain **PARTIAL**; persistent startup is **not activated**. Run the same worker with an additional private directory (owner-only permissions):
+
+```sh
+PYTHONPATH=backend:shared:worker python -m worker.main \
+  --schedule-config /absolute/private/phase10/schedule.json \
+  --real-pilot-config /absolute/private/phase10/pilot.json \
+  --pilot-operations-directory /absolute/private/operations \
+  --interval-seconds 30
+```
+
+Keep the original input files; the operations directory atomically stores the renewed planning schedule separately. It refreshes dated calendar coverage daily and preserves failed-attempt backoff across restarts. The API view file may set `pilot_health_file` to that directory's `health.json`. The dashboard labels a heartbeat older than 120 seconds as stale/stopped, shows next occurrence, coverage, resource counters and the existing scan/backlog/errors. A paused Mac cannot update its heartbeat; gap detection on resume is indicative rather than proof of a particular power event. Resume the same command for catch-up. Duplicate same-account workers are rejected across directories.
+
+Prepare an inactive launchd preview using `scripts/prepare_pilot_launchd.py` with absolute `--python`, `--repo`, `--pilot`, `--schedule`, `--database` (credential-file path), `--operations`, and `--output` paths. The output must be new and outside `LaunchAgents`. Validate with `plutil -lint`. Do not resolve the virtual-environment interpreter symlink. The reviewed owner-local artifact is `operations/launchd-preview.plist` under the existing private evidence directory. No key values are embedded.
+
+**Only after explicit owner authorization**, install that reviewed preview as `~/Library/LaunchAgents/local.stock-discovery.research.plist` with owner-only permissions and load it:
+
+```sh
+launchctl bootstrap gui/$(id -u) "$HOME/Library/LaunchAgents/local.stock-discovery.research.plist"
+launchctl print gui/$(id -u)/local.stock-discovery.research
+```
+
+Reversal: unload exactly this agent with `launchctl bootout gui/$(id -u)/local.stock-discovery.research`, then remove only its installed plist if desired. Retain the private state, original database and evidence. Do not kill unrelated Python, PostgreSQL, Ollama or Docker processes. A user agent starts in the login session; it does not create an always-on host, wake the Mac, mount the model drive, start Docker or authorize source/policy changes. Persistent activation and overnight acceptance remain separate decisions.
+
+The worker's own diagnostic ring rotates at approximately 1 MiB, retaining rotation markers. Other original files are not deleted. Source expiry/revocation/age and resource high-water checks stop further processing; database size is capped operationally at 2 GiB, free disk must exceed 2 GiB, and private operations files must remain below 64 MiB. These checks can permit at most a bounded in-flight batch beyond a threshold, not a hard disk quota. Never delete original evidence to clear a stop. Review source terms and obtain an approved original/derived/backup cleanup workflow; the present grant does not authorize tombstones after deletion. Grant renewal is never automatic. Database migration 0013 is additive; rollback refuses to discard maintenance audit entries.

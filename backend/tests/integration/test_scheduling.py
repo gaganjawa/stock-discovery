@@ -211,3 +211,10 @@ def test_extended_real_pilot_lease_remains_bounded(db):
     assert result['status']=='completed'
     with pytest.raises(ValueError,match='lease bound'):
         tick(db,config,clock=lambda:NOW,handlers=handlers(config),lease_seconds=901)
+
+
+def test_pilot_maintenance_request_reservation_is_auditable(db):
+    db.execute("INSERT INTO discovery.schedule_audit(job_id,at,code) VALUES(NULL,%s,'pilot_request:test-account')",(NOW,))
+    assert db.execute("SELECT count(*) FROM discovery.schedule_audit WHERE job_id IS NULL").fetchone()[0]==1
+    with pytest.raises(psycopg.errors.CheckViolation):
+        with db.transaction():db.execute("INSERT INTO discovery.schedule_audit(job_id,at,code) VALUES(NULL,%s,'claimed')",(NOW,))
