@@ -51,7 +51,9 @@ class CandleData(Strict):
     low: Number
     close: Number
     volume: Annotated[int, Field(ge=0)]
-    adjustment_basis: Literal['raw']
+    # Provider-adjusted observations are a separate basis, never raw execution prices.
+    # Their revision fetched_at is the observation anchor, not historical knowledge.
+    adjustment_basis: Literal['raw', 'split_bonus_adjusted']
 
     @model_validator(mode='after')
     def ohlcv(self):
@@ -179,6 +181,10 @@ def eligible(revision: Revision, cutoff: str, mode: Mode) -> bool:
     if mode == 'live_paper':
         return revision.availability_basis == 'observed' and at(revision.fetched_at) <= at(cutoff)
     if mode == 'historical_reconstructed':
+        # A current back-adjusted series cannot prove the adjustment basis known
+        # at a past decision, even when individual closes have archive metadata.
+        if revision.data.kind == 'candle' and (revision.data.adjustment_basis != 'raw' or revision.source_id == 'upstox'):
+            return False
         return revision.availability_basis == 'verified_archive'
     raise ValueError('unknown mode')
 
@@ -284,6 +290,8 @@ def make_snapshot(records, *, mode, cutoff, created_at, universe_version,
 def adjusted_close(candle: Revision, snapshot: Snapshot) -> Decimal:
     """Split/bonus adjusted research feature, never an executable price."""
     check(candle in snapshot.revisions and candle.data.kind == 'candle', 'snapshot candle required')
+    check(candle.data.adjustment_basis == 'raw', 'provider_adjusted_candle_requires_action_coverage')
+    check(candle.source_id != 'upstox', 'upstox_legacy_raw_basis_unverified')
     value = Decimal(candle.data.close)
     for r in snapshot.revisions:
         d = r.data

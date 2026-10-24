@@ -52,8 +52,8 @@ def run_next(conn,code_version,clock=now):
     rid=None
     try:
         with conn.transaction():
-            conn.execute("UPDATE discovery.publication_runs SET status='failed',stage='interrupted',error_code='worker_interrupted',updated_at=now() WHERE status='running'")
-            row=conn.execute("SELECT run_id,request FROM discovery.publication_runs WHERE status='queued' ORDER BY created_at,run_id FOR UPDATE SKIP LOCKED LIMIT 1").fetchone()
+            conn.execute("UPDATE discovery.publication_runs SET status='failed',stage='interrupted',error_code='worker_interrupted',updated_at=now() WHERE status='running' AND request->>'mode'='synthetic'")
+            row=conn.execute("SELECT run_id,request FROM discovery.publication_runs WHERE status='queued' AND request->>'mode'='synthetic' ORDER BY created_at,run_id FOR UPDATE SKIP LOCKED LIMIT 1").fetchone()
             if not row: return None
             rid,request=row;token=uuid.uuid4().hex
             conn.execute("UPDATE discovery.publication_runs SET status='running',stage='ingestion',token=%s,updated_at=now() WHERE run_id=%s",(token,rid))
@@ -121,8 +121,14 @@ def run_next(conn,code_version,clock=now):
 def read_artifact(conn,rid,access=None):
     row=conn.execute('SELECT artifact FROM discovery.recommendations WHERE recommendation_id=%s',(rid,)).fetchone()
     if not row: raise KeyError(rid)
-    a=row[0];access=access or access_for(conn,now)
-    require_sources(access)
+    a=row[0]
+    if a['recommendation']['mode']=='live_paper':
+        from .real_publication import authorize_artifact, configured_access
+        access=access or configured_access()
+        authorize_artifact(conn,a,access)
+    else:
+        access=access or access_for(conn,now)
+        require_sources(access)
     if a['research_bundle']:recheck(conn,Bundle.model_validate_json(json.dumps(a['research_bundle'])),access)
     return a
 

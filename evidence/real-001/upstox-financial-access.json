@@ -1,0 +1,107 @@
+{
+  "checked_at": "2026-10-19T03:34:23.866762+00:00",
+  "status": "access_verified",
+  "scope": "owner_authorized_read_only_connectivity_probe",
+  "storage_activated": false,
+  "ai_processing_activated": false,
+  "requests": [
+    {
+      "url": "https://assets.upstox.com/market-quote/instruments/exchange/NSE.json.gz",
+      "status": 200,
+      "fetched_at": "2026-10-19T03:34:23.951584+00:00"
+    },
+    {
+      "url": "https://api.upstox.com/v3/historical-candle/NSE_EQ%7CINE009A01021/days/1/2026-10-16/2026-10-01",
+      "status": 200,
+      "fetched_at": "2026-10-19T03:34:25.314429+00:00"
+    },
+    {
+      "url": "https://api.upstox.com/v2/market/timings/2026-10-16",
+      "status": 200,
+      "fetched_at": "2026-10-19T03:34:25.379443+00:00"
+    },
+    {
+      "url": "https://api.upstox.com/v2/fundamentals/INE009A01021/income-statement?type=consolidated&time_period=yearly",
+      "status": 200,
+      "fetched_at": "2026-10-19T03:34:25.433089+00:00"
+    },
+    {
+      "url": "https://api.upstox.com/v2/fundamentals/INE009A01021/balance-sheet?type=consolidated&time_period=yearly",
+      "status": 200,
+      "fetched_at": "2026-10-19T03:34:25.491778+00:00"
+    },
+    {
+      "url": "https://api.upstox.com/v2/fundamentals/INE009A01021/cash-flow?type=consolidated&time_period=yearly",
+      "status": 200,
+      "fetched_at": "2026-10-19T03:34:25.559830+00:00"
+    },
+    {
+      "url": "https://api.upstox.com/v2/news?category=instrument_keys&instrument_keys=NSE_EQ%7CINE009A01021&page_number=1&page_size=10",
+      "status": 200,
+      "fetched_at": "2026-10-19T03:34:25.651995+00:00"
+    }
+  ],
+  "instrument": {
+    "name": "INFOSYS LIMITED",
+    "trading_symbol": "INFY",
+    "isin": "INE009A01021",
+    "instrument_key": "NSE_EQ|INE009A01021"
+  },
+  "candles": {
+    "count": 11,
+    "first_label": "2026-10-01T00:00:00+05:30",
+    "last_label": "2026-10-16T00:00:00+05:30",
+    "values_retained": false
+  },
+  "calendar": {
+    "status": "success",
+    "nse_rows": 1
+  },
+  "financial_access": {
+    "income-statement": {
+      "status": "success",
+      "fields": [
+        "full_statement",
+        "income_statement",
+        "time_period",
+        "type",
+        "units_in"
+      ],
+      "scope": "consolidated",
+      "units": "crore",
+      "values_retained": false
+    },
+    "balance-sheet": {
+      "status": "success",
+      "fields": [
+        "full_statement",
+        "history",
+        "time_period",
+        "type",
+        "units_in"
+      ],
+      "scope": "consolidated",
+      "units": "crore",
+      "values_retained": false
+    },
+    "cash-flow": {
+      "status": "success",
+      "fields": [
+        "cash_flow",
+        "full_statement",
+        "time_period",
+        "type",
+        "units_in"
+      ],
+      "scope": "consolidated",
+      "units": "crore",
+      "values_retained": false
+    }
+  },
+  "news_access": {
+    "status": "success",
+    "count": 10,
+    "text_retained": false,
+    "official_announcements": false
+  }
+}

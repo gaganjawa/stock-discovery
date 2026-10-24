@@ -190,3 +190,31 @@ def test_handler_writes_rollback_with_failed_completion(db):
     result=tick(db,c,clock=lambda:NOW,handlers={'event_poll':broken})
     assert result['status']=='retry_wait'
     assert db.execute("SELECT 1 FROM discovery.schedule_cursors WHERE schedule_hash='handler-sentinel'").fetchone() is None
+
+
+def test_real_pilot_receipts_preserve_first_result_and_do_not_publish(db):
+    from worker.real_pilot import receipt
+    config,slot,jid=setup(db)
+    job=claim(db,NOW,config.code_version)
+    first=receipt(db,job,'pilot_stock',[1,'TEST'],{'status':'failed','error':'provider_unavailable'},lambda:NOW)
+    again=receipt(db,job,'pilot_stock',[1,'TEST'],{'status':'observed'},lambda:NOW)
+    assert first==again and again['status']=='failed'
+    correction=receipt(db,job,'pilot_stock',[2,'TEST'],{'status':'observed'},lambda:NOW)
+    assert correction['status']=='observed'
+    assert db.execute("SELECT count(*) FROM discovery.schedule_outbox WHERE kind='pilot_stock'").fetchone()[0]==2
+    assert db.execute('SELECT count(*) FROM discovery.recommendations').fetchone()[0]==0
+
+
+def test_extended_real_pilot_lease_remains_bounded(db):
+    config,_,_=setup(db)
+    result=tick(db,config,clock=lambda:NOW,handlers=handlers(config),lease_seconds=900)
+    assert result['status']=='completed'
+    with pytest.raises(ValueError,match='lease bound'):
+        tick(db,config,clock=lambda:NOW,handlers=handlers(config),lease_seconds=901)
+
+
+def test_pilot_maintenance_request_reservation_is_auditable(db):
+    db.execute("INSERT INTO discovery.schedule_audit(job_id,at,code) VALUES(NULL,%s,'pilot_request:test-account')",(NOW,))
+    assert db.execute("SELECT count(*) FROM discovery.schedule_audit WHERE job_id IS NULL").fetchone()[0]==1
+    with pytest.raises(psycopg.errors.CheckViolation):
+        with db.transaction():db.execute("INSERT INTO discovery.schedule_audit(job_id,at,code) VALUES(NULL,%s,'claimed')",(NOW,))

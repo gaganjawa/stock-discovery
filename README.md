@@ -2,7 +2,13 @@
 
 ## Authoritative architecture
 
-[SD ARCH 3.0](docs/SD-ARCH-3.0.md) is the frozen design baseline for three-horizon automated NSE discovery and grounded AI research. Repository integration and [D3-01 contracts](docs/contracts/v2/README.md) are implemented following the subsequent owner authorization on 15 October 2026. [D3-02 source rights and feasibility](docs/D3-02-source-feasibility.md) is merged; real-source activation remains blocked. [D3-03 revision ingestion](docs/D3-03-revision-ingestion.md) is merged with fictional adapter acceptance. [D3-04 scheduling](docs/D3-04-scheduling.md) is merged; restricted-runtime permissions remain an explicit blocker. [D3-05 quantitative policies](docs/D3-05-quant-policies.md) are merged. [D3-06 evidence ingestion](docs/D3-06-evidence-ingestion.md) is merged (PR #6). [D3-07 hybrid RAG](docs/D3-07-hybrid-rag.md) is merged (PR #7). [D3-08 bounded research and semantic judge](docs/D3-08-bounded-research.md) and the CI setup fix are merged. [D3-09 three-horizon publication and UI](docs/D3-09-publication-ui.md) integrates the quantitative engines, fictional evidence ingestion, fixed RAG, bounded agent, separate judge and deterministic decision gates. Human calibration and real activation remain unapproved. D3-10 through D3-13 remain unstarted. Existing synthetic MVP behavior is unchanged. External deployment remains unauthorized.
+[SD ARCH 3.0](docs/SD-ARCH-3.0.md) is the frozen design baseline for three-horizon automated NSE discovery and grounded AI research. Repository integration and [D3-01 contracts](docs/contracts/v2/README.md) are implemented following the subsequent owner authorization on 15 October 2026. [D3-02 source rights and feasibility](docs/D3-02-source-feasibility.md) is merged; real-source activation remains blocked. [D3-03 revision ingestion](docs/D3-03-revision-ingestion.md) is merged with fictional adapter acceptance. [D3-04 scheduling](docs/D3-04-scheduling.md) is merged; restricted-runtime permissions remain an explicit blocker. [D3-05 quantitative policies](docs/D3-05-quant-policies.md) are merged. [D3-06 evidence ingestion](docs/D3-06-evidence-ingestion.md) is merged (PR #6). [D3-07 hybrid RAG](docs/D3-07-hybrid-rag.md) is merged (PR #7). [D3-08 bounded research and semantic judge](docs/D3-08-bounded-research.md) and the CI setup fix are merged. [D3-09 three-horizon publication and UI](docs/D3-09-publication-ui.md) integrates the quantitative engines, fictional evidence ingestion, fixed RAG, bounded agent, separate judge and deterministic decision gates. Human calibration and real activation remain unapproved. D3-10 paper portfolio and outcomes are merged (PR #11); D3-11 through D3-13 remain unstarted. Existing synthetic MVP behavior is unchanged. External deployment remains unauthorized.
+
+## REAL-001 — actual-source integration (PARTIAL)
+
+The local operations milestone adds automatic calendar renewal, worker health, duplicate-process prevention and resource stops to the **12-stock automated private research pilot (PARTIAL)** using the existing worker and real-source storage. The homepage now opens real research: actual coverage, deterministic research priorities, local Ollama status, citations and company selection. Final acceptance has 408 candles through October 23, 96 validated numerical financial facts and two genuine 7B/Nomic reports. Calendar coverage renewed through November 7 and bounded restart recovery passed. A user-level launchd preview is prepared but inactive; continuous unattended operation remains unqualified. [Operational acceptance](docs/REAL-001-operations.md). Prospective Swing remains **BLOCKED** and full three-horizon go-live **NOT ACCEPTED**. No real recommendation or position exists. [Phase 10 execution](docs/REAL-001-phase10.md) · [Local runbook](docs/REAL-001-runbook.md) · [Unapproved policy review](docs/REAL-001-phase8-policy-decision.md). Provider values remain private.
+
+The existing app now has a distinct **Real research** view with explicit blocked coverage and three horizons. Operational adapters are opt-in; no synthetic fallback or paper-admission bypass is added. See the [acceptance record](docs/REAL-001-acceptance.md), [provider/permission matrix](docs/REAL-001-provider-matrix.md) and [local runbook](docs/REAL-001-runbook.md). Keep tokens outside Git and never put values in `.env.example`.
 
 ## Three-horizon discovery
 
@@ -18,9 +24,9 @@ Start Docker, then from this repository run:
 python3 scripts/local.py start
 ```
 
-Open http://127.0.0.1:5173 and sign in using `AUTH_TOKEN` in `.env`. The launcher creates a missing owner key without printing it or replacing existing credentials. Choose **Load synthetic history**, then **Replay → Freeze recommendation → Reveal**. Scorecard supports version groups, batches and export. Use `python3 scripts/local.py stop` to stop services while retaining their containers/data; `status` shows services.
+Open http://127.0.0.1:5173 and sign in using `AUTH_TOKEN` in `.env`. The launcher creates a missing owner key without printing it or replacing existing credentials. Open `/#dashboard`, then choose **Load synthetic history**, then **Replay → Freeze recommendation → Reveal**. Scorecard supports version groups, batches and export. Use `python3 scripts/local.py stop` to stop services while retaining their containers/data; `status` shows services.
 
-The application currently uses fictional daily history. Real-market feeds, hosting, IPO/news, intraday and model training are deferred. See [MVP scope and acceptance](docs/DAILY-SWING-MVP.md).
+The legacy MVP view uses fictional daily history. The separate real homepage uses opt-in private source configuration; hosting, IPO/news, intraday and model training remain deferred. See [MVP scope and acceptance](docs/DAILY-SWING-MVP.md).
 
 ### Optional AI explanation
 
@@ -90,3 +96,21 @@ fictional simulation contract never changes their original admission status.
 Forward source/model/policy approvals and observation adapters remain
 unconfigured; no broker orders or real-market activation are included.
 See [D3-10 contracts, execution assumptions and API](docs/D3-10-paper-portfolio.md).
+
+REAL-001 Phase 2 remains **PARTIAL**: configured official-document ingestion now
+connects D3-06 to local D3-07/08 research, with rights-aware company views and
+three-horizon input mapping. Real INFY filing access returned 403; publication
+and prospective integration are unfinished. [Phase 2 details](docs/REAL-001-phase2.md).
+
+### REAL-001 Phase 3 — PARTIAL
+
+The existing publication engine now supports explicitly configured, permitted real
+shadow research, with immutable prospective references and a rights-aware history
+view. No genuine INFY publication or outcome has passed acceptance. Source rights,
+calendar/action coverage, real policies and grounded model qualification remain
+blocked. The T9 model folder and Ollama inventory passed the final recheck. See
+[Phase 3 acceptance](docs/REAL-001-phase3.md) for commands, validation and A1–A14.
+
+### REAL-001 Phase 4 — permission review, PARTIAL
+
+[Phase 4 findings](docs/REAL-001-phase4.md) establish private Upstox market-data retention/research/replay rights from provider-community replies. Genuine filing-corpus rights remain unresolved; no actual INFY research was produced. The stop condition was followed: no additional conditional infrastructure. Consolidated Upstox and Infosys permission drafts are prepared, not sent.

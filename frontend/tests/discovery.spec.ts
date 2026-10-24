@@ -5,7 +5,7 @@ const token=process.env.AUTH_TOKEN??(existsSync('../.env')?readFileSync('../.env
 test('three horizons, four decisions, research comparison and permission-gated source inspection',async({page})=>{
  test.setTimeout(180000)
  if(!token)throw new Error('Set the local test owner key')
- await page.goto('/')
+ await page.goto('/#dashboard')
  await page.getByLabel('Owner access key').fill(token)
  await page.getByRole('button',{name:'Sign in',exact:true}).click()
  const discovery=page.getByRole('region',{name:'Three-horizon discovery'})

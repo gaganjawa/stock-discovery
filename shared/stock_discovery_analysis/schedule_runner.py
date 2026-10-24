@@ -12,7 +12,7 @@ class JobFailure(Exception):
         super().__init__(reason)
 
 
-def tick(conn, config, *, clock, handlers=None):
+def tick(conn, config, *, clock, handlers=None, lease_seconds=120):
     """Materialize durable slots and execute at most one job. No hidden paid calls.
 
     Handlers are trusted installed code, not configuration imports. They receive
@@ -34,7 +34,7 @@ def tick(conn, config, *, clock, handlers=None):
         polls = event_poll_slots(config, stamp(start), stamp(end))
         materialize(conn, slots+polls, now)
         conn.execute('INSERT INTO discovery.schedule_cursors VALUES (%s,%s) ON CONFLICT(schedule_hash) DO UPDATE SET polled_through=EXCLUDED.polled_through', (schedule_hash,stamp(end)))
-    job = claim(conn, now, config.code_version, schedule_hash=digest(config.model_dump(mode='json')))
+    job = claim(conn, now, config.code_version, lease_seconds=lease_seconds, schedule_hash=digest(config.model_dump(mode='json')))
     if job is None:
         return dict(status='idle', issues=issues, monitoring_active=monitoring_active(config,now))
     handlers = handlers or {}

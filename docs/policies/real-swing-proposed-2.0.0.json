@@ -1,0 +1,47 @@
+[
+  {
+    "schema_version": "2.0.0",
+    "ref": {
+      "id": "REAL-001-SWING-PROPOSED",
+      "version": "2.0.0",
+      "content_hash": "dbcd5f508ee07e1564a4c451a175ca2efd5d728a4b3539bac7cd95a3be8eb42d"
+    },
+    "kind": "strategy",
+    "profile": "swing",
+    "status": "unconfigured",
+    "effective_at": "2026-10-22T00:00:00Z",
+    "parameters": [
+      {
+        "name": "duration",
+        "value": "3",
+        "unit": "count",
+        "unavailable_reason": null
+      },
+      {
+        "name": "entry_sessions",
+        "value": "1",
+        "unit": "count",
+        "unavailable_reason": null
+      },
+      {
+        "name": "max_price_age_days",
+        "value": "1",
+        "unit": "days",
+        "unavailable_reason": null
+      },
+      {
+        "name": "max_evidence_age_days",
+        "value": "1",
+        "unit": "days",
+        "unavailable_reason": null
+      },
+      {
+        "name": "forecast_sessions",
+        "value": "3",
+        "unit": "count",
+        "unavailable_reason": null
+      }
+    ],
+    "approval_ref": null
+  }
+]

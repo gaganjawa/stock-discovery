@@ -1,14 +1,15 @@
 # Stock Discovery — SD ARCH 3.0 board
 
-Updated: **18 October 2026** · Baseline: [SD ARCH 3.0](SD-ARCH-3.0.md)
+Updated: **24 October 2026** · Baseline: [SD ARCH 3.0](SD-ARCH-3.0.md)
+REAL-001 local operations: PARTIAL; prospective recommendations BLOCKED. Calendar renews automatically, actual coverage extended through November 7; duplicate worker/restart/history and health controls verified. Inactive launchd preview prepared; persistent activation and genuine overnight acceptance pending. No new financial/model outputs or recommendations. [Operational acceptance](REAL-001-operations.md). Draft PR #12 remains unmerged; stop at this milestone.
 
-**Overall:** architecture integrated; D3-01 contracts implemented at `6b88cf6`. D3-02 rights/feasibility is merged (PR #2), with real-source activation blocked. D3-03 revision storage/ingestion is merged (PR #3). D3-04 scheduling/coverage is merged (PR #4); its restricted-runtime permission blocker remains. D3-05 quantitative policies are merged (PR #5). D3-06 evidence ingestion is merged (PR #6). D3-07 hybrid RAG is merged (PR #7). D3-08 bounded research and semantic judge and PR #9 CI fix are merged; human calibration remains unapproved. D3-09 publication and UI are merged (PR #10). D3-10 paper portfolio and outcomes are implemented for local/mock review. D3-11 through D3-13 remain unstarted. This is a package count, not a percentage of effort or application readiness. The existing synthetic MVP works; real-market discovery and actionable AI research remain blocked.
+**Overall:** architecture integrated; D3-01 contracts implemented at `6b88cf6`. D3-02 rights/feasibility is merged (PR #2), with activation controlled by source-specific grants. D3-03 revision storage/ingestion is merged (PR #3). D3-04 scheduling/coverage is merged (PR #4); its restricted-runtime permission blocker remains. D3-05 quantitative policies are merged (PR #5). D3-06 evidence ingestion is merged (PR #6). D3-07 hybrid RAG is merged (PR #7). D3-08 bounded research and semantic judge and PR #9 CI fix are merged; human calibration remains unapproved. D3-09 publication and UI are merged (PR #10). D3-10 paper portfolio and outcomes are merged (PR #11, `a0846b5`). REAL-001 remains PARTIAL: actual prices and financial facts were retrieved and three final local model runs now supply non-empty verified historical claims; financial reasoning is not semantically qualified and real policies are not approved. No publication or prospective reference exists. D3-11 through D3-13 remain unstarted. This is a package count, not a percentage of effort or application readiness. The existing synthetic MVP works; real-market discovery and actionable AI research remain blocked.
 
 ## Delivery workflow
 
 - Use existing STK ticket IDs and the architecture's D3 package names in branches, commits and PR titles. D3 labels are delivery packages, not new tracker IDs.
 - Work on a ticket-named branch. Push that branch and provide a PR for owner review. Never push directly to `main` or merge a PR.
-- Wait for the owner to review, merge and confirm before starting the next package. D3-10 was authorized after D3-09 merged. Stop after its PR; D3-11 requires separate owner authorization.
+- Wait for the owner to review, merge and confirm before starting the next package. REAL-001 was authorized after D3-10 merged; it reuses D3-02 through D3-10. Stop after REAL-001; D3-11 requires separate owner authorization.
 - Keep one implementation package in progress. Preserve unrelated tracked/untracked WIP; stage only the current ticket's files.
 
 ## Package and feature status
@@ -24,7 +25,7 @@ Updated: **18 October 2026** · Baseline: [SD ARCH 3.0](SD-ARCH-3.0.md)
 | **D3-07 Hybrid RAG** · STK-052/053/074 | [Hybrid retrieval and fixed research](D3-07-hybrid-rag.md): structured facts, PostgreSQL FTS, local/mock vectors, RRF ranking, citations, abstention and durable budgets | Real model/source qualification, runtime grants, D3-08 semantic gates and D3-09 publication integration | Merged · PR #7; local/mock acceptance only |
 | **D3-08 Bounded agent and judge** · STK-052/070/071/072 | [Bounded investigation and separate judge](D3-08-bounded-research.md): read-only tools, deterministic gates, immutable traces, shared budgets and 54-case paired mock evaluation | Human-reviewed holdout/calibration, independent model/source qualification and runtime grants; all output stays shadow | Merged · PR #8; local/mock acceptance only |
 | **D3-09 Policy publication and UI** · STK-033/054/058/059 | [Immutable three-horizon publication and dashboard](D3-09-publication-ui.md), distinct modes, four-action gates, current permission checks, comparisons, coverage and queued execution | Real-policy/source activation, calibrated models, restricted-runtime grants; portfolio admission belongs to D3-10 | Merged · PR #10; local/mock acceptance |
-| **D3-10 Paper portfolio and outcomes** · STK-037–044/060–063 | [Paper portfolios and immutable outcomes](D3-10-paper-portfolio.md): shared reservations, risk/cost controls, deterministic fictional execution, outcome tracking and authenticated dashboard | Qualified forward source/model/policy approvals and observation/corporate-action adapters; no real activation | Implemented · local fictional simulation; PR review pending |
+| **D3-10 Paper portfolio and outcomes** · STK-037–044/060–063 | [Paper portfolios and immutable outcomes](D3-10-paper-portfolio.md): shared reservations, risk/cost controls, deterministic fictional execution, outcome tracking and authenticated dashboard | Qualified forward source/model/policy approvals and observation/corporate-action adapters; no real activation | Merged · PR #11 (`a0846b5`); local fictional simulation |
 | **D3-11 Experiment governance** · STK-041/042/044/069/072/076–078 | Existing synthetic audit foundation | Paired/end-to-end cohorts, holdouts, forward evidence, maturity and promotion controls | Not started · D3-10 |
 | **D3-12 Private operational pilot** · STK-009/016/017/018/073–075 | Hetzner CX23/Compose/restic/B2 selection approved | Authorized provisioning, security, budgets, monitoring and off-host restore | Deferred · D3-02/04/09/10 + explicit deployment approval |
 | **D3-13 Three-horizon release** · STK-079/080/081 | Release criteria specified | Integrated acceptance, coverage evidence, known limits and operational runbook | Not started · D3-11/12 |
@@ -58,3 +59,28 @@ D3-08 CI follow-up · STK-052/070/071/072: fixed workflow ordering on baseline `
 D3-09 validation (18 October 2026): **493 application/worker tests passed**, including **28 new policy/integration cases and all 129 database integration tests with zero skips**; **10 script tests passed**. Migration upgrade/repeat/downgrade/re-upgrade/atomic rollback, historical contract examples, production UI build, and both new discovery and existing synthetic browser workflows passed locally. The five-listing fictional universe runs all three horizons and all three research modes, with strict v2 provenance and current permission checks. Unrelated WIP and historical fixtures are preserved. Local/mock shadow acceptance only; no real source, paid API, broker execution or D3-10 work was activated.
 
 D3-10 validation (18 October 2026): **546 application/worker tests passed**, including **53 new cases and all 160 database integration tests with zero skips**; **10 script tests passed**. Migration upgrade/repeat/downgrade/re-upgrade/atomic rollback, legacy contract examples, production UI build and local Compose smoke checks passed. Browser acceptance covers discovery, the new fictional paper portfolio and the existing replay/scorecard workflow. Reservations and outcome receipts serialize in PostgreSQL; ledger/input/history mutations are rejected. Historical decisions and unrelated WIP are preserved. D3-09 MOCK/SHADOW recommendations remain blocked from approved forward paper; fictional software outcomes use a separate contract. Real source/model/policy qualification, benchmark/corporate-action adapters and restricted-runtime grants remain activation dependencies. No D3-11, paid service, deployment or broker execution is included.
+
+## REAL-001 — STK-004–007/014/015/046/048/052/059/060
+
+**Current: Phase 8 PARTIAL (22 October).** Genuine descriptive indicators, explicit coverage/freshness and unapproved policy display pass local acceptance. B9 publication/prospective acceptance is blocked. [Execution](REAL-001-phase8.md). Earlier phases remain history; D3-11–13 are untouched.
+
+**PARTIAL, not real-market readiness.** [Acceptance](REAL-001-acceptance.md) · [Provider matrix](REAL-001-provider-matrix.md) · [Runbook](REAL-001-runbook.md). Upstox access verified for INFY: identity, 11 actual daily candles, calendar, financial responses and 10 news items (availability/count metadata only retained). Native qwen2.5-coder:7b and nomic-embed-text ran; financial qualification remains unapproved. New opt-in price adapter uses existing grants, revision ingestion and scheduler; downstream real research stages block. Existing UI has an authenticated blocked REAL RESEARCH mode. No actual filing, real recommendation or forward outcome has been persisted. Remaining owner/source action is use-specific permission evidence; credentials have been supplied and secured. No paid API, deployment, model download or broker order. D3-11/12/13 remain unstarted.
+
+Phase 2 (19 October): **PARTIAL**, continuing PR #12. Added configured official
+document acquisition/extraction to D3-06, native-provider D3-07/08 orchestration,
+rights-aware company/analysis readers, D3-05 input mapping and existing UI panels.
+601 tests and 163 PostgreSQL cases pass with zero skips. Actual SEC filing fetch
+returned 403; Upstox use evidence remains unknown. No actual filing, new model
+run, real recommendation or prospective outcome accepted. Publication/tracking
+still require implementation. [Phase 2 record](REAL-001-phase2.md).
+
+Phase 3 (20 October): **PARTIAL**, same draft PR #12. Conditional D3-09 real
+publication and D3-10 immutable shadow references/observation receipts are wired
+to rights-aware dashboard history; no portfolio admission or fabricated returns.
+606 tests, 164 PostgreSQL cases (zero skips), migration lifecycle, five browser
+workflows and production build passed. **No actual INFY filing, grounded research,
+publication or outcome**: unresolved provider rights, observed coverage/policies
+and model qualification. T9/Ollama inventory passed the final recheck. [Phase 3/A1–A14](REAL-001-phase3.md).
+D3-11/12/13 remain unstarted.
+
+Phase 4 (20 October): **PARTIAL / permission stop condition reached**. New provider replies establish private Upstox market-data storage/research/replay rights. Financial/news corpus rights and price-adjustment semantics remain blockers. No actual filing, RAG, publication or outcome; no infrastructure added. [Operation matrix and unsent owner drafts](REAL-001-phase4.md). D3-11/12/13 untouched.

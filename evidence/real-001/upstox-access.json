@@ -1,0 +1,40 @@
+{
+  "checked_at": "2026-10-19T03:33:09.585185+00:00",
+  "status": "access_verified",
+  "scope": "owner_authorized_read_only_connectivity_probe",
+  "storage_activated": false,
+  "ai_processing_activated": false,
+  "requests": [
+    {
+      "url": "https://assets.upstox.com/market-quote/instruments/exchange/NSE.json.gz",
+      "status": 200,
+      "fetched_at": "2026-10-19T03:33:09.721999+00:00"
+    },
+    {
+      "url": "https://api.upstox.com/v3/historical-candle/NSE_EQ%7CINE009A01021/days/1/2026-10-16/2026-10-01",
+      "status": 200,
+      "fetched_at": "2026-10-19T03:33:10.948069+00:00"
+    },
+    {
+      "url": "https://api.upstox.com/v2/market/timings/2026-10-16",
+      "status": 200,
+      "fetched_at": "2026-10-19T03:33:10.979009+00:00"
+    }
+  ],
+  "instrument": {
+    "name": "INFOSYS LIMITED",
+    "trading_symbol": "INFY",
+    "isin": "INE009A01021",
+    "instrument_key": "NSE_EQ|INE009A01021"
+  },
+  "candles": {
+    "count": 11,
+    "first_label": "2026-10-01T00:00:00+05:30",
+    "last_label": "2026-10-16T00:00:00+05:30",
+    "values_retained": false
+  },
+  "calendar": {
+    "status": "success",
+    "nse_rows": 1
+  }
+}
