@@ -1,6 +1,6 @@
 # REAL-001 local adapter runbook
 
-Status: **PARTIAL; limited research-only local beta READY**. Publication, prospective pilot and unattended operation remain unactivated. [Phase 9 executed checklist](REAL-001-phase9.md). Read the [acceptance record](REAL-001-acceptance.md)
+Status: **automated private research pilot PARTIAL; prospective Swing BLOCKED; full three-horizon NOT ACCEPTED**. Bounded scheduling/recovery is tested, continuous unattended service is not installed. [Phase 10 checklist](REAL-001-phase10.md). Read the [acceptance record](REAL-001-acceptance.md)
 and [provider matrix](REAL-001-provider-matrix.md) before interpreting results.
 This uses the existing app, worker, PostgreSQL and native Ollama; no extra frontend.
 
@@ -203,3 +203,35 @@ safe recovery from a process interruption after genuine fetch and before commit.
 No unattended catch-up, resource scheduling, backup/restore or external deployment
 qualification is implied. The proposal still has no owner approval; neither source
 access nor a successful model response authorizes publication or paper admission.
+
+## Phase 10 bounded scheduled watchlist
+
+Use the existing private grant, token, market, evidence and view files outside Git. This does not approve new source scopes or strategy policies. Set `DATABASE_URL_FILE` to the private database setting and use the locked project environment. Prepare a **new** private output directory (the command refuses to overwrite an existing one):
+
+```sh
+PYTHONPATH=backend:shared:worker python scripts/prepare_real_pilot.py \
+  --market /absolute/private/market.json \
+  --evidence /absolute/private/evidence.json \
+  --view /absolute/private/view.json \
+  --output /absolute/private/pilot-run \
+  --size 12 --anchor INFY --code-version YOUR_COMMIT_SHA
+```
+
+This explicitly freezes the alphabetic limited watchlist and actual exchange calendar. Preparation alone proves no scheduled execution. Configure the existing API's `REAL_RESEARCH_VIEW_CONFIG` to the generated `view.json`, then run the existing worker:
+
+```sh
+PYTHONPATH=backend:shared:worker python -m worker.main \
+  --schedule-config /absolute/private/pilot-run/schedule.json \
+  --real-pilot-config /absolute/private/pilot-run/pilot.json \
+  --interval-seconds 10
+```
+
+The worker polls existing durable jobs, starts after the observed session closes plus 30 minutes, and retries missing/current-price coverage at 15-minute intervals, at most three attempts. Do not shorten retry clocks or alter occurrence identifiers to claim unattended acceptance. Restart with the **same files** to resume. Changed source configuration or code versions produce distinct auditable occurrences. Price failures and financial-endpoint failures stay visible per stock; unavailable event coverage stays partial. A completed ingest job means its bounded handler ended, not that publication is qualified or every financial statement passed.
+
+The private acceptance configuration lives in `phase10/` under the existing owner-only evidence directory. Its calendar ends **2026-10-30**; do not treat it as perpetual. Refresh/freeze verified calendars explicitly before expiration; automatic renewal and OS auto-start are not implemented. No cloud service or new daemon is installed. The task-owned bounded acceptance worker was stopped after final validation. Start it explicitly for further local use and keep the machine awake; reliable sleep/restart operation and ongoing retention cleanup still need qualification.
+
+The account lock serializes pilot workers. The durable request ledger caps each run at 200 calls, fewer than 90/minute and 800/half-hour, with at least 0.7-second pacing. Lease checks fence requests after suspension; the pilot uses a bounded 900-second lease. Runtime database credentials come from the existing private setting, never a reconstructed password-stripping DSN. Never print credentials or put them in the generated files/public logs.
+
+Saved per-stock receipts, immutable model intents/results and scan snapshots use existing D3-04 storage. Duplicate ticks preserve them. A prior unresolved model intent is marked `ambiguous_prior_attempt`; inspect it rather than deleting receipts or blindly replaying an expensive call. Model input fingerprints allow unchanged historical research reuse. Maximum configured research is one sequential candidate per occurrence in acceptance (hard limit two); factual RAG only, no judge activation. Existing source revocation checks apply both on execution and scan reads. Inspect the authenticated homepage's scheduled jobs and private worker log for failures; denied scope is not a request to widen the grant.
+
+The real homepage shows the last **saved** scan and its cutoff, including current/stale/failed price counts and financial validation failures. Open company detail for current freshness, historical findings, citations and immutable research history. `/#dashboard` explicitly opens fictional workflows. Level 1 factual reports and Level 2 research-only metrics never bypass independent Level 3 publication or Level 4 forward-paper admission gates.

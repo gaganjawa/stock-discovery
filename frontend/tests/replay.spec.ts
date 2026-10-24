@@ -3,7 +3,7 @@ import { readFileSync, existsSync } from 'node:fs'
 const token=process.env.AUTH_TOKEN??(existsSync('../.env')?readFileSync('../.env','utf8').split('\n').find(x=>x.startsWith('AUTH_TOKEN='))?.slice(11):undefined)
 test('authenticated synthetic freeze, reveal, scorecard and future placeholders',async({page})=>{
  if(!token)throw new Error('Set the local test access key; never use a broker credential')
- await page.goto('/')
+ await page.goto('/#dashboard')
  await page.getByLabel('Owner access key').fill(token)
  await page.getByRole('button',{name:'Sign in',exact:true}).click()
  await expect(page.getByRole('button',{name:'Sign out'})).toBeVisible()

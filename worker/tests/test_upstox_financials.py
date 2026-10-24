@@ -60,3 +60,11 @@ def test_financial_permissions_checked_before_network_or_storage():
     identity=SimpleNamespace(source_id='upstox',data=SimpleNamespace(kind='instrument'),availability_basis='observed',listing_id='test')
     with pytest.raises(PermissionError,match='scope_denied'):ingest_financials(None,client,identity,'test')
     assert calls==['financial_facts','filings']
+
+
+def test_endpoint_subset_cannot_add_an_unrecognized_provider_route():
+    from types import SimpleNamespace
+    from worker.providers.upstox_financials import ingest_financials
+    identity=SimpleNamespace(source_id='upstox',data=SimpleNamespace(kind='instrument'),availability_basis='observed')
+    with pytest.raises(ValueError,match='invalid_financial_endpoints'):
+        ingest_financials(None,None,identity,'test',endpoints=('orders',))

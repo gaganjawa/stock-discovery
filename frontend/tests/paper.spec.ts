@@ -5,7 +5,7 @@ const token=process.env.AUTH_TOKEN??(existsSync('../.env')?readFileSync('../.env
 test('fictional portfolio reservations, automatic outcomes, drill-down and forward admission block',async({page})=>{
  test.setTimeout(180000)
  if(!token)throw new Error('Set the local test owner key')
- await page.goto('/')
+ await page.goto('/#dashboard')
  await page.getByLabel('Owner access key').fill(token)
  await page.getByRole('button',{name:'Sign in',exact:true}).click()
  await expect(page.getByRole('region',{name:'Paper portfolio and outcomes'})).toBeVisible()

@@ -34,7 +34,10 @@ def main() -> None:
     parser.add_argument('--synthetic-schedule', action='store_true', help='use fictional D3-04 acceptance adapter')
     parser.add_argument('--schedule-config', type=Path, help='versioned D3-04 calendar/policy JSON')
     parser.add_argument('--real-market-config', type=Path, help='opt-in REAL-001 price adapter config; downstream research stays blocked')
+    parser.add_argument('--real-pilot-config',type=Path,help='bounded factual research using existing durable schedule')
     args = parser.parse_args()
+    if args.real_pilot_config and (args.real_market_config or args.synthetic_schedule or args.synthetic_evidence):
+        parser.error('real pilot cannot mix adapter modes')
     if args.real_market_config and (args.synthetic_schedule or args.synthetic_evidence):
         parser.error('real and synthetic adapters cannot be combined')
     if args.interval_seconds < 1:
@@ -60,10 +63,14 @@ def main() -> None:
         if config is None: parser.error('--real-market-config requires --schedule-config')
         market = MarketConfig.model_validate_json(args.real_market_config.read_text())
         schedule_handlers = handlers(config, market)
+    if args.real_pilot_config:
+        from .real_pilot import handlers, PilotConfig
+        if config is None:parser.error('--real-pilot-config requires --schedule-config')
+        schedule_handlers=handlers(config,PilotConfig.model_validate_json(args.real_pilot_config.read_text()))
     while True:
         if config:
             with psycopg.connect(setting('DATABASE_URL'), autocommit=True, connect_timeout=5) as conn:
-                result = tick(conn, config, handlers=schedule_handlers, clock=lambda: stamp(datetime.now(timezone.utc)))
+                result = tick(conn, config, handlers=schedule_handlers, clock=lambda: stamp(datetime.now(timezone.utc)),lease_seconds=900 if args.real_pilot_config else 120)
             print(json.dumps(result, sort_keys=True), flush=True)
         elif setting('DATABASE_URL') and not args.once:
             try:

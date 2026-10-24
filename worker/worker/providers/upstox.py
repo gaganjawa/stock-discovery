@@ -25,10 +25,11 @@ IST = ZoneInfo('Asia/Kolkata')
 
 
 class Upstox:
-    def __init__(self, *, access, token=None, transport=None, monotonic=time.monotonic):
+    def __init__(self, *, access, token=None, transport=None, monotonic=time.monotonic, request_gate=None):
         self.access, self.token, self.monotonic = access, token, monotonic
         self.client = httpx.Client(transport=transport, trust_env=False, follow_redirects=False)
         self.calls = []
+        self.request_gate = request_gate
 
     def close(self):
         self.client.close()
@@ -36,6 +37,7 @@ class Upstox:
     def _get(self, url, stream, *, authenticated=True):
         check(stream.source_id == SOURCE, 'source_mismatch')
         self.access.require(stream, ('acquire',))
+        if self.request_gate:self.request_gate()
         # Conservative per-process cap (below documented aggregate limits).
         # The single durable scheduler worker owns this adapter; other clients
         # on the same account must share the owner's aggregate quota allocation.
@@ -71,10 +73,8 @@ class Upstox:
         except httpx.HTTPError:
             raise RuntimeError('upstox_unavailable') from None
 
-    def instruments(self, stream, symbols):
+    def instrument_master(self, stream):
         check(stream.scope == 'universe', 'universe_scope_required')
-        check(0 < len(symbols) <= 100 and len(set(symbols)) == len(symbols), 'universe_limit')
-        check(all(re.fullmatch(r'[A-Z0-9&-]{1,30}', s) for s in symbols), 'invalid_symbol')
         raw = self._get(MASTER, stream, authenticated=False)
         with gzip.GzipFile(fileobj=io.BytesIO(raw)) as archive:
             decoded = archive.read(64_000_001)
@@ -82,6 +82,13 @@ class Upstox:
         rows = json.loads(decoded)
         check(isinstance(rows, list), 'invalid_instrument_master')
         self.access.require(stream, ('derive',))
+        return rows, digest(rows)
+
+    def instruments(self, stream, symbols):
+        check(stream.scope == 'universe', 'universe_scope_required')
+        check(0 < len(symbols) <= 100 and len(set(symbols)) == len(symbols), 'universe_limit')
+        check(all(re.fullmatch(r'[A-Z0-9&-]{1,30}', s) for s in symbols), 'invalid_symbol')
+        rows, _ = self.instrument_master(stream)
         result = []
         for symbol in symbols:
             matches = [r for r in rows if r.get('segment') == 'NSE_EQ' and r.get('exchange') == 'NSE'

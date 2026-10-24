@@ -94,7 +94,7 @@ def financial_document(payload, endpoint, *, identity, fetched, previous=None):
         attribution='Upstox',category='annual_report',authority='secondary',media_type='application/vnd.stock-evidence+json',body=body)
 
 
-def ingest_financials(conn, client, identity, account_ref):
+def ingest_financials(conn, client, identity, account_ref, *, endpoints=ENDPOINTS):
     """Use the existing D3-06 transaction and permissions, one endpoint per page."""
     import time
     from stock_discovery_analysis.evidence import EvidencePage
@@ -104,7 +104,8 @@ def ingest_financials(conn, client, identity, account_ref):
     from stock_discovery_contracts.v2 import digest
     check(identity.source_id=='upstox' and identity.data.kind=='instrument' and identity.availability_basis=='observed', 'observed_upstox_identity_required')
     results=[]
-    for endpoint in ENDPOINTS:
+    check(bool(endpoints) and len(set(endpoints))==len(endpoints) and all(e in ENDPOINTS for e in endpoints), 'invalid_financial_endpoints')
+    for endpoint in endpoints:
         source=Stream(stream_id='REAL-FIN-'+digest([identity.listing_id,endpoint,client.access.clock()]),
             source_id='upstox',account_ref=account_ref,scope='financial_facts')
         # Check every downstream use before any authenticated request.

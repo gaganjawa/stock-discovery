@@ -82,3 +82,12 @@ def company_detail(listing:str,conn=Depends(db)):
     try:return company(conn,config,listing)
     except PermissionError:raise HTTPException(403,'Source permission denied') from None
     except (ValueError,OSError,KeyError):raise HTTPException(503,'Real company inputs are unavailable or ambiguous') from None
+
+
+@router.get('/scan')
+def latest_scan(conn=Depends(db)):
+    from fastapi import HTTPException
+    from stock_discovery_analysis.real_scan_view import scan_view
+    try:return scan_view(conn,view_config())
+    except PermissionError:raise HTTPException(403,'Source permission denied') from None
+    except (ValueError,OSError,KeyError):raise HTTPException(503,'Real scan inputs are unavailable') from None

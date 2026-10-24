@@ -6,7 +6,7 @@
 
 ## REAL-001 — actual-source integration (PARTIAL)
 
-Phase 9 verifies a **limited research-only local beta**: genuine INFY charts, 24 financial facts, cited historical findings and explicit missing-session/qualification labels. Open `/#real-research` using the [local runbook](docs/REAL-001-runbook.md). The prospective Swing pilot remains **BLOCKED**: the final October 23 check lacks that session’s candle, and policy/action/volume/risk/research gates are unresolved. No real recommendation or prospective reference exists. [Phase 9 execution and launch checklist](docs/REAL-001-phase9.md) · [Policy review](docs/REAL-001-phase8-policy-decision.md). Provider values remain private.
+Phase 10 adds a **12-stock automated private research pilot (PARTIAL)** using the existing worker and real-source storage. The homepage now opens real research: actual coverage, deterministic research priorities, local Ollama status, citations and company selection. Final acceptance has 408 candles through October 23, 96 validated numerical financial facts and two genuine 7B/Nomic reports. Scheduling/restart recovery passed within a bounded run; continuous unattended operation remains unqualified. Prospective Swing remains **BLOCKED** and full three-horizon go-live **NOT ACCEPTED**. No real recommendation or position exists. [Phase 10 execution](docs/REAL-001-phase10.md) · [Local runbook](docs/REAL-001-runbook.md) · [Unapproved policy review](docs/REAL-001-phase8-policy-decision.md). Provider values remain private.
 
 The existing app now has a distinct **Real research** view with explicit blocked coverage and three horizons. Operational adapters are opt-in; no synthetic fallback or paper-admission bypass is added. See the [acceptance record](docs/REAL-001-acceptance.md), [provider/permission matrix](docs/REAL-001-provider-matrix.md) and [local runbook](docs/REAL-001-runbook.md). Keep tokens outside Git and never put values in `.env.example`.
 
@@ -24,9 +24,9 @@ Start Docker, then from this repository run:
 python3 scripts/local.py start
 ```
 
-Open http://127.0.0.1:5173 and sign in using `AUTH_TOKEN` in `.env`. The launcher creates a missing owner key without printing it or replacing existing credentials. Choose **Load synthetic history**, then **Replay → Freeze recommendation → Reveal**. Scorecard supports version groups, batches and export. Use `python3 scripts/local.py stop` to stop services while retaining their containers/data; `status` shows services.
+Open http://127.0.0.1:5173 and sign in using `AUTH_TOKEN` in `.env`. The launcher creates a missing owner key without printing it or replacing existing credentials. Open `/#dashboard`, then choose **Load synthetic history**, then **Replay → Freeze recommendation → Reveal**. Scorecard supports version groups, batches and export. Use `python3 scripts/local.py stop` to stop services while retaining their containers/data; `status` shows services.
 
-The application currently uses fictional daily history. Real-market feeds, hosting, IPO/news, intraday and model training are deferred. See [MVP scope and acceptance](docs/DAILY-SWING-MVP.md).
+The legacy MVP view uses fictional daily history. The separate real homepage uses opt-in private source configuration; hosting, IPO/news, intraday and model training remain deferred. See [MVP scope and acceptance](docs/DAILY-SWING-MVP.md).
 
 ### Optional AI explanation
 
