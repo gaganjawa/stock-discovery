@@ -72,7 +72,10 @@ def ingest_prices(conn, config, *, clock=now, adapter_factory=Upstox):
         identities=adapter.instruments(identity_stream,config.symbols)
         # Only eligible observed sessions with current rights. No SYN calendar.
         sessions={}
-        for rid,raw in conn.execute("SELECT revision_id,payload FROM discovery.revisions WHERE kind='session' AND payload->>'availability_basis'='observed' AND available_at<=%s",(cycle,)):
+        for rid,raw in conn.execute("""SELECT DISTINCT ON (source_id,logical_key) revision_id,payload
+            FROM discovery.revisions WHERE kind='session' AND payload->>'availability_basis'='observed'
+            AND available_at<=%s AND (payload->>'fetched_at')::timestamptz<=%s
+            ORDER BY source_id,logical_key,sequence DESC""",(cycle,cycle)):
             r=Revision.model_validate(raw)
             if at(r.fetched_at)>at(cycle):continue
             access.require(stored_stream(conn,rid),('derive',))

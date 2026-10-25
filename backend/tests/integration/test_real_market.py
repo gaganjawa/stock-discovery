@@ -92,3 +92,30 @@ def test_calendar_includes_current_ist_date_without_admitting_open_candle(isolat
                 assert end=='2026-10-20'  # Today's observed calendar is not today's closed bar.
                 return ()
         real_market.ingest_prices(conn,config,clock=lambda:'2026-10-21T09:00:00Z',adapter_factory=Prices)
+
+
+def test_corrected_calendar_selects_latest_eligible_revision_and_preserves_history(isolated_url,tmp_path):
+    g=grant();gf=tmp_path/'grants.json';gf.write_text(json.dumps([g.model_dump()]))
+    tf=tmp_path/'token';tf.write_text('test-only')
+    config=MarketConfig(account_ref='test',grant_file=str(gf),token_file=str(tf),retention_days=365)
+    data=SessionData(kind='session',calendar_version='correction-test',opens_at='2026-10-22T03:45:00Z',closes_at='2026-10-22T10:00:00Z')
+    first=observed_revision(data,listing='NSE',fetched='2026-10-22T11:00:00Z')
+    corrected=observed_revision(data.model_copy(update={'closes_at':'2026-10-22T09:00:00Z'}),listing='NSE',fetched='2026-10-23T11:00:00Z',previous=first)
+    future=observed_revision(data.model_copy(update={'closes_at':'2026-10-22T08:00:00Z'}),listing='NSE',fetched='2026-10-25T11:00:00Z',previous=corrected)
+    seen=[]
+    class Provider:
+        def __init__(self,**kwargs):pass
+        def close(self):pass
+        def instruments(self,stream,symbols):return [dict(symbol='INFY',isin='INE009A01021',lot_size=1,tick_size='0.05')]
+        def candles(self,stream,instrument,start,end,sessions):seen.append(sessions['2026-10-22']);return ()
+    with psycopg.connect(isolated_url,autocommit=True) as conn:
+        for revision in (first,corrected,future):
+            stream=Stream(stream_id=revision.revision_id,source_id='upstox',account_ref='test',scope='calendar')
+            request=UseRequest(source_id='upstox',account_ref='test',scope='calendar',uses=('acquire','store'),region='IN',destination_region=None,processor_ref=None,requested_at=revision.fetched_at,synthetic=False,units=100,retention_days=365,attribution_present=True)
+            result=ingest_next(conn,stream,RevisionPages((revision,)),load_grant=lambda:g,request=request,audit=lambda d:None,clock=lambda:revision.fetched_at)
+            assert result['accepted']==1
+        for cutoff in ('2026-10-22T12:00:00Z','2026-10-24T12:00:00Z'):
+            ingest_prices(conn,config,clock=lambda:cutoff,adapter_factory=Provider)
+        assert seen==[(data.opens_at,first.data.closes_at),(data.opens_at,corrected.data.closes_at)]
+        history=conn.execute('SELECT payload FROM discovery.revisions WHERE logical_key=%s ORDER BY sequence',(first.logical_key,)).fetchall()
+        assert [r[0] for r in history]==[r.model_dump(mode='json') for r in (first,corrected,future)]
