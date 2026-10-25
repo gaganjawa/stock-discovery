@@ -49,25 +49,41 @@ class Ollama:
         self.usage = []
         try:
             models = self._call('GET', '/api/tags', None, time.monotonic()+5)['models']
-            matches = [m for m in models if m['name'] == model]
-            check(len(matches) == 1, 'model_not_installed')
-            m = matches[0]
-            check(re.fullmatch(r'(sha256:)?[0-9a-f]{64}', m['digest']) is not None, 'model digest unavailable')
-            check(type(m['size']) is int and 0 < m['size'] <= max_model_bytes, 'model_resource_limit')
-            self.ref = Ref(id=model, version=m['digest'], content_hash=m['digest'].removeprefix('sha256:'))
+            self.ref = self._model_ref(models, model, max_model_bytes)
         except Exception:
             self.client.close()
             raise
+
+    @staticmethod
+    def _model_ref(models, model, max_model_bytes):
+        check(isinstance(model, str) and not any(x in model.lower() for x in ('cloud', '://', '/')), 'local model name required')
+        matches = [m for m in models if m['name'] == model]
+        check(len(matches) == 1, 'model_not_installed')
+        m = matches[0]
+        check(re.fullmatch(r'(sha256:)?[0-9a-f]{64}', m['digest']) is not None, 'model digest unavailable')
+        check(type(m['size']) is int and 0 < m['size'] <= max_model_bytes, 'model_resource_limit')
+        return Ref(id=model, version=m['digest'], content_hash=m['digest'].removeprefix('sha256:'))
+
+    @classmethod
+    def installed_refs(cls, requests, *, transport=None):
+        # Metadata only: one bounded local GET, no model construction/loading.
+        with httpx.Client(base_url='http://127.0.0.1:11434', transport=transport, trust_env=False, follow_redirects=False) as client:
+            models = cls._request(client, 'GET', '/api/tags', None, time.monotonic()+5)['models']
+        return {role:cls._model_ref(models, name, kwargs.get('max_model_bytes', 6_000_000_000)) for role,name,kwargs in requests}
 
     def close(self):
         self.client.close()
 
     def _call(self, method, path, body, deadline):
+        return self._request(self.client, method, path, body, deadline)
+
+    @staticmethod
+    def _request(client, method, path, body, deadline):
         remaining = deadline-time.monotonic()
         if remaining <= 0:
             raise TimeoutError('ollama_deadline')
         try:
-            with self.client.stream(method, path, json=body, timeout=min(remaining, 120)) as response:
+            with client.stream(method, path, json=body, timeout=min(remaining, 120)) as response:
                 if response.status_code != 200:
                     raise RuntimeError('ollama_http_'+str(response.status_code))
                 raw = bytearray()

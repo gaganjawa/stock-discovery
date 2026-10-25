@@ -97,3 +97,15 @@ def test_generation_schema_compatibility_does_not_mutate_validation_contract():
     from pydantic import TypeAdapter
     from stock_discovery_contracts.v2 import Text
     with pytest.raises(ValueError):TypeAdapter(Text).validate_python('   ')
+
+
+def test_inventory_identity_check_never_constructs_or_loads_models(monkeypatch):
+    t,calls=transport()
+    monkeypatch.setattr(Ollama,'__init__',lambda *a,**k:pytest.fail('inventory must not construct models'))
+    refs=Ollama.installed_refs((('research','local:7b',{'max_model_bytes':100}),('embedding','local:7b',{})),transport=t)
+    assert refs['research']==refs['embedding'] and refs['research'].content_hash==DIGEST
+    assert [(r.method,r.url.path) for r in calls]==[('GET','/api/tags')]
+    with pytest.raises(ValueError,match='model_not_installed'):
+        Ollama.installed_refs((('research','missing',{}),),transport=t)
+    with pytest.raises(ValueError,match='model_resource_limit'):
+        Ollama.installed_refs((('research','local:7b',{'max_model_bytes':99}),),transport=t)

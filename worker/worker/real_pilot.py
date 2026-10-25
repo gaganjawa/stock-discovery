@@ -181,6 +181,18 @@ def pinned_model_factory(config,models):
     return factory
 
 
+def scan_research_identity(config,refs):
+    return digest(dict(config=config.evidence.model_dump(mode='json',exclude={'queries'}),
+        models={role:ref.model_dump(mode='json') for role,ref in refs.items()},
+        prompt=factual_research.PROMPT_HASH,factual_version=factual_research.VERSION,
+        validator=rag_research.VALIDATOR_VERSION,version=VERSION))
+
+
+def research_complete(row):
+    research=row['research'];status=research.get('attempt_status',research['status'])
+    return status=='not_selected' or (status=='executed' and all(r['status']=='completed' for r in research.get('runs',())))
+
+
 def handlers(schedule,config):
     config=PilotConfig.model_validate(config)
     check(schedule.mode=='live_paper' and schedule.input_hash==pilot_hash(config),'pilot_schedule_configuration_mismatch')
@@ -194,12 +206,23 @@ def handlers(schedule,config):
             source=Stream(stream_id='PILOT-universe',source_id='upstox',account_ref=config.market.account_ref,scope='universe')
             access.require(source,('derive','store'))
             # A calendar renewal changes D3-04 occurrence hashes, never the logical research cutoff.
-            # Reuse a complete genuine scan before any provider or inference calls.
+            # Reuse before market ingestion or inference; verify research identity with metadata only.
             prior=store.execute("""SELECT o.event_key,o.payload FROM discovery.schedule_outbox o JOIN discovery.schedule_jobs j USING(job_id)
                 WHERE o.kind='pilot_scan' AND j.payload->>'scope_id'=%s AND j.payload->>'input_hash'=%s
                 AND o.payload->>'scheduled_cutoff'=%s AND o.payload->>'status'='completed'
                 ORDER BY o.created_at DESC LIMIT 1""",(schedule.scope_id,schedule.input_hash,job['payload']['information_cutoff_at'])).fetchone()
-            if prior and not retryable_rows(prior[1]['rows']):return dict(status='completed',reused_scan=prior[0],actionable=False),None
+            if prior and not retryable_rows(prior[1]['rows']) and all(research_complete(r) for r in prior[1]['rows']):
+                researched=any(r['research']['status']!='not_selected' for r in prior[1]['rows'])
+                try:
+                    unchanged=not researched or prior[1].get('research_identity')==scan_research_identity(config,Ollama.installed_refs(model_requests(config.evidence)))
+                except Exception:
+                    unchanged=False  # Unverifiable identity is never a cache hit.
+                if unchanged:return dict(status='completed',reused_scan=prior[0],actionable=False),None
+            # A receipt belongs to one immutable attempt, even if code/model identity changes.
+            saved_scan=store.execute("SELECT payload FROM discovery.schedule_outbox WHERE event_key=%s",(digest([job['job_id'],'pilot_scan',job['attempts']]),)).fetchone()
+            if saved_scan:
+                if job['attempts']<3:raise JobFailure('readiness')
+                return dict(status='partial',reason='attempt_exhausted_identity_unverified',actionable=False),None
             receipt(store,job,'pilot_universe','frozen',config.universe,clock)
             def gate():
                 nonlocal calls
@@ -269,7 +292,7 @@ def handlers(schedule,config):
             nominations=[]
             for h in ('swing','short_term','long_term'):
                 nominations.extend((r,h) for r in sorted(rows,key=lambda r:r.get('screening',{}).get(h,{}).get('rank') or 999) if r.get('screening',{}).get(h,{}).get('rank')==1)
-            used=set()
+            used=set();research_identity=None;initialization_failed=False
             for row,h in nominations:
                 if len(used)>=config.max_research:break
                 if row['listing_id'] in used:continue
@@ -280,14 +303,20 @@ def handlers(schedule,config):
                         for role,name,kwargs in model_requests(config.evidence):
                             model=Ollama(name,**kwargs);resources.callback(model.close);models[role]=model
                     except Exception as exc:
-                        row['research']=dict(status='failed',error=safe_error(exc));continue
+                        initialization_failed=True
+                        row['research']=dict(status='initialization_failed',error=safe_error(exc));continue
+                    identity=scan_research_identity(config,{role:model.ref for role,model in models.items()})
+                    check(research_identity in (None,identity),'model_identity_changed_during_scan')
+                    research_identity=identity
                     fingerprint=research_fingerprint(config,row,h,models)
                     previous=store.execute("SELECT payload FROM discovery.schedule_outbox WHERE kind='pilot_research' AND payload->>'fingerprint'=%s ORDER BY created_at DESC LIMIT 1",(fingerprint,)).fetchone()
-                    if previous:row['research']={**previous[0],'status':'reused_immutable_attempt'};continue
+                    if previous:row['research']={**previous[0],'status':'reused_immutable_attempt','attempt_status':previous[0]['status']};continue
                     # Commit intent before inference. Ambiguous crash is not automatically billed/retried.
                     attempted=store.execute("SELECT 1 FROM discovery.schedule_outbox WHERE kind='pilot_research_intent' AND payload->>'fingerprint'=%s",(fingerprint,)).fetchone()
                     if attempted:row['research']=dict(status='ambiguous_prior_attempt',fingerprint=fingerprint);continue
-                    if store.execute("SELECT count(*) FROM discovery.schedule_outbox WHERE job_id=%s AND kind='pilot_research_intent'",(job['job_id'],)).fetchone()[0]>=config.max_research:
+                    if store.execute("""SELECT count(*) FROM discovery.schedule_outbox o JOIN discovery.schedule_jobs j USING(job_id)
+                        WHERE o.kind='pilot_research_intent' AND j.payload->>'scope_id'=%s AND j.payload->>'input_hash'=%s
+                        AND j.payload->>'information_cutoff_at'=%s""",(schedule.scope_id,schedule.input_hash,job['payload']['information_cutoff_at'])).fetchone()[0]>=config.max_research:
                         row['research']=dict(status='occurrence_research_budget_exhausted');continue
                     fenced_row(store,job,clock())
                     receipt(store,job,'pilot_research_intent',fingerprint,dict(fingerprint=fingerprint,status='reserved'),clock)
@@ -298,7 +327,7 @@ def handlers(schedule,config):
                             runs=[dict(run_id=x['run_id'],status=x['result']['status'],accepted=len(x['result'].get('factual_report',{}).get('accepted_claims',[])),relations=len(x['result'].get('factual_report',{}).get('interpretive_findings',[]))) for x in result['research']])
                     except Exception as exc:output=dict(fingerprint=fingerprint,status='failed',error=safe_error(exc))
                     row['research']=receipt(store,job,'pilot_research',fingerprint,output,clock)
-            result=dict(kind='automated_factual_research',version=VERSION,universe=config.universe,rows=rows,
+            result=dict(kind='automated_factual_research',version=VERSION,research_identity=research_identity,universe=config.universe,rows=rows,
                 started_at=started_at,completed_at=clock(),duration_seconds=time.monotonic()-started,api_requests=calls,
                 peak_process_memory_bytes=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss*(1 if sys.platform=='darwin' else 1024),
                 queue_depth=store.execute("SELECT count(*) FROM discovery.schedule_jobs WHERE payload->>'scope_id'=%s AND status IN ('queued','running','retry_wait')",(schedule.scope_id,)).fetchone()[0],
@@ -306,9 +335,9 @@ def handlers(schedule,config):
                 catch_up=job['payload']['catch_up'],counts=dict(total=len(rows),observed=sum(r['status']=='observed' for r in rows),stale=sum(r['status']=='stale' for r in rows),failed=sum(r['status']=='failed' for r in rows)),
                 calendar_through=schedule.calendar.ends_on,
                 publication='blocked_existing_qualification_gates',prospective_references=0,positions=0,
-                status='partial' if any(r['status']!='observed' or r['errors'] for r in rows) else 'completed',actionable=False)
+                status='partial' if any(r['status']!='observed' or r['errors'] or not research_complete(r) for r in rows) else 'completed',actionable=False)
             receipt(store,job,'pilot_scan',job['attempts'],result,clock)
-            retryable=retryable_rows(rows)
+            retryable=initialization_failed or retryable_rows(rows)
             if retryable and job['attempts']<3:raise JobFailure('readiness')
             return result,None
     def events(conn,job,clock):
