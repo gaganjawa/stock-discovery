@@ -114,3 +114,7 @@ blocked. The T9 model folder and Ollama inventory passed the final recheck. See
 ### REAL-001 Phase 4 — permission review, PARTIAL
 
 [Phase 4 findings](docs/REAL-001-phase4.md) establish private Upstox market-data retention/research/replay rights from provider-community replies. Genuine filing-corpus rights remain unresolved; no actual INFY research was produced. The stop condition was followed: no additional conditional infrastructure. Consolidated Upstox and Infosys permission drafts are prepared, not sent.
+
+### D3-11 experiment governance
+
+[Experiment governance and API runbook](docs/D3-11-EXPERIMENT-GOVERNANCE.md) · [Acceptance record](docs/D3-11-ACCEPTANCE.md). Immutable preregistration and Q / Q+R / Q+A comparisons reuse the existing publication and paper ledgers. Scorecard displays trial history and explicit missing/mature outcomes. Holdout reuse, leakage and unqualified promotion fail closed. Synthetic acceptance is not investment performance; EP-1 remains unratified and no live operation is activated.

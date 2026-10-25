@@ -1,6 +1,6 @@
 """STK-059/060: real shadow publication and separate prospective references."""
 from alembic import op
-revision='0012'
+revision='real_0012'
 down_revision='0011'
 branch_labels=depends_on=None
 
