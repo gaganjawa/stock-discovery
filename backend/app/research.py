@@ -173,3 +173,17 @@ def export(conn=Depends(db)):
             'outcomes':[r[0] for r in conn.execute('SELECT payload FROM research.trade_outcomes')],
             'runs':[r[0] for r in conn.execute('SELECT manifest FROM research.runs')],
             'scorecard':scorecard(conn)}
+
+
+class ImportPreview(BaseModel):
+    csv_text:str=Field(min_length=1,max_length=2_000_000)
+    source_ref:str=Field(min_length=1,max_length=200)
+    rights_ref:str=Field(min_length=1,max_length=200)
+
+
+@router.post('/imports/preview',dependencies=[Depends(require_auth)])
+def import_preview(body:ImportPreview):
+    from stock_discovery_analysis.import_preview import validate_csv
+    if not body.source_ref.strip() or not body.rights_ref.strip():
+        raise HTTPException(400,'Source and rights references are required')
+    return validate_csv(body.csv_text,body.source_ref.strip(),body.rights_ref.strip())
