@@ -25,10 +25,10 @@ from stock_discovery_analysis.rag_contracts import Query
 from stock_discovery_analysis.factual_research import candidates
 from stock_discovery_analysis import factual_research, rag_research
 from stock_discovery_analysis.schedule_runner import JobFailure
-from stock_discovery_analysis.schedule_store import fenced_row, StaleLease
+from stock_discovery_analysis.schedule_store import fenced_row, StaleLease, unresolved_upstream_rejection
 from .real_market import MarketConfig, access_for, ingest_prices, ingest_configured_financials
 from .real_evidence import EvidenceConfig, run as research
-from .providers.upstox import Upstox, MASTER
+from .providers.upstox import Upstox, MASTER, UpstreamAccessRejected
 from .providers.ollama import Ollama
 
 VERSION='limited-watchlist-research-1.0.0'
@@ -83,6 +83,7 @@ class PilotConfig(Strict):
 
 
 def safe_error(exc):
+    if isinstance(exc,UpstreamAccessRejected):return exc.code
     if isinstance(exc,PermissionError):return 'source_permission_or_credentials_denied'
     if isinstance(exc,KeyError):
         field=str(exc.args[0])
@@ -201,6 +202,8 @@ def handlers(schedule,config):
         with psycopg.connect(setting('DATABASE_URL'),autocommit=True) as store:
             lock='REAL-PILOT:'+config.market.account_ref
             if not store.execute('SELECT pg_try_advisory_lock(hashtextextended(%s,0))',(lock,)).fetchone()[0]:raise JobFailure('readiness')
+            rejected=unresolved_upstream_rejection(store,job['job_id'])
+            if rejected:raise JobFailure(rejected['reason'])
             started=time.monotonic();started_at=clock();calls=0;last=[0.0]
             access=access_for(config.market,clock)
             source=Stream(stream_id='PILOT-universe',source_id='upstox',account_ref=config.market.account_ref,scope='universe')
@@ -271,10 +274,12 @@ def handlers(schedule,config):
                             try:
                                 for endpoint in ENDPOINTS:
                                     try:ingest_financials(store,client,identity,one.account_ref,endpoints=(endpoint,))
+                                    except UpstreamAccessRejected as exc:
+                                        row['errors'].append(endpoint+':'+safe_error(exc));raise
                                     except StaleLease:raise
                                     except Exception as exc:row['errors'].append(endpoint+':'+safe_error(exc))
                             finally:client.close()
-                        except StaleLease:raise
+                        except (StaleLease,UpstreamAccessRejected):raise
                         except Exception as exc:row['errors'].append('financial:'+safe_error(exc))
                     detail=company(store,config.view,member['listing_id'],clock=clock)
                     bundle=retrieve(store,query_for(config,member,'long_term',clock()),config.evidence.retrieval,access=source_access(config.view.sources,clock),persist=False)
@@ -284,6 +289,18 @@ def handlers(schedule,config):
                         financial_fact_count=len(detail['financial_facts']),financial_findings=findings,
                         screening=screening(detail,findings),publication_blockers=detail['publication_blockers'],
                         source_revisions=detail['market_readiness']['input_revision_ids']+list(bundle.documents))
+                except UpstreamAccessRejected as exc:
+                    if not row['errors']:row['errors'].append(safe_error(exc))
+                    # Both receipts commit together before the scheduler blocks.
+                    # Abort this provider job before more requests or inference.
+                    with store.transaction():
+                        receipt(store,job,'pilot_stock',key,row,clock)
+                        receipt(store,job,'pilot_upstream_rejection',job['attempts'],dict(
+                            status='blocked',attempt=job['attempts'],source_id='upstox',
+                            listing_id=member['listing_id'],http_status=exc.status_code,
+                            error=exc.code,reason=exc.reason,scheduled_cutoff=job['payload']['information_cutoff_at'],
+                            actionable=False),clock)
+                    raise JobFailure(exc.reason) from None
                 except StaleLease:raise
                 except Exception as exc:row['errors'].append(safe_error(exc))
                 rows.append(receipt(store,job,'pilot_stock',key,row,clock))

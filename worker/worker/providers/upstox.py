@@ -24,6 +24,17 @@ MASTER = 'https://assets.upstox.com/market-quote/instruments/exchange/NSE.json.g
 IST = ZoneInfo('Asia/Kolkata')
 
 
+class UpstreamAccessRejected(PermissionError):
+    """HTTP evidence only: 403 does not establish whether a token expired."""
+    def __init__(self, status_code):
+        check(status_code in (401,403), 'invalid_upstream_rejection')
+        self.status_code = status_code
+        self.code = 'upstox_authentication_rejected' if status_code == 401 else 'upstox_authorization_rejected'
+        self.reason = 'credentials' if status_code == 401 else 'rights'
+        # Preserve the operational calendar's existing error/backoff contract.
+        super().__init__('upstox_credentials_rejected')
+
+
 class Upstox:
     def __init__(self, *, access, token=None, transport=None, monotonic=time.monotonic, request_gate=None):
         self.access, self.token, self.monotonic = access, token, monotonic
@@ -54,7 +65,7 @@ class Upstox:
         try:
             with self.client.stream('GET', url, headers=headers, timeout=20) as response:
                 if response.status_code in (401,403):
-                    raise PermissionError('upstox_credentials_rejected')
+                    raise UpstreamAccessRejected(response.status_code)
                 if response.status_code == 429:
                     raise RuntimeError('upstox_rate_limited')
                 if response.status_code != 200:

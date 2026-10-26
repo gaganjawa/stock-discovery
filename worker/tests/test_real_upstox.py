@@ -6,7 +6,7 @@ import httpx
 import pytest
 from stock_discovery_analysis.revision_storage import Stream
 from stock_discovery_analysis.revisions import InstrumentData
-from worker.providers.upstox import Upstox,observed_revision,RevisionPages
+from worker.providers.upstox import Upstox,UpstreamAccessRejected,observed_revision,RevisionPages
 
 NOW='2026-10-19T03:00:00Z'
 S=Stream(stream_id='test-price',source_id='upstox',account_ref='test',scope='prices')
@@ -72,6 +72,23 @@ def test_provider_failures_are_sanitized(code):
     client,_,_=make(httpx.Response(code,text='sensitive provider response'))
     with pytest.raises((PermissionError,RuntimeError)) as error:client.instruments(U,('INFY',))
     assert 'sensitive' not in str(error.value)
+
+
+@pytest.mark.parametrize('code,classification,reason',[
+    (401,'upstox_authentication_rejected','credentials'),
+    (403,'upstox_authorization_rejected','rights')])
+def test_upstream_rejection_is_typed_sanitized_and_not_a_transient(code,classification,reason):
+    from worker.real_pilot import safe_error,retryable_rows
+    client,calls,_=make(httpx.Response(code,text='secret token/provider body'))
+    try:
+        with pytest.raises(UpstreamAccessRejected) as caught:
+            client.session(S.model_copy(update={'scope':'calendar'}),'2026-10-16')
+        assert len(calls)==1 and caught.value.status_code==code
+        assert caught.value.reason==reason and safe_error(caught.value)==classification
+        assert str(caught.value)=='upstox_credentials_rejected'  # Calendar compatibility.
+        assert not retryable_rows([dict(status='failed',errors=[classification])])
+        assert safe_error(PermissionError('grant_missing'))!=classification
+    finally:client.close()
 
 
 def test_revisions_preserve_first_observation_and_page():

@@ -133,10 +133,45 @@ def retry(conn, job, now, *, reason, retry_after_seconds=0):
         return status
 
 
-def resume_blocked(conn, job_id, now, evidence_ref):
+def unresolved_upstream_rejection(conn, job_id):
+    """An independently committed pilot rejection survives a lease/worker crash."""
+    row=conn.execute("""SELECT payload FROM discovery.schedule_outbox
+        WHERE job_id=%s AND kind='pilot_upstream_rejection'
+        ORDER BY (payload->>'attempt')::integer DESC LIMIT 1""",(job_id,)).fetchone()
+    if row and not conn.execute('SELECT 1 FROM discovery.schedule_audit WHERE job_id=%s AND code LIKE %s',
+        (job_id,'upstream_gate_resolved:'+str(row[0]['attempt'])+':%')).fetchone():return row[0]
+    return None
+
+
+def resume_blocked(conn, job_id, now, evidence_ref, *, expected_attempt=None):
+    """Pilot recovery requires an explicit attempt and a fresh resolution reference."""
     check(isinstance(evidence_ref,str) and evidence_ref.strip(),'resolution evidence required')
     with conn.transaction():
-        row=conn.execute('SELECT status,expires_at FROM discovery.schedule_jobs WHERE job_id=%s FOR UPDATE',(job_id,)).fetchone()
+        row=conn.execute('SELECT status,expires_at,attempts,error_code FROM discovery.schedule_jobs WHERE job_id=%s FOR UPDATE',(job_id,)).fetchone()
+        upstream=conn.execute("SELECT 1 FROM discovery.schedule_outbox WHERE job_id=%s AND kind='pilot_upstream_rejection'",(job_id,)).fetchone()
+        if upstream:
+            check(type(expected_attempt) is int and expected_attempt>0,'recovery attempt required')
+            reference_hash=digest(evidence_ref.strip())
+            audit_code='pilot_gate_resolved:'+str(expected_attempt)+':'+reference_hash
+            # An old authorization must not resolve a new blocked attempt. Exact
+            # repeats after queuing/running/completion are harmless acknowledgments.
+            if row[0]=='blocked':
+                check(row[2]==expected_attempt,'stale recovery attempt')
+            elif conn.execute('SELECT 1 FROM discovery.schedule_audit WHERE job_id=%s AND code=%s',(job_id,audit_code)).fetchone():
+                return False
+            check(row[0]=='blocked','only blocked jobs can resume')
+            check(not conn.execute('SELECT 1 FROM discovery.schedule_audit WHERE job_id=%s AND code LIKE %s',
+                (job_id,'pilot_gate_resolved:%:'+reference_hash)).fetchone(),'stale recovery evidence')
+            rejection=unresolved_upstream_rejection(conn,job_id)
+            if rejection:check(row[3]==rejection['reason'],'upstream rejection reason mismatch')
+            check(row[1] is None or utc(now)<row[1],'expired job must remain historical')
+            check(row[2]<3,'retry budget exhausted')
+            conn.execute("UPDATE discovery.schedule_jobs SET status='queued',due_at=%s,error_code=NULL,updated_at=%s WHERE job_id=%s",(now,now,job_id))
+            conn.execute('INSERT INTO discovery.schedule_audit(job_id,at,code) VALUES (%s,%s,%s)',(job_id,now,audit_code))
+            if rejection:
+                conn.execute('INSERT INTO discovery.schedule_audit(job_id,at,code) VALUES (%s,%s,%s)',
+                    (job_id,now,'upstream_gate_resolved:'+str(rejection['attempt'])+':'+reference_hash))
+            return True
         check(row is not None and row[0]=='blocked','only blocked jobs can resume')
         check(row[1] is None or utc(now)<row[1],'expired job must remain historical')
         conn.execute("UPDATE discovery.schedule_jobs SET status='queued',attempts=0,due_at=%s,error_code=NULL,updated_at=%s WHERE job_id=%s",(now,now,job_id))
