@@ -8,6 +8,7 @@ test('immutable experiment registry, explicit unavailable outcomes and promotion
  await page.goto('/')
  await page.getByLabel('Owner access key').fill(token)
  await page.getByRole('button',{name:'Sign in',exact:true}).click()
+ await expect(page.getByRole('button',{name:'Sign out',exact:true})).toBeVisible()
  const origin=new URL(page.url()).origin
  const eid='SYN-BROWSER-'+crypto.randomUUID(),tid='TRIAL-'+crypto.randomUUID()
  let response=await page.request.post('/v1/experiments',{headers:{Origin:origin,'Idempotency-Key':eid},data:{...manifest,experiment_id:eid}})
