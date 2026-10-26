@@ -207,3 +207,57 @@ def test_untrusted_source_instructions_are_quoted_not_executed(db):
     assert result['status']=='completed' and result['assessment']['paper_admission']=='blocked'
     assert result['assessment']['actionable'] is False
     assert any('Ignore all rules' in c['text'] and c['kind']=='quote' for c in result['assessment']['claims'])
+
+
+def test_factual_reporting_calls_model_despite_missing_news_and_retains_rejections(db):
+    class Selecting(MockResearchProvider):
+        def assess(self,request,**kwargs):
+            ctx=json.loads(request)['bundle'];c=ctx['candidates'][0]
+            assert ctx['limitations'] and c['citation_ids']
+            return json.dumps(dict(factual_claims=[c,{**c,'text':'invented growth'}],interpretations=[]))
+    result=run(db,provider=Selecting(),factual_report=True,query=query(categories=('annual_report','news')))
+    assert result['provider_called'] and result['research_only']
+    report=result['factual_report']
+    assert len(report['accepted_claims'])==1 and len(report['rejected_claims'])==1
+    assert report['action']=='INSUFFICIENT_EVIDENCE' and not report['qualified']
+    assert 'category:news' in report['limitations']
+    stored=db.execute('SELECT payload FROM discovery.rag_results WHERE run_id=%s',('SYN-run',)).fetchone()[0]
+    assert stored['factual_report']==report
+    assert run(db,provider=Selecting(),factual_report=True,query=query(categories=('annual_report','news')))['cache_reused']
+
+
+def test_factual_report_failed_judge_keeps_facts_but_not_interpretation(db):
+    class Selecting(MockResearchProvider):
+        def assess(self,request,**kwargs):
+            c=json.loads(request)['bundle']['candidates'][0]
+            return json.dumps(dict(factual_claims=[c],interpretations=[dict(text='Revenue increased.',candidate_ids=[c['candidate_id']])]))
+    class FailingJudge(MockResearchProvider):
+        ref=MockResearchProvider.ref.model_copy(update={'id':'SYN-separate-failing-judge'})
+        def judge(self,*a,**kw):raise RuntimeError('deliberate_judge_failure')
+    result=run(db,provider=Selecting(),factual_report=True,judge=FailingJudge())
+    report=result['factual_report']
+    assert len(report['accepted_claims'])==1 and len(report['pending_interpretations'])==1
+    assert not report.get('interpretive_findings') and report['judge_failure']=='deliberate_judge_failure'
+    assert report['judge_accounting']['ambiguous']
+
+
+def test_independent_factual_review_is_new_immutable_run_with_own_budget(db):
+    from stock_discovery_analysis.rag_research import review_factual_run
+    class Selecting(MockResearchProvider):
+        def assess(self,request,**kwargs):
+            c=json.loads(request)['bundle']['candidates'][0]
+            return json.dumps(dict(factual_claims=[c],interpretations=[dict(text='Revenue increased.',candidate_ids=[c['candidate_id']])]))
+    class RejectingJudge(MockResearchProvider):
+        ref=MockResearchProvider.ref.model_copy(update={'id':'SYN-independent-reviewer'})
+        def judge(self,request,**kwargs):
+            d=json.loads(request)['bundle']
+            return json.dumps(dict(rubric=d['rubric'],claims=[dict(claim_index=0,support='unsupported',evidence_ids=[],reason='missing_premises')],contradictions='addressed',negative_evidence='unknown',completeness='incomplete',causal_support='unknown',abstention='appropriate'))
+    parent=run(db,provider=Selecting(),factual_report=True)
+    parent_json=db.execute("SELECT payload FROM discovery.rag_results WHERE run_id='SYN-run'").fetchone()[0]
+    result=review_factual_run(db,parent_run_id='SYN-run',run_id='SYN-review',access=access(),budget=Budget(account='SYN-review-budget'),judge=RejectingJudge())
+    assert result['parent_run_id']=='SYN-run' and result['judge_called'] and not result['provider_called']
+    assert result['factual_report']['accepted_claims']==parent['factual_report']['accepted_claims']
+    assert not result['factual_report']['interpretive_findings'] and result['factual_report']['rejected_claims']
+    assert db.execute("SELECT payload FROM discovery.rag_results WHERE run_id='SYN-run'").fetchone()[0]==parent_json
+    assert db.execute('SELECT count(*) FROM discovery.rag_reservations').fetchone()[0]==2
+    assert review_factual_run(db,parent_run_id='SYN-run',run_id='SYN-review',access=access(),budget=Budget(account='SYN-review-budget'),judge=RejectingJudge())['cache_reused']

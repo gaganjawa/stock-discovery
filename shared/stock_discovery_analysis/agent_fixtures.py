@@ -4,7 +4,7 @@ from .evidence import extract, Document, content_hash
 from .evidence_fixtures import document_fixture
 from .rag_contracts import Query,Bundle,Hit,RetrievalPolicy,Assessment,Claim
 from .rag_retrieval import financial_facts,citation,conflicts
-from .rag_research import MockResearchProvider,financial_text
+from .rag_research import MockResearchProvider,financial_text,materialize_response
 from .agent_research import encode
 
 SCENARIOS=('supported','fabricated_citation','contradictory_filings','stale_evidence',
@@ -84,7 +84,7 @@ def case_bundle(case):
 
 def candidate_assessment(bundle,scenario):
     raw=MockResearchProvider().assess(encode({'bundle':bundle.model_dump(mode='json')}),max_output_units=12000,deadline=1)
-    a=json.loads(raw)
+    a=materialize_response(raw,bundle).model_dump(mode='json')
     if scenario=='fabricated_citation':a['claims'][0]['citations'][0]['locator']='fabricated page 999'
     if scenario=='incorrect_calculation':
         f=next(f for f in bundle.facts if f.metric=='earnings').model_copy(update={'value':'99999999'})

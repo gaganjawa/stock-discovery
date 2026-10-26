@@ -5,7 +5,8 @@ import pytest
 from stock_discovery_analysis.rag_contracts import Query, RetrievalPolicy, Budget, Bundle, Claim, Assessment
 from stock_discovery_analysis.rag_retrieval import (MockEmbeddings, cosine, allocate_candidates, financial_facts,
     calculate_ratio, conflicts)
-from stock_discovery_analysis.rag_research import validate_assessment, financial_text
+from stock_discovery_analysis.rag_research import (ResearchClaim, ResearchResponse, validate_assessment,
+    validate_research_response, financial_text)
 from stock_discovery_analysis.evidence import extract
 from stock_discovery_analysis.evidence_fixtures import document_fixture
 from stock_discovery_analysis.revision_fixtures import NOW
@@ -124,3 +125,68 @@ def test_versioned_policy_candidate_cap_and_event_reservation():
     with pytest.raises(ValueError):RetrievalPolicy(lexical_weight='-1')
     with pytest.raises(ValueError):Budget(account='test',max_run_cost='-1')
     with pytest.raises(ValueError):query(period_end_at='2027-01-01T00:00:00Z')
+
+
+def test_numeric_inferences_cannot_bypass_financial_fact_parity():
+    b=bundle();f=b.facts[0]
+    a=Assessment(issuer_id=b.query.issuer_id,horizon=b.query.horizon,action='WATCH',
+        claims=(Claim(kind='inference',text='Revenue grew 999 percent.',citations=(f.citation,),fact=None),),missing=(),contradictions=())
+    with pytest.raises(ValueError,match='numeric_inference_requires_structured_fact'):
+        validate_assessment(a.model_dump_json(),b)
+
+
+def test_valid_citations_do_not_promote_model_abstention_to_watch():
+    b=bundle()
+    original=financial_assessment(b).model_copy(update={'action':'INSUFFICIENT_EVIDENCE'})
+    result,report=validate_assessment(original.model_dump_json(),b)
+    assert result.action=='INSUFFICIENT_EVIDENCE'
+    assert report['deterministic']=='passed' and report['proposed_action']=='INSUFFICIENT_EVIDENCE'
+
+
+def compact_assessment(b, **changes):
+    f=b.facts[0]
+    payload=dict(issuer_id=b.query.issuer_id,horizon=b.query.horizon,action='BUY',
+        claims=(ResearchClaim(kind='financial',text=financial_text(f),
+            citation_ids=(f.citation.evidence_id,),fact_id=f.fact_id),))
+    payload.update(changes)
+    return ResearchResponse(**payload)
+
+
+def test_compact_citation_ids_materialize_exact_bundle_locator_and_fact():
+    b=bundle()
+    response=compact_assessment(b)
+    result,report=validate_research_response(response.model_dump_json(),b)
+    fact=b.facts[0]
+    assert result.claims[0].fact==fact
+    assert result.claims[0].citations==(fact.citation,)
+    assert result.action=='WATCH'
+    assert report['deterministic']=='passed'
+
+
+def test_compact_response_rejects_unknown_citation_and_fact_ids():
+    b=bundle();response=compact_assessment(b)
+    claim=response.claims[0].model_copy(update={'citation_ids':('f'*64,)})
+    with pytest.raises(ValueError,match='citation membership/locator'):
+        validate_research_response(response.model_copy(update={'claims':(claim,)}).model_dump_json(),b)
+    claim=response.claims[0].model_copy(update={'fact_id':'0'*64})
+    with pytest.raises(ValueError,match='financial fact membership'):
+        validate_research_response(response.model_copy(update={'claims':(claim,)}).model_dump_json(),b)
+
+
+def test_compact_response_cannot_change_a_citation_locator():
+    b=bundle();response=compact_assessment(b)
+    raw=response.model_dump(mode='json')
+    raw['claims'][0]['locator']='invented page'
+    with pytest.raises(ValueError):
+        validate_research_response(json.dumps(raw),b)
+
+
+def test_bundle_owns_missing_and_conflicting_evidence_in_compact_response():
+    b=bundle().model_copy(update={'missing':('category:news',),'contradictions':(('a','b'),)})
+    response=compact_assessment(b,action='INSUFFICIENT_EVIDENCE',claims=())
+    result,report=validate_research_response(response.model_dump_json(),b)
+    assert result.missing==b.missing and result.contradictions==b.contradictions
+    assert result.action=='INSUFFICIENT_EVIDENCE'
+    assert report['deterministic']=='passed'
+    with pytest.raises(ValueError):
+        validate_research_response(response.model_copy(update={'action':'WATCH'}).model_dump_json(),b)

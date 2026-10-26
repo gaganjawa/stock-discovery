@@ -1,0 +1,429 @@
+{
+  "feature": "REAL-001",
+  "phase": 5,
+  "status": "PARTIAL",
+  "recorded_at": "2026-10-21T11:42:10.743663+00:00",
+  "source": "Actual authenticated Upstox APIs; private numerical-source permission inference documented in docs/REAL-001-phase5.md",
+  "actual_observations": {
+    "instrument": "NSE:INFY / INE009A01021",
+    "daily_candles": 27,
+    "adjustment_basis": "split_bonus_adjusted",
+    "dated_sessions": 31,
+    "financial_snapshots": 3,
+    "reported_facts": 20,
+    "derived_net_margins": 4,
+    "annual_periods": 4,
+    "endpoints": [
+      "income-statement",
+      "balance-sheet",
+      "cash-flow"
+    ],
+    "issuer_pdf_processed": false,
+    "ratios_probe": "Actual successful response; excluded from period-aligned facts because valuation/reporting as-of basis is unavailable"
+  },
+  "actual_models": {
+    "successful_fact_only_runs": [
+      {
+        "horizon": "swing",
+        "run_id": "REAL-RAG-836fee83762262901f90b0ccb9b5af04bd8fa991404fb59e54d1332090bcc55e",
+        "status": "completed",
+        "prompt_hash": "37f75fbcdbe202a323a97334c62ff70831885de0fa87de06ac3033640b8e7d3d",
+        "model": {
+          "id": "qwen2.5-coder:7b",
+          "version": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+          "content_hash": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364"
+        },
+        "validator": {
+          "version": "fixed-rag-parity-1.1.0",
+          "deterministic": "passed",
+          "semantic": "not_evaluated",
+          "judge": "not_implemented",
+          "proposed_action": "INSUFFICIENT_EVIDENCE",
+          "actionable": false
+        },
+        "provider_called": true,
+        "accounting": {
+          "input_units": 13658,
+          "output_units": 3423,
+          "unit_basis": "utf8_byte_upper_bound",
+          "reserved_units": 50000,
+          "reserved_cost": "0",
+          "actual_cost": "0",
+          "latency_ms": 47482,
+          "currency": "USD",
+          "reservation_released": false
+        }
+      },
+      {
+        "horizon": "short_term",
+        "run_id": "REAL-RAG-e722479b4bc94cb4415069f9ebd14449ae51730555c3367a6b70137245c17c6d",
+        "status": "completed",
+        "prompt_hash": "37f75fbcdbe202a323a97334c62ff70831885de0fa87de06ac3033640b8e7d3d",
+        "model": {
+          "id": "qwen2.5-coder:7b",
+          "version": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+          "content_hash": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364"
+        },
+        "validator": {
+          "version": "fixed-rag-parity-1.1.0",
+          "deterministic": "passed",
+          "semantic": "not_evaluated",
+          "judge": "not_implemented",
+          "proposed_action": "INSUFFICIENT_EVIDENCE",
+          "actionable": false
+        },
+        "provider_called": true,
+        "accounting": {
+          "input_units": 13663,
+          "output_units": 3428,
+          "unit_basis": "utf8_byte_upper_bound",
+          "reserved_units": 50000,
+          "reserved_cost": "0",
+          "actual_cost": "0",
+          "latency_ms": 47171,
+          "currency": "USD",
+          "reservation_released": false
+        }
+      },
+      {
+        "horizon": "long_term",
+        "run_id": "REAL-RAG-0b0974c34ccfed2fb6d8ec160996d2679e08de23c2378674d9aece78c87e7075",
+        "status": "completed",
+        "prompt_hash": "37f75fbcdbe202a323a97334c62ff70831885de0fa87de06ac3033640b8e7d3d",
+        "model": {
+          "id": "qwen2.5-coder:7b",
+          "version": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+          "content_hash": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364"
+        },
+        "validator": {
+          "version": "fixed-rag-parity-1.1.0",
+          "deterministic": "passed",
+          "semantic": "not_evaluated",
+          "judge": "not_implemented",
+          "proposed_action": "INSUFFICIENT_EVIDENCE",
+          "actionable": false
+        },
+        "provider_called": true,
+        "accounting": {
+          "input_units": 13662,
+          "output_units": 3427,
+          "unit_basis": "utf8_byte_upper_bound",
+          "reserved_units": 50000,
+          "reserved_cost": "0",
+          "actual_cost": "0",
+          "latency_ms": 48638,
+          "currency": "USD",
+          "reservation_released": false
+        }
+      }
+    ],
+    "broader_research_attempts": [
+      {
+        "horizon": "swing",
+        "run_id": "REAL-RAG-aade1512b168df6ce6e176c812d82c333edf851f58c48b6ee7e827aa59dcb6f1",
+        "status": "abstained",
+        "prompt_hash": "e2b71947d3488d288ef67db9926722f8b9c2402d28d8c3576d0ee34d6abecfd0",
+        "model": {
+          "id": "qwen2.5-coder:7b",
+          "version": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+          "content_hash": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364"
+        },
+        "validator": null,
+        "provider_called": true,
+        "accounting": {
+          "input_units": 13918,
+          "output_units": 3411,
+          "unit_basis": "utf8_byte_upper_bound",
+          "reserved_units": 50000,
+          "reserved_cost": "0",
+          "actual_cost": "0",
+          "latency_ms": 52086,
+          "currency": "USD",
+          "reservation_released": false
+        }
+      },
+      {
+        "horizon": "short_term",
+        "run_id": "REAL-RAG-77ed8e634cfa90e663accfc95f5f75f84fd05b826e8d1c8eeca111bcae9ba8f3",
+        "status": "abstained",
+        "prompt_hash": "e2b71947d3488d288ef67db9926722f8b9c2402d28d8c3576d0ee34d6abecfd0",
+        "model": {
+          "id": "qwen2.5-coder:7b",
+          "version": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+          "content_hash": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364"
+        },
+        "validator": null,
+        "provider_called": true,
+        "accounting": {
+          "input_units": 13923,
+          "output_units": 3416,
+          "unit_basis": "utf8_byte_upper_bound",
+          "reserved_units": 50000,
+          "reserved_cost": "0",
+          "actual_cost": "0",
+          "latency_ms": 48238,
+          "currency": "USD",
+          "reservation_released": false
+        }
+      },
+      {
+        "horizon": "long_term",
+        "run_id": "REAL-RAG-614a92dbc089147f2fdd4bf184a42472b37f178d30aaa9b701908d095627e5a7",
+        "status": "abstained",
+        "prompt_hash": "e2b71947d3488d288ef67db9926722f8b9c2402d28d8c3576d0ee34d6abecfd0",
+        "model": {
+          "id": "qwen2.5-coder:7b",
+          "version": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+          "content_hash": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364"
+        },
+        "validator": null,
+        "provider_called": true,
+        "accounting": {
+          "input_units": 13922,
+          "output_units": 3415,
+          "unit_basis": "utf8_byte_upper_bound",
+          "reserved_units": 50000,
+          "reserved_cost": "0",
+          "actual_cost": "0",
+          "latency_ms": 51455,
+          "currency": "USD",
+          "reservation_released": false
+        }
+      }
+    ],
+    "broader_failure": "citation membership/locator; rejected without repair or publication",
+    "financial_reasoning_qualified": false,
+    "independent_judge_executed": false,
+    "usage_fact_only": [
+      {
+        "model": {
+          "id": "qwen2.5-coder:7b",
+          "version": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+          "content_hash": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364"
+        },
+        "status": "returned",
+        "prompt_eval_count": 3906,
+        "eval_count": 1534,
+        "total_duration": 46494328916,
+        "load_duration": 1160139000,
+        "wall_ms": 46501,
+        "cost": "0"
+      },
+      {
+        "model": {
+          "id": "qwen2.5-coder:7b",
+          "version": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+          "content_hash": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364"
+        },
+        "status": "returned",
+        "prompt_eval_count": 3907,
+        "eval_count": 1535,
+        "total_duration": 46473814000,
+        "load_duration": 897803000,
+        "wall_ms": 46479,
+        "cost": "0"
+      },
+      {
+        "model": {
+          "id": "qwen2.5-coder:7b",
+          "version": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+          "content_hash": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364"
+        },
+        "status": "returned",
+        "prompt_eval_count": 3907,
+        "eval_count": 1535,
+        "total_duration": 47943790458,
+        "load_duration": 909366708,
+        "wall_ms": 47949,
+        "cost": "0"
+      },
+      {
+        "model": {
+          "id": "nomic-embed-text:latest",
+          "version": "0a109f422b47e3a30ba2b10eca18548e944e8a23073ee3f3e947efcf3c45e59f",
+          "content_hash": "0a109f422b47e3a30ba2b10eca18548e944e8a23073ee3f3e947efcf3c45e59f"
+        },
+        "status": "returned",
+        "prompt_eval_count": 861,
+        "eval_count": null,
+        "total_duration": 865271541,
+        "load_duration": 776428875,
+        "wall_ms": 867,
+        "cost": "0"
+      },
+      {
+        "model": {
+          "id": "nomic-embed-text:latest",
+          "version": "0a109f422b47e3a30ba2b10eca18548e944e8a23073ee3f3e947efcf3c45e59f",
+          "content_hash": "0a109f422b47e3a30ba2b10eca18548e944e8a23073ee3f3e947efcf3c45e59f"
+        },
+        "status": "returned",
+        "prompt_eval_count": 861,
+        "eval_count": null,
+        "total_duration": 591665167,
+        "load_duration": 524643250,
+        "wall_ms": 593,
+        "cost": "0"
+      },
+      {
+        "model": {
+          "id": "nomic-embed-text:latest",
+          "version": "0a109f422b47e3a30ba2b10eca18548e944e8a23073ee3f3e947efcf3c45e59f",
+          "content_hash": "0a109f422b47e3a30ba2b10eca18548e944e8a23073ee3f3e947efcf3c45e59f"
+        },
+        "status": "returned",
+        "prompt_eval_count": 861,
+        "eval_count": null,
+        "total_duration": 590948333,
+        "load_duration": 523611583,
+        "wall_ms": 592,
+        "cost": "0"
+      }
+    ],
+    "usage_broader": [
+      {
+        "model": {
+          "id": "qwen2.5-coder:7b",
+          "version": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+          "content_hash": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364"
+        },
+        "status": "returned",
+        "prompt_eval_count": 3950,
+        "eval_count": 1529,
+        "total_duration": 51119956917,
+        "load_duration": 3914279375,
+        "wall_ms": 51126,
+        "cost": "0"
+      },
+      {
+        "model": {
+          "id": "qwen2.5-coder:7b",
+          "version": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+          "content_hash": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364"
+        },
+        "status": "returned",
+        "prompt_eval_count": 3951,
+        "eval_count": 1530,
+        "total_duration": 47301958750,
+        "load_duration": 1150662583,
+        "wall_ms": 47307,
+        "cost": "0"
+      },
+      {
+        "model": {
+          "id": "qwen2.5-coder:7b",
+          "version": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+          "content_hash": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364"
+        },
+        "status": "returned",
+        "prompt_eval_count": 3951,
+        "eval_count": 1530,
+        "total_duration": 50782683709,
+        "load_duration": 900310667,
+        "wall_ms": 50788,
+        "cost": "0"
+      },
+      {
+        "model": {
+          "id": "nomic-embed-text:latest",
+          "version": "0a109f422b47e3a30ba2b10eca18548e944e8a23073ee3f3e947efcf3c45e59f",
+          "content_hash": "0a109f422b47e3a30ba2b10eca18548e944e8a23073ee3f3e947efcf3c45e59f"
+        },
+        "status": "returned",
+        "prompt_eval_count": 861,
+        "eval_count": null,
+        "total_duration": 862218875,
+        "load_duration": 776424625,
+        "wall_ms": 864,
+        "cost": "0"
+      },
+      {
+        "model": {
+          "id": "nomic-embed-text:latest",
+          "version": "0a109f422b47e3a30ba2b10eca18548e944e8a23073ee3f3e947efcf3c45e59f",
+          "content_hash": "0a109f422b47e3a30ba2b10eca18548e944e8a23073ee3f3e947efcf3c45e59f"
+        },
+        "status": "returned",
+        "prompt_eval_count": 861,
+        "eval_count": null,
+        "total_duration": 853148333,
+        "load_duration": 782232041,
+        "wall_ms": 855,
+        "cost": "0"
+      },
+      {
+        "model": {
+          "id": "nomic-embed-text:latest",
+          "version": "0a109f422b47e3a30ba2b10eca18548e944e8a23073ee3f3e947efcf3c45e59f",
+          "content_hash": "0a109f422b47e3a30ba2b10eca18548e944e8a23073ee3f3e947efcf3c45e59f"
+        },
+        "status": "returned",
+        "prompt_eval_count": 861,
+        "eval_count": null,
+        "total_duration": 587648708,
+        "load_duration": 523158833,
+        "wall_ms": 589,
+        "cost": "0"
+      }
+    ]
+  },
+  "publication_gates": {
+    "swing": "real_policies_required",
+    "short_term": "real_policies_required",
+    "long_term": "real_policies_required",
+    "observation_pass": []
+  },
+  "dashboard": {
+    "actual_http": true,
+    "no_mocks": true,
+    "observed_at": "2026-10-21T11:41:30.274Z",
+    "counts": {
+      "candles": 27,
+      "facts": 24,
+      "documents": 3,
+      "history": 20
+    },
+    "tabs": {
+      "Swing": {
+        "verifiedResearchVisible": true,
+        "unqualifiedLabel": true,
+        "publicationAbsent": true
+      },
+      "Short-term": {
+        "verifiedResearchVisible": true,
+        "unqualifiedLabel": true,
+        "publicationAbsent": true
+      },
+      "Long-term": {
+        "verifiedResearchVisible": true,
+        "unqualifiedLabel": true,
+        "publicationAbsent": true
+      }
+    },
+    "private_screenshot": "phase5-final-dashboard.png"
+  },
+  "quantitative": "Existing D3-05 descriptive price features executed; all three policy/eligibility-gated assessments abstained; not a calibrated strategy pass",
+  "tracking": "No published recommendation or prospective reference; eligible observation pass returned no work",
+  "automation": "D3-04 ingestion supports calendar and financial refresh; no unattended end-to-end acceptance",
+  "validation": {
+    "backend_worker": {
+      "passed": 617
+    },
+    "postgresql": {
+      "passed": 164,
+      "skipped": 0
+    },
+    "migration_lifecycle": "passed",
+    "contract_validators": "passed",
+    "script_unit_tests": 10,
+    "frontend_production_build": "passed",
+    "browser_e2e": {
+      "passed": 5,
+      "note": "Software workflows include explicitly fabricated fixtures; genuine browser evidence is recorded separately above"
+    },
+    "fresh_prompt_ollama_unit_tests": 38,
+    "ci": "See current checks on https://github.com/gaganjawa/stock-discovery/pull/12; local results do not imply CI success"
+  },
+  "cost_inr": "0",
+  "public_evidence_policy": "Operational metadata only. Source payloads, financial values, generated claims, private grants, credentials and screenshots remain outside this public repository."
+}

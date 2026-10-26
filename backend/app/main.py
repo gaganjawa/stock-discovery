@@ -60,5 +60,8 @@ app.include_router(discovery_router)
 from .paper import router as paper_router
 app.include_router(paper_router)
 
+from .real_research import router as real_research_router
+app.include_router(real_research_router)
+
 from .governance import router as governance_router
 app.include_router(governance_router)

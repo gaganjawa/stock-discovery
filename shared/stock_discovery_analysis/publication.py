@@ -1,7 +1,7 @@
 """D3-09 deterministic four-action policy and strict v2 publication assembly.
 
-Only explicitly fictional runs are installed. No AI rank can promote a quant
-result or grant admission. Every artifact carries the complete pinned inputs.
+Synthetic and explicitly configured real shadow runs share this assembly.
+No AI rank can promote a quant result or grant admission. Every artifact carries the complete pinned inputs.
 """
 from dataclasses import asdict, is_dataclass
 from datetime import timedelta, timezone
@@ -104,31 +104,51 @@ def policy(kind,profile,parameters):
         effective_at='2020-01-01T00:00:00Z',parameters=items,approval_ref=None)
 
 
-def build_artifact(*,run_id,data,strategy,issuer,cohort,research,bundle,generated_at,code_version,permissions,extra_missing=(),event_ids=()):
-    check(data['mode']=='synthetic','real publication is not activated')
+def build_artifact(*,run_id,data,strategy,issuer,cohort,research,bundle,generated_at,code_version,permissions,extra_missing=(),event_ids=(),real=None):
+    live=data['mode']=='live_paper'
+    check(data['mode']=='synthetic' or live and real is not None,'real publication context required')
+    if live:
+        check(at(data['cutoff'])<at(generated_at),'publication_must_follow_cutoff')
+        check(data['calendar'] is not None and data['calendar'].provenance.availability_basis=='observed_live','observed_calendar_required')
+        check(all(b.provenance.availability_basis=='observed_live' for b in data['bars']),'observed_prices_required')
+        check(all(e['availability_basis']=='observed' for e in real['price_evidence']),'observed_evidence_required')
     # Freeze only cutoff-eligible observations. Future calendar sessions are
     # preannounced plans; future price bars/filings must never reach API artifacts.
     from .quant_policies import available
     point=at(data['cutoff']).replace(tzinfo=timezone.utc)
-    data={**data,'bars':tuple(b for b in data['bars'] if b.ends_at<=point and b.provenance.eligible(point)),
+    data={**data,'bars':tuple(b for b in data['bars'] if b.ends_at<=point and b.provenance.eligible(point,live=live)),
         'statements':tuple(s for s in data['statements'] if available(s.evidence,data['cutoff'],data['mode'])),
         'coverage':tuple(c for c in data['coverage'] if available(c.evidence,data['cutoff'],data['mode']))}
     registry=PolicyRegistry();registry.register(strategy)
     quant=assess(registry,strategy.ref,**data)
+    if live and quant['action']=='BUY' and not quant['entry_terms'].get('stop'):
+        extra_missing=(*extra_missing,'real_execution_terms_unavailable')
+    original_quant=quant
     action,reasons=decision(quant,research,required=cohort!='quant',missing=extra_missing)
     # Fixture inputs always include a valid calendar even when coverage is missing.
     if quant['horizon'] is None: raise ValueError('publication horizon unavailable')
     listing=data['instrument_id']; profile=data['profile']; cutoff=data['cutoff']
-    available=(at(cutoff)+timedelta(seconds=1)).strftime('%Y-%m-%dT%H:%M:%SZ')
+    available=generated_at if live else (at(cutoff)+timedelta(seconds=1)).strftime('%Y-%m-%dT%H:%M:%SZ')
     closes=[s.closes_at.strftime('%Y-%m-%dT%H:%M:%SZ') for s in data['calendar'].sessions]
-    cal_ref=dict(id='SYN-D309-calendar',version=data['calendar'].version,content_hash=digest(closes))
+    cal_ref=dict(id='observed-calendar' if live else 'SYN-D309-calendar',version=data['calendar'].version,content_hash=digest(closes))
     horizon={**quant['horizon'],'anchor_at':available,'calendar_ref':cal_ref}
+    if live:
+        from .quant_policies import horizon_for
+        values={p.name:Decimal(p.value) for p in strategy.parameters if p.value is not None}
+        horizon={**horizon_for(profile,values,data['calendar'],available).model_dump(),'calendar_ref':cal_ref}
+        quant={**quant,'conditions':{**quant['conditions'],'expires_at':horizon['entry_expires_at']}}
+        future_opens=[s.opens_at for s in data['calendar'].sessions if s.opens_at>at(available).replace(tzinfo=timezone.utc)]
+        check(bool(future_opens),'entry_calendar_unavailable')
+        quant['entry_terms']={**quant['entry_terms'],'earliest_entry_at':future_opens[0].strftime('%Y-%m-%dT%H:%M:%SZ')}
     evidence={c.evidence.evidence_id:c.evidence.model_dump() for c in data['coverage'] if c.evidence.available_at<=cutoff}
     evidence.update({s.evidence.evidence_id:s.evidence.model_dump() for s in data['statements'] if s.evidence.available_at<=cutoff})
-    bar_id=listing+'-bars-'+quant['input_hash']
-    evidence[bar_id]=dict(evidence_id=bar_id,revision_id=bar_id,instrument_id=listing,kind='closed_candles',source_ref=SOURCE,
-        source_version=VERSION,locator='snapshot:closed-bars',published_at=cutoff,available_at=cutoff,fetched_at=cutoff,
-        period_end_at=cutoff,availability_basis='fictional_fixture',archive_verification_ref=None,summary='Closed fictional candles at the cutoff')
+    if live:
+        evidence.update({e['evidence_id']:e for e in real['price_evidence']})
+    else:
+        bar_id=listing+'-bars-'+quant['input_hash']
+        evidence[bar_id]=dict(evidence_id=bar_id,revision_id=bar_id,instrument_id=listing,kind='closed_candles',source_ref=SOURCE,
+            source_version=VERSION,locator='snapshot:closed-bars',published_at=cutoff,available_at=cutoff,fetched_at=cutoff,
+            period_end_at=cutoff,availability_basis='fictional_fixture',archive_verification_ref=None,summary='Closed fictional candles at the cutoff')
     citations=[]
     if bundle:
         citations=[c.model_dump() for h in bundle.hits for c in h.citations]+[f.citation.model_dump() for f in bundle.facts]
@@ -141,9 +161,15 @@ def build_artifact(*,run_id,data,strategy,issuer,cohort,research,bundle,generate
                 available_at=revision['available_at'],fetched_at=revision['fetched_at'],period_end_at=None,
                 availability_basis=revision['availability_basis'],archive_verification_ref=None,
                 summary=citation['excerpt'] or 'Structured fact cited by the frozen research bundle')
-    policies=[strategy]+[policy(k,profile,v) for k,v in dict(horizon={'duration':str(horizon['duration'])},
-        research={'local_only':'1','shadow_only':'1'},risk={'fixture_stop_fraction':'0.2','admission_enabled':'0'},
-        cost={'orders_enabled':'0'},retrieval={'max_chunks':'20'},schedule={'manual_and_worker':'1'},universe={'declared_total':'5'}).items()]
+    if live:
+        policies=real['policies']
+        check(next(p for p in policies if p.kind=='strategy')==strategy,'strategy_context_mismatch')
+        check(len(policies)==8 and len({p.kind for p in policies})==8,'complete_real_policy_manifest_required')
+        check(all(p.status!='fixture' and not p.ref.id.startswith('SYN-') for p in policies),'fixture_policy_in_real_publication')
+    else:
+        policies=[strategy]+[policy(k,profile,v) for k,v in dict(horizon={'duration':str(horizon['duration'])},
+            research={'local_only':'1','shadow_only':'1'},risk={'fixture_stop_fraction':'0.2','admission_enabled':'0'},
+            cost={'orders_enabled':'0'},retrieval={'max_chunks':'20'},schedule={'manual_and_worker':'1'},universe={'declared_total':'5'}).items()]
     refs={p.kind:p.ref.model_dump() for p in policies}
     success=bool(research and research.get('status')=='completed' and research.get('validator',{}).get('semantic')=='supported')
     research_id=digest(research) if success else None
@@ -159,28 +185,29 @@ def build_artifact(*,run_id,data,strategy,issuer,cohort,research,bundle,generate
         execution=dict(profile=profile,side='OPEN_LONG',entry_type='buy_stop' if profile=='swing' else 'limit',
             entry_price=entry,stop_price=stop,target_price=terms.get('target'),earliest_entry_at=terms['earliest_entry_at'],
             entry_expires_at=horizon['entry_expires_at'],time_exit_at=horizon['holding_end_at'],assumptions_ref=refs['cost'])
-    rec=dict(schema_version='2.0.0',recommendation_id=rec_id,synthetic=True,mode='synthetic',run_id=run_id,
+    rec=dict(schema_version='2.0.0',recommendation_id=rec_id,synthetic=not live,mode=data['mode'],run_id=run_id,
         instrument=dict(instrument_id=listing,issuer_id=issuer,symbol=listing,exchange='SYNTHETIC_NSE',series='EQ',isin=None,
                         currency='INR',exchange_timezone='Asia/Kolkata',lot_size=1),
-        strategy=dict(id=strategy.ref.id,version=strategy.ref.version,config_version=POLICY_VERSION),horizon=horizon,
-        information_cutoff_at=cutoff,generated_at=generated_at,decision_available_at=available,availability_simulated=True,
+        strategy=dict(id=strategy.ref.id,version=strategy.ref.version,config_version=strategy.ref.content_hash if live else POLICY_VERSION),horizon=horizon,
+        information_cutoff_at=cutoff,generated_at=generated_at,decision_available_at=available,availability_simulated=not live,
         action=action,cohort=dict(arm=cohort,config_hash=digest([refs,cohort]),capability='researched' if success else 'technical_only',shadow=True),
         candidate_origin='both' if event_ids else 'quant',event_ids=list(event_ids),snapshot_id=snapshot_id,baseline_ref=quant['assessment_id'],
         research_status='succeeded' if success else 'not_requested' if cohort=='quant' else 'unavailable',
         research_ref=research_id,validation_ref=research_id+'-validation' if success else None,judge_ref=research_id+'-judge' if success else None,
         research_unavailable_reason=None if success else 'quantitative_only' if cohort=='quant' else 'required_research_unavailable',
         policy_refs=refs,evidence=list(evidence.values()),missing_evidence=[dict(requirement=m,reason=m,blocking=True) for m in missing],
-        rationale=dict(summary='; '.join(reasons)+'. Fictional shadow research; admission blocked.',evidence_ids=list(evidence)),
-        versions=dict(code=code_version,dataset=VERSION,model=research.get('model',{}).get('version') if success else None,
+        rationale=dict(summary='; '.join(reasons)+('. Real shadow research; admission blocked.' if live else '. Fictional shadow research; admission blocked.'),evidence_ids=list(evidence)),
+        versions=dict(code=code_version,dataset=real['dataset_version'] if live else VERSION,model=research.get('model',{}).get('version') if success else None,
             prompt=research.get('agent_prompt_hash',research.get('prompt_hash')) if success else None),
         evidence_quality=dict(coverage=bundle.coverage if bundle else None,freshness='unknown',source_quality='primary',
             claim_support='1' if success else None,contradiction_ids=contradictions,
-            uncertainty=['Fictional engineering inputs; uncalibrated mock models; not investment validation'],missing_required=missing),
+            uncertainty=['Unqualified real research; not approved for execution'] if live else ['Fictional engineering inputs; uncalibrated mock models; not investment validation'],missing_required=missing),
         conditions=quant['conditions'],valuation=quant['valuation'],execution=execution,
         risk_context=dict(eligibility='unknown' if data['risk_prohibited'] is None or data['eligible'] is None else 'blocked' if data['risk_prohibited'] or not data['eligible'] else 'eligible',
             binding_constraints=quant['known_adverse']+['shadow_only','capital_profile_unconfigured'],risk_ref=risk_id,capital_profile_ref=None),
-        paper_admission=dict(status='blocked',reservation_ref=None,quantity=None,reason='MOCK / SHADOW / NON-ACTIONABLE; no capital approval or broker execution'),
+        paper_admission=dict(status='blocked',reservation_ref=None,quantity=None,reason='REAL RESEARCH / SHADOW / NON-ACTIONABLE' if live else 'MOCK / SHADOW / NON-ACTIONABLE; no capital approval or broker execution'),
         action_reason_codes=reasons,revises_id=None,revision_reason=None)
+    if live:rec['instrument']=real['instrument']
     Recommendation.model_validate(rec)
     reference_records=[]
     def reference(rid,kind,assessment=None,passed=None):
@@ -191,11 +218,11 @@ def build_artifact(*,run_id,data,strategy,issuer,cohort,research,bundle,generate
     for eid in event_ids:reference(eid,'event')
     for cid in contradictions:reference(cid,'contradiction')
     for cid in (quant['valuation'] or {}).get('calculation_ids',[]):reference(cid,'calculation')
-    frozen=dict(schema_version='2.0.0',snapshot=dict(snapshot_id=snapshot_id,mode='synthetic',information_cutoff_at=cutoff,
+    frozen=dict(schema_version='2.0.0',snapshot=dict(snapshot_id=snapshot_id,mode=data['mode'],information_cutoff_at=cutoff,
         calendar_ref=cal_ref,session_closes=closes,evidence=list(evidence.values()),references=reference_records,
         policies=[p.model_dump() for p in policies]),recommendations=[rec],outcomes=[],observation_manifests=[],evaluator_refs=[])
     validate_bundle(frozen)
-    return dict(recommendation=rec,contract_bundle=frozen,quantitative=quant,research=research,
+    return dict(recommendation=rec,contract_bundle=frozen,quantitative=quant,**({'prepublication_quantitative':original_quant,'material_events':real.get('events',[])} if live else {}),research=research,
         research_bundle=bundle.model_dump(mode='json') if bundle else None,citations=citations,permissions=permissions,
         input_manifest=manifest(data),policy_manifest=strategy.model_dump(),publication_status='published_shadow',
         ranking=dict(action_tier={'BUY':0,'WATCH':1,'AVOID':2,'INSUFFICIENT_EVIDENCE':3}[action],
@@ -219,5 +246,10 @@ def reproduce_quant(artifact):
         'coverage':tuple(CoverageCheck.model_validate(c) for c in raw['coverage'])}
     strategy=Policy.model_validate(artifact['policy_manifest']);registry=PolicyRegistry();registry.register(strategy)
     result=assess(registry,strategy.ref,**data)
-    if result!=artifact['quantitative']:raise ValueError('quantitative reproduction mismatch')
+    stored=artifact['quantitative']
+    if artifact['recommendation']['mode']=='live_paper':
+        # Publication reanchors conditions to the actual publish clock; the
+        # deterministic pre-publication assessment remains pinned separately.
+        stored=artifact.get('prepublication_quantitative',stored)
+    if result!=stored:raise ValueError('quantitative reproduction mismatch')
     return result

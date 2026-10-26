@@ -120,7 +120,10 @@
           "type": "integer"
         },
         "adjustment_basis": {
-          "const": "raw",
+          "enum": [
+            "raw",
+            "split_bonus_adjusted"
+          ],
           "title": "Adjustment Basis",
           "type": "string"
         }

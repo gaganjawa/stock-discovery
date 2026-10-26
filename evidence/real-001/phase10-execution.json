@@ -1,0 +1,91 @@
+{
+  "phase": 10,
+  "checked_at": "2026-10-24T04:36:35Z",
+  "statuses": {
+    "automated_private_research_pilot": "PARTIAL",
+    "prospective_swing": "BLOCKED",
+    "full_three_horizon": "NOT_ACCEPTED"
+  },
+  "universe": {
+    "label": "LIMITED RESEARCH WATCHLIST",
+    "members": 12,
+    "basis": "continuity anchor then valid unique EQ symbols in ascending order; no liquidity qualification",
+    "version": "67a08f41723819f3c75e6f5ce219855147a9a5626912404a63efec98ab2a4567"
+  },
+  "genuine": {
+    "resolved": 12,
+    "candles": 408,
+    "latest_session": "2026-10-23",
+    "financial_facts": 96,
+    "companies_with_facts": 11,
+    "latest_scan_counts": {
+      "stale": 0,
+      "total": 12,
+      "failed": 0,
+      "observed": 12
+    },
+    "assessments": 36,
+    "insufficient_evidence": 36,
+    "model_runs": [
+      {
+        "run_id": "REAL-RAG-f51ec08712bac83b26b068a4005cca859653ca4104f89e338954259702348eab",
+        "accepted": 2,
+        "relations": 0,
+        "rejected": 2,
+        "citations_revalidated": true,
+        "bundle_hash": "778c608ea65b3f2b929e95b0f7fec6691d47e5b533090c49723f1fc3a68af428"
+      },
+      {
+        "run_id": "REAL-RAG-fbf801610888881e2e4eaa0e08b0acaa071eacb52f67abc5e50e00c0ba6c586f",
+        "accepted": 2,
+        "relations": 0,
+        "rejected": 2,
+        "citations_revalidated": true,
+        "bundle_hash": "4ebc0d94ca49561b63260ea12c0215d092ceca854130678a7a458a6e64407e50"
+      }
+    ],
+    "models": [
+      "qwen2.5-coder:7b",
+      "nomic-embed-text:latest"
+    ],
+    "duplicate_logical_revision_sequences": 0,
+    "publication_counts": {
+      "discovery.recommendations": 0,
+      "paper.shadow_references": 0,
+      "paper.shadow_outcomes": 0,
+      "paper.portfolios": 0,
+      "paper.ledger": 0
+    },
+    "grants_unchanged": true
+  },
+  "operations": {
+    "scan_started_at": "2026-10-24T04:35:00Z",
+    "scan_completed_at": "2026-10-24T04:36:09Z",
+    "final_scan_elapsed_seconds": 69.00050270799966,
+    "final_scan_requests": 46,
+    "scheduled_request_ledger_total": 194,
+    "preparation_requests": 61,
+    "diagnostic_requests": 1,
+    "total_requests": 256,
+    "peak_final_worker_rss_bytes": 369278976,
+    "queue_depth_after_completion": 0,
+    "calendar_through": "2026-10-30",
+    "worker_stopped_after_bounded_acceptance": true,
+    "inference_timing": "end-to-end local research durations, not isolated model-only latency",
+    "restart_history_preserved": true,
+    "unattended_continuity": "not_qualified"
+  },
+  "validation": {
+    "full_suite_passed": 679,
+    "postgres_passed": 170,
+    "postgres_skipped": 0,
+    "migration_lifecycle": "passed",
+    "validators": 3,
+    "script_tests": 10,
+    "frontend_build": "passed",
+    "fixture_browser_workflows": 6,
+    "genuine_browser": "passed_no_mocks",
+    "last_targeted_tests": 14,
+    "ci": "exact delivered commit reported separately"
+  }
+}

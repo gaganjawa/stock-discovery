@@ -33,7 +33,14 @@ def main() -> None:
     parser.add_argument('--synthetic-evidence', action='store_true', help='automatically ingest fictional filings/news; requires --synthetic-schedule')
     parser.add_argument('--synthetic-schedule', action='store_true', help='use fictional D3-04 acceptance adapter')
     parser.add_argument('--schedule-config', type=Path, help='versioned D3-04 calendar/policy JSON')
+    parser.add_argument('--real-market-config', type=Path, help='opt-in REAL-001 price adapter config; downstream research stays blocked')
+    parser.add_argument('--pilot-operations-directory',type=Path,help='private local health, automatic calendar and resource controls')
+    parser.add_argument('--real-pilot-config',type=Path,help='bounded factual research using existing durable schedule')
     args = parser.parse_args()
+    if args.real_pilot_config and (args.real_market_config or args.synthetic_schedule or args.synthetic_evidence):
+        parser.error('real pilot cannot mix adapter modes')
+    if args.real_market_config and (args.synthetic_schedule or args.synthetic_evidence):
+        parser.error('real and synthetic adapters cannot be combined')
     if args.interval_seconds < 1:
         parser.error('interval must be positive')
     if args.synthetic_evidence and not args.synthetic_schedule:
@@ -42,7 +49,9 @@ def main() -> None:
     if config and not setting('DATABASE_URL'):
         parser.error('scheduler requires DATABASE_URL')
 
+    if args.pilot_operations_directory and not args.real_pilot_config:parser.error('operations requires real pilot')
     validate_private()
+    pilot_lock=None;ops=None
     schedule_handlers = None
     if args.synthetic_schedule:
         if config is None:
@@ -52,10 +61,40 @@ def main() -> None:
         if args.synthetic_evidence:
             from stock_discovery_analysis.evidence_fixtures import scheduled_handlers
             schedule_handlers = scheduled_handlers(config)
+    if args.real_market_config:
+        from .real_market import handlers, MarketConfig
+        if config is None: parser.error('--real-market-config requires --schedule-config')
+        market = MarketConfig.model_validate_json(args.real_market_config.read_text())
+        schedule_handlers = handlers(config, market)
+    if args.real_pilot_config:
+        from .real_pilot import handlers, PilotConfig
+        if config is None:parser.error('--real-pilot-config requires --schedule-config')
+        pilot=PilotConfig.model_validate_json(args.real_pilot_config.read_text())
+        from .pilot_operations import singleton, Operations
+        pilot_lock=singleton(pilot.market.account_ref)
+        if args.pilot_operations_directory:ops=Operations(args.pilot_operations_directory,config,pilot)
+        schedule_handlers=handlers(config,pilot)
     while True:
+        if ops:
+            try:
+                with psycopg.connect(setting('DATABASE_URL'),autocommit=True,connect_timeout=5) as conn:
+                    config=ops.preflight(conn)
+                    schedule_handlers=handlers(config,pilot)
+                    ops.save('running')
+                    result=tick(conn,config,handlers=schedule_handlers,clock=lambda:stamp(datetime.now(timezone.utc)),lease_seconds=900)
+                ops.save('healthy',result)
+            except Exception as exc:
+                from .real_pilot import safe_error
+                code=str(exc) if isinstance(exc,PermissionError) or str(exc).startswith(('calendar_','resource_')) else safe_error(exc)
+                ops.save('blocked',{'error':code})
+                if ops.state.get('last_logged_error')!=code:
+                    ops.event('worker_blocked');ops.state['last_logged_error']=code
+            if args.once:return
+            time.sleep(max(30,args.interval_seconds))
+            continue
         if config:
             with psycopg.connect(setting('DATABASE_URL'), autocommit=True, connect_timeout=5) as conn:
-                result = tick(conn, config, handlers=schedule_handlers, clock=lambda: stamp(datetime.now(timezone.utc)))
+                result = tick(conn, config, handlers=schedule_handlers, clock=lambda: stamp(datetime.now(timezone.utc)),lease_seconds=900 if args.real_pilot_config else 120)
             print(json.dumps(result, sort_keys=True), flush=True)
         elif setting('DATABASE_URL') and not args.once:
             try:

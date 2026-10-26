@@ -54,3 +54,25 @@ def test_private_startup_requires_owner_secret_file(monkeypatch, tmp_path):
     monkeypatch.setenv("DATABASE_URL_FILE", str(p))
     monkeypatch.delenv("AUTH_TOKEN_FILE", raising=False)
     with pytest.raises(ValueError), TestClient(app): pass
+
+
+def test_successful_logins_share_peer_budget_but_bearer_reads_do_not(monkeypatch):
+    monkeypatch.setenv("AUTH_TOKEN", "x" * 40)
+    monkeypatch.setenv("COOKIE_SECURE", "false")
+    now = [0]
+    monkeypatch.setattr(app.state, "login_limiter", LoginLimiter(lambda: now[0]))
+    for _ in range(5):
+        # Fresh browser contexts still arrive from the same reverse proxy.
+        client = TestClient(app)
+        assert client.post("/api/v1/session", json={"token": "x" * 40}).status_code == 200
+    fresh = TestClient(app)
+    assert fresh.get("/api/v1/session").status_code == 401
+    assert fresh.get("/api/v1/session", headers={"Authorization": "Bearer " + "x" * 40}).status_code == 200
+    assert fresh.get("/api/v1/session", headers={"Authorization": "Bearer wrong"}).status_code == 401
+    response = fresh.post("/api/v1/session", json={"token": "x" * 40})
+    assert response.status_code == 429
+    assert response.json() == {"detail": "Too many login attempts"}
+    assert response.headers["retry-after"] == "60"
+    assert client.get("/api/v1/session").status_code == 200
+    now[0] = 61
+    assert fresh.post("/api/v1/session", json={"token": "x" * 40}).status_code == 200
