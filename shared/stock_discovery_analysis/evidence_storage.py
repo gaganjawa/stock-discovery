@@ -1,6 +1,6 @@
 """Rights-gated evidence acquisition, extraction, retrieval and event dispatch."""
 import json
-from dataclasses import dataclass, replace
+from dataclasses import dataclass, field, replace
 
 from psycopg.types.json import Jsonb
 from stock_discovery_contracts.rights import UseRequest
@@ -19,11 +19,22 @@ class Access:
     clock: object
     primary_source_ids: frozenset[str] = frozenset()
 
+    fence_conn: object = field(default=None,repr=False,compare=False)
+    fence_permits: dict = field(default_factory=dict,repr=False,compare=False)
+
     def require(self,stream,uses):
         request=self.request_for(stream)
         request=UseRequest.model_validate({**request.model_dump(),'requested_at':self.clock()})
         grant=self.load_grant(stream)
         permission(grant,request,stream,uses,self.audit)
+        if self.fence_conn is not None:
+            from .grant_fences import capture, enforce
+            key=(stream.source_id,stream.account_ref)
+            if key not in self.fence_permits:
+                self.fence_permits[key]=capture(self.fence_conn,grant,request,uses)
+            else:
+                with self.fence_conn.transaction():
+                    enforce(self.fence_conn,self.fence_permits[key],grant,request,uses)
         return grant,request
 
 
@@ -46,16 +57,20 @@ def verify_identity(conn,document,access):
     check(identity.availability_basis==document.revision.availability_basis,'identity provenance mismatch')
 
 
-def ingest_evidence_page(conn,stream,page,*,access):
+def ingest_evidence_page(conn,stream,page,*,access,permit=None):
     """Whole page, D3-03 checkpoint and extracted content commit atomically."""
     page=EvidencePage.model_validate_json(page.model_dump_json())
     grant,request=access.require(stream,('store',))
+    from .grant_fences import capture, enforce, sanitized_fence_errors
+    permit=permit or capture(conn,grant,request)
     check(len(page.records)<=request.units,'page quota')
     full_hash=digest(page.model_dump(mode='json'))
-    with conn.transaction():
+    with sanitized_fence_errors(), conn.transaction():
+        enforce(conn,permit,access.load_grant(stream),request)
         conn.execute('SELECT pg_advisory_xact_lock(hashtextextended(%s,0))',('D3-stream:'+stream.stream_id,))
         previous=conn.execute('SELECT content_hash,result FROM discovery.evidence_batches WHERE stream_id=%s AND cursor_key=%s',(stream.stream_id,page.cursor or '')).fetchone()
         if previous:
+            conn.execute('SELECT discovery.check_ingestion_page(%s,%s)',(stream.stream_id,page.cursor or ''))
             check(previous[0]==full_hash,'changed evidence page on retry')
             # Cached extracted results also require current extraction/derivation rights.
             access.require(stream,('extract','derive'))
@@ -91,7 +106,7 @@ def ingest_evidence_page(conn,stream,page,*,access):
         # D3-03 validates mode, timestamps, identity chains and record collisions.
         _,request=access.require(stream,('store',))
         result=ingest_page(conn,stream,Page(cursor=page.cursor,next_cursor=page.next_cursor,complete=page.complete,records=tuple(metadata)),
-            load_grant=lambda:access.load_grant(stream),request=request,audit=access.audit)
+            load_grant=lambda:access.load_grant(stream),request=request,audit=access.audit,permit=permit)
         documents=[]
         for document,parsed in accepted:
             rid=document.revision.revision_id
@@ -116,20 +131,26 @@ def ingest_evidence_page(conn,stream,page,*,access):
             documents.append(rid)
         result={**result,'document_revision_ids':sorted(documents),'complete':page.complete,'rejections':rejections,
                 'status':'partial' if result['quarantined'] else 'complete'}
+        enforce(conn,permit,access.load_grant(stream),request,('store','extract','derive'))
         conn.execute('INSERT INTO discovery.evidence_batches VALUES (%s,%s,%s,%s,%s)',
                      (stream.stream_id,page.cursor or '',full_hash,access.clock(),Jsonb(result)))
         return result
 
 
 def ingest_next_evidence(conn,stream,adapter,*,access):
-    _,request=access.require(stream,('acquire',))
+    grant,request=access.require(stream,('acquire',))
+    from .grant_fences import capture
+    permit=capture(conn,grant,request,('acquire','store'))
     state=conn.execute('SELECT cursor,complete FROM discovery.streams WHERE stream_id=%s',(stream.stream_id,)).fetchone()
     if state and state[1]:
+        with conn.transaction():
+            for row in conn.execute('SELECT cursor_key FROM discovery.pages WHERE stream_id=%s ORDER BY cursor_key',(stream.stream_id,)):
+                conn.execute('SELECT discovery.check_ingestion_page(%s,%s)',(stream.stream_id,row[0]))
         return dict(complete=True,status='already_complete',document_revision_ids=[])
     cursor=state[0] if state else None
     page=adapter.fetch(cursor,min(request.units,10))
     check(page.cursor==cursor,'adapter cursor mismatch')
-    return ingest_evidence_page(conn,stream,page,access=access)
+    return ingest_evidence_page(conn,stream,page,access=access,permit=permit)
 
 
 def read_evidence(conn,revision_id,*,access,cutoff,mode,purpose='derive'):

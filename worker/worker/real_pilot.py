@@ -205,7 +205,8 @@ def handlers(schedule,config):
             rejected=unresolved_upstream_rejection(store,job['job_id'])
             if rejected:raise JobFailure(rejected['reason'])
             started=time.monotonic();started_at=clock();calls=0;last=[0.0]
-            access=access_for(config.market,clock)
+            from stock_discovery_analysis.grant_fences import ingestion_access
+            access=ingestion_access(store,access_for(config.market,clock))
             source=Stream(stream_id='PILOT-universe',source_id='upstox',account_ref=config.market.account_ref,scope='universe')
             access.require(source,('derive','store'))
             # A calendar renewal changes D3-04 occurrence hashes, never the logical research cutoff.

@@ -61,16 +61,19 @@ def permission(grant, request, stream, uses, audit):
         raise PermissionError(decision.code)
 
 
-def ingest_page(conn, stream: Stream, page: Page, *, load_grant, request, audit):
+def ingest_page(conn, stream: Stream, page: Page, *, load_grant, request, audit, permit=None):
     """Validated page and checkpoint commit together; bad rows retain hashes only."""
     grant = load_grant()
     permission(grant, request, stream, ('store',), audit)
+    from .grant_fences import capture, enforce, sanitized_fence_errors
+    permit = permit or capture(conn, grant, request)
     check(len(page.records) <= request.units, 'page exceeds reserved operation units')
     check(page.complete == (page.next_cursor is None), 'completion/cursor mismatch')
     check(page.complete or page.cursor != page.next_cursor, 'cursor did not advance')
     content_hash = digest(wire(page))
     cursor_key = page.cursor or ''
-    with conn.transaction():
+    with sanitized_fence_errors(), conn.transaction():
+        enforce(conn, permit, load_grant(), request)
         conn.execute('SELECT pg_advisory_xact_lock(hashtextextended(%s,0))', ('D3-stream:'+stream.stream_id,))
         conn.execute('''INSERT INTO discovery.streams(stream_id,source_id,account_ref,scope)
             VALUES (%s,%s,%s,%s) ON CONFLICT DO NOTHING''',
@@ -79,6 +82,7 @@ def ingest_page(conn, stream: Stream, page: Page, *, load_grant, request, audit)
         check(state[:3] == (stream.source_id,stream.account_ref,stream.scope), 'stream identity conflict')
         old = conn.execute('SELECT content_hash,accepted,quarantined FROM discovery.pages WHERE stream_id=%s AND cursor_key=%s', (stream.stream_id,cursor_key)).fetchone()
         if old:
+            conn.execute('SELECT discovery.check_ingestion_page(%s,%s)', (stream.stream_id,cursor_key))
             check(old[0] == content_hash, 'changed page on retry')
             return {'accepted': old[1], 'quarantined': old[2], 'reused': True}
         check(not state[4] and state[3] == page.cursor, 'stale or completed stream cursor')
@@ -105,6 +109,8 @@ def ingest_page(conn, stream: Stream, page: Page, *, load_grant, request, audit)
             if reason is None:
                 old_record = conn.execute('SELECT payload,stream_id FROM discovery.revisions WHERE revision_id=%s', (record.revision_id,)).fetchone()
                 collision = conn.execute('SELECT revision_id FROM discovery.revisions WHERE source_id=%s AND logical_key=%s AND (sequence=%s OR source_revision=%s)', (record.source_id,record.logical_key,record.sequence,record.source_revision)).fetchone()
+                if old_record:
+                    conn.execute('SELECT discovery.check_revision_grant(%s)', (record.revision_id,))
                 if old_record and old_record[0] != wire(record):
                     reason = 'revision_identity_conflict'
                 elif collision and collision[0] != record.revision_id:
@@ -139,6 +145,8 @@ def ingest_page(conn, stream: Stream, page: Page, *, load_grant, request, audit)
             check(actual is not None and actual[0] == wire(record), 'concurrent revision conflict')
             conn.execute('INSERT INTO discovery.stream_revisions VALUES (%s,%s) ON CONFLICT DO NOTHING', (stream.stream_id,record.revision_id))
             accepted += 1
+        conn.execute('INSERT INTO discovery.ingestion_grants VALUES (%s,%s,%s,%s)',
+                     (stream.stream_id,cursor_key,grant.grant_id,grant.version))
         conn.execute('INSERT INTO discovery.pages VALUES (%s,%s,%s,%s,%s,%s,%s)',
                      (stream.stream_id,cursor_key,content_hash,page.next_cursor,page.complete,accepted,quarantined))
         conn.execute('UPDATE discovery.streams SET cursor=%s,complete=%s WHERE stream_id=%s',
@@ -148,16 +156,22 @@ def ingest_page(conn, stream: Stream, page: Page, *, load_grant, request, audit)
 
 def ingest_next(conn, stream, adapter: PageAdapter, *, load_grant, request, audit, clock):
     request = UseRequest.model_validate({**request.model_dump(), 'requested_at': clock()})
-    permission(load_grant(),request,stream,('acquire',),audit)
+    grant = load_grant()
+    permission(grant,request,stream,('acquire',),audit)
+    from .grant_fences import capture
+    permit = capture(conn,grant,request,('acquire','store'))
     with conn.transaction():
         state = conn.execute('SELECT cursor,complete FROM discovery.streams WHERE stream_id=%s', (stream.stream_id,)).fetchone()
     if state and state[1]:
+        with conn.transaction():
+            for row in conn.execute('SELECT cursor_key FROM discovery.pages WHERE stream_id=%s ORDER BY cursor_key',(stream.stream_id,)):
+                conn.execute('SELECT discovery.check_ingestion_page(%s,%s)',(stream.stream_id,row[0]))
         return {'complete': True}
     cursor = state[0] if state else None
     page = adapter.fetch(cursor,min(request.units,100))
     check(page.cursor == cursor, 'adapter cursor mismatch')
     request = UseRequest.model_validate({**request.model_dump(), 'requested_at': clock()})
-    return ingest_page(conn,stream,page,load_grant=load_grant,request=request,audit=audit)
+    return ingest_page(conn,stream,page,load_grant=load_grant,request=request,audit=audit,permit=permit)
 
 
 def freeze_snapshot(conn, *, streams, load_grant, requests, audit, mode, cutoff,

@@ -44,7 +44,8 @@ def next_occurrence(schedule, clock):
 
 def renew_calendar(conn, schedule, pilot, *, clock=now, factory=Upstox, pause=time.sleep):
     """All dated responses must validate before atomically replacing planning coverage."""
-    access=access_for(pilot.market,clock)
+    from stock_discovery_analysis.grant_fences import ingestion_access
+    access=ingestion_access(conn,access_for(pilot.market,clock))
     stream=Stream(stream_id='PILOT-CALENDAR-'+digest(clock()),source_id='upstox',account_ref=pilot.market.account_ref,scope='calendar')
     access.require(stream,('acquire','derive','store'))
     today=utc(clock()).astimezone(IST).date()
