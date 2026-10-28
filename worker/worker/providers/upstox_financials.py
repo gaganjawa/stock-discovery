@@ -111,12 +111,14 @@ def ingest_financials(conn, client, identity, account_ref, *, endpoints=ENDPOINT
         # Check every downstream use before any authenticated request.
         client.access.require(source,('acquire','store','extract','derive'))
         stream=source.model_copy(update={'scope':'filings'})
-        client.access.require(stream,('acquire','store','extract','derive'))
+        grant,request=client.access.require(stream,('acquire','store','extract','derive'))
+        from stock_discovery_analysis.grant_fences import capture
+        permit=capture(conn,grant,request,('acquire','store','extract','derive'))
         url='https://api.upstox.com/v2/fundamentals/'+identity.data.isin+'/'+endpoint+'?type=consolidated&fs=true'+('&time_period=yearly' if endpoint=='income-statement' else '')
         payload=json.loads(client._get(url,source));fetched=client.access.clock()
         prior=conn.execute("SELECT payload FROM discovery.revisions WHERE source_id='upstox' AND listing_id=%s AND kind='document' AND payload->'data'->>'document_id'=%s ORDER BY sequence DESC LIMIT 1",(identity.listing_id,'upstox-'+endpoint+'-'+identity.data.isin)).fetchone()
         document=financial_document(payload,endpoint,identity=identity,fetched=fetched,previous=Revision.model_validate(prior[0]) if prior else None)
-        result=ingest_evidence_page(conn,stream,EvidencePage(cursor=None,next_cursor=None,complete=True,records=(document.model_dump(mode='json'),)),access=client.access)
+        result=ingest_evidence_page(conn,stream,EvidencePage(cursor=None,next_cursor=None,complete=True,records=(document.model_dump(mode='json'),)),access=client.access,permit=permit)
         check(result['status']=='complete','financial_evidence_quarantined')
         results.append(result)
         time.sleep(.6)

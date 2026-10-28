@@ -3,6 +3,7 @@
 Requires permitted observed calendar sessions already in D3-03, not fabricated
 weekdays. Returns ingestion evidence only; never publishes or admits a position.
 """
+from stock_discovery_analysis.grant_fences import ingestion_access
 import json
 from datetime import date, timedelta, timezone
 from pathlib import Path
@@ -53,7 +54,7 @@ def latest(conn, data, listing):
 def ingest_prices(conn, config, *, clock=now, adapter_factory=Upstox):
     """One bounded observation batch; adjusted history is refreshed in full."""
     config=MarketConfig.model_validate(config)
-    audit=[]; access=access_for(config,clock,audit.append)
+    audit=[]; access=ingestion_access(conn,access_for(config,clock,audit.append))
     lock='REAL-001:'+config.account_ref
     check(conn.autocommit,'dedicated_autocommit_connection_required')
     if not conn.execute('SELECT pg_try_advisory_lock(hashtextextended(%s,0))',(lock,)).fetchone()[0]:
@@ -152,7 +153,7 @@ def ingest_calendar(conn, config, *, clock=now):
     from zoneinfo import ZoneInfo
     config=MarketConfig.model_validate(config)
     check(conn.autocommit,'dedicated_autocommit_connection_required')
-    access=access_for(config,clock)
+    access=ingestion_access(conn,access_for(config,clock))
     cycle=clock();end=at(cycle).replace(tzinfo=timezone.utc).astimezone(ZoneInfo('Asia/Kolkata')).date()
     start=end-timedelta(days=config.lookback_days+7)
     # Include today's dated session; ingest_prices excludes it until its close.
@@ -187,7 +188,7 @@ def ingest_configured_financials(conn,config,market_result,*,clock=now):
     """Eligible D3-04 ingestion only; publication still requires actual policies."""
     from .providers.upstox_financials import ingest_financials
     config=MarketConfig.model_validate(config)
-    access=access_for(config,clock);lock='REAL-001:'+config.account_ref
+    access=ingestion_access(conn,access_for(config,clock));lock='REAL-001:'+config.account_ref
     check(conn.execute('SELECT pg_try_advisory_lock(hashtextextended(%s,0))',(lock,)).fetchone()[0],'real_ingestion_busy')
     client=None
     try:
