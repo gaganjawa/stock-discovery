@@ -85,7 +85,7 @@ def test_future_cutoff_mode_and_financial_scope_denial(db):
     ingest(db)
     with pytest.raises(ValueError,match='unavailable'):read(db,cutoff='2026-10-14T09:00:00Z')
     with pytest.raises(ValueError,match='future'):read(db,cutoff='2027-01-01T00:00:00Z')
-    with pytest.raises(ValueError):read(db,mode='live_paper')
+    with pytest.raises(PermissionError,match='^real_read_access_denied$'):read(db,mode='live_paper')
     grant=evidence_grant(); grant=grant.model_copy(update={'scopes':tuple(s for s in grant.scopes if s!='financial_facts')})
     with pytest.raises(PermissionError):read(db,access=evidence_access(load_grant=lambda s:grant))
 

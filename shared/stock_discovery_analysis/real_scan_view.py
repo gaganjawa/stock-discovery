@@ -10,11 +10,26 @@ from .publication_store import now
 
 def scan_view(conn,config):
     if not config.pilot_scope_id:return dict(status='not_configured',scan=None,jobs=[])
+    from .read_fences import guarded_read
+    access=source_access(config.sources)
+    with guarded_read(conn,access) as guard:
+        result=_scan_view(conn,config,access)
+        if result.get('scan'):
+            scan=result['scan']
+            # Legacy frozen universe copies lack original acquisition linkage.
+            # A current provider/account grant cannot authorize those old copies.
+            if not scan.get('universe_revision_ids'):raise PermissionError('scan_lineage_unavailable')
+            for item in scan['rows']:
+                if not item.get('source_revisions'):raise PermissionError('scan_lineage_unavailable')
+            guard.collect(scan)
+        return result
+
+
+def _scan_view(conn,config,access):
     jobs=conn.execute("SELECT job_id,stage,status,error_code,attempts,due_at,updated_at FROM discovery.schedule_jobs WHERE payload->>'scope_id'=%s ORDER BY updated_at DESC LIMIT 30",(config.pilot_scope_id,)).fetchall()
     row=conn.execute("SELECT o.payload FROM discovery.schedule_outbox o JOIN discovery.schedule_jobs j USING(job_id) WHERE j.payload->>'scope_id'=%s AND o.kind='pilot_scan' ORDER BY o.created_at DESC,o.event_key LIMIT 1",(config.pilot_scope_id,)).fetchone()
     scan=row[0] if row else None
     if scan:
-        access=source_access(config.sources)
         source=Stream(stream_id='PILOT-read',source_id='upstox',account_ref=scan['universe']['account_ref'],scope='universe')
         checked={}
         def require(stream):

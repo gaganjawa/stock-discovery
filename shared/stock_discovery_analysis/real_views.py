@@ -64,9 +64,19 @@ def market_readiness(bars,sessions,cutoff):
 
 
 def company(conn,config,listing,*,clock=now,publication_inputs=False,cutoff_at=None):
+    from .read_fences import guarded_read
+    config=ViewConfig.model_validate(config)
+    access=source_access(config.sources,clock)
+    with guarded_read(conn,access) as guard:
+        result=_company(conn,config,listing,clock=clock,publication_inputs=publication_inputs,cutoff_at=cutoff_at,access=access)
+        guard.collect(result[0] if publication_inputs else result)
+        return result
+
+
+def _company(conn,config,listing,*,clock,publication_inputs,cutoff_at,access):
     config=ViewConfig.model_validate(config)
     check(listing in config.listing_ids,'listing_not_configured')
-    cutoff=cutoff_at or clock();check(at(cutoff)<=at(clock()),'future_read_cutoff');access=source_access(config.sources,clock)
+    cutoff=cutoff_at or clock();check(at(cutoff)<=at(clock()),'future_read_cutoff')
     records=eligible_revisions(conn,listing,cutoff,access)
     identities=[r for r in records if r.data.kind=='instrument']
     check(len(identities)==1,'real_identity_missing_or_ambiguous')

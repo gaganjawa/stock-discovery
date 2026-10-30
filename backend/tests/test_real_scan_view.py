@@ -13,7 +13,7 @@ def test_scan_financial_scope_revocation_blocks_cached_findings(monkeypatch):
         calls.append(stream.scope)
         if stream.scope=='financial_facts':raise PermissionError('scope_denied')
     monkeypatch.setattr(views,'source_access',lambda config:NS(require=require))
-    with pytest.raises(PermissionError):views.scan_view(DB(),NS(pilot_scope_id='test',sources=None))
+    with pytest.raises(PermissionError):views._scan_view(DB(),NS(pilot_scope_id='test',sources=None),NS(require=require))
     assert calls==['universe','financial_facts']
 
 
