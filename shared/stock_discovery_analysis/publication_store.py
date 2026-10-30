@@ -125,7 +125,12 @@ def read_artifact(conn,rid,access=None):
     if a['recommendation']['mode']=='live_paper':
         from .real_publication import authorize_artifact, configured_access
         access=access or configured_access()
-        authorize_artifact(conn,a,access)
+        from .read_fences import guarded_read
+        with guarded_read(conn,access) as guard:
+            authorize_artifact(conn,a,access)
+            if a['research_bundle']:recheck(conn,Bundle.model_validate_json(json.dumps(a['research_bundle'])),access)
+            guard.collect(a)
+            return a
     else:
         access=access or access_for(conn,now)
         require_sources(access)

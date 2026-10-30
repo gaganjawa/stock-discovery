@@ -35,10 +35,14 @@ class Access:
             else:
                 with self.fence_conn.transaction():
                     enforce(self.fence_conn,self.fence_permits[key],grant,request,uses)
+        from .read_fences import track_use
+        track_use(self,stream,uses)
         return grant,request
 
 
 def stored_stream(conn,revision_id):
+    from .read_fences import track_revision
+    track_revision(conn,revision_id)
     row=conn.execute('''SELECT s.stream_id,s.source_id,s.account_ref,s.scope FROM discovery.streams s
         JOIN discovery.revisions r USING(stream_id) WHERE r.revision_id=%s''',(revision_id,)).fetchone()
     check(row is not None,'source revision unavailable')
@@ -154,6 +158,16 @@ def ingest_next_evidence(conn,stream,adapter,*,access):
 
 
 def read_evidence(conn,revision_id,*,access,cutoff,mode,purpose='derive'):
+    if mode=='live_paper':
+        from .read_fences import guarded_read
+        with guarded_read(conn,access) as guard:
+            result=_read_evidence(conn,revision_id,access=access,cutoff=cutoff,mode=mode,purpose=purpose)
+            guard.collect(result)
+            return result
+    return _read_evidence(conn,revision_id,access=access,cutoff=cutoff,mode=mode,purpose=purpose)
+
+
+def _read_evidence(conn,revision_id,*,access,cutoff,mode,purpose):
     check(purpose in ('derive','embed','external_ai','export','paper_evaluation'),'unsupported downstream use')
     check(at(cutoff)<=at(access.clock()),'future observation cutoff')
     stream=stored_stream(conn,revision_id)

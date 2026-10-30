@@ -29,8 +29,9 @@ def insert(conn,config,data,rid,stamp,listing='NSE:test',sequence=1,supersedes=N
 
 
 def prepared(conn,tmp_path):
-    evidence=setup(conn,tmp_path);path=Path(evidence.sources.grant_file)
-    grants=json.loads(path.read_text());grants[0]['version']='2';grants[0]['allowed_uses'].append('paper_evaluation');grants[0]['scopes']+=['prices','calendar','corporate_actions'];path.write_text(json.dumps(grants))
+    # All original revisions must be acquired under the intended permissions;
+    # a newer grant cannot retroactively authorize the stored identity.
+    evidence=setup(conn,tmp_path,extra_scopes=('prices','calendar','corporate_actions'),extra_uses=('paper_evaluation',))
     policies=tmp_path/'policies.json';policies.write_text(json.dumps([p.model_dump(mode='json') for p in arguments()['real']['policies']]))
     config=ViewConfig(sources=evidence.sources,listing_ids=('NSE:test',),policy_file=str(policies))
     for i in range(25):

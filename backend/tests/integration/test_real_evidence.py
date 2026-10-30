@@ -20,11 +20,12 @@ NOW='2026-10-19T12:00:00Z'
 HTML='<h1>Consolidated annual earnings INR crore</h1><table><tr><th>Metric</th><th>2026</th></tr><tr><td>Revenue</td><td>100</td></tr><tr><td>Earnings</td><td>20</td></tr></table>'
 
 
-def setup(conn,tmp_path):
+def setup(conn,tmp_path,*,extra_scopes=(),extra_uses=()):
     grant=Grant(schema_version='1.0.0',grant_id='p2-test',version='1',source_id='test-official',account_ref='test',status='active',synthetic=False,
         approval_evidence_ref='FABRICATED TEST ONLY',valid_from_at='2026-01-01T00:00:00Z',expires_at='2027-01-01T00:00:00Z',revoked_at=None,
         allowed_uses=('acquire','store','extract','derive','embed'),scopes=('universe','filings','financial_facts'),regions=('IN',),external_processors=(),
         retention_days=365,deletion_deadline_days=0,attribution='Test attribution',max_units_per_operation=100,audit_tombstones_permitted=True)
+    grant=grant.model_copy(update={'scopes':grant.scopes+extra_scopes,'allowed_uses':grant.allowed_uses+extra_uses})
     path=tmp_path/'grants.json';path.write_text(json.dumps([grant.model_dump(mode='json')]))
     sources=SourceConfig(grant_file=str(path),retention_days=365,primary_source_ids=('test-official',))
     access=source_access(sources,lambda:NOW)

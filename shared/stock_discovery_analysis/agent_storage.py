@@ -54,8 +54,8 @@ class ReadOnlyTools:
     def _execute(self,tool,bundle,policy,meter):
         # No caller-controlled SQL, connections, tool names or provider choices.
         check(self.conn.info.transaction_status==TransactionStatus.IDLE,'idle tool connection required')
-        with self.conn.transaction():
-            self.conn.execute('SET TRANSACTION READ ONLY')
+        from .read_fences import tool_read_transaction
+        with tool_read_transaction(self.conn,self.access,bundle):
             recheck(self.conn,bundle,self.access)
             if tool.name=='retrieve':
                 meter.ensure(self.policy.max_bytes if self.embeddings else 0)
