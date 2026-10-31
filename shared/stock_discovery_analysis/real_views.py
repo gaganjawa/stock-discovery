@@ -16,6 +16,7 @@ from .evidence import statement_from_evidence
 from .data import Provenance, Candle
 from .calendar import Calendar, Session
 from .publication_store import now
+from .swing_research import SwingConfig
 
 class ViewConfig(Strict):
     sources: SourceConfig
@@ -23,6 +24,7 @@ class ViewConfig(Strict):
     policy_file: Text | None = None
     pilot_scope_id: Text | None = None
     pilot_health_file: Text | None = None
+    swing: SwingConfig | None = None
 
 
 def eligible_revisions(conn,listing,cutoff,access):

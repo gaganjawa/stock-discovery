@@ -68,7 +68,7 @@ class Document(Strict):
     issuer_id: Text
     title: Text
     attribution: Text
-    category: Literal['announcement','annual_report','quarterly_report','news']
+    category: Literal['announcement','annual_report','quarterly_report','news','coverage_review']
     authority: Literal['issuer_primary','secondary']
     media_type: Literal['text/plain','application/vnd.stock-evidence+json']
     body: Annotated[str,Field(min_length=1,max_length=150000)]
@@ -79,6 +79,7 @@ class Document(Strict):
         check(self.revision.data.content_hash==content_hash(self.body),'document content hash')
         check((self.category=='news')==(self.revision.data.document_type=='news'),'document category/scope')
         check(self.category!='news' or self.authority=='secondary','news is not issuer confirmation')
+        check(self.category!='coverage_review' or self.media_type=='text/plain','coverage review media type')
         return self
 
 
