@@ -41,3 +41,28 @@ def test_report_never_presents_rejected_claims():
     case=rows[0];key=next(k for k,v in candidates(case).items() if v==case['expected'])
     report=research_report(case,json.dumps({'cell_id':key}))
     assert report['findings'][0]['value']=='162990' and not report['actionable']
+
+
+def test_abstention_context_preserves_conflict_and_missing_period():
+    from worker.financial_selection import selection_request
+    rows=fixture()
+    for i in (2,3):
+        c=rows[i];cells=candidates(c);request=json.loads(selection_request(c,cells))
+        assert request['schema']['properties']['cell_id']['enum'][0]=='ABSTAIN'
+        # All other selectable cells remain; the grammar does not force abstention.
+        assert len(request['schema']['properties']['cell_id']['enum'])>1
+        assert 'expected' not in request['bundle']
+        if i==2:assert c['period'] not in request['bundle']['available_periods']
+        else:assert request['bundle']['source_row_counts']['Total revenue from operations']==2
+        proposal,accepted=resolve('{"cell_id":"ABSTAIN"}',c,cells)
+        assert proposal['status']=='insufficient_evidence' and not accepted
+        wrong=next(iter(cells))
+        with pytest.raises(ValueError):resolve(json.dumps({'cell_id':wrong}),c,cells)
+
+
+def test_positive_context_has_unique_source_row_and_exact_period():
+    from worker.financial_selection import selection_request
+    for c in fixture()[:2]:
+        r=json.loads(selection_request(c,candidates(c)))['bundle']
+        assert r['source_row_counts']['Total revenue from operations']==1
+        assert c['period'] in r['available_periods']
