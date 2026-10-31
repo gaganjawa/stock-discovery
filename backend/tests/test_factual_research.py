@@ -144,8 +144,9 @@ def test_speculative_explanations_and_forecasts_remain_rejected(text):
 
 def excerpt_bundle():
     from stock_discovery_analysis.rag_contracts import Hit
-    b=history();c=b.facts[0].citation
-    hit=Hit(chunk_id='b'*64,text='Synthetic source reports an unresolved regulatory inquiry; outcome is unknown.',
+    b=history();text='Synthetic source reports an unresolved regulatory inquiry; outcome is unknown.'
+    c=b.facts[0].citation.model_copy(update={'excerpt':text})
+    hit=Hit(chunk_id='b'*64,text=text,
         primary=False,citations=(c,),lexical_score='1',semantic_score=None,lexical_rank=1,semantic_rank=None,fused_score='1')
     return b.model_copy(update={'documents':(c.revision_id,),'hits':(hit,)})
 
@@ -194,3 +195,21 @@ def test_excerpt_output_count_bound_fails_closed():
     b=excerpt_bundle();q=payload(excerpt_candidates(b)[0])
     with pytest.raises(ValueError,match='claim count limit'):
         validate_response(json.dumps(dict(factual_claims=[],interpretations=[],source_excerpts=[q]*4)),b,candidates(b))
+
+
+def test_excerpt_alias_citations_must_each_support_exact_quotation():
+    from stock_discovery_analysis.factual_research import excerpt_candidates
+    b=excerpt_bundle();hit=b.hits[0];text=hit.text
+    good=hit.citations[0].model_copy(update={'excerpt':text})
+    alias=good.model_copy(update={'evidence_id':'e'*64,'excerpt':text.replace('unknown.','UNKNOWN!')})
+    result=excerpt_candidates(b.model_copy(update={'hits':(hit.model_copy(update={'citations':(good,alias)}),)}))
+    assert len(result)==1 and result[0]['citations']==[good.model_dump(mode='json')]
+    assert excerpt_candidates(b.model_copy(update={'hits':(hit.model_copy(update={'citations':(alias,)}),)}))==[]
+
+
+def test_missing_passage_cannot_support_excerpt():
+    from stock_discovery_analysis.factual_research import excerpt_candidates
+    b=excerpt_bundle();hit=b.hits[0]
+    for excerpt in (None,'A different passage'):
+        c=hit.citations[0].model_copy(update={'excerpt':excerpt})
+        assert excerpt_candidates(b.model_copy(update={'hits':(hit.model_copy(update={'citations':(c,)}),)}))==[]

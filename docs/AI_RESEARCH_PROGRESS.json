@@ -4,20 +4,19 @@
   "current_milestone": "M2 factual source-excerpt increment; real research quality remains partial",
   "branch": "feat/stk-052-factual-source-excerpts",
   "worktree": "stk-074-grant-fences",
-  "last_successful_commit": "907849399be33a0a6d178212b64b151de62320e9",
+  "last_successful_commit": "386ff5edc133b56138ee118fc2b471daf686d736",
   "pr": {
-    "number": 20,
-    "url": "https://github.com/gaganjawa/stock-discovery/pull/20",
-    "head_sha": "c924912b3e0d5597bef088591ba2ae5c2aa8cdba",
-    "state": "merged",
-    "ci_run": "https://github.com/gaganjawa/stock-discovery/actions/runs/41213032916",
+    "number": 21,
+    "url": "https://github.com/gaganjawa/stock-discovery/pull/21",
+    "head_sha": "386ff5edc133b56138ee118fc2b471daf686d736",
+    "state": "draft",
+    "ci_run": "https://github.com/gaganjawa/stock-discovery/actions/runs/41214564197",
     "ci_status": {
-      "unit": "passed",
-      "postgres": "passed",
-      "ui": "passed",
-      "checks": "passed"
-    },
-    "merge_sha": "907849399be33a0a6d178212b64b151de62320e9"
+      "unit": "running",
+      "postgres": "running",
+      "ui": "running",
+      "checks": "pending"
+    }
   },
   "completed_tests": {
     "backend_worker": 705,
@@ -45,15 +44,11 @@
   "pending_changes": [
     "shared/stock_discovery_analysis/factual_research.py",
     "backend/tests/test_factual_research.py",
-    "backend/tests/integration/test_rag_research.py",
-    "frontend/src/FactualResearch.tsx",
-    "frontend/tests/real-swing.spec.ts",
+    "backend/tests/integration/test_grant_fences.py",
     "docs/STK-052-source-excerpts.md",
-    "docs/AI_RESEARCH_PROGRESS.json",
-    "docs/SIMPLE-BOARD.md",
-    "docs/AI_RESEARCH_IMPLEMENTATION_PLAN.md"
+    "docs/AI_RESEARCH_PROGRESS.json"
   ],
-  "next_action": "Commit reviewed excerpt increment, open draft PR, verify exact-commit CI. Do not merge before all mandatory checks pass.",
+  "next_action": "Push citation P2 fix to PR21 and verify new exact-commit mandatory CI; preserve original 386ff5e CI result separately. Then implement LLM proposed financial claims independently checked against deterministic filing extraction, and prepare an UNVERIFIED human review packet.",
   "milestones": [
     {
       "id": "M0",
@@ -115,7 +110,7 @@
       "id": "M2",
       "objective": "AI company research",
       "completion_criteria": "Cited structured company research with independent deterministic claim verification and preregistered quality evaluation.",
-      "status": "partial_increment_reviewed_ci_pending",
+      "status": "citation_p2_corrected_ci_pending",
       "dependency_status": "M1 real-data acceptance externally blocked; synthetic integration authorized",
       "files_changed": [
         "shared/stock_discovery_analysis/factual_research.py",
@@ -144,10 +139,18 @@
           "deselected": 57
         },
         "scripts": 13,
-        "contract_validators": 2
+        "contract_validators": 2,
+        "review_followup": {
+          "unit": 714,
+          "focused": 67,
+          "grant_rag_postgres": 86,
+          "citation_before_fix": 2,
+          "citation_after_fix": "passed",
+          "timeout_cause": "unresolved; deterministic timeout denial/rollback verified"
+        }
       },
-      "commit_sha": null,
-      "pr_url": null,
+      "commit_sha": "386ff5edc133b56138ee118fc2b471daf686d736",
+      "pr_url": "https://github.com/gaganjawa/stock-discovery/pull/21",
       "blockers": [
         "Full PostgreSQL run hit unchanged expiry-lock statement timeout; exact three cases passed unchanged in isolation. Required exact-commit CI/lifecycle must pass.",
         "Human-reviewed reference labels, preregistered quality thresholds and real permitted evidence remain missing."

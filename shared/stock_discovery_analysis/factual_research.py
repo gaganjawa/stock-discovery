@@ -14,7 +14,7 @@ from .rag_research import financial_text
 from .agent_research import JUDGE_PROMPT
 from .agent_contracts import JudgeReport
 
-VERSION = 'historical-factual-1.3.0'
+VERSION = 'historical-factual-1.3.1'
 REVIEW_PROMPT = JUDGE_PROMPT+' Assess historical support only. Missing valuation blocks recommendations, not independent historical observations. Copy evidence_ids only from the assessed claim citations, never candidate IDs.'
 REVIEW_PROMPT_HASH = digest([REVIEW_PROMPT,JudgeReport.model_json_schema()])
 PROMPT = ('Report historical financial evidence, independently of investment suitability. '
@@ -116,7 +116,11 @@ def excerpt_candidates(bundle):
     for hit in bundle.hits:
         if len(hit.text)>2000:continue
         check(all(c.revision_id in bundle.documents for c in hit.citations),'excerpt document membership')
-        record=dict(text=hit.text,citations=[c.model_dump(mode='json') for c in hit.citations],chunk_id=hit.chunk_id)
+        # Token-normalized retrieval aliases need not contain the same literal
+        # passage. Each returned attribution must independently support the quote.
+        citations=[c.model_dump(mode='json') for c in hit.citations if hit.text in (c.excerpt or '')]
+        if not citations:continue
+        record=dict(text=hit.text,citations=citations,chunk_id=hit.chunk_id)
         record['candidate_id']=digest(record)
         result[record['candidate_id']]=record
     return [result[k] for k in sorted(result)][:20]
