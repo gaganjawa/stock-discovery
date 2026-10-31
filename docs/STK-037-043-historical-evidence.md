@@ -4,6 +4,9 @@ In Replay, select **Include fictional financial evidence** before freezing.
 The existing authenticated analysis endpoint then stores an additive full snapshot
 in the existing immutable run manifest, linked to the unchanged technical baseline.
 No new schema, outcome engine, model runtime or provider interface is introduced.
+Financial freezing is an individual-analysis option. Existing batch scan/replay-job
+routes reject it explicitly; they cannot silently downgrade it to technical-only.
+An AI run ID without financial freezing is also rejected before database use.
 
 The UI separates **evidence known at the historical cutoff** from **what became
 known afterward**. It displays financial statements/facts, exact periods/units,

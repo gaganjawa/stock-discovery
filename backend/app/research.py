@@ -99,6 +99,8 @@ def selection(body,conn):
 @router.post('/analysis',dependencies=[Depends(require_auth)])
 def analysis(body:Selection,response:Response,conn=Depends(db)):
     response.headers['Cache-Control']='no-store'
+    if body.historical_ai_run_id and not body.include_financial:
+        raise HTTPException(400,'A historical AI run requires financial evidence freezing')
     d,cutoff=selection(body,conn)
     if body.include_financial:
         from stock_discovery_analysis.historical_fixtures import seed
@@ -159,12 +161,16 @@ def explanation(rid:str,conn=Depends(db)):
 
 @router.post('/scan',dependencies=[Depends(require_auth)])
 def scan(body:Selection,conn=Depends(db)):
+    if body.include_financial or body.historical_ai_run_id:
+        raise HTTPException(400,'Financial evidence freezing requires individual analysis')
     d,cutoff=selection(body,conn)
     return {'job_id':enqueue(conn,'scan',{**execution_versions(os.getenv('CODE_VERSION','local-unversioned')),'dataset_version':d.version,'cutoff':cutoff.isoformat()})}
 
 
 @router.post('/replay-job',dependencies=[Depends(require_auth)])
 def replay_job(body:Selection,conn=Depends(db)):
+    if body.include_financial or body.historical_ai_run_id:
+        raise HTTPException(400,'Financial evidence freezing requires individual analysis')
     d,cutoff=selection(body,conn)
     return {'job_id':enqueue(conn,'replay',{**execution_versions(os.getenv('CODE_VERSION','local-unversioned')),'dataset_version':d.version,'instrument_id':body.instrument_id,'cutoff':cutoff.isoformat()})}
 
