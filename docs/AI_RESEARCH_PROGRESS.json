@@ -1,15 +1,15 @@
 {
   "schema_version": 1,
   "updated_at": "2026-10-31",
-  "current_milestone": "M2 BLOCKED: negative abstention recovered, positive regression and independent human/holdout missing",
-  "branch": "feat/stk-052-explicit-financial-abstention",
+  "current_milestone": "M2 exact development selection passes; independent human/holdout gate BLOCKED",
+  "branch": "feat/stk-052-exact-financial-selection",
   "worktree": "stk-074-grant-fences",
-  "last_successful_commit": "2607e091e9002e4c68aa2321ae76c8edd0286922",
+  "last_successful_commit": "54b27deb950322846183671c334bc634bc6b0ec0",
   "pr": null,
   "completed_tests": {
-    "backend_worker_v3": 748,
-    "final_combined_focused": 20,
-    "included_postgres": 8,
+    "backend_worker": 757,
+    "combined_focused": 31,
+    "included_postgres": 10,
     "syntax_json_whitespace": "passed",
     "mandatory_exact_commit_ci": "pending"
   },
@@ -27,9 +27,9 @@
     "Actual representative-source extraction quality not passed; human holdout unverified."
   ],
   "pending_changes": [
-    "M2 abstention code, regressions, preserved versioned experiments and reviewer worksheet"
+    "Exact route, regressions, zero-inference result and independent review/holdout preparation"
   ],
-  "next_action": "Deliver abstention correction/experiments through required CI and review. Human reviewer should complete docs/research-quality/M2-INDEPENDENT-REVIEW.md with separate signed reference evidence. No reviewer or unseen holdout exists. Investigate annual/quarterly model selection under a separately bounded protocol before M2 promotion; no further calls in this run.",
+  "next_action": "Deliver/review exact financial selection through protected CI. Independent human custodian must review M2-INDEPENDENT-REVIEW.md and M2-exact-human-review-supplement.json, approve proposed protocol and supply 50 unseen cases using M2-UNSEEN-EVALUATION-HANDOFF.md. Blank slots are not cases or labels. No model inference needed for exact cells; M2 acceptance remains BLOCKED, no roadmap promotion.",
   "milestones": [
     {
       "id": "M0",
@@ -91,7 +91,7 @@
       "id": "M2",
       "objective": "AI company research",
       "completion_criteria": "Cited structured company research with independent deterministic claim verification and preregistered quality evaluation.",
-      "status": "BLOCKED_human_holdout_and_positive_selection",
+      "status": "BLOCKED_independent_human_holdout",
       "dependency_status": "M1 real-data acceptance externally blocked; synthetic integration authorized",
       "files_changed": [
         "shared/stock_discovery_analysis/factual_research.py",
@@ -111,8 +111,8 @@
         "provenance": "Fresh local runs this increment; counts overlap focused tests, not research-quality acceptance.",
         "scripts": 13
       },
-      "commit_sha": "c50e3da3ee459c0957824f4495603faab24526c3",
-      "pr_url": "https://github.com/gaganjawa/stock-discovery/pull/25",
+      "commit_sha": "b9d48908eef665f7e1416bd8056d41911751b8c6",
+      "pr_url": "https://github.com/gaganjawa/stock-discovery/pull/26",
       "blockers": [
         "Human-verified reference/independent holdout and quality approval remain missing; developer labels are provisional.",
         "General real filing layouts require verified source-span profiles; current extraction only accepts explicit rows.",
@@ -121,7 +121,7 @@
         "Representative-table model extraction returned zero verified cells; installed-model superiority not established.",
         "Current daily development inference reservations exhausted (200000); no reset/refund or additional calls."
       ],
-      "next_step": "Deliver abstention correction/experiments through required CI and review. Human reviewer should complete docs/research-quality/M2-INDEPENDENT-REVIEW.md with separate signed reference evidence. No reviewer or unseen holdout exists. Investigate annual/quarterly model selection under a separately bounded protocol before M2 promotion; no further calls in this run.",
+      "next_step": "Deliver/review exact financial selection through protected CI. Independent human custodian must review M2-INDEPENDENT-REVIEW.md and M2-exact-human-review-supplement.json, approve proposed protocol and supply 50 unseen cases using M2-UNSEEN-EVALUATION-HANDOFF.md. Blank slots are not cases or labels. No model inference needed for exact cells; M2 acceptance remains BLOCKED, no roadmap promotion.",
       "prior_pr21": {
         "number": 21,
         "url": "https://github.com/gaganjawa/stock-discovery/pull/21",
@@ -251,6 +251,28 @@
         "new_VL_calls": 0,
         "new_calls": 8,
         "total_reserved_units": 680000
+      },
+      "prior_pr26": {
+        "number": 26,
+        "url": "https://github.com/gaganjawa/stock-discovery/pull/26",
+        "head_sha": "b9d48908eef665f7e1416bd8056d41911751b8c6",
+        "state": "merged",
+        "ci_run": "https://github.com/gaganjawa/stock-discovery/actions/runs/41226895090",
+        "ci_status": "unit/postgres/ui/checks success",
+        "merge_sha": "54b27deb950322846183671c334bc634bc6b0ec0",
+        "postgres": 429,
+        "zero_skips": true,
+        "migration_lifecycle": "passed"
+      },
+      "exact_results": {
+        "positive": "2/2",
+        "negative": "2/2 deterministic, not model abstention",
+        "new_model_calls": 0,
+        "new_reserved_units": 0,
+        "quality_accepted": false,
+        "reviewer": null,
+        "unseen_populated_cases": 0,
+        "unseen_template_slots": 50
       }
     },
     {
@@ -337,5 +359,5 @@
       "next_step": "Inspect existing components against milestone criteria before implementing missing integration."
     }
   ],
-  "runtime_cleanup": "Task-owned Ollama stopped and disposable PostgreSQL container/volume removed after exporting results; no actual database or grants touched."
+  "runtime_cleanup": "Task-owned Ollama stopped; task-owned disposable PostgreSQL container and volume removed. Results and conservative accounting preserved; actual operational data untouched."
 }

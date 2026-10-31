@@ -1,4 +1,4 @@
-"""Development-only hybrid: LLM selects; deterministic source cells own figures."""
+"""Development financial selection: exact lookup first; model research is opt-in."""
 import json,time
 from psycopg.pq import TransactionStatus
 from psycopg.types.json import Jsonb
@@ -59,7 +59,49 @@ def selection_request(case,cells):
         cells=[dict(cell_id=k,**v) for k,v in cells.items()])),sort_keys=True)
 
 
-def run(conn,case,*,source,cutoff,provider,budget):
+EXACT_VERSION='financial-exact-selection-1'
+
+
+def exact_selection(case,*,row_label,period,scope):
+    """No gold labels or model choices participate in exact lookup."""
+    try:
+        check(scope in ('consolidated','standalone') and case['profile']['scope']==scope,'scope_missing_or_mismatch')
+        check(case['profile']['unit']=='INR_crore','unsupported_unit')
+        check(isinstance(case['profile']['evidence_id'],str) and bool(case['profile']['evidence_id']),'missing_source_identity')
+        cell=cell_reference(case['text'],case['profile'],row_label,period)
+        proposal=dict(status='extracted',**{k:cell[k] for k in ('value','unit','scope','period','evidence_id','quote')})
+        verify_cell(proposal,cell)
+    except (ValueError,KeyError,TypeError) as exc:
+        known={'table_period_missing','missing_or_conflicting_table_row','table_value_missing','scope_missing_or_mismatch','unsupported_table_layout','table_context_missing','table_headers_changed','table_header_shape','ambiguous_table_periods','table_row_shape','table_snapshot_changed','ambiguous_financial_number','ambiguous_sign','unsupported_unit','missing_source_identity'}
+        reason=str(exc) if str(exc) in known else 'exact_evidence_missing_ambiguous_or_incompatible'
+        return dict(status='INSUFFICIENT_EVIDENCE',proposal=None,citation=None,accepted=False,reason=reason,actionable=False)
+    return dict(status='VERIFIED_DEVELOPMENT_CELL',proposal=proposal,citation=cell,accepted=True,
+        reason='exact_row_period_scope',actionable=False)
+
+
+def run_exact(conn,case,*,source,cutoff,row_label,period,scope):
+    check(conn.autocommit and conn.info.transaction_status==TransactionStatus.IDLE,'idle_autocommit_required')
+    check(at(source['captured_at'])<=at(cutoff)<=at(now()),'source_temporal_boundary')
+    check({k:v for k,v in case['profile'].items() if k!='text_hash'}=={k:v for k,v in source['profile'].items() if k!='text_hash'},'profile_changed')
+    check(digest(case['text'])==case['profile']['text_hash'],'snapshot_changed')
+    check(case['source_kind'] in ('captured_public_excerpt','adversarial_mutation'),'unknown_source_kind')
+    check(case['source_kind']!='captured_public_excerpt' or case['profile']['text_hash']==source['profile']['text_hash'],'captured_source_changed')
+    # Reference labels are evaluation-only. Deliberately omit expected from identity.
+    identity=digest([EXACT_VERSION,case['case_id'],case['text'],case['profile'],case['source_kind'],source,cutoff,row_label,period,scope])
+    # Exact lookup has no AI reservation. Return a deterministic read result;
+    # existing RAG persistence requires a real AI reservation and stays untouched.
+    return dict(exact_selection(case,row_label=row_label,period=period,scope=scope),
+        case_id=case['case_id'],selection_mode='deterministic_exact',validator_version=EXACT_VERSION,
+        request_hash=identity,source_hash=case['profile']['text_hash'],source_kind=case['source_kind'],
+        cutoff_at=cutoff,human_verified=False,holdout=False,model=None,prompt_hash=None,
+        model_calls=0,reserved_units=0,cost_usd='0',publication_authorized=False)
+
+
+def run(conn,case,*,source,cutoff,provider=None,budget=None,selection_mode='exact',row_label='Total revenue from operations',scope='consolidated'):
+    if selection_mode=='exact':
+        return run_exact(conn,case,source=source,cutoff=cutoff,row_label=row_label,period=case['period'],scope=scope)
+    check(selection_mode=='model' and provider is not None and budget is not None,'explicit_model_configuration_required')
+    check(row_label=='Total revenue from operations' and scope==case['profile']['scope'],'unsupported_model_target')
     check(conn.autocommit and conn.info.transaction_status==TransactionStatus.IDLE,'idle_autocommit_required')
     check(provider.local_only and provider.cost_per_unit==0,'local_only')
     check(at(source['captured_at'])<=at(cutoff)<=at(now()),'source_temporal_boundary')

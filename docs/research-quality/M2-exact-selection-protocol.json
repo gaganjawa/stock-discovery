@@ -1,0 +1,18 @@
+{
+  "version": "financial-exact-selection-1",
+  "selection_mode": "deterministic_exact",
+  "defined_before_execution": true,
+  "cases": [
+    "annual-current",
+    "annual-prior",
+    "missing-period",
+    "conflict"
+  ],
+  "maximum_model_calls": 0,
+  "maximum_new_inference_units": 0,
+  "success_criterion": "2/2 exact positive cells and 2/2 deterministic negative abstentions; no inference or reservation changes",
+  "human_verified": false,
+  "holdout_used": false,
+  "quality_accepted": false,
+  "reference": "Existing developer/parser development references; independent review pending"
+}

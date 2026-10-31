@@ -40,7 +40,7 @@ def main():
             try:
                 rows=[]
                 for case in data:
-                    rows.append(run(db,case,source=source,cutoff=source['captured_at'],provider=provider,budget=budget))
+                    rows.append(run(db,case,source=source,cutoff=source['captured_at'],provider=provider,budget=budget,selection_mode='model'))
                     report['current_partial']=dict(model=name,cases=rows)
                     output.write_text(json.dumps(report,indent=2)+'\n')
                 report['models'].append(dict(model=provider.ref.model_dump(),cases=rows,usage=provider.usage,

@@ -66,3 +66,32 @@ def test_positive_context_has_unique_source_row_and_exact_period():
         r=json.loads(selection_request(c,candidates(c)))['bundle']
         assert r['source_row_counts']['Total revenue from operations']==1
         assert c['period'] in r['available_periods']
+
+
+def test_exact_annual_and_quarter_cells_do_not_depend_on_gold_or_model():
+    from worker.financial_selection import exact_selection
+    case=fixture()[0];case={**case,'expected':{'value':'invented gold'}}
+    for period,value in [('Year ended March 31, 2025','162990'),('Year ended March 31, 2024','153670'),('Three months ended March 31, 2025','40925'),('Three months ended March 31, 2024','37923')]:
+        r=exact_selection(case,row_label='Total revenue from operations',period=period,scope='consolidated')
+        assert r['accepted'] and r['proposal']['value']==value and r['proposal']['period']==period
+        assert r['citation']['source_hash']==case['profile']['text_hash'] and not r['actionable']
+
+
+@pytest.mark.parametrize('variant',['missing_period','conflicting','duplicate','scope','unit','snapshot','label','headers'])
+def test_exact_uncertainty_abstains_without_semantic_guess(variant):
+    from copy import deepcopy
+    from stock_discovery_contracts.v2 import digest
+    from worker.financial_selection import exact_selection
+    case=deepcopy(fixture()[0]);scope='consolidated';label='Total revenue from operations'
+    if variant=='missing_period':case=fixture()[2]
+    if variant=='conflicting':case=fixture()[3]
+    if variant=='duplicate':
+        case['text']+=case['text'].splitlines()[-1]+'\n';case['profile']['text_hash']=digest(case['text'])
+    if variant=='scope':scope='standalone'
+    if variant=='unit':case['profile']['unit']='UNKNOWN'
+    if variant=='snapshot':case['text']+='modified'
+    if variant=='label':label='revenue synonym not authenticated'
+    if variant=='headers':
+        case['text']=case['text'].replace('2025 | 2024 | 2025 | 2024','2025 | 2025 | 2025 | 2025');case['profile']['text_hash']=digest(case['text'])
+    r=exact_selection(case,row_label=label,period=case['period'],scope=scope)
+    assert r['status']=='INSUFFICIENT_EVIDENCE' and not r['accepted'] and r['proposal'] is None

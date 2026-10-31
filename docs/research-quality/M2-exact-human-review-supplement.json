@@ -1,0 +1,17 @@
+{
+  "status": "DEVELOPMENT_ONLY_PENDING_HUMAN_REVIEW",
+  "original_packet": "M2-hybrid-human-review.json",
+  "reviewer_worksheet": "M2-INDEPENDENT-REVIEW.md",
+  "reviewer_ref": null,
+  "reviewed_at": null,
+  "human_verified": false,
+  "new_result": "M2-exact-selection-development.json",
+  "routing_version": "financial-exact-selection-1",
+  "instructions": [
+    "Verify official source identity, consolidated scope, annual versus quarterly columns, INR crore units and exact citations independently.",
+    "The exact route bypasses only stochastic cell selection; the source-cell verifier is unchanged.",
+    "Model interpretation/semantic quality is not measured by this deterministic replay.",
+    "Review the missing-period and duplicated/conflicting cases together with positives; conflicting row is explicitly synthetic.",
+    "This development review cannot substitute for the separately held-out 50-case evaluation."
+  ]
+}
