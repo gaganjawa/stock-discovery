@@ -83,7 +83,8 @@ def test_document_to_existing_rag_and_rights_aware_view(isolated_url,tmp_path):
 
 
 @pytest.mark.parametrize('wrong_value',[False,True])
-def test_filing_text_to_model_proposal_independent_verification_and_company_report(isolated_url,tmp_path,wrong_value):
+@pytest.mark.parametrize('runtime_backend',['injected','llama_cpp'])
+def test_filing_text_to_model_proposal_independent_verification_and_company_report(isolated_url,tmp_path,wrong_value,runtime_backend):
     """Invented filing text and scripted model only; not financial accuracy evidence."""
     from stock_discovery_analysis.evidence import content_hash
     from pathlib import Path
@@ -112,7 +113,20 @@ def test_filing_text_to_model_proposal_independent_verification_and_company_repo
         p=MockEmbeddings() if 'embed' in name else Extractor();p.close=lambda:None;providers[name]=p;return p
     with psycopg.connect(isolated_url,autocommit=True) as conn:
         config=setup(conn,tmp_path).model_copy(update={'factual_report':True,'extraction_only':True})
-        result=run(conn,config,clock=lambda:NOW,adapter_factory=adapter,model_factory=model)
+        if runtime_backend=='llama_cpp':
+            import inspect,textwrap,sys,hashlib
+            from types import SimpleNamespace
+            executable=tmp_path/'llama-cli'
+            script=('#!'+str(Path(sys.executable).resolve())+'\nimport json,sys\nfrom types import SimpleNamespace\n'
+                +'wrong_value='+repr(wrong_value)+'\n'+textwrap.dedent(inspect.getsource(Extractor.assess))
+                +'\nprint(assess(SimpleNamespace(calls=0),open(sys.argv[sys.argv.index("--file")+1]).read()))\n')
+            executable.write_text(script);executable.chmod(0o700)
+            weights=tmp_path/'synthetic.gguf';weights.write_bytes(b'GGUFsynthetic-not-an-LLM')
+            sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
+            config=config.model_copy(update={'embedding_model':None,'runtime':__import__('worker.providers.research_runtime',fromlist=['RuntimeConfig']).RuntimeConfig(
+                backend='llama_cpp',executable=str(executable),executable_sha256=sha(executable),
+                models={config.model:dict(path=str(weights),sha256=sha(weights))})})
+        result=run(conn,config,clock=lambda:NOW,adapter_factory=adapter,model_factory=model if runtime_backend=='injected' else None)
         r=result['research'][0]['result'];assert r['status']=='completed' and r['provider_called']
         report=r['factual_report'];assert bool(report['accepted_claims']) is not wrong_value
         assert bool(report['rejected_claims']) is wrong_value
@@ -123,6 +137,9 @@ def test_filing_text_to_model_proposal_independent_verification_and_company_repo
         detail=company(conn,ViewConfig(sources=config.sources,listing_ids=('NSE:test',)), 'NSE:test',clock=lambda:NOW)
         assert detail['analysis_history'][0]['result']['factual_report']==report
         assert not report['qualified'] and not result['actionable'] and not detail['recommendations']
+        if runtime_backend=='llama_cpp':
+            assert r['model']['id'].startswith('llama.cpp:') and r['accounting']['actual_cost']=='0'
+            return  # Subprocess protocol fixture only, not real LLM acceptance.
         from stock_discovery_analysis.rag_research import run_research
         access=source_access(config.sources,lambda:NOW)
         kwargs=dict(run_id=result['research'][0]['run_id'],query=config.queries[0],policy=config.retrieval,access=access,

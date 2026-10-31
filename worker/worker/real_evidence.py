@@ -14,13 +14,15 @@ from stock_discovery_analysis.agent_storage import run_investigation
 from stock_discovery_analysis.publication_store import now
 from .providers.documents import FilingSpec, OfficialDocument
 from .providers.ollama import Ollama
+from .providers.research_runtime import RuntimeConfig
 
 class EvidenceConfig(Strict):
     sources: SourceConfig
     filings: Annotated[tuple[FilingSpec,...],Field(min_length=0,max_length=100)]
     queries: Annotated[tuple[Query,...],Field(min_length=1,max_length=300)]
     model: Text = 'qwen2.5-coder:7b'
-    embedding_model: Text = 'nomic-embed-text:latest'
+    embedding_model: Text | None = 'nomic-embed-text:latest'
+    runtime: RuntimeConfig = RuntimeConfig()
     judge_model: Text | None = None
     mode: Literal['rag','agent'] = 'rag'
     factual_report: bool = False
@@ -31,9 +33,12 @@ class EvidenceConfig(Strict):
     context: Annotated[int,Field(ge=1024,le=16384)] = 16384
 
 
-def run(conn, config, *, clock=now, adapter_factory=OfficialDocument, model_factory=Ollama):
+def run(conn, config, *, clock=now, adapter_factory=OfficialDocument, model_factory=None):
     config=EvidenceConfig.model_validate(config)
     check(conn.autocommit,'dedicated_autocommit_connection_required')
+    if model_factory is None:
+        check(config.runtime.backend!='llama_cpp' or config.embedding_model is None,'llama_cpp_requires_lexical_retrieval')
+        model_factory=config.runtime.build
     check(not config.extraction_only or config.factual_report and config.mode=='rag','extraction requires fixed factual research')
     check(all(q.mode=='live_paper' for q in config.queries),'real_queries_only')
     if config.mode=='agent':check(config.judge_model and config.judge_model!=config.model,'independent_judge_required')
@@ -55,7 +60,9 @@ def run(conn, config, *, clock=now, adapter_factory=OfficialDocument, model_fact
         # Clock is frozen only after the documents have actually been observed.
         cutoff=clock(); results=[]
         provider=model_factory(config.model,context=config.context,max_input_bytes=config.context*2,max_model_bytes=config.max_model_bytes);providers.append(provider)
-        embeddings=model_factory(config.embedding_model);providers.append(embeddings)
+        embeddings=None
+        if config.embedding_model is not None:
+            embeddings=model_factory(config.embedding_model);providers.append(embeddings)
         judge=None
         if config.mode=='agent' or (config.factual_report and config.judge_model):
             check(config.judge_model!=config.model,'independent_judge_required')

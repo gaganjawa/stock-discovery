@@ -31,12 +31,31 @@
           "locator": "html:table[0]/tr[1]/td[1]"
         }
       },
-      "expected_outcome": null,
-      "expected_fields": null,
+      "expected_outcome": "accept",
+      "expected_fields": {
+        "metric": "revenue",
+        "value": "100",
+        "missing_reason": null,
+        "unit": "INR_crore",
+        "period_start_at": "2025-04-01T00:00:00Z",
+        "period_end_at": "2026-03-31T00:00:00Z",
+        "period_kind": "annual",
+        "scope": "consolidated",
+        "locator": "html:table[0]/tr[1]/td[1]"
+      },
       "required_abstention_reason": null,
       "reviewer_ref": null,
       "reviewed_at": null,
-      "human_verified": false
+      "human_verified": false,
+      "label_provenance": "developer_checked_not_human_verified",
+      "developer_review_reason": "supported_explicit_source_row",
+      "source_entity": {
+        "issuer_id": "SYN-FINREF",
+        "listing_id": "SYN-FINREF"
+      },
+      "source_evidence_id": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "source_locator": "html:table[0]/tr[1]/td[1]",
+      "source_text_sha256": "07bd5bf6c03f4479b842146a96722ccef7defaea30136bad0130b35479ffbad8"
     },
     {
       "case_id": "M2-DEV-02",
@@ -63,12 +82,21 @@
           "locator": "html:table[0]/tr[1]/td[1]"
         }
       },
-      "expected_outcome": null,
+      "expected_outcome": "reject",
       "expected_fields": null,
-      "required_abstention_reason": null,
+      "required_abstention_reason": "numeric_mismatch",
       "reviewer_ref": null,
       "reviewed_at": null,
-      "human_verified": false
+      "human_verified": false,
+      "label_provenance": "developer_checked_not_human_verified",
+      "developer_review_reason": "numeric_mismatch",
+      "source_entity": {
+        "issuer_id": "SYN-FINREF",
+        "listing_id": "SYN-FINREF"
+      },
+      "source_evidence_id": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "source_locator": "html:table[0]/tr[1]/td[1]",
+      "source_text_sha256": "07bd5bf6c03f4479b842146a96722ccef7defaea30136bad0130b35479ffbad8"
     },
     {
       "case_id": "M2-DEV-03",
@@ -95,12 +123,21 @@
           "locator": "html:table[0]/tr[1]/td[1]"
         }
       },
-      "expected_outcome": null,
+      "expected_outcome": "reject",
       "expected_fields": null,
-      "required_abstention_reason": null,
+      "required_abstention_reason": "unit_scale_mismatch",
       "reviewer_ref": null,
       "reviewed_at": null,
-      "human_verified": false
+      "human_verified": false,
+      "label_provenance": "developer_checked_not_human_verified",
+      "developer_review_reason": "unit_scale_mismatch",
+      "source_entity": {
+        "issuer_id": "SYN-FINREF",
+        "listing_id": "SYN-FINREF"
+      },
+      "source_evidence_id": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "source_locator": "html:table[0]/tr[1]/td[1]",
+      "source_text_sha256": "07bd5bf6c03f4479b842146a96722ccef7defaea30136bad0130b35479ffbad8"
     },
     {
       "case_id": "M2-DEV-04",
@@ -127,12 +164,21 @@
           "locator": "html:table[0]/tr[1]/td[1]"
         }
       },
-      "expected_outcome": null,
+      "expected_outcome": "reject",
       "expected_fields": null,
-      "required_abstention_reason": null,
+      "required_abstention_reason": "unsupported_currency",
       "reviewer_ref": null,
       "reviewed_at": null,
-      "human_verified": false
+      "human_verified": false,
+      "label_provenance": "developer_checked_not_human_verified",
+      "developer_review_reason": "unsupported_currency",
+      "source_entity": {
+        "issuer_id": "SYN-FINREF",
+        "listing_id": "SYN-FINREF"
+      },
+      "source_evidence_id": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "source_locator": "html:table[0]/tr[1]/td[1]",
+      "source_text_sha256": "07bd5bf6c03f4479b842146a96722ccef7defaea30136bad0130b35479ffbad8"
     },
     {
       "case_id": "M2-DEV-05",
@@ -159,12 +205,21 @@
           "locator": "html:table[0]/tr[1]/td[1]"
         }
       },
-      "expected_outcome": null,
+      "expected_outcome": "reject",
       "expected_fields": null,
-      "required_abstention_reason": null,
+      "required_abstention_reason": "future_reporting_period",
       "reviewer_ref": null,
       "reviewed_at": null,
-      "human_verified": false
+      "human_verified": false,
+      "label_provenance": "developer_checked_not_human_verified",
+      "developer_review_reason": "future_reporting_period",
+      "source_entity": {
+        "issuer_id": "SYN-FINREF",
+        "listing_id": "SYN-FINREF"
+      },
+      "source_evidence_id": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "source_locator": "html:table[0]/tr[1]/td[1]",
+      "source_text_sha256": "07bd5bf6c03f4479b842146a96722ccef7defaea30136bad0130b35479ffbad8"
     },
     {
       "case_id": "M2-DEV-06",
@@ -191,12 +246,21 @@
           "locator": "html:table[0]/tr[1]/td[1]"
         }
       },
-      "expected_outcome": null,
+      "expected_outcome": "reject",
       "expected_fields": null,
-      "required_abstention_reason": null,
+      "required_abstention_reason": "entity_mismatch",
       "reviewer_ref": null,
       "reviewed_at": null,
-      "human_verified": false
+      "human_verified": false,
+      "label_provenance": "developer_checked_not_human_verified",
+      "developer_review_reason": "entity_mismatch",
+      "source_entity": {
+        "issuer_id": "SYN-FINREF",
+        "listing_id": "SYN-FINREF"
+      },
+      "source_evidence_id": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "source_locator": "html:table[0]/tr[1]/td[1]",
+      "source_text_sha256": "07bd5bf6c03f4479b842146a96722ccef7defaea30136bad0130b35479ffbad8"
     },
     {
       "case_id": "M2-DEV-07",
@@ -223,12 +287,21 @@
           "locator": "html:table[0]/tr[1]/td[1]"
         }
       },
-      "expected_outcome": null,
+      "expected_outcome": "reject",
       "expected_fields": null,
-      "required_abstention_reason": null,
+      "required_abstention_reason": "unknown_revision",
       "reviewer_ref": null,
       "reviewed_at": null,
-      "human_verified": false
+      "human_verified": false,
+      "label_provenance": "developer_checked_not_human_verified",
+      "developer_review_reason": "unknown_revision",
+      "source_entity": {
+        "issuer_id": "SYN-FINREF",
+        "listing_id": "SYN-FINREF"
+      },
+      "source_evidence_id": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "source_locator": "html:table[0]/tr[1]/td[1]",
+      "source_text_sha256": "07bd5bf6c03f4479b842146a96722ccef7defaea30136bad0130b35479ffbad8"
     },
     {
       "case_id": "M2-DEV-08",
@@ -255,12 +328,21 @@
           "locator": "html:table[0]/tr[1]/td[1]"
         }
       },
-      "expected_outcome": null,
+      "expected_outcome": "reject",
       "expected_fields": null,
-      "required_abstention_reason": null,
+      "required_abstention_reason": "unsupported_citation",
       "reviewer_ref": null,
       "reviewed_at": null,
-      "human_verified": false
+      "human_verified": false,
+      "label_provenance": "developer_checked_not_human_verified",
+      "developer_review_reason": "unsupported_citation",
+      "source_entity": {
+        "issuer_id": "SYN-FINREF",
+        "listing_id": "SYN-FINREF"
+      },
+      "source_evidence_id": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "source_locator": "html:table[0]/tr[1]/td[1]",
+      "source_text_sha256": "07bd5bf6c03f4479b842146a96722ccef7defaea30136bad0130b35479ffbad8"
     },
     {
       "case_id": "M2-DEV-09",
@@ -287,12 +369,21 @@
           "locator": "html:table[0]/tr[1]/td[1]"
         }
       },
-      "expected_outcome": null,
+      "expected_outcome": "reject",
       "expected_fields": null,
-      "required_abstention_reason": null,
+      "required_abstention_reason": "scope_mismatch",
       "reviewer_ref": null,
       "reviewed_at": null,
-      "human_verified": false
+      "human_verified": false,
+      "label_provenance": "developer_checked_not_human_verified",
+      "developer_review_reason": "scope_mismatch",
+      "source_entity": {
+        "issuer_id": "SYN-FINREF",
+        "listing_id": "SYN-FINREF"
+      },
+      "source_evidence_id": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "source_locator": "html:table[0]/tr[1]/td[1]",
+      "source_text_sha256": "07bd5bf6c03f4479b842146a96722ccef7defaea30136bad0130b35479ffbad8"
     },
     {
       "case_id": "M2-DEV-10",
@@ -319,13 +410,23 @@
           "locator": "html:table[0]/tr[1]/td[1]"
         }
       },
-      "expected_outcome": null,
+      "expected_outcome": "reject",
       "expected_fields": null,
-      "required_abstention_reason": null,
+      "required_abstention_reason": "unsupported_quote",
       "reviewer_ref": null,
       "reviewed_at": null,
-      "human_verified": false
+      "human_verified": false,
+      "label_provenance": "developer_checked_not_human_verified",
+      "developer_review_reason": "unsupported_quote",
+      "source_entity": {
+        "issuer_id": "SYN-FINREF",
+        "listing_id": "SYN-FINREF"
+      },
+      "source_evidence_id": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "source_locator": "html:table[0]/tr[1]/td[1]",
+      "source_text_sha256": "07bd5bf6c03f4479b842146a96722ccef7defaea30136bad0130b35479ffbad8"
     }
   ],
-  "holdout": "Not authored or evaluated here. Independent human reviewer must supply/freeze a separate untouched holdout."
+  "holdout": "Not authored or evaluated here. Independent human reviewer must supply/freeze a separate untouched holdout.",
+  "development_label_status": "provisional developer labels; not independent human verification"
 }

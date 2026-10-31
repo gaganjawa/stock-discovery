@@ -66,6 +66,12 @@ class Response(Strict):
 
 
 PROMPT_HASH = digest([VERSION,PROMPT,Response.model_json_schema()])
+EXTRACTION_PROMPT = (PROMPT+' In extraction-only mode the candidates list is empty. '
+    'Return factual_claims=[], interpretations=[], relations=[], source_excerpts=[]. '
+    'Never invent candidate IDs. Return only extracted_claims for explicit source rows. '
+    'For every non-null numeric value, missing_reason MUST be JSON null, not a string. '
+    'If context is incomplete, omit the proposed row instead of guessing.')
+EXTRACTION_PROMPT_HASH = digest([VERSION,EXTRACTION_PROMPT,Response.model_json_schema()])
 
 
 def candidates(bundle):

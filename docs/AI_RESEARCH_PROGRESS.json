@@ -1,39 +1,34 @@
 {
   "schema_version": 1,
   "updated_at": "2026-10-31",
-  "current_milestone": "M2 structured financial extraction and human-review preparation",
-  "branch": "feat/stk-052-verified-financial-extraction",
+  "current_milestone": "M2 optional runtimes and actual synthetic development inference",
+  "branch": "feat/stk-052-configurable-research-runtime",
   "worktree": "stk-074-grant-fences",
-  "last_successful_commit": "831feb0a1a1c16bcde37597149c4588913df600d",
+  "last_successful_commit": "f05d329296643dab2195748256ecab9bbeb7b432",
   "pr": {
-    "number": 21,
-    "url": "https://github.com/gaganjawa/stock-discovery/pull/21",
-    "original_requested_sha": "386ff5edc133b56138ee118fc2b471daf686d736",
-    "original_ci": "cancelled on correction push; not PASS",
-    "head_sha": "8b429cd44835804dcd4c7eabde83c2b381538772",
+    "number": 22,
+    "url": "https://github.com/gaganjawa/stock-discovery/pull/22",
+    "head_sha": "4a1e0a1e96abd917f9d9bc3fa2d9005ba7a8c053",
     "state": "merged",
-    "merge_sha": "831feb0a1a1c16bcde37597149c4588913df600d",
-    "ci_run": "https://github.com/gaganjawa/stock-discovery/actions/runs/41215029318",
+    "ci_run": "https://github.com/gaganjawa/stock-discovery/actions/runs/41216191234",
     "ci_status": {
       "unit": "passed",
       "postgres": "passed",
       "ui": "passed",
       "checks": "passed"
     },
-    "postgres": 417,
+    "merge_sha": "f05d329296643dab2195748256ecab9bbeb7b432",
+    "postgres": 419,
     "zero_skips": true,
-    "migration_lifecycle": "passed in GitHub CI"
+    "migration_lifecycle": "passed in exact-commit GitHub CI"
   },
   "completed_tests": {
-    "backend_worker": 705,
-    "postgresql": 414,
-    "stk079_postgresql_api": 56,
-    "focused_qualification_strategy": 114,
-    "scripts": 13,
-    "contract_validators": 3,
-    "migration_lifecycle": "passed",
-    "syntax_whitespace": "passed",
-    "provenance": "prior execution evidence; not rerun for Git delivery"
+    "backend_worker": 736,
+    "filing_rag_postgres": 30,
+    "focused_financial_factual_rag_runtime": 89,
+    "provider_pilot": 48,
+    "syntax_json_diff": "passed",
+    "provenance": "fresh local execution; overlapping counts; full exact-commit CI required"
   },
   "failed_tests": [
     {
@@ -48,19 +43,9 @@
     "Human research-quality calibration and prospective policy approval remain unapproved."
   ],
   "pending_changes": [
-    "shared/stock_discovery_analysis/financial_claims.py",
-    "shared/stock_discovery_analysis/factual_research.py",
-    "shared/stock_discovery_analysis/rag_research.py",
-    "worker/worker/real_evidence.py",
-    "backend/tests/test_financial_claims.py",
-    "backend/tests/integration/test_real_evidence.py",
-    "docs/STK-052-financial-claim-extraction.md",
-    "docs/research-quality/",
-    "docs/AI_RESEARCH_PROGRESS.json",
-    "docs/AI_RESEARCH_IMPLEMENTATION_PLAN.md",
-    "docs/SIMPLE-BOARD.md"
+    "runtime/provider and prompt changes, regressions, developer review packet and actual synthetic run evidence"
   ],
-  "next_action": "Deliver structured extraction increment through draft PR/mandatory CI. Human-review packet and fixed proposed protocol are in docs/research-quality; do not score unverified labels.",
+  "next_action": "Deliver runtime increment through required CI. Continue verified source-span layout support, human-reference review and combined research integration; no research-quality acceptance from development calls.",
   "milestones": [
     {
       "id": "M0",
@@ -122,7 +107,7 @@
       "id": "M2",
       "objective": "AI company research",
       "completion_criteria": "Cited structured company research with independent deterministic claim verification and preregistered quality evaluation.",
-      "status": "financial_extraction_increment_reviewed_ci_pending",
+      "status": "runtime_increment_reviewed_ci_pending",
       "dependency_status": "M1 real-data acceptance externally blocked; synthetic integration authorized",
       "files_changed": [
         "shared/stock_discovery_analysis/factual_research.py",
@@ -136,23 +121,22 @@
         "docs/AI_RESEARCH_IMPLEMENTATION_PLAN.md"
       ],
       "tests": {
-        "backend_worker": 729,
-        "focused_financial_factual_filing": 64,
-        "affected_postgres": 64,
-        "final_cache_rights_postgres_rerun": 3,
-        "frontend_build": "passed",
-        "syntax_diff": "passed",
-        "quality_metrics": "UNAVAILABLE: no human verified reference or actual LLM run"
+        "backend_worker": 736,
+        "filing_rag_postgres": 30,
+        "focused_financial_factual_rag_runtime": 89,
+        "provider_pilot": 48,
+        "syntax_json_diff": "passed",
+        "provenance": "fresh local execution; overlapping counts; full exact-commit CI required"
       },
-      "commit_sha": "386ff5edc133b56138ee118fc2b471daf686d736",
-      "pr_url": "https://github.com/gaganjawa/stock-discovery/pull/21",
+      "commit_sha": "4a1e0a1e96abd917f9d9bc3fa2d9005ba7a8c053",
+      "pr_url": "https://github.com/gaganjawa/stock-discovery/pull/22",
       "blockers": [
-        "Reference packet requires independent human labels and approval; final holdout must be independently supplied and untouched.",
-        "T9 model folder unavailable and local Ollama connection refused; no actual inference executed.",
-        "Real filing layout support limited to explicit rows; ordinary tables/PDFs require verified span profiles.",
-        "M1 permitted raw data, complete financial/event corpus and original historical availability remain blocked."
+        "Human-verified reference/independent holdout and quality approval remain missing; developer labels are provisional.",
+        "General real filing layouts require verified source-span profiles; current extraction only accepts explicit rows.",
+        "M1 rights, raw prices and complete filing/event historical availability remain unqualified.",
+        "llama.cpp backend has synthetic subprocess acceptance only; actual executable unavailable."
       ],
-      "next_step": "Deliver structured extraction increment through draft PR/mandatory CI. Human-review packet and fixed proposed protocol are in docs/research-quality; do not score unverified labels.",
+      "next_step": "Deliver runtime increment through required CI. Continue verified source-span layout support, human-reference review and combined research integration; no research-quality acceptance from development calls.",
       "prior_pr21": {
         "number": 21,
         "url": "https://github.com/gaganjawa/stock-discovery/pull/21",
@@ -171,6 +155,39 @@
         "postgres": 417,
         "zero_skips": true,
         "migration_lifecycle": "passed in GitHub CI"
+      },
+      "prior_pr22": {
+        "number": 22,
+        "url": "https://github.com/gaganjawa/stock-discovery/pull/22",
+        "head_sha": "4a1e0a1e96abd917f9d9bc3fa2d9005ba7a8c053",
+        "state": "merged",
+        "ci_run": "https://github.com/gaganjawa/stock-discovery/actions/runs/41216191234",
+        "ci_status": {
+          "unit": "passed",
+          "postgres": "passed",
+          "ui": "passed",
+          "checks": "passed"
+        },
+        "merge_sha": "f05d329296643dab2195748256ecab9bbeb7b432",
+        "postgres": 419,
+        "zero_skips": true,
+        "migration_lifecycle": "passed in exact-commit GitHub CI"
+      },
+      "actual_llm": {
+        "calls": 2,
+        "model": "qwen2.5-coder:7b",
+        "source": "invented normalized two-row disclosure; no real filing",
+        "first": {
+          "accepted": 0,
+          "rejected": 3
+        },
+        "second": {
+          "accepted_financial_rows": 2,
+          "rejected_extra_candidate": 1
+        },
+        "cost_usd": "0",
+        "evidence": "docs/research-quality/M2-actual-local-development.json",
+        "human_verified": false
       }
     },
     {

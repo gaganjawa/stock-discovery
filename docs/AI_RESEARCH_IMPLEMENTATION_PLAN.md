@@ -65,3 +65,9 @@ PR #20 merged at `907849399be33a0a6d178212b64b151de62320e9` with required checks
 PR21 merged at `831feb0` after a reproduced alias-citation P2 was corrected in `8b429cd`; required CI passed including all 417 PostgreSQL cases and lifecycle checks. The original `386ff5e` run was cancelled by the correction push, not a successful pinned run. Historical local lock-timeout cause remains unresolved; a deterministic timeout/rollback probe now passes.
 
 The next increment wires structured model proposals from source passages into the existing factual worker, independent stored-fact/passage/unit/period/entity/conflict checks and company report. It supports a narrow explicit row grammar and does not qualify arbitrary filings. A ten-case synthetic development review packet is prepared with null human labels; proposed thresholds and denominators are fixed before holdout use. No actual model ran because local Ollama/T9 are unavailable. Real research quality remains partial and unmeasured.
+
+## PR22 delivered; actual development inference and optional runtimes
+
+PR22 merged at `f05d329` after exact-commit checks passed (419 PostgreSQL cases, zero skips; migration lifecycle passed). Configurable runtime selection now supports Ollama or explicitly installed/hash-pinned offline llama.cpp; lexical retrieval removes the embedding-runtime requirement. Native CLI operational acceptance is still pending.
+
+The external SSD became available and two actual qwen2.5-coder:7b calls ran against invented normalized disclosure rows. First output was fully rejected; a scoped prompt clarification (new hash, unchanged verifier) produced two accepted financial rows and one rejected invented candidate. All attempts and usage are retained. These are development observations only. Ten provisional developer-labelled cases and an empty independent holdout registration do not establish human quality acceptance. Runtime was temporary and stopped; no genuine NSE source was activated.

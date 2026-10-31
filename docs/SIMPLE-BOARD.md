@@ -124,3 +124,11 @@ slice adds opt-in structured financial proposals verified against deterministic
 filing facts and exact source rows; 729 unit and 64 affected database cases passed.
 Human review packet prepared, labels unverified; actual local model unavailable.
 No general financial accuracy, genuine instrument or historical return acceptance.
+
+PR #22 merged (`f05d329`), 419 PostgreSQL cases and lifecycle passed in protected CI.
+M2 runtime increment: optional offline llama.cpp provider and lexical retrieval;
+736 unit, 30 PostgreSQL and 89 focused cases passed. Existing SSD qwen2.5-coder:7b
+ran twice on synthetic rows: first 0 accepted / 3 rejected; after a prompt-only
+clarification, 2 financial rows accepted / 1 extra candidate rejected. Both runs
+retained; no verifier relaxation, genuine filing, held-out or human quality acceptance.
+Ten developer labels remain human-unverified; independent holdout registration empty.
