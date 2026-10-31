@@ -1,24 +1,22 @@
 {
   "schema_version": 1,
   "updated_at": "2026-10-31",
-  "current_milestone": "M1 externally blocked; M6 first research screen delivery",
-  "branch": "feat/stk-054-real-swing-research-ui",
+  "current_milestone": "M2 factual source-excerpt increment; real research quality remains partial",
+  "branch": "feat/stk-052-factual-source-excerpts",
   "worktree": "stk-074-grant-fences",
-  "last_successful_commit": "f409bca866bb906121438b45f18a0876cbae72bf",
+  "last_successful_commit": "386ff5edc133b56138ee118fc2b471daf686d736",
   "pr": {
-    "number": 19,
-    "url": "https://github.com/gaganjawa/stock-discovery/pull/19",
-    "head_sha": "c9d8df150bb46d09c914a8aece39afca23e2a4fa",
-    "state": "merged",
-    "ci_run": "https://github.com/gaganjawa/stock-discovery/actions/runs/41212189596",
+    "number": 21,
+    "url": "https://github.com/gaganjawa/stock-discovery/pull/21",
+    "head_sha": "386ff5edc133b56138ee118fc2b471daf686d736",
+    "state": "draft",
+    "ci_run": "https://github.com/gaganjawa/stock-discovery/actions/runs/41214564197",
     "ci_status": {
-      "unit": "passed",
-      "postgres": "passed",
-      "ui": "passed",
-      "checks": "passed"
-    },
-    "main_protection": "verified active: required checks (GitHub Actions), strict, PR-based, enforce_admins, no force/deletion",
-    "merge_sha": "f409bca866bb906121438b45f18a0876cbae72bf"
+      "unit": "running",
+      "postgres": "running",
+      "ui": "running",
+      "checks": "pending"
+    }
   },
   "completed_tests": {
     "backend_worker": 705,
@@ -31,21 +29,26 @@
     "syntax_whitespace": "passed",
     "provenance": "prior execution evidence; not rerun for Git delivery"
   },
-  "failed_tests": [],
+  "failed_tests": [
+    {
+      "test": "test_expiry_during_fence_lock_wait_rejects_work[capture]",
+      "run": "full local PostgreSQL",
+      "cause": "QueryCanceled at existing 12-second lock-wait statement timeout; no grant-fence changes",
+      "follow_up": "All three variants passed unchanged in isolation; full gate/lifecycle not yet successful."
+    }
+  ],
   "known_blockers": [
     "Real-source rights/retention/adjustment and complete evidence remain unqualified.",
     "Human research-quality calibration and prospective policy approval remain unapproved."
   ],
   "pending_changes": [
-    "frontend/src/RealCompany.tsx",
-    "frontend/src/RealSwing.tsx",
-    "frontend/tests/real-swing.spec.ts",
-    "docs/AI_RESEARCH_DATA_ACCEPTANCE.md",
-    "docs/AI_RESEARCH_IMPLEMENTATION_PLAN.md",
-    "docs/AI_RESEARCH_PROGRESS.json",
-    "docs/SIMPLE-BOARD.md"
+    "shared/stock_discovery_analysis/factual_research.py",
+    "backend/tests/test_factual_research.py",
+    "backend/tests/integration/test_grant_fences.py",
+    "docs/STK-052-source-excerpts.md",
+    "docs/AI_RESEARCH_PROGRESS.json"
   ],
-  "next_action": "Deliver STK-054 first research screen through PR/required CI. Continue M2 verified financial/news research and M4 synthesis using existing engines and synthetic fixtures; M1 real evidence and human research-quality reference labels remain external acceptance blockers.",
+  "next_action": "Push citation P2 fix to PR21 and verify new exact-commit mandatory CI; preserve original 386ff5e CI result separately. Then implement LLM proposed financial claims independently checked against deterministic filing extraction, and prepare an UNVERIFIED human review packet.",
   "milestones": [
     {
       "id": "M0",
@@ -80,7 +83,9 @@
       "pr_url": "https://github.com/gaganjawa/stock-discovery/pull/19",
       "blockers": [],
       "next_step": "Merged and ancestry verified on origin/main.",
-      "merge_sha": "f409bca866bb906121438b45f18a0876cbae72bf"
+      "merge_sha": "f409bca866bb906121438b45f18a0876cbae72bf",
+      "ci_run": "https://github.com/gaganjawa/stock-discovery/actions/runs/41212189596",
+      "ci_duration_seconds": 476
     },
     {
       "id": "M1",
@@ -105,16 +110,52 @@
       "id": "M2",
       "objective": "AI company research",
       "completion_criteria": "Cited structured company research with independent deterministic claim verification and preregistered quality evaluation.",
-      "status": "pending",
-      "dependency_status": "previous milestone not yet accepted; independent work may proceed when externally blocked",
-      "files_changed": [],
-      "tests": {},
-      "commit_sha": null,
-      "pr_url": null,
-      "blockers": [
-        "Acceptance requires inspection and reuse of existing implementation."
+      "status": "citation_p2_corrected_ci_pending",
+      "dependency_status": "M1 real-data acceptance externally blocked; synthetic integration authorized",
+      "files_changed": [
+        "shared/stock_discovery_analysis/factual_research.py",
+        "backend/tests/test_factual_research.py",
+        "backend/tests/integration/test_rag_research.py",
+        "frontend/src/FactualResearch.tsx",
+        "frontend/tests/real-swing.spec.ts",
+        "docs/STK-052-source-excerpts.md",
+        "docs/AI_RESEARCH_PROGRESS.json",
+        "docs/SIMPLE-BOARD.md",
+        "docs/AI_RESEARCH_IMPLEMENTATION_PLAN.md"
       ],
-      "next_step": "Inspect existing components against milestone criteria before implementing missing integration."
+      "tests": {
+        "backend_worker": 712,
+        "fixed_rag_postgres": 25,
+        "retrieval_orchestration_read_fences": 37,
+        "synthetic_browser": 2,
+        "frontend_build": "passed",
+        "full_postgres": {
+          "passed": 415,
+          "failed": 1,
+          "skipped": 0
+        },
+        "isolated_expiry_lock_rerun": {
+          "passed": 3,
+          "deselected": 57
+        },
+        "scripts": 13,
+        "contract_validators": 2,
+        "review_followup": {
+          "unit": 714,
+          "focused": 67,
+          "grant_rag_postgres": 86,
+          "citation_before_fix": 2,
+          "citation_after_fix": "passed",
+          "timeout_cause": "unresolved; deterministic timeout denial/rollback verified"
+        }
+      },
+      "commit_sha": "386ff5edc133b56138ee118fc2b471daf686d736",
+      "pr_url": "https://github.com/gaganjawa/stock-discovery/pull/21",
+      "blockers": [
+        "Full PostgreSQL run hit unchanged expiry-lock statement timeout; exact three cases passed unchanged in isolation. Required exact-commit CI/lifecycle must pass.",
+        "Human-reviewed reference labels, preregistered quality thresholds and real permitted evidence remain missing."
+      ],
+      "next_step": "Commit reviewed excerpt increment, open draft PR, verify exact-commit CI. Do not merge before all mandatory checks pass."
     },
     {
       "id": "M3",
@@ -150,7 +191,22 @@
       "id": "M5",
       "objective": "Historical replay and ground truth",
       "completion_criteria": "Freeze as-of research, reveal subsequent outcomes and compare baselines with leakage controls.",
-      "status": "focused_review_passed_delivery_pending",
+      "status": "pending",
+      "dependency_status": "previous milestone not yet accepted; independent work may proceed when externally blocked",
+      "files_changed": [],
+      "tests": {},
+      "commit_sha": null,
+      "pr_url": null,
+      "blockers": [
+        "Acceptance requires inspection and reuse of existing implementation."
+      ],
+      "next_step": "Reuse existing freeze/reveal and immutable governance for real historical integration; no new replay has been accepted."
+    },
+    {
+      "id": "M6",
+      "objective": "User-facing dashboard",
+      "completion_criteria": "Research, bounded discovery and historical replay usable through existing React application.",
+      "status": "partial_first_screen_merged",
       "dependency_status": "previous milestone not yet accepted; independent work may proceed when externally blocked",
       "files_changed": [
         "frontend/src/RealCompany.tsx",
@@ -161,27 +217,13 @@
         "production_build": "passed",
         "synthetic_desktop_mobile_browser": 2
       },
-      "commit_sha": null,
-      "pr_url": null,
+      "commit_sha": "c924912b3e0d5597bef088591ba2ae5c2aa8cdba",
+      "pr_url": "https://github.com/gaganjawa/stock-discovery/pull/20",
       "blockers": [
         "Acceptance requires inspection and reuse of existing implementation."
       ],
-      "next_step": "Commit STK-054 first research screen and checkpoint; open PR and verify required CI. Remaining discovery/replay journeys are incomplete."
-    },
-    {
-      "id": "M6",
-      "objective": "User-facing dashboard",
-      "completion_criteria": "Research, bounded discovery and historical replay usable through existing React application.",
-      "status": "pending",
-      "dependency_status": "previous milestone not yet accepted; independent work may proceed when externally blocked",
-      "files_changed": [],
-      "tests": {},
-      "commit_sha": null,
-      "pr_url": null,
-      "blockers": [
-        "Acceptance requires inspection and reuse of existing implementation."
-      ],
-      "next_step": "Inspect existing components against milestone criteria before implementing missing integration."
+      "next_step": "Full AI synthesis, discovery ranking and historical freeze/reveal UI remain incomplete.",
+      "merge_sha": "907849399be33a0a6d178212b64b151de62320e9"
     },
     {
       "id": "M7",

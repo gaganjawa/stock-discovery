@@ -140,3 +140,76 @@ def test_speculative_explanations_and_forecasts_remain_rejected(text):
     report=validate(b,[payload(c)],[dict(text=text,candidate_ids=[c['candidate_id']])])
     assert len(report['accepted_claims'])==1 and not report['pending_interpretations']
     assert report['rejected_claims']
+
+
+def excerpt_bundle():
+    from stock_discovery_analysis.rag_contracts import Hit
+    b=history();text='Synthetic source reports an unresolved regulatory inquiry; outcome is unknown.'
+    c=b.facts[0].citation.model_copy(update={'excerpt':text})
+    hit=Hit(chunk_id='b'*64,text=text,
+        primary=False,citations=(c,),lexical_score='1',semantic_score=None,lexical_rank=1,semantic_rank=None,fused_score='1')
+    return b.model_copy(update={'documents':(c.revision_id,),'hits':(hit,)})
+
+
+def test_selected_source_excerpt_is_exact_and_never_promoted_to_financial_or_event_truth():
+    from stock_discovery_analysis.factual_research import excerpt_candidates
+    b=excerpt_bundle();c=excerpt_candidates(b)[0]
+    raw=json.dumps(dict(factual_claims=[],interpretations=[],source_excerpts=[payload(c),payload(c)]))
+    r=validate_response(raw,b,candidates(b))
+    assert len(r['accepted_source_excerpts'])==1 and not r['accepted_claims']
+    assert not r['accepted_source_excerpts'][0]['financially_verified']
+    assert not r['accepted_source_excerpts'][0]['event_truth_verified']
+    assert not r['qualified'] and r['action']=='INSUFFICIENT_EVIDENCE'
+    assert 'category:news' in r['limitations']
+    assert model_context(b,candidates(b))['excerpt_candidates'][0]['text']==c['text']
+
+
+@pytest.mark.parametrize('change',[{'text':'The company is safe.'},{'candidate_id':'f'*64},{'citation_ids':['f'*64]}])
+def test_fabricated_excerpt_or_borrowed_citation_rejected_without_erasing_financial_facts(change):
+    from stock_discovery_analysis.factual_research import excerpt_candidates
+    b=excerpt_bundle();quote=payload(excerpt_candidates(b)[0]);fact=payload(candidates(b)[0])
+    raw=json.dumps(dict(factual_claims=[fact],interpretations=[],source_excerpts=[{**quote,**change}]))
+    r=validate_response(raw,b,candidates(b))
+    assert len(r['accepted_claims'])==1 and not r['accepted_source_excerpts'] and len(r['rejected_claims'])==1
+
+
+def test_excerpts_require_retrieved_document_membership_and_are_order_independent():
+    from stock_discovery_analysis.factual_research import excerpt_candidates
+    b=excerpt_bundle()
+    with pytest.raises(ValueError,match='document membership'):excerpt_candidates(b.model_copy(update={'documents':()}))
+    c=b.hits[0];other=c.model_copy(update={'text':'Different synthetic excerpt','chunk_id':'c'*64})
+    assert excerpt_candidates(b.model_copy(update={'hits':(c,other,c)}))==excerpt_candidates(b.model_copy(update={'hits':(other,c)}))
+    assert not excerpt_candidates(b.model_copy(update={'hits':(c.model_copy(update={'text':'x'*2001}),)}))
+
+
+def test_excerpts_without_financial_facts_remain_attributed_and_missing_news_stays_missing():
+    from stock_discovery_analysis.factual_research import excerpt_candidates
+    b=excerpt_bundle().model_copy(update={'facts':()});q=excerpt_candidates(b)[0]
+    r=validate_response(json.dumps(dict(factual_claims=[],interpretations=[],source_excerpts=[payload(q)])),b,[])
+    assert len(r['accepted_source_excerpts'])==1 and r['validation']['numerical']=='no_accepted_claims'
+    assert r['action']=='INSUFFICIENT_EVIDENCE' and 'category:news' in r['limitations']
+
+
+def test_excerpt_output_count_bound_fails_closed():
+    from stock_discovery_analysis.factual_research import excerpt_candidates
+    b=excerpt_bundle();q=payload(excerpt_candidates(b)[0])
+    with pytest.raises(ValueError,match='claim count limit'):
+        validate_response(json.dumps(dict(factual_claims=[],interpretations=[],source_excerpts=[q]*4)),b,candidates(b))
+
+
+def test_excerpt_alias_citations_must_each_support_exact_quotation():
+    from stock_discovery_analysis.factual_research import excerpt_candidates
+    b=excerpt_bundle();hit=b.hits[0];text=hit.text
+    good=hit.citations[0].model_copy(update={'excerpt':text})
+    alias=good.model_copy(update={'evidence_id':'e'*64,'excerpt':text.replace('unknown.','UNKNOWN!')})
+    result=excerpt_candidates(b.model_copy(update={'hits':(hit.model_copy(update={'citations':(good,alias)}),)}))
+    assert len(result)==1 and result[0]['citations']==[good.model_dump(mode='json')]
+    assert excerpt_candidates(b.model_copy(update={'hits':(hit.model_copy(update={'citations':(alias,)}),)}))==[]
+
+
+def test_missing_passage_cannot_support_excerpt():
+    from stock_discovery_analysis.factual_research import excerpt_candidates
+    b=excerpt_bundle();hit=b.hits[0]
+    for excerpt in (None,'A different passage'):
+        c=hit.citations[0].model_copy(update={'excerpt':excerpt})
+        assert excerpt_candidates(b.model_copy(update={'hits':(hit.model_copy(update={'citations':(c,)}),)}))==[]

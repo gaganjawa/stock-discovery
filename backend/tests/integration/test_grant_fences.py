@@ -705,3 +705,30 @@ def test_sql_financial_fact_requires_additional_scope(scoped_writer,financial_sc
     else:
         with pytest.raises(psycopg.errors.InsufficientPrivilege):insert_fact()
     assert conn.execute('SELECT count(*) FROM discovery.financial_facts').fetchone()==(int(financial_scope),)
+
+
+def test_capture_statement_timeout_is_atomic_and_never_authorizes(case):
+    """A bounded lock timeout is denial, not a successful expiry validation."""
+    conn,url=case;ingest(conn);g=fixture_grant();key=(g.source_id,g.account_ref,g.grant_id,g.version)
+    before=conn.execute('SELECT scope_id,state,generation FROM discovery.grant_fences ORDER BY scope_id').fetchall()
+    records=conn.execute('SELECT revision_id,content_hash FROM discovery.revisions ORDER BY revision_id').fetchall()
+    ready=Event();pid=[]
+    def write():
+        with psycopg.connect(url,autocommit=True) as writer:
+            pid.append(writer.info.backend_pid);ready.set()
+            with writer.transaction():
+                writer.execute("SET LOCAL statement_timeout='500ms'")
+                capture(writer,g,fixture_request('universe'))
+            raise AssertionError('timed-out capture must not return a permit')
+    with psycopg.connect(url,autocommit=True) as holder, ThreadPoolExecutor(max_workers=1) as pool:
+        holder.execute('BEGIN')
+        try:
+            holder.execute("SELECT scope_id FROM discovery.grant_fences WHERE kind='grant' AND source_id=%s AND account_ref=%s AND grant_id=%s AND grant_version=%s FOR UPDATE",key)
+            future=pool.submit(write);assert ready.wait(5)
+            wait_for_blocker(conn,pid[0],holder.info.backend_pid)
+            with pytest.raises(psycopg.errors.QueryCanceled):future.result(timeout=5)
+        finally:holder.execute('ROLLBACK')
+    assert conn.execute('SELECT scope_id,state,generation FROM discovery.grant_fences ORDER BY scope_id').fetchall()==before
+    assert conn.execute('SELECT revision_id,content_hash FROM discovery.revisions ORDER BY revision_id').fetchall()==records
+    with psycopg.connect(url,autocommit=True) as restarted:
+        assert capture(restarted,g,fixture_request('universe')).identity==key
