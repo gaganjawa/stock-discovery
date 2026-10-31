@@ -1,0 +1,313 @@
+{
+  "kind": "actual_local_llm_synthetic_development_probe",
+  "source_warning": "All filing text, source URLs and instrument identities are fabricated fixtures. No genuine issuer report was fetched. The model saw explicit rows derived from a fictional HTML fixture, not arbitrary issuer filings.",
+  "human_verified": false,
+  "heldout": false,
+  "verifier_relaxed": false,
+  "calls": 2,
+  "api_cost_usd": "0",
+  "local_power_cost": "not measured",
+  "code_sha256": {
+    "shared/stock_discovery_analysis/factual_research.py": "e7ae959ba61a3177ffcae987a50c7cfb26412cd70582252d4cc09541d4c34c34",
+    "shared/stock_discovery_analysis/rag_research.py": "10055885ae9cfd6323875fe11ab01f79763a9ff0a4898799f496cbf4028f03f2",
+    "shared/stock_discovery_analysis/financial_claims.py": "7f4d70e237196819c62eba1c900e5e25f651d84beb72717f2b1e9a028a0a963a",
+    "worker/worker/real_evidence.py": "ab096e224921cdac785f36d6532617d6fd9d04676ba31db0d3092e1a2ec4dab5",
+    "worker/worker/providers/ollama.py": "d467be5b8461cdc20e4abe1d5c43e95704bfac00148091f9830216f908996d4e"
+  },
+  "attempts": [
+    {
+      "synthetic_source": true,
+      "actual_llm": true,
+      "human_verified": false,
+      "real_nse_qualification": false,
+      "fixture_clock_not_actual_acquisition": "2026-10-19T12:00:00Z",
+      "executed_on": "2026-10-31",
+      "runtime": "ollama",
+      "model": {
+        "id": "qwen2.5-coder:7b",
+        "version": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+        "content_hash": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364"
+      },
+      "prompt_hash": "65a6bad4791da10ac0e28060fb5763bcd86567b852c45ef23f8cd7e0d19cad2a",
+      "request_hash": "04f9c2d5f2ed618f67ecf08e6cccdee74645673651e3b479ac9a69357bc54c1f",
+      "status": "completed",
+      "wall_seconds": 35.649,
+      "accounting": {
+        "input_units": 7511,
+        "output_units": 2061,
+        "unit_basis": "utf8_byte_upper_bound",
+        "reserved_units": 200000,
+        "reserved_cost": "0",
+        "actual_cost": "0",
+        "latency_ms": 35558,
+        "currency": "USD",
+        "reservation_released": false
+      },
+      "native_usage": [
+        [
+          {
+            "model": {
+              "id": "qwen2.5-coder:7b",
+              "version": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+              "content_hash": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364"
+            },
+            "status": "returned",
+            "prompt_eval_count": 1219,
+            "eval_count": 1048,
+            "total_duration": 35449590000,
+            "load_duration": 8967282375,
+            "wall_ms": 35455,
+            "cost": "0"
+          }
+        ]
+      ],
+      "accepted": [],
+      "rejected": [
+        {
+          "kind": "extracted_claims",
+          "index": 0,
+          "claim": {
+            "evidence_id": "17fc0457b9227b935d034c3e90c0d7cec45f8b5930bd6e1dea3d6f501e6c51ef",
+            "fact": {
+              "locator": "html:table[0]/tr[1]/td[1]",
+              "metric": "revenue",
+              "missing_reason": "Insufficient evidence",
+              "period_end_at": "2026-03-31T00:00:00Z",
+              "period_kind": "annual",
+              "period_start_at": "2025-04-01T00:00:00Z",
+              "scope": "consolidated",
+              "unit": "INR_crore",
+              "value": "100"
+            },
+            "issuer_id": "test-issuer",
+            "listing_id": "NSE:test",
+            "quote": "revenue = 100 INR_crore; 2025-04-01T00:00:00Z/2026-03-31T00:00:00Z; annual; consolidated",
+            "revision_id": "ACTUAL-INFERENCE-SYNTHETIC-DOC-0d199375308d2b894e42dbd73804d4bae606b140b995b23114005cb9834dacc8"
+          },
+          "reason": "1 validation error for ExtractedClaim\nfact\n  Value error, explicit missing value [type=value_error, input_value={'locator': 'html:table[0..._crore', 'value': '100'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error"
+        },
+        {
+          "kind": "extracted_claims",
+          "index": 1,
+          "claim": {
+            "evidence_id": "17fc0457b9227b935d034c3e90c0d7cec45f8b5930bd6e1dea3d6f501e6c51ef",
+            "fact": {
+              "locator": "html:table[0]/tr[2]/td[1]",
+              "metric": "earnings",
+              "missing_reason": "Insufficient evidence",
+              "period_end_at": "2026-03-31T00:00:00Z",
+              "period_kind": "annual",
+              "period_start_at": "2025-04-01T00:00:00Z",
+              "scope": "consolidated",
+              "unit": "INR_crore",
+              "value": "20"
+            },
+            "issuer_id": "test-issuer",
+            "listing_id": "NSE:test",
+            "quote": "earnings = 20 INR_crore; 2025-04-01T00:00:00Z/2026-03-31T00:00:00Z; annual; consolidated",
+            "revision_id": "ACTUAL-INFERENCE-SYNTHETIC-DOC-0d199375308d2b894e42dbd73804d4bae606b140b995b23114005cb9834dacc8"
+          },
+          "reason": "1 validation error for ExtractedClaim\nfact\n  Value error, explicit missing value [type=value_error, input_value={'locator': 'html:table[0...R_crore', 'value': '20'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error"
+        },
+        {
+          "kind": "factual_claims",
+          "index": 0,
+          "claim": {
+            "candidate_id": "c0f60339d7b055ee93ca8f401e0abf8bc51c3a142478f17e78457359badd2fa4",
+            "citation_ids": [
+              "17fc0457b9227b935d034c3e90c0d7cec45f8b5930bd6e1dea3d6f501e6c51ef"
+            ],
+            "text": "revenue = 100 INR_crore; 2025-04-01T00:00:00Z/2026-03-31T00:00:00Z; annual; consolidated\nearnings = 20 INR_crore; 2025-04-01T00:00:00Z/2026-03-31T00:00:00Z; annual; consolidated"
+          },
+          "reason": "unknown candidate"
+        }
+      ],
+      "limitations": [
+        "Investment suitability, valuation, risk coverage and policy approval are not established by historical facts.",
+        "Original financial publication times must be distinguished from observation timestamps.",
+        "Unavailable in this retrieved evidence: eps, debt, equity, capex, valuation.",
+        "No verified announcement/news coverage in this financial evidence bundle; absence of news is not absence of risk."
+      ],
+      "source_observations": {
+        "ACTUAL-INFERENCE-SYNTHETIC-DOC-0d199375308d2b894e42dbd73804d4bae606b140b995b23114005cb9834dacc8": {
+          "fetched_at": "2026-10-19T12:00:00Z",
+          "available_at": "2026-10-19T12:00:00Z",
+          "original_publication_at": "2026-06-15T15:03:56Z"
+        }
+      },
+      "reason": null,
+      "quality_metrics": "unavailable; synthetic development execution, not human-verified quality evaluation"
+    },
+    {
+      "synthetic_source": true,
+      "actual_llm": true,
+      "human_verified": false,
+      "real_nse_qualification": false,
+      "fixture_clock_not_actual_acquisition": "2026-10-19T12:00:00Z",
+      "executed_on": "2026-10-31",
+      "runtime": "ollama",
+      "model": {
+        "id": "qwen2.5-coder:7b",
+        "version": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+        "content_hash": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364"
+      },
+      "prompt_hash": "4723251084c6eaa5d9b607aba088f40af8ac96633738dde407dcbce914675a53",
+      "request_hash": "b412ee63f9304df6ebc874419e1d1be7c200a46899d7ba126b8c8e740aa5d77d",
+      "status": "completed",
+      "wall_seconds": 27.263,
+      "accounting": {
+        "input_units": 7879,
+        "output_units": 2023,
+        "unit_basis": "utf8_byte_upper_bound",
+        "reserved_units": 200000,
+        "reserved_cost": "0",
+        "actual_cost": "0",
+        "latency_ms": 27162,
+        "currency": "USD",
+        "reservation_released": false
+      },
+      "native_usage": [
+        [
+          {
+            "model": {
+              "id": "qwen2.5-coder:7b",
+              "version": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+              "content_hash": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364"
+            },
+            "status": "returned",
+            "prompt_eval_count": 1290,
+            "eval_count": 1035,
+            "total_duration": 27097935792,
+            "load_duration": 897142667,
+            "wall_ms": 27102,
+            "cost": "0"
+          }
+        ]
+      ],
+      "accepted": [
+        {
+          "text": "revenue = 1000000000 INR; 2025-04-01T00:00:00Z/2026-03-31T00:00:00Z; annual; consolidated",
+          "citations": [
+            {
+              "evidence_id": "17fc0457b9227b935d034c3e90c0d7cec45f8b5930bd6e1dea3d6f501e6c51ef",
+              "revision_id": "ACTUAL-INFERENCE-SYNTHETIC-DOC-0d199375308d2b894e42dbd73804d4bae606b140b995b23114005cb9834dacc8",
+              "locator": "$.text:chars[0:177]",
+              "source_url": "https://www.sec.gov/Archives/edgar/data/1067491/test.htm",
+              "attribution": "Test attribution",
+              "excerpt": "revenue = 100 INR_crore; 2025-04-01T00:00:00Z/2026-03-31T00:00:00Z; annual; consolidated\nearnings = 20 INR_crore; 2025-04-01T00:00:00Z/2026-03-31T00:00:00Z; annual; consolidated"
+            },
+            {
+              "evidence_id": "649e8f869a4760027c336b1a7ff3c30d827dd2e78708beb67c32360c9eda4596",
+              "revision_id": "ACTUAL-INFERENCE-SYNTHETIC-DOC-0d199375308d2b894e42dbd73804d4bae606b140b995b23114005cb9834dacc8",
+              "locator": "$.facts[0]",
+              "source_url": "https://www.sec.gov/Archives/edgar/data/1067491/test.htm",
+              "attribution": "Test attribution",
+              "excerpt": null
+            }
+          ],
+          "reference_fact_id": "649e8f869a4760027c336b1a7ff3c30d827dd2e78708beb67c32360c9eda4596",
+          "extracted_fields": {
+            "issuer_id": "test-issuer",
+            "listing_id": "NSE:test",
+            "revision_id": "ACTUAL-INFERENCE-SYNTHETIC-DOC-0d199375308d2b894e42dbd73804d4bae606b140b995b23114005cb9834dacc8",
+            "evidence_id": "17fc0457b9227b935d034c3e90c0d7cec45f8b5930bd6e1dea3d6f501e6c51ef",
+            "quote": "revenue = 100 INR_crore; 2025-04-01T00:00:00Z/2026-03-31T00:00:00Z; annual; consolidated",
+            "fact": {
+              "metric": "revenue",
+              "value": "100",
+              "missing_reason": null,
+              "unit": "INR_crore",
+              "period_start_at": "2025-04-01T00:00:00Z",
+              "period_end_at": "2026-03-31T00:00:00Z",
+              "period_kind": "annual",
+              "scope": "consolidated",
+              "locator": "html:table[0]/tr[1]/td[1]"
+            }
+          },
+          "validation": "deterministic_filing_fact_and_passage_parity"
+        },
+        {
+          "text": "earnings = 200000000 INR; 2025-04-01T00:00:00Z/2026-03-31T00:00:00Z; annual; consolidated",
+          "citations": [
+            {
+              "evidence_id": "17fc0457b9227b935d034c3e90c0d7cec45f8b5930bd6e1dea3d6f501e6c51ef",
+              "revision_id": "ACTUAL-INFERENCE-SYNTHETIC-DOC-0d199375308d2b894e42dbd73804d4bae606b140b995b23114005cb9834dacc8",
+              "locator": "$.text:chars[0:177]",
+              "source_url": "https://www.sec.gov/Archives/edgar/data/1067491/test.htm",
+              "attribution": "Test attribution",
+              "excerpt": "revenue = 100 INR_crore; 2025-04-01T00:00:00Z/2026-03-31T00:00:00Z; annual; consolidated\nearnings = 20 INR_crore; 2025-04-01T00:00:00Z/2026-03-31T00:00:00Z; annual; consolidated"
+            },
+            {
+              "evidence_id": "f4a7cae11ca2fe7c0c5c4c7144451a6b2f01c49a340fa13493fb6a930f365c17",
+              "revision_id": "ACTUAL-INFERENCE-SYNTHETIC-DOC-0d199375308d2b894e42dbd73804d4bae606b140b995b23114005cb9834dacc8",
+              "locator": "$.facts[1]",
+              "source_url": "https://www.sec.gov/Archives/edgar/data/1067491/test.htm",
+              "attribution": "Test attribution",
+              "excerpt": null
+            }
+          ],
+          "reference_fact_id": "f4a7cae11ca2fe7c0c5c4c7144451a6b2f01c49a340fa13493fb6a930f365c17",
+          "extracted_fields": {
+            "issuer_id": "test-issuer",
+            "listing_id": "NSE:test",
+            "revision_id": "ACTUAL-INFERENCE-SYNTHETIC-DOC-0d199375308d2b894e42dbd73804d4bae606b140b995b23114005cb9834dacc8",
+            "evidence_id": "17fc0457b9227b935d034c3e90c0d7cec45f8b5930bd6e1dea3d6f501e6c51ef",
+            "quote": "earnings = 20 INR_crore; 2025-04-01T00:00:00Z/2026-03-31T00:00:00Z; annual; consolidated",
+            "fact": {
+              "metric": "earnings",
+              "value": "20",
+              "missing_reason": null,
+              "unit": "INR_crore",
+              "period_start_at": "2025-04-01T00:00:00Z",
+              "period_end_at": "2026-03-31T00:00:00Z",
+              "period_kind": "annual",
+              "scope": "consolidated",
+              "locator": "html:table[0]/tr[2]/td[1]"
+            }
+          },
+          "validation": "deterministic_filing_fact_and_passage_parity"
+        }
+      ],
+      "rejected": [
+        {
+          "kind": "factual_claims",
+          "index": 0,
+          "claim": {
+            "candidate_id": "c0f60339d7b055ee93ca8f401e0abf8bc51c3a142478f17e78457359badd2fa4",
+            "citation_ids": [
+              "17fc0457b9227b935d034c3e90c0d7cec45f8b5930bd6e1dea3d6f501e6c51ef"
+            ],
+            "text": "revenue = 100 INR_crore; 2025-04-01T00:00:00Z/2026-03-31T00:00:00Z; annual; consolidated\nearnings = 20 INR_crore; 2025-04-01T00:00:00Z/2026-03-31T00:00:00Z; annual; consolidated"
+          },
+          "reason": "unknown candidate"
+        }
+      ],
+      "limitations": [
+        "Investment suitability, valuation, risk coverage and policy approval are not established by historical facts.",
+        "Original financial publication times must be distinguished from observation timestamps.",
+        "Unavailable in this retrieved evidence: eps, debt, equity, capex, valuation.",
+        "No verified announcement/news coverage in this financial evidence bundle; absence of news is not absence of risk."
+      ],
+      "source_observations": {
+        "ACTUAL-INFERENCE-SYNTHETIC-DOC-0d199375308d2b894e42dbd73804d4bae606b140b995b23114005cb9834dacc8": {
+          "fetched_at": "2026-10-19T12:00:00Z",
+          "available_at": "2026-10-19T12:00:00Z",
+          "original_publication_at": "2026-06-15T15:03:56Z"
+        }
+      },
+      "reason": null,
+      "quality_metrics": "unavailable; synthetic development execution, not human-verified quality evaluation"
+    }
+  ],
+  "development_diagnostics": {
+    "initial_verified_rows": 0,
+    "initial_rejected_proposals": 3,
+    "final_verified_financial_rows": 2,
+    "final_rejected_proposals": 1,
+    "final_invalid_candidate_rejected": true,
+    "expected_fixture_rows": 2,
+    "abstention_on_negative_actual_model_cases": "not measured; no negative actual-model case was run",
+    "human_verified_quality_metrics": "UNAVAILABLE"
+  },
+  "code_sha256_scope": "Final attempt; the initial prompt hash and failed proposals are retained separately."
+}

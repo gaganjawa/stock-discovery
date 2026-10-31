@@ -228,7 +228,7 @@ def run_research(conn, *, run_id, query, policy, access, budget, provider, embed
         check(embeddings.local_only and embeddings.cost_per_unit==0, 'remote/paid embeddings disabled')
     from . import factual_research as factual
     check(not extraction_only or factual_report,'extraction requires factual report')
-    active_prompt_hash=factual.PROMPT_HASH if factual_report else RESEARCH_PROMPT_HASH
+    active_prompt_hash=(factual.EXTRACTION_PROMPT_HASH if extraction_only else factual.PROMPT_HASH) if factual_report else RESEARCH_PROMPT_HASH
     if judge:
         check(factual_report and judge.local_only and judge.cost_per_unit==0 and judge.ref.id!=provider.ref.id, 'independent local judge required')
     identity = dict(query=query.model_dump(mode='json'),policy=policy.model_dump(mode='json'),
@@ -262,7 +262,7 @@ def run_research(conn, *, run_id, query, policy, access, budget, provider, embed
     called = False
     try:
         deadline = start+budget.max_seconds
-        envelope = dict(instruction=factual.PROMPT if factual_report else RESEARCH_PROMPT,
+        envelope = dict(instruction=(factual.EXTRACTION_PROMPT if extraction_only else factual.PROMPT) if factual_report else RESEARCH_PROMPT,
                         schema=factual.Response.model_json_schema() if factual_report else ResearchResponse.model_json_schema(),bundle={})
         overhead = len(json.dumps(envelope,ensure_ascii=False,separators=(',',':')).encode())
         check(overhead+policy.max_bytes*(2 if embeddings else 1)+budget.max_output_units<=budget.max_run_units,

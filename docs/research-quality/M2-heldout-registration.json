@@ -1,0 +1,12 @@
+{
+  "status": "awaiting_independent_human_reference",
+  "human_verified": false,
+  "cases": [],
+  "reference_hash": null,
+  "reviewer_ref": null,
+  "approved_at": null,
+  "minimum_cases": 50,
+  "protocol": "M2-financial-extraction-protocol.json",
+  "evaluated": false,
+  "exclusion": "Known development packet cannot be reused as untouched holdout."
+}
