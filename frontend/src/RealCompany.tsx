@@ -1,3 +1,4 @@
+import {RealSwing} from './RealSwing'
 import {FactualResearch,type FactualReport} from './FactualResearch'
 import {useEffect,useState} from 'react'
 import {Chart} from './PriceChart'
@@ -18,6 +19,7 @@ export function RealCompany({horizon,onUnauthorized,selected}:{horizon:string;on
  <label>Company <select value={listing} onChange={e=>setListing(e.target.value)}>{list.map(s=><option key={s}>{s}</option>)}</select></label>
  <button onClick={()=>{setData(null);setVersion(version+1)}}>Refresh real evidence</button>
  {error&&<p role="alert">{error}</p>}
+ {listing&&horizon==='swing'&&<RealSwing key={listing+':'+version} listing={listing} onUnauthorized={onUnauthorized}/>}
  {data&&<><h3>{data.symbol} · {data.isin}</h3><p>Inputs known at {data.cutoff_at}. REAL RESEARCH / SHADOW / NON-ACTIONABLE.</p>
  {data.price_series.length?<Chart real bars={data.price_series.map(b=>({time:b.time,open:Number(b.open),high:Number(b.high),low:Number(b.low),close:Number(b.close)}))}/>:<p>Permitted price history is unavailable.</p>}
  <p>Price adjustment basis: {[...new Set(data.price_series.map(b=>b.adjustment_basis??'unverified'))].join(', ')}. Provider split/bonus adjustments are not dividend total returns; volume adjustment is unverified.</p>
