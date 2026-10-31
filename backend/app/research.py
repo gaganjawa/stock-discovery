@@ -2,7 +2,7 @@ import hmac
 import os
 from typing import Literal, Annotated
 from datetime import datetime,time,timedelta,timezone
-from fastapi import APIRouter,Depends,HTTPException,Request,Response
+from fastapi import APIRouter,Depends,HTTPException,Request,Response,Query
 from pydantic import BaseModel,Field
 import psycopg
 from .auth import require_auth,secret,session
@@ -124,12 +124,25 @@ def chart(bars):
     return [{'time':c.ends_at.date().isoformat(),**{k:float(getattr(c,k)) for k in ('open','high','low','close')}} for c in bars]
 
 
+@router.get('/analysis',dependencies=[Depends(require_auth)])
+def saved_history(response:Response,conn=Depends(db),dataset_version:str|None=Query(default=None,max_length=100),
+                  instrument_id:str|None=Query(default=None,max_length=80),before:str|None=Query(default=None,max_length=128),
+                  limit:int=Query(default=20,ge=1,le=50)):
+    from stock_discovery_analysis.service import saved_analyses
+    response.headers['Cache-Control']='no-store'
+    try:return saved_analyses(conn,dataset=dataset_version,instrument=instrument_id,before=before,limit=limit)
+    except ValueError:raise HTTPException(400,'Invalid saved-research cursor or filters') from None
+
+
 @router.get('/analysis/{rid}',dependencies=[Depends(require_auth)])
 def frozen(rid:str,response:Response,conn=Depends(db)):
     response.headers['Cache-Control']='no-store'
     try:
         a=read_frozen(conn,rid)
-        return {**a,'research_context':research_context(a)}
+        d=load_dataset(conn,a['recommendation']['versions']['dataset'])
+        cutoff=datetime.fromisoformat(a['recommendation']['information_cutoff_at'].replace('Z','+00:00'))
+        return {**a,'candles':chart(d.asof(a['recommendation']['instrument']['instrument_id'],cutoff)),
+                'research_context':research_context(a)}
     except KeyError: raise HTTPException(404,'Recommendation not found')
     except (ValueError,PermissionError):raise HTTPException(403,'Historical evidence is unavailable or restricted') from None
 
@@ -186,6 +199,7 @@ def scores(conn=Depends(db),cohort:str|None=None):
 class Batch(BaseModel):
     dataset_version: str=Field(max_length=100)
     dates: list[Annotated[str, Field(pattern=r'^\d{4}-\d{2}-\d{2}$')]]=Field(min_length=1,max_length=10)
+    include_financial: bool=False
 
 
 @router.post('/experiments',dependencies=[Depends(require_auth)])
@@ -197,7 +211,9 @@ def experiments(body:Batch,conn=Depends(db)):
         for instrument in d.instruments:
             chosen=Selection(dataset_version=d.version,instrument_id=instrument.instrument_id,date=day)
             _,cutoff=selection(chosen,conn)
-            requests.append({**execution_versions(os.getenv('CODE_VERSION','local-unversioned')),'dataset_version':d.version,'instrument_id':instrument.instrument_id,'cutoff':cutoff.isoformat()})
+            payload={**execution_versions(os.getenv('CODE_VERSION','local-unversioned')),'dataset_version':d.version,'instrument_id':instrument.instrument_id,'cutoff':cutoff.isoformat()}
+            if body.include_financial:payload['include_financial']=True
+            requests.append(payload)
     with conn.transaction():
         jobs=[enqueue(conn,'replay',payload) for payload in requests]
     return {'job_ids':jobs,'label':'Synthetic software validation; failed outcomes retained'}

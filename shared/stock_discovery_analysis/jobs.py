@@ -60,10 +60,20 @@ def _run_job(conn,code_version):
             cutoff=dt(payload['cutoff'])
             instruments=[payload['instrument_id']] if kind=='replay' else [i.instrument_id for i in d.instruments]
             recs=[]
+            if 'include_financial' in payload and type(payload['include_financial']) is not bool:
+                raise ValueError('invalid_financial_replay_option')
             for instrument in instruments:
-                a=freeze(conn,d,instrument,cutoff,code_version)
+                if payload.get('include_financial') is True:
+                    if kind!='replay':raise ValueError('full_evidence_requires_replay')
+                    from .historical_fixtures import seed
+                    from .historical_research import freeze_full
+                    seed(conn,instrument)
+                    a=freeze_full(conn,d,instrument,cutoff,code_version)
+                else:a=freeze(conn,d,instrument,cutoff,code_version)
                 rid=a['recommendation']['recommendation_id']; recs.append(rid)
-                if kind=='replay': reveal(conn,rid)
+                if kind=='replay':
+                    reveal(conn,rid)
+                    if 'baseline_recommendation_id' in a:reveal(conn,a['baseline_recommendation_id'])
             result={'recommendation_ids':recs}
         with conn.transaction():
             conn.execute("""UPDATE research.jobs SET status='completed',result=%s,lease_until=NULL,

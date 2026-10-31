@@ -102,3 +102,11 @@ renders the known-at-cutoff evidence, and reveals the separate technical baselin
 outcome. AI attachment requires explicit contemporary completion evidence; none is
 invented for today's cached runs. Combined paired metrics remain unavailable and
 M1/M2 acceptance stays blocked. This advances product development, not promotion.
+
+PR29 merged at `466de933` after exact `acd827d` checks passed (461 PostgreSQL cases,
+zero skips, lifecycle and 12 browser tests). The original `de28d4c` browser failure
+was reproduced as HTTP429 on the sixth same-peer login; test-session isolation fixed
+it while retaining UI login/security coverage and all production throttles.
+The [STK-043/059 saved-replay dashboard](STK-043-059-saved-replay-dashboard.md) adds
+bounded history discovery, exact reopening, side-by-side evidence, a cutoff chart
+marker and existing-worker financial batches. Paired AI metrics stay unavailable.
