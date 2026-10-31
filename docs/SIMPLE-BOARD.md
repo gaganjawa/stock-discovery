@@ -163,3 +163,10 @@ now connects optional fictional statements/facts, pinned provenance, combined
 abstention and subsequent technical baseline outcomes to the existing Replay UI.
 Independent research quality, real data and valid combined/AI performance remain
 BLOCKED; original evaluation artifacts and policy thresholds are unchanged.
+
+PR29 merged (`466de933`), exact `acd827d` checks passed: 461 PostgreSQL, lifecycle
+and 12 browser workflows. HTTP429 browser setup contention was reproduced/fixed
+without changing authentication or rate limits. STK-043/059 now integrates
+[saved historical research](STK-043-059-saved-replay-dashboard.md), source-authorized
+reopening and fictional multi-date/instrument batches into Dashboard and Replay.
+Coverage counts remain separate from eligible pairs (zero); AI performance unavailable.
