@@ -480,3 +480,5 @@ dl {
 .discovery .record-meta dd { margin:0; }
 
 .paper-stats {display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin:20px 0}.paper-stats article {padding:16px;background:#14232c;color:#e6edf3;border:1px solid #29414e;border-radius:10px}.paper-stats span,.paper-stats strong {display:block}.paper-stats strong {font-size:1.35rem;margin-top:8px}.paper-portfolio details {margin:18px 0;padding:14px;border:1px solid #29414e;border-radius:8px}.paper-portfolio summary {cursor:pointer;font-weight:600}.paper-portfolio code,.paper-portfolio small {overflow-wrap:anywhere}.paper-portfolio select {max-width:100%}.paper-portfolio .table-wrap {overflow-x:auto}
+
+.replay-evidence-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px}.replay-evidence-grid>div,.replay-evidence-grid>section{min-width:0;overflow-wrap:anywhere}@media(max-width:1000px){.replay-evidence-grid{grid-template-columns:minmax(0,1fr)}}

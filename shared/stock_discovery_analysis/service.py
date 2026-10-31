@@ -58,6 +58,54 @@ def read_frozen(conn,recommendation_id):
     return analysis
 
 
+def saved_analyses(conn,*,dataset=None,instrument=None,before=None,limit=20):
+    """Bounded metadata discovery; source content stays behind read_frozen.
+
+    Restricted rows expose only their opaque run reference and denial state.
+    Reopening a run does not reveal outcomes or create a new analysis.
+    """
+    if not 1<=limit<=50:raise ValueError('invalid_history_limit')
+    cursor=None
+    if before:
+        cursor=conn.execute('SELECT information_cutoff_at FROM research.decisions WHERE recommendation_id=%s',(before,)).fetchone()
+        if cursor is None:raise ValueError('unknown_history_cursor')
+    rows=conn.execute('''SELECT recommendation_id FROM research.decisions
+        WHERE (%s::text IS NULL OR payload->'versions'->>'dataset'=%s)
+          AND (%s::text IS NULL OR instrument_id=%s)
+          AND (%s::timestamptz IS NULL OR (information_cutoff_at,recommendation_id)<(%s,%s))
+        ORDER BY information_cutoff_at DESC,recommendation_id DESC LIMIT %s''',
+        (dataset,dataset,instrument,instrument,cursor[0] if cursor else None,cursor[0] if cursor else None,before,limit+1)).fetchall()
+    result=[];counts=dict(technical_only=0,unqualified_combined=0,restricted_or_unavailable=0)
+    with conn.transaction():
+        pending=[]
+        for rid, in rows[:limit]:
+            try:a=read_frozen(conn,rid)
+            except (PermissionError,ValueError,KeyError):
+                a=None
+            pending.append((rid,a))
+        # A later row may block on another source. Recheck validity after the
+        # complete acquired lock set; an earlier grant may have expired meanwhile.
+        for rid,a in pending:
+            if a is not None and 'historical_snapshot' in a:
+                from .historical_research import authorize_snapshot
+                try:authorize_snapshot(conn,a['historical_snapshot'])
+                except (PermissionError,ValueError,KeyError):a=None
+            if a is None:
+                result.append(dict(recommendation_id=rid,availability='restricted_or_unavailable'))
+                counts['restricted_or_unavailable']+=1;continue
+            r=a['recommendation'];full='historical_snapshot' in a
+            cohort='unqualified_combined' if full else 'technical_only';counts[cohort]+=1
+            recorded=conn.execute('SELECT 1 FROM research.trade_outcomes WHERE recommendation_id=%s LIMIT 1',(rid,)).fetchone() is not None
+            result.append(dict(recommendation_id=rid,availability='available',instrument_id=r['instrument']['instrument_id'],
+                cutoff_at=r['information_cutoff_at'],generated_at=r['generated_at'],dataset_version=r['versions']['dataset'],
+                action=r['action'],cohort=cohort,source_mode='synthetic',outcome_recorded=recorded,
+                snapshot_id=a['historical_snapshot']['snapshot_id'] if full else None))
+    from .historical_research import comparison
+    evaluation=comparison({'historical_snapshot':True} if counts['unqualified_combined'] else {},None)
+    evaluation.update(scope='returned_page',counts=counts)
+    return dict(runs=result,next_cursor=rows[limit-1][0] if len(rows)>limit else None,evaluation=evaluation)
+
+
 def reveal(conn,recommendation_id,evaluated_at=None):
     # Keep dependency locks through evaluation and append-only outcome storage.
     with conn.transaction():
