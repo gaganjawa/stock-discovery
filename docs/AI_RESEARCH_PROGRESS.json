@@ -1,17 +1,16 @@
 {
   "schema_version": 1,
   "updated_at": "2026-10-31",
-  "current_milestone": "M2 representative-source development benchmark; quality NOT PASSED",
-  "branch": "feat/stk-052-financial-span-evaluation",
+  "current_milestone": "M2 hybrid development positives recovered; human quality and negative model abstention blocked",
+  "branch": "feat/stk-052-hybrid-financial-selection",
   "worktree": "stk-074-grant-fences",
-  "last_successful_commit": "103f5ffb6c05ea80a516ecc37f5385b837307b68",
+  "last_successful_commit": "999a9cc8fec95d40a9786110d942648407054095",
   "pr": null,
   "completed_tests": {
-    "backend_worker": 740,
-    "span_and_existing_financial_postgres": 10,
-    "syntax_json_diff": "passed",
-    "provenance": "Fresh local runs this increment; counts overlap focused tests, not research-quality acceptance.",
-    "scripts": 13
+    "backend_worker_before_final_report_helper": 745,
+    "final_focused": 10,
+    "isolated_postgres": 7,
+    "full_exact_commit_ci": "pending"
   },
   "failed_tests": [
     {
@@ -27,9 +26,9 @@
     "Actual representative-source extraction quality not passed; human holdout unverified."
   ],
   "pending_changes": [
-    "M2 table-span harness, synthetic regressions, disclosed public-source benchmark results and checkpoint; not yet committed."
+    "Hybrid M2 development increment; prior evidence unchanged"
   ],
-  "next_action": "Review/deliver the span development harness through protected CI. M2 has not passed: diagnose model extraction and response-format failures on development cases within an explicit bounded resource plan; obtain independent human reference/holdout. Do not start M3\u2013M7 before M2 acceptance.",
+  "next_action": "Deliver hybrid selection increment through required CI/review. Human packet is ready at docs/research-quality/M2-hybrid-human-review.json. Correct negative model selections under separately bounded development protocol; VL structured-output compatibility unresolved. No M3\u2013M7 until independent human/holdout gate passes.",
   "milestones": [
     {
       "id": "M0",
@@ -91,7 +90,7 @@
       "id": "M2",
       "objective": "AI company research",
       "completion_criteria": "Cited structured company research with independent deterministic claim verification and preregistered quality evaluation.",
-      "status": "development_quality_not_passed",
+      "status": "hybrid_positive_development_only",
       "dependency_status": "M1 real-data acceptance externally blocked; synthetic integration authorized",
       "files_changed": [
         "shared/stock_discovery_analysis/factual_research.py",
@@ -107,11 +106,12 @@
       "tests": {
         "backend_worker": 740,
         "span_and_existing_financial_postgres": 10,
-        "syntax_json_diff": "pending final check",
-        "provenance": "Fresh local runs this increment; counts overlap focused tests, not research-quality acceptance."
+        "syntax_json_diff": "passed",
+        "provenance": "Fresh local runs this increment; counts overlap focused tests, not research-quality acceptance.",
+        "scripts": 13
       },
-      "commit_sha": "9eeb2cb072f89368280c6cf3983aec190f6816fd",
-      "pr_url": "https://github.com/gaganjawa/stock-discovery/pull/23",
+      "commit_sha": "999a9cc8fec95d40a9786110d942648407054095",
+      "pr_url": "https://github.com/gaganjawa/stock-discovery/pull/24",
       "blockers": [
         "Human-verified reference/independent holdout and quality approval remain missing; developer labels are provisional.",
         "General real filing layouts require verified source-span profiles; current extraction only accepts explicit rows.",
@@ -120,7 +120,7 @@
         "Representative-table model extraction returned zero verified cells; installed-model superiority not established.",
         "Current daily development inference reservations exhausted (200000); no reset/refund or additional calls."
       ],
-      "next_step": "Review/deliver the span development harness through protected CI. M2 has not passed: diagnose model extraction and response-format failures on development cases within an explicit bounded resource plan; obtain independent human reference/holdout. Do not start M3\u2013M7 before M2 acceptance.",
+      "next_step": "Deliver hybrid selection increment through required CI/review. Human packet is ready at docs/research-quality/M2-hybrid-human-review.json. Correct negative model selections under separately bounded development protocol; VL structured-output compatibility unresolved. No M3\u2013M7 until independent human/holdout gate passes.",
       "prior_pr21": {
         "number": 21,
         "url": "https://github.com/gaganjawa/stock-discovery/pull/21",
@@ -210,6 +210,25 @@
         "holdout_used": false,
         "report": "docs/research-quality/M2-span-actual-development.json",
         "analysis": "docs/research-quality/M2-span-results-analysis.json"
+      },
+      "prior_pr24": {
+        "number": 24,
+        "url": "https://github.com/gaganjawa/stock-discovery/pull/24",
+        "head_sha": "999a9cc8fec95d40a9786110d942648407054095",
+        "state": "merged",
+        "ci_run": "https://github.com/gaganjawa/stock-discovery/actions/runs/41221483717",
+        "ci_status": "all four checks passed",
+        "merge_sha": "e7523bb70cd7ce8766b0e4808f69748dc36d51d1"
+      },
+      "hybrid_results": {
+        "coder_positive": "2/2",
+        "coder_contract": "4/4",
+        "coder_model_negative_abstention": "0/2",
+        "vl_positive": "0/2",
+        "application_negative_abstention": "2/2 per model, distinct from model behavior",
+        "human_verified": false,
+        "total_preserved_reservations": 26,
+        "total_units": 520000
       }
     },
     {

@@ -1,0 +1,36 @@
+{
+  "version": "financial-cell-selection-1",
+  "prompt_hash": "5b343d6af3ce24e37a7ac1e029eba36a3c4ded2112a975f2a4482cf747c07579",
+  "models": [
+    "qwen2.5-coder:7b",
+    "qwen3-vl:8b"
+  ],
+  "cases": [
+    "annual-current",
+    "annual-prior",
+    "missing-period",
+    "conflict"
+  ],
+  "maximum_new_calls": 8,
+  "budget": {
+    "account": "M2-span-development",
+    "max_run_units": 20000,
+    "max_day_units": 360000,
+    "max_month_units": 2000000,
+    "max_output_units": 1800,
+    "max_seconds": 120,
+    "max_run_cost": "0",
+    "max_day_cost": "0",
+    "max_month_cost": "0"
+  },
+  "prior_reserved_units": 200000,
+  "additional_authorized_development_units": 160000,
+  "authorization": "Owner requested newly versioned bounded hybrid comparison; prior reservations reconstructed without refund.",
+  "context": 16384,
+  "temperature": 0,
+  "seed": 0,
+  "output_limit": 1800,
+  "human_verified": false,
+  "holdout_used": false,
+  "success_criterion": "2/2 supported selections and 2/2 valid abstentions per model; not human quality acceptance"
+}
