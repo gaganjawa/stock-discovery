@@ -156,3 +156,10 @@ owner instruction, independent non-actionable product work may continue despite 
 external gate. STK-052/054 now integrates [combined company research](STK-052-054-combined-research.md)
 and frozen synthetic replay context into the existing API/UI. Human financial quality,
 real qualification, combined historical evaluation and actionable promotion stay BLOCKED.
+
+1 November — PR28 merged (`db61f7c`) after exact `d63f784` CI and fresh focused review.
+STK-037/043/059 [full historical evidence replay](STK-037-043-historical-evidence.md)
+now connects optional fictional statements/facts, pinned provenance, combined
+abstention and subsequent technical baseline outcomes to the existing Replay UI.
+Independent research quality, real data and valid combined/AI performance remain
+BLOCKED; original evaluation artifacts and policy thresholds are unchanged.

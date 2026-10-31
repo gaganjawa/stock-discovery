@@ -1,11 +1,7 @@
-import {test,expect} from '@playwright/test'
+import {test,expect} from './fixtures/authenticated'
 
 test('real research never renders synthetic values and remains separate from forward paper',async({page})=>{
- const token=process.env.AUTH_TOKEN
- if(!token)throw new Error('Set the local test owner key')
  await page.goto('/#real-research')
- await page.getByLabel('Owner access key').fill(token)
- await page.getByRole('button',{name:'Sign in',exact:true}).click()
  await expect(page.getByRole('region',{name:'Real research',exact:true})).toBeVisible()
  await page.getByRole('link',{name:'Real research',exact:true}).click()
  const section=page.getByRole('region',{name:'Real research',exact:true})

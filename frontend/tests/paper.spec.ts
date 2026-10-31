@@ -1,13 +1,8 @@
-import {test,expect} from '@playwright/test'
-import {readFileSync,existsSync} from 'node:fs'
-const token=process.env.AUTH_TOKEN??(existsSync('../.env')?readFileSync('../.env','utf8').split('\n').find(x=>x.startsWith('AUTH_TOKEN='))?.slice(11):undefined)
+import {test,expect} from './fixtures/authenticated'
 
 test('fictional portfolio reservations, automatic outcomes, drill-down and forward admission block',async({page})=>{
  test.setTimeout(180000)
- if(!token)throw new Error('Set the local test owner key')
  await page.goto('/#dashboard')
- await page.getByLabel('Owner access key').fill(token)
- await page.getByRole('button',{name:'Sign in',exact:true}).click()
  await expect(page.getByRole('region',{name:'Paper portfolio and outcomes'})).toBeVisible()
  // Own immutable batch; no dependence on another browser test's execution order.
  const response=await page.request.post('/v1/discovery-runs',{headers:{'Idempotency-Key':crypto.randomUUID(),'Origin':new URL(page.url()).origin},data:{horizon:'swing'}})

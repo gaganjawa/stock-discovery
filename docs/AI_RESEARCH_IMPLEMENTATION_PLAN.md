@@ -93,3 +93,12 @@ existing technical and factual research to the company API/UI, and exposes expli
 financial-evidence gaps in existing synthetic freeze/reveal. It does not accept M2,
 promote recommendations, or claim combined historical performance. The external
 review worksheet is finalized; no unseen cases, labels or threshold approval exist.
+
+PR28 merged at `db61f7c` after exact `d63f784` unit/postgres/ui/checks passed,
+including 442 PostgreSQL tests and migration lifecycle. Fresh review found no P1/P2.
+The next [STK-037/043/059 vertical slice](STK-037-043-historical-evidence.md) freezes
+full fictional financial/technical evidence in existing immutable replay manifests,
+renders the known-at-cutoff evidence, and reveals the separate technical baseline
+outcome. AI attachment requires explicit contemporary completion evidence; none is
+invented for today's cached runs. Combined paired metrics remain unavailable and
+M1/M2 acceptance stays blocked. This advances product development, not promotion.

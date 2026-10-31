@@ -103,6 +103,13 @@ jobs:
       - name: Container diagnostics
         if: failure()
         run: docker compose logs --no-color --tail=100
+      - name: Preserve synthetic browser failure diagnostics
+        if: failure()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: synthetic-browser-failures
+          path: frontend/test-results
+          retention-days: 7
       - name: Stop disposable CI containers
         if: always()
         run: docker compose down --volumes --remove-orphans

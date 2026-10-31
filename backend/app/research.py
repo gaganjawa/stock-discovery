@@ -30,6 +30,8 @@ class Selection(BaseModel):
     dataset_version: str=Field(max_length=100)
     instrument_id: str=Field(max_length=80)
     date: str=Field(pattern=r'^\d{4}-\d{2}-\d{2}$')
+    include_financial: bool=False
+    historical_ai_run_id: str|None=Field(default=None,min_length=1,max_length=256)
 
 
 @router.post('/session')
@@ -95,10 +97,27 @@ def selection(body,conn):
 
 
 @router.post('/analysis',dependencies=[Depends(require_auth)])
-def analysis(body:Selection,conn=Depends(db)):
+def analysis(body:Selection,response:Response,conn=Depends(db)):
+    response.headers['Cache-Control']='no-store'
+    if body.historical_ai_run_id and not body.include_financial:
+        raise HTTPException(400,'A historical AI run requires financial evidence freezing')
     d,cutoff=selection(body,conn)
-    a=freeze(conn,d,body.instrument_id,cutoff,os.getenv('CODE_VERSION','local-unversioned'))
-    return {**a,'candles':chart(d.asof(body.instrument_id,cutoff)), 'research_context':replay_context(a)}
+    if body.include_financial:
+        from stock_discovery_analysis.historical_fixtures import seed
+        from stock_discovery_analysis.historical_research import freeze_full
+        try:
+            seed(conn,body.instrument_id)
+            a=freeze_full(conn,d,body.instrument_id,cutoff,os.getenv('CODE_VERSION','local-unversioned'),ai_run_id=body.historical_ai_run_id)
+        except (ValueError,PermissionError):raise HTTPException(403,'Historical financial evidence is unavailable or restricted') from None
+    else:a=freeze(conn,d,body.instrument_id,cutoff,os.getenv('CODE_VERSION','local-unversioned'))
+    return {**a,'candles':chart(d.asof(body.instrument_id,cutoff)), 'research_context':research_context(a)}
+
+
+def research_context(a):
+    if 'historical_snapshot' in a:
+        from stock_discovery_analysis.historical_research import context
+        return context(a)
+    return replay_context(a)
 
 
 def chart(bars):
@@ -106,19 +125,29 @@ def chart(bars):
 
 
 @router.get('/analysis/{rid}',dependencies=[Depends(require_auth)])
-def frozen(rid:str,conn=Depends(db)):
+def frozen(rid:str,response:Response,conn=Depends(db)):
+    response.headers['Cache-Control']='no-store'
     try:
         a=read_frozen(conn,rid)
-        return {**a,'research_context':replay_context(a)}
+        return {**a,'research_context':research_context(a)}
     except KeyError: raise HTTPException(404,'Recommendation not found')
+    except (ValueError,PermissionError):raise HTTPException(403,'Historical evidence is unavailable or restricted') from None
 
 
 @router.post('/analysis/{rid}/reveal',dependencies=[Depends(require_auth)])
-def reveal_prices(rid:str,conn=Depends(db)):
+def reveal_prices(rid:str,response:Response,conn=Depends(db)):
+    response.headers['Cache-Control']='no-store'
     try:
         a=read_frozen(conn,rid); out=reveal(conn,rid)
+        if 'historical_snapshot' in a:
+            from stock_discovery_analysis.historical_research import comparison
+            out={**out,'comparison':comparison(a,reveal(conn,a['baseline_recommendation_id']))}
+        else:
+            from stock_discovery_analysis.historical_research import comparison
+            out={**out,'comparison':comparison(a,None)}
         d=load_dataset(conn,a['recommendation']['versions']['dataset'])
     except KeyError: raise HTTPException(404,'Recommendation not found')
+    except (ValueError,PermissionError):raise HTTPException(403,'Historical evidence is unavailable or restricted') from None
     return {**out,'candles':chart(d.asof(a['recommendation']['instrument']['instrument_id'],datetime.now(timezone.utc)))}
 
 
@@ -132,19 +161,25 @@ def explanation(rid:str,conn=Depends(db)):
 
 @router.post('/scan',dependencies=[Depends(require_auth)])
 def scan(body:Selection,conn=Depends(db)):
+    if body.include_financial or body.historical_ai_run_id:
+        raise HTTPException(400,'Financial evidence freezing requires individual analysis')
     d,cutoff=selection(body,conn)
     return {'job_id':enqueue(conn,'scan',{**execution_versions(os.getenv('CODE_VERSION','local-unversioned')),'dataset_version':d.version,'cutoff':cutoff.isoformat()})}
 
 
 @router.post('/replay-job',dependencies=[Depends(require_auth)])
 def replay_job(body:Selection,conn=Depends(db)):
+    if body.include_financial or body.historical_ai_run_id:
+        raise HTTPException(400,'Financial evidence freezing requires individual analysis')
     d,cutoff=selection(body,conn)
     return {'job_id':enqueue(conn,'replay',{**execution_versions(os.getenv('CODE_VERSION','local-unversioned')),'dataset_version':d.version,'instrument_id':body.instrument_id,'cutoff':cutoff.isoformat()})}
 
 
 @router.get('/scorecard',dependencies=[Depends(require_auth)])
 def scores(conn=Depends(db),cohort:str|None=None):
-    try: return scorecard(conn,cohort)
+    try:
+        with conn.transaction():return scorecard(conn,cohort)
+    except PermissionError:raise HTTPException(403,'Historical evidence is unavailable or restricted') from None
     except ValueError as exc: raise HTTPException(400,str(exc))
 
 
@@ -170,6 +205,17 @@ def experiments(body:Batch,conn=Depends(db)):
 
 @router.get('/experiments/export',dependencies=[Depends(require_auth)])
 def export(conn=Depends(db)):
+    # Full snapshots contain copied source content. Existing grant restrictions
+    # must apply to audit export as well as the individual replay reader.
+    try:
+        with conn.transaction():
+            for rid, in conn.execute("SELECT recommendation_id FROM research.decisions"):
+                read_frozen(conn,rid)
+            return export_records(conn)
+    except (ValueError,PermissionError):raise HTTPException(403,'Historical evidence is unavailable or restricted') from None
+
+
+def export_records(conn):
     return {'label':'Synthetic research audit export',
             'jobs':[job_record(r) for r in conn.execute('SELECT job_id,kind,status,attempts,error_code,payload,result FROM research.jobs ORDER BY created_at,job_id')],
             'decisions':[r[0] for r in conn.execute('SELECT payload FROM research.decisions')],
