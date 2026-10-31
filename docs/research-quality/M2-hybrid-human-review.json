@@ -1,0 +1,296 @@
+{
+  "kind": "DEVELOPMENT human review packet, NOT holdout",
+  "source": {
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1067491/000106749125000010/exv99w08.htm",
+    "capture_method": "Public web-tool rendered excerpt; selected noncontiguous scope/title context and table, whitespace normalized.",
+    "source_lines": [
+      "4",
+      "21",
+      "3016-3023"
+    ],
+    "captured_at": "2026-10-31T16:23:37Z",
+    "original_document_sha256": null,
+    "original_public_availability_at": null,
+    "raw_local_download": "HTTP403; stopped; no retries or access-control workaround",
+    "rights_reference": "https://www.sec.gov/about/webmaster-frequently-asked-questions",
+    "human_verified": false,
+    "production_grant_activated": false,
+    "profile": {
+      "layout": "pipe-two-groups-two-years-1",
+      "text_hash": "2a6b3a9b36c3a64aacda7410994da56a6b4e6b7719746c998ed1203f766c1319",
+      "headers": [
+        [
+          "Particulars",
+          "Three months ended March 31,",
+          "Year ended March 31,"
+        ],
+        [
+          "",
+          "2025",
+          "2024",
+          "2025",
+          "2024"
+        ]
+      ],
+      "context_markers": [
+        "IFRS INR Earning Release",
+        "interim consolidated financial statements",
+        "crore"
+      ],
+      "unit": "INR_crore",
+      "scope": "consolidated",
+      "evidence_id": "SEC-INFY-2025-REVENUE-EXCERPT"
+    }
+  },
+  "captured_excerpt": "IFRS INR Earning Release\ninterim consolidated financial statements\nRevenues for the three months and year ended March 31, 2025 and March 31, 2024 is as follows:\n(In [Image] crore)\nParticulars | Three months ended March 31, | Year ended March 31,\n | 2025 | 2024 | 2025 | 2024\nRevenue from software services | 38,999 | 36,064 | 155,395 | 145,285\nRevenue from products and platforms | 1,926 | 1,859 | 7,595 | 8,385\nTotal revenue from operations | 40,925 | 37,923 | 162,990 | 153,670\n",
+  "reviewer": null,
+  "reviewed_at": null,
+  "human_verified": false,
+  "instructions": [
+    "Independently open the official source URL and compare the cited source lines. The captured excerpt is normalized, not original HTML.",
+    "Verify company/entity, consolidated scope, INR crore units, annual versus quarter columns, values and exact row quotes. Record disagreements.",
+    "Missing 2027 and duplicated/conflicting row are negative development cases; the latter is a deliberate synthetic mutation.",
+    "Review model selections and application denials independently; do not equate grammar-valid output with a supported claim.",
+    "Do not use these debugging cases as held-out evaluation. Supply separate unseen human-verified cases for acceptance."
+  ],
+  "cases": [
+    {
+      "case_id": "annual-current",
+      "source_kind": "captured_public_excerpt",
+      "source_text": "IFRS INR Earning Release\ninterim consolidated financial statements\nRevenues for the three months and year ended March 31, 2025 and March 31, 2024 is as follows:\n(In [Image] crore)\nParticulars | Three months ended March 31, | Year ended March 31,\n | 2025 | 2024 | 2025 | 2024\nRevenue from software services | 38,999 | 36,064 | 155,395 | 145,285\nRevenue from products and platforms | 1,926 | 1,859 | 7,595 | 8,385\nTotal revenue from operations | 40,925 | 37,923 | 162,990 | 153,670\n",
+      "developer_expected": {
+        "row_label": "Total revenue from operations",
+        "period": "Year ended March 31, 2025",
+        "value": "162990",
+        "unit": "INR_crore",
+        "scope": "consolidated",
+        "evidence_id": "SEC-INFY-2025-REVENUE-EXCERPT",
+        "source_hash": "2a6b3a9b36c3a64aacda7410994da56a6b4e6b7719746c998ed1203f766c1319",
+        "locator": "row:Total revenue from operations/column:Year ended March 31, 2025",
+        "quote": "Total revenue from operations | 40,925 | 37,923 | 162,990 | 153,670"
+      },
+      "human_expected": null,
+      "review_decision": null,
+      "review_notes": null,
+      "outputs": [
+        {
+          "model": {
+            "id": "qwen2.5-coder:7b",
+            "version": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+            "content_hash": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364"
+          },
+          "raw_model_output": "{\"cell_id\":\"C03\"}",
+          "selection_verified": true,
+          "contract_valid": true,
+          "error": null,
+          "report": {
+            "status": "VERIFIED_DEVELOPMENT_CELL",
+            "findings": [
+              {
+                "status": "extracted",
+                "value": "162990",
+                "unit": "INR_crore",
+                "scope": "consolidated",
+                "period": "Year ended March 31, 2025",
+                "evidence_id": "SEC-INFY-2025-REVENUE-EXCERPT",
+                "quote": "Total revenue from operations | 40,925 | 37,923 | 162,990 | 153,670"
+              }
+            ],
+            "text": "Consolidated total revenue from operations: 162990 INR_crore; Year ended March 31, 2025.",
+            "uncertainties": [
+              "Developer-pinned source profile; independent human review and original-document/PIT qualification pending."
+            ],
+            "actionable": false
+          }
+        },
+        {
+          "model": {
+            "id": "qwen3-vl:8b",
+            "version": "9cf69da2b16d097f7def535917c4b55a95d6c7ee5700eb69ab86b01b3cfca487",
+            "content_hash": "9cf69da2b16d097f7def535917c4b55a95d6c7ee5700eb69ab86b01b3cfca487"
+          },
+          "raw_model_output": null,
+          "selection_verified": false,
+          "contract_valid": false,
+          "error": "JSONDecodeError",
+          "report": {
+            "status": "INSUFFICIENT_EVIDENCE",
+            "findings": [],
+            "uncertainties": [
+              "Model selection was not verified."
+            ],
+            "actionable": false
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "annual-prior",
+      "source_kind": "captured_public_excerpt",
+      "source_text": "IFRS INR Earning Release\ninterim consolidated financial statements\nRevenues for the three months and year ended March 31, 2025 and March 31, 2024 is as follows:\n(In [Image] crore)\nParticulars | Three months ended March 31, | Year ended March 31,\n | 2025 | 2024 | 2025 | 2024\nRevenue from software services | 38,999 | 36,064 | 155,395 | 145,285\nRevenue from products and platforms | 1,926 | 1,859 | 7,595 | 8,385\nTotal revenue from operations | 40,925 | 37,923 | 162,990 | 153,670\n",
+      "developer_expected": {
+        "row_label": "Total revenue from operations",
+        "period": "Year ended March 31, 2024",
+        "value": "153670",
+        "unit": "INR_crore",
+        "scope": "consolidated",
+        "evidence_id": "SEC-INFY-2025-REVENUE-EXCERPT",
+        "source_hash": "2a6b3a9b36c3a64aacda7410994da56a6b4e6b7719746c998ed1203f766c1319",
+        "locator": "row:Total revenue from operations/column:Year ended March 31, 2024",
+        "quote": "Total revenue from operations | 40,925 | 37,923 | 162,990 | 153,670"
+      },
+      "human_expected": null,
+      "review_decision": null,
+      "review_notes": null,
+      "outputs": [
+        {
+          "model": {
+            "id": "qwen2.5-coder:7b",
+            "version": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+            "content_hash": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364"
+          },
+          "raw_model_output": "{\"cell_id\":\"C10\"}",
+          "selection_verified": true,
+          "contract_valid": true,
+          "error": null,
+          "report": {
+            "status": "VERIFIED_DEVELOPMENT_CELL",
+            "findings": [
+              {
+                "status": "extracted",
+                "value": "153670",
+                "unit": "INR_crore",
+                "scope": "consolidated",
+                "period": "Year ended March 31, 2024",
+                "evidence_id": "SEC-INFY-2025-REVENUE-EXCERPT",
+                "quote": "Total revenue from operations | 40,925 | 37,923 | 162,990 | 153,670"
+              }
+            ],
+            "text": "Consolidated total revenue from operations: 153670 INR_crore; Year ended March 31, 2024.",
+            "uncertainties": [
+              "Developer-pinned source profile; independent human review and original-document/PIT qualification pending."
+            ],
+            "actionable": false
+          }
+        },
+        {
+          "model": {
+            "id": "qwen3-vl:8b",
+            "version": "9cf69da2b16d097f7def535917c4b55a95d6c7ee5700eb69ab86b01b3cfca487",
+            "content_hash": "9cf69da2b16d097f7def535917c4b55a95d6c7ee5700eb69ab86b01b3cfca487"
+          },
+          "raw_model_output": null,
+          "selection_verified": false,
+          "contract_valid": false,
+          "error": "JSONDecodeError",
+          "report": {
+            "status": "INSUFFICIENT_EVIDENCE",
+            "findings": [],
+            "uncertainties": [
+              "Model selection was not verified."
+            ],
+            "actionable": false
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "missing-period",
+      "source_kind": "captured_public_excerpt",
+      "source_text": "IFRS INR Earning Release\ninterim consolidated financial statements\nRevenues for the three months and year ended March 31, 2025 and March 31, 2024 is as follows:\n(In [Image] crore)\nParticulars | Three months ended March 31, | Year ended March 31,\n | 2025 | 2024 | 2025 | 2024\nRevenue from software services | 38,999 | 36,064 | 155,395 | 145,285\nRevenue from products and platforms | 1,926 | 1,859 | 7,595 | 8,385\nTotal revenue from operations | 40,925 | 37,923 | 162,990 | 153,670\n",
+      "developer_expected": null,
+      "human_expected": null,
+      "review_decision": null,
+      "review_notes": null,
+      "outputs": [
+        {
+          "model": {
+            "id": "qwen2.5-coder:7b",
+            "version": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+            "content_hash": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364"
+          },
+          "raw_model_output": "{\"cell_id\":\"C03\"}",
+          "selection_verified": false,
+          "contract_valid": true,
+          "error": "ValueError",
+          "report": {
+            "status": "INSUFFICIENT_EVIDENCE",
+            "findings": [],
+            "uncertainties": [
+              "Model selection was not verified."
+            ],
+            "actionable": false
+          }
+        },
+        {
+          "model": {
+            "id": "qwen3-vl:8b",
+            "version": "9cf69da2b16d097f7def535917c4b55a95d6c7ee5700eb69ab86b01b3cfca487",
+            "content_hash": "9cf69da2b16d097f7def535917c4b55a95d6c7ee5700eb69ab86b01b3cfca487"
+          },
+          "raw_model_output": null,
+          "selection_verified": false,
+          "contract_valid": false,
+          "error": "JSONDecodeError",
+          "report": {
+            "status": "INSUFFICIENT_EVIDENCE",
+            "findings": [],
+            "uncertainties": [
+              "Model selection was not verified."
+            ],
+            "actionable": false
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "conflict",
+      "source_kind": "adversarial_mutation",
+      "source_text": "IFRS INR Earning Release\ninterim consolidated financial statements\nRevenues for the three months and year ended March 31, 2025 and March 31, 2024 is as follows:\n(In [Image] crore)\nParticulars | Three months ended March 31, | Year ended March 31,\n | 2025 | 2024 | 2025 | 2024\nRevenue from software services | 38,999 | 36,064 | 155,395 | 145,285\nRevenue from products and platforms | 1,926 | 1,859 | 7,595 | 8,385\nTotal revenue from operations | 40,925 | 37,923 | 162,990 | 153,670\nTotal revenue from operations | 1 | 2 | 3 | 4\n",
+      "developer_expected": null,
+      "human_expected": null,
+      "review_decision": null,
+      "review_notes": null,
+      "outputs": [
+        {
+          "model": {
+            "id": "qwen2.5-coder:7b",
+            "version": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+            "content_hash": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364"
+          },
+          "raw_model_output": "{\"cell_id\":\"C06\"}",
+          "selection_verified": false,
+          "contract_valid": true,
+          "error": "ValueError",
+          "report": {
+            "status": "INSUFFICIENT_EVIDENCE",
+            "findings": [],
+            "uncertainties": [
+              "Model selection was not verified."
+            ],
+            "actionable": false
+          }
+        },
+        {
+          "model": {
+            "id": "qwen3-vl:8b",
+            "version": "9cf69da2b16d097f7def535917c4b55a95d6c7ee5700eb69ab86b01b3cfca487",
+            "content_hash": "9cf69da2b16d097f7def535917c4b55a95d6c7ee5700eb69ab86b01b3cfca487"
+          },
+          "raw_model_output": null,
+          "selection_verified": false,
+          "contract_valid": false,
+          "error": "JSONDecodeError",
+          "report": {
+            "status": "INSUFFICIENT_EVIDENCE",
+            "findings": [],
+            "uncertainties": [
+              "Model selection was not verified."
+            ],
+            "actionable": false
+          }
+        }
+      ]
+    }
+  ]
+}

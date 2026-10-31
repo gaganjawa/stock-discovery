@@ -143,3 +143,5 @@ NOT PASSED; independent human holdout UNAVAILABLE. Current 200000-unit daily
 reservation cap exhausted, USD0 API cost. See [results and boundaries](STK-052-financial-span-evaluation.md).
 Original-file/PIT/source qualification and human review remain blocked;
 M3–M7 must wait for M2 acceptance. Publication/admission/trading remain BLOCKED.
+
+M2 hybrid development: PR24 merged (`e7523bb`), exact CI passed. [Hybrid evaluation](STK-052-hybrid-financial-selection.md) recovered coder positive cells 2/2 with contract validity 4/4; model negative abstention remains 0/2, VL extraction 0/2. Application rejects unsupported selections. Independent human review packet prepared, labels null. M2 PARTIAL; no advance to combined recommendations/replay. Original results preserved.
