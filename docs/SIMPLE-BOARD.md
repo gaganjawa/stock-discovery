@@ -149,3 +149,10 @@ M2 hybrid development: PR24 merged (`e7523bb`), exact CI passed. [Hybrid evaluat
 M2: PR25 merged (`2607e09`) after exact-commit CI/review. [Explicit abstention experiments](STK-052-financial-abstention.md) improve coding-model negatives 0/2 → 2/2 but regress positives 2/2 → 1/2 in both v3/v4. All failures and prior runs preserved; no further VL inference. Independent reviewer/holdout absent: M2 gate BLOCKED. Reviewer worksheet prepared; combined recommendations/replay remain gated.
 
 M2: PR26 merged (`54b27de`), all required checks passed including 429 PostgreSQL cases and lifecycle. [Exact selection](STK-052-exact-financial-selection.md) replaces unnecessary model choice for unambiguous row/period/scope: 2/2 positives, 2/2 deterministic abstentions, zero inference. Human source review and unseen 50-case quality gate remain BLOCKED; 50 blank allocation slots contain no labels/evaluation evidence. No milestone promotion.
+
+PR27 merged (`ceacc432`) after required exact-commit checks and focused review,
+including 431 PostgreSQL cases with zero skips and migration lifecycle. Per the latest
+owner instruction, independent non-actionable product work may continue despite M2's
+external gate. STK-052/054 now integrates [combined company research](STK-052-054-combined-research.md)
+and frozen synthetic replay context into the existing API/UI. Human financial quality,
+real qualification, combined historical evaluation and actionable promotion stay BLOCKED.

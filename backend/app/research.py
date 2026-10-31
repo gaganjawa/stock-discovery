@@ -11,6 +11,7 @@ from stock_discovery_analysis.dataset import demo_dataset,canonical
 from stock_discovery_analysis.service import load_dataset,freeze,read_frozen,reveal,scorecard,json_value
 from stock_discovery_analysis.jobs import enqueue,execution_versions
 from stock_discovery_analysis.strategy import STRATEGY_VERSION
+from stock_discovery_analysis.combined_research import replay_context
 
 router=APIRouter(prefix='/api/v1')
 
@@ -97,7 +98,7 @@ def selection(body,conn):
 def analysis(body:Selection,conn=Depends(db)):
     d,cutoff=selection(body,conn)
     a=freeze(conn,d,body.instrument_id,cutoff,os.getenv('CODE_VERSION','local-unversioned'))
-    return {**a,'candles':chart(d.asof(body.instrument_id,cutoff))}
+    return {**a,'candles':chart(d.asof(body.instrument_id,cutoff)), 'research_context':replay_context(a)}
 
 
 def chart(bars):
@@ -106,7 +107,9 @@ def chart(bars):
 
 @router.get('/analysis/{rid}',dependencies=[Depends(require_auth)])
 def frozen(rid:str,conn=Depends(db)):
-    try: return read_frozen(conn,rid)
+    try:
+        a=read_frozen(conn,rid)
+        return {**a,'research_context':replay_context(a)}
     except KeyError: raise HTTPException(404,'Recommendation not found')
 
 

@@ -1,0 +1,35 @@
+import {test,expect} from '@playwright/test'
+// Scripted UI fixtures only; no real company or financial-quality evidence.
+for(const width of [1280,390])test('combined research separates findings and clears restricted evidence '+width,async({page})=>{
+ await page.setViewportSize({width,height:900})
+ await page.route('**/api/v1/session',r=>r.fulfill({json:{authenticated:true}}))
+ await page.route('**/api/v1/dashboard',r=>r.fulfill({json:{datasets:[],jobs:[]}}))
+ await page.route('**/v1/real-research/status',r=>r.fulfill({json:{blockers:[],publication_blockers:[],providers:[],models:{note:'Synthetic UI fixture'},scheduler:{prices:'blocked'},forward_paper:{reason:'blocked'},limitations:[]}}))
+ await page.route('**/v1/real-research/scan',r=>r.fulfill({status:503,json:{detail:'not configured'}}))
+ await page.route('**/v1/real-research/companies',r=>r.fulfill({json:{listing_ids:['NSE:TEST']}}))
+ let denied=false;let calls=0
+ await page.route('**/v1/real-research/companies/NSE%3ATEST*',r=>{
+  if(new URL(r.request().url()).searchParams.get('analysis')!=='combined')return r.fulfill({json:{symbol:'TEST',isin:'TEST',cutoff_at:'2026-10-31T10:00:00Z',price_series:[],financial_facts:[],documents:[],events:[],quantitative:{},limitations:[],analysis_history:[]}})
+  calls++
+  if(denied)return r.fulfill({status:403,json:{detail:'PRIVATE SOURCE ERROR'}})
+  return r.fulfill({json:{report_id:'SYNTHETIC-REPORT',mode:'real_research',status:'INSUFFICIENT_EVIDENCE',analysis_cutoff_at:'2026-10-31T10:00:00Z',conclusion:'Combined qualification blocked.',gaps:['independent_financial_quality'],acceptance_gates:{independent_financial_quality:'BLOCKED'},technical:{condition:'conditions_met',indicators:{atr14:'2'},reasons:['technical_conditions_met']},financial:{run_id:'SCRIPTED-TEST',cutoff_at:'2026-10-31T10:00:00Z',model:{id:'scripted-test',version:'1',content_hash:'test-digest'},prompt_hash:'test-prompt',validator_version:'test',trends:[],findings:[{text:'Synthetic earnings = 10 INR',citations:[{evidence_id:'TEST-FACT',revision_id:'TEST-REVISION',source_url:'https://example.invalid/test',locator:'test:earnings'}]}],interpretations:[],source_excerpts:[{text:'Synthetic announcement quotation',citations:[]}],uncertainties:['Cash-flow coverage unknown'],conflicts:[],pending_interpretation_count:1,excerpt_warning:'Quotations do not verify event truth.'},replay:{status:'not_frozen',future_outcomes:'not_requested',limitation:'Not a prospective prediction.'}}})
+ })
+ await page.goto('/#real-research')
+ const panel=page.getByRole('region',{name:'Combined company research',exact:true})
+ await expect(panel).toBeVisible();expect(calls).toBe(0)
+ await panel.getByRole('button',{name:'Compare stored research'}).click()
+ await expect(panel).toContainText('Synthetic earnings = 10 INR')
+ await expect(panel).toContainText('conditions met')
+ await expect(panel).toContainText('INSUFFICIENT EVIDENCE')
+ await expect(panel).toContainText('not model accuracy measurements')
+ await expect(panel).toContainText('Quotations do not verify event truth')
+ await expect(panel).toContainText('No entry, stop, target or quantity')
+ await panel.getByLabel('Combined cutoff (UTC, optional)').fill('2026-10-30T10:00:00Z')
+ await expect(panel).not.toContainText('TEST-REVISION')
+ await expect(panel).not.toContainText('Synthetic earnings')
+ denied=true;await panel.getByRole('button',{name:'Compare stored research'}).click()
+ await expect(panel.getByRole('alert')).toHaveText('Source permission denied.')
+ await expect(page.getByText('PRIVATE SOURCE ERROR')).toHaveCount(0)
+ await expect(panel).not.toContainText('Synthetic earnings')
+ expect(calls).toBe(2)
+})

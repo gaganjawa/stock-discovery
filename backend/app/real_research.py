@@ -76,12 +76,16 @@ def companies():
 
 from .research import db
 @router.get('/companies/{listing}')
-def company_detail(listing:str,response:Response,conn=Depends(db),analysis:Literal['company','swing']='company',cutoff_at:Timestamp|None=None):
+def company_detail(listing:str,response:Response,conn=Depends(db),analysis:Literal['company','swing','combined']='company',cutoff_at:Timestamp|None=None):
     from fastapi import HTTPException
     from stock_discovery_analysis.real_views import company
     config=view_config()
     if listing not in config.listing_ids:raise HTTPException(404,'Company is not configured')
     try:
+        if analysis=='combined':
+            from stock_discovery_analysis.combined_research import research
+            response.headers['Cache-Control']='no-store'
+            return research(conn,config,listing,cutoff_at=cutoff_at)
         if analysis=='swing':
             from stock_discovery_analysis.swing_research import research
             response.headers['Cache-Control']='no-store'
