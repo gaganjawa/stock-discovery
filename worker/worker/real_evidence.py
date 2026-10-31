@@ -24,6 +24,7 @@ class EvidenceConfig(Strict):
     judge_model: Text | None = None
     mode: Literal['rag','agent'] = 'rag'
     factual_report: bool = False
+    extraction_only: bool = False
     max_model_bytes: Annotated[int,Field(gt=0,le=10_000_000_000)] = 6_000_000_000
     retrieval: RetrievalPolicy = RetrievalPolicy(max_chunks=2,max_documents=3,max_bytes=12000)
     budget: Budget
@@ -33,6 +34,7 @@ class EvidenceConfig(Strict):
 def run(conn, config, *, clock=now, adapter_factory=OfficialDocument, model_factory=Ollama):
     config=EvidenceConfig.model_validate(config)
     check(conn.autocommit,'dedicated_autocommit_connection_required')
+    check(not config.extraction_only or config.factual_report and config.mode=='rag','extraction requires fixed factual research')
     check(all(q.mode=='live_paper' for q in config.queries),'real_queries_only')
     if config.mode=='agent':check(config.judge_model and config.judge_model!=config.model,'independent_judge_required')
     access=source_access(config.sources,clock)
@@ -67,7 +69,7 @@ def run(conn, config, *, clock=now, adapter_factory=OfficialDocument, model_fact
                     budget=config.budget,provider=provider,judge=judge,embeddings=embeddings)
             else:
                 result=run_research(conn,run_id=key,query=query,policy=config.retrieval,access=access,
-                    budget=config.budget,provider=provider,embeddings=embeddings,factual_report=config.factual_report)
+                    budget=config.budget,provider=provider,embeddings=embeddings,factual_report=config.factual_report,extraction_only=config.extraction_only)
                 if config.factual_report and judge and result.get('factual_report',{}).get('pending_interpretations'):
                     parent_key=key;key=key+'-REVIEW'
                     result=review_factual_run(conn,parent_run_id=parent_key,run_id=key,access=access,budget=config.budget,judge=judge)

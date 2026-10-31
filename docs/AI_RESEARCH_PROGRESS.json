@@ -1,22 +1,28 @@
 {
   "schema_version": 1,
   "updated_at": "2026-10-31",
-  "current_milestone": "M2 factual source-excerpt increment; real research quality remains partial",
-  "branch": "feat/stk-052-factual-source-excerpts",
+  "current_milestone": "M2 structured financial extraction and human-review preparation",
+  "branch": "feat/stk-052-verified-financial-extraction",
   "worktree": "stk-074-grant-fences",
-  "last_successful_commit": "386ff5edc133b56138ee118fc2b471daf686d736",
+  "last_successful_commit": "831feb0a1a1c16bcde37597149c4588913df600d",
   "pr": {
     "number": 21,
     "url": "https://github.com/gaganjawa/stock-discovery/pull/21",
-    "head_sha": "386ff5edc133b56138ee118fc2b471daf686d736",
-    "state": "draft",
-    "ci_run": "https://github.com/gaganjawa/stock-discovery/actions/runs/41214564197",
+    "original_requested_sha": "386ff5edc133b56138ee118fc2b471daf686d736",
+    "original_ci": "cancelled on correction push; not PASS",
+    "head_sha": "8b429cd44835804dcd4c7eabde83c2b381538772",
+    "state": "merged",
+    "merge_sha": "831feb0a1a1c16bcde37597149c4588913df600d",
+    "ci_run": "https://github.com/gaganjawa/stock-discovery/actions/runs/41215029318",
     "ci_status": {
-      "unit": "running",
-      "postgres": "running",
-      "ui": "running",
-      "checks": "pending"
-    }
+      "unit": "passed",
+      "postgres": "passed",
+      "ui": "passed",
+      "checks": "passed"
+    },
+    "postgres": 417,
+    "zero_skips": true,
+    "migration_lifecycle": "passed in GitHub CI"
   },
   "completed_tests": {
     "backend_worker": 705,
@@ -34,7 +40,7 @@
       "test": "test_expiry_during_fence_lock_wait_rejects_work[capture]",
       "run": "full local PostgreSQL",
       "cause": "QueryCanceled at existing 12-second lock-wait statement timeout; no grant-fence changes",
-      "follow_up": "All three variants passed unchanged in isolation; full gate/lifecycle not yet successful."
+      "follow_up": "Cause of historical local 12-second timeout remains unresolved; never classified flaky. Deterministic blocked-capture timeout probe verifies rollback/denial. Corrected PR21 CI passed all 417 PostgreSQL cases and lifecycle checks."
     }
   ],
   "known_blockers": [
@@ -42,13 +48,19 @@
     "Human research-quality calibration and prospective policy approval remain unapproved."
   ],
   "pending_changes": [
+    "shared/stock_discovery_analysis/financial_claims.py",
     "shared/stock_discovery_analysis/factual_research.py",
-    "backend/tests/test_factual_research.py",
-    "backend/tests/integration/test_grant_fences.py",
-    "docs/STK-052-source-excerpts.md",
-    "docs/AI_RESEARCH_PROGRESS.json"
+    "shared/stock_discovery_analysis/rag_research.py",
+    "worker/worker/real_evidence.py",
+    "backend/tests/test_financial_claims.py",
+    "backend/tests/integration/test_real_evidence.py",
+    "docs/STK-052-financial-claim-extraction.md",
+    "docs/research-quality/",
+    "docs/AI_RESEARCH_PROGRESS.json",
+    "docs/AI_RESEARCH_IMPLEMENTATION_PLAN.md",
+    "docs/SIMPLE-BOARD.md"
   ],
-  "next_action": "Push citation P2 fix to PR21 and verify new exact-commit mandatory CI; preserve original 386ff5e CI result separately. Then implement LLM proposed financial claims independently checked against deterministic filing extraction, and prepare an UNVERIFIED human review packet.",
+  "next_action": "Deliver structured extraction increment through draft PR/mandatory CI. Human-review packet and fixed proposed protocol are in docs/research-quality; do not score unverified labels.",
   "milestones": [
     {
       "id": "M0",
@@ -110,7 +122,7 @@
       "id": "M2",
       "objective": "AI company research",
       "completion_criteria": "Cited structured company research with independent deterministic claim verification and preregistered quality evaluation.",
-      "status": "citation_p2_corrected_ci_pending",
+      "status": "financial_extraction_increment_reviewed_ci_pending",
       "dependency_status": "M1 real-data acceptance externally blocked; synthetic integration authorized",
       "files_changed": [
         "shared/stock_discovery_analysis/factual_research.py",
@@ -124,38 +136,42 @@
         "docs/AI_RESEARCH_IMPLEMENTATION_PLAN.md"
       ],
       "tests": {
-        "backend_worker": 712,
-        "fixed_rag_postgres": 25,
-        "retrieval_orchestration_read_fences": 37,
-        "synthetic_browser": 2,
+        "backend_worker": 729,
+        "focused_financial_factual_filing": 64,
+        "affected_postgres": 64,
+        "final_cache_rights_postgres_rerun": 3,
         "frontend_build": "passed",
-        "full_postgres": {
-          "passed": 415,
-          "failed": 1,
-          "skipped": 0
-        },
-        "isolated_expiry_lock_rerun": {
-          "passed": 3,
-          "deselected": 57
-        },
-        "scripts": 13,
-        "contract_validators": 2,
-        "review_followup": {
-          "unit": 714,
-          "focused": 67,
-          "grant_rag_postgres": 86,
-          "citation_before_fix": 2,
-          "citation_after_fix": "passed",
-          "timeout_cause": "unresolved; deterministic timeout denial/rollback verified"
-        }
+        "syntax_diff": "passed",
+        "quality_metrics": "UNAVAILABLE: no human verified reference or actual LLM run"
       },
       "commit_sha": "386ff5edc133b56138ee118fc2b471daf686d736",
       "pr_url": "https://github.com/gaganjawa/stock-discovery/pull/21",
       "blockers": [
-        "Full PostgreSQL run hit unchanged expiry-lock statement timeout; exact three cases passed unchanged in isolation. Required exact-commit CI/lifecycle must pass.",
-        "Human-reviewed reference labels, preregistered quality thresholds and real permitted evidence remain missing."
+        "Reference packet requires independent human labels and approval; final holdout must be independently supplied and untouched.",
+        "T9 model folder unavailable and local Ollama connection refused; no actual inference executed.",
+        "Real filing layout support limited to explicit rows; ordinary tables/PDFs require verified span profiles.",
+        "M1 permitted raw data, complete financial/event corpus and original historical availability remain blocked."
       ],
-      "next_step": "Commit reviewed excerpt increment, open draft PR, verify exact-commit CI. Do not merge before all mandatory checks pass."
+      "next_step": "Deliver structured extraction increment through draft PR/mandatory CI. Human-review packet and fixed proposed protocol are in docs/research-quality; do not score unverified labels.",
+      "prior_pr21": {
+        "number": 21,
+        "url": "https://github.com/gaganjawa/stock-discovery/pull/21",
+        "original_requested_sha": "386ff5edc133b56138ee118fc2b471daf686d736",
+        "original_ci": "cancelled on correction push; not PASS",
+        "head_sha": "8b429cd44835804dcd4c7eabde83c2b381538772",
+        "state": "merged",
+        "merge_sha": "831feb0a1a1c16bcde37597149c4588913df600d",
+        "ci_run": "https://github.com/gaganjawa/stock-discovery/actions/runs/41215029318",
+        "ci_status": {
+          "unit": "passed",
+          "postgres": "passed",
+          "ui": "passed",
+          "checks": "passed"
+        },
+        "postgres": 417,
+        "zero_skips": true,
+        "migration_lifecycle": "passed in GitHub CI"
+      }
     },
     {
       "id": "M3",

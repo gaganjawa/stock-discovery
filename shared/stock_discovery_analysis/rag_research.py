@@ -215,7 +215,7 @@ def recheck(conn, bundle, access):
             access.require(stream.model_copy(update={'scope':'financial_facts'}), ('store',))
 
 
-def run_research(conn, *, run_id, query, policy, access, budget, provider, embeddings=None, monotonic=time.monotonic, factual_report=False, judge=None):
+def run_research(conn, *, run_id, query, policy, access, budget, provider, embeddings=None, monotonic=time.monotonic, factual_report=False, judge=None, extraction_only=False):
     """Use an idle autocommit connection so reservations survive worker death.
 
     POSIX main-thread workers enforce wall-time interruption. Trusted installed
@@ -227,6 +227,7 @@ def run_research(conn, *, run_id, query, policy, access, budget, provider, embed
     if embeddings:
         check(embeddings.local_only and embeddings.cost_per_unit==0, 'remote/paid embeddings disabled')
     from . import factual_research as factual
+    check(not extraction_only or factual_report,'extraction requires factual report')
     active_prompt_hash=factual.PROMPT_HASH if factual_report else RESEARCH_PROMPT_HASH
     if judge:
         check(factual_report and judge.local_only and judge.cost_per_unit==0 and judge.ref.id!=provider.ref.id, 'independent local judge required')
@@ -235,6 +236,7 @@ def run_research(conn, *, run_id, query, policy, access, budget, provider, embed
                     factual_report=factual_report,judge=judge.ref.model_dump() if judge else None,
                     primary_sources=sorted(access.primary_source_ids),
                     embedding=embeddings.ref.model_dump() if embeddings else None,budget=budget.model_dump())
+    if extraction_only:identity['extraction_only']=True
     request_hash = digest(identity)
     start = monotonic()
     fresh = reserve(conn,run_id,request_hash,budget,access.clock())
@@ -268,7 +270,7 @@ def run_research(conn, *, run_id, query, policy, access, budget, provider, embed
         with time_limit(deadline-monotonic()):
             bundle = retrieve(conn,query,policy,access=access,embeddings=embeddings,deadline=deadline,monotonic=monotonic)
         catalogue=factual.candidates(bundle) if factual_report else []
-        context=factual.model_context(bundle,catalogue) if factual_report else bundle.model_dump(mode='json')
+        context=factual.model_context(bundle,catalogue,extraction_only=extraction_only) if factual_report else bundle.model_dump(mode='json')
         request = json.dumps(dict(envelope,bundle=context),sort_keys=True,ensure_ascii=False,separators=(',',':'))
         input_units = len(request.encode())+bundle.embedding_input_units
         check(input_units+budget.max_output_units<=budget.max_run_units, 'run input/output budget')

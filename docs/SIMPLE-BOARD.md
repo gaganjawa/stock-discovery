@@ -116,3 +116,11 @@ quotations stay separate from verified numbers and event truth. 712 unit tests,
 25 fixed-RAG PostgreSQL cases, 37 affected database cases and 2 browser cases
 passed. Full database run: 415 passed / 1 existing expiry-lock timeout; isolated
 three-case rerun passed. Required PR CI/lifecycle pending; no real quality acceptance.
+
+PR #21 merged (`831feb0`): exact-passage alias-citation fix, 417 PostgreSQL tests
+and migration lifecycle passed in required CI. Earlier local lock-timeout cause
+remains unresolved; deterministic timeout denial/rollback is covered. M2 next
+slice adds opt-in structured financial proposals verified against deterministic
+filing facts and exact source rows; 729 unit and 64 affected database cases passed.
+Human review packet prepared, labels unverified; actual local model unavailable.
+No general financial accuracy, genuine instrument or historical return acceptance.

@@ -1,0 +1,331 @@
+{
+  "id": "M2-financial-review-packet-1",
+  "split": "development_review_only_not_holdout",
+  "synthetic": true,
+  "human_verified": false,
+  "quality_scores": null,
+  "protocol": "M2-financial-extraction-protocol.json",
+  "cases": [
+    {
+      "case_id": "M2-DEV-01",
+      "synthetic": true,
+      "source_revision": "SYN-FINREF-R1",
+      "source_text": "revenue = 100 INR_crore; 2025-04-01T00:00:00Z/2026-03-31T00:00:00Z; annual; consolidated",
+      "available_at": "2026-06-01T00:00:00Z",
+      "analysis_cutoff_at": "2026-06-02T00:00:00Z",
+      "proposed_claim": {
+        "issuer_id": "SYN-FINREF",
+        "listing_id": "SYN-FINREF",
+        "revision_id": "SYN-FINREF-R1",
+        "evidence_id": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "quote": "revenue = 100 INR_crore; 2025-04-01T00:00:00Z/2026-03-31T00:00:00Z; annual; consolidated",
+        "fact": {
+          "metric": "revenue",
+          "value": "100",
+          "missing_reason": null,
+          "unit": "INR_crore",
+          "period_start_at": "2025-04-01T00:00:00Z",
+          "period_end_at": "2026-03-31T00:00:00Z",
+          "period_kind": "annual",
+          "scope": "consolidated",
+          "locator": "html:table[0]/tr[1]/td[1]"
+        }
+      },
+      "expected_outcome": null,
+      "expected_fields": null,
+      "required_abstention_reason": null,
+      "reviewer_ref": null,
+      "reviewed_at": null,
+      "human_verified": false
+    },
+    {
+      "case_id": "M2-DEV-02",
+      "synthetic": true,
+      "source_revision": "SYN-FINREF-R1",
+      "source_text": "revenue = 100 INR_crore; 2025-04-01T00:00:00Z/2026-03-31T00:00:00Z; annual; consolidated",
+      "available_at": "2026-06-01T00:00:00Z",
+      "analysis_cutoff_at": "2026-06-02T00:00:00Z",
+      "proposed_claim": {
+        "issuer_id": "SYN-FINREF",
+        "listing_id": "SYN-FINREF",
+        "revision_id": "SYN-FINREF-R1",
+        "evidence_id": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "quote": "revenue = 100 INR_crore; 2025-04-01T00:00:00Z/2026-03-31T00:00:00Z; annual; consolidated",
+        "fact": {
+          "metric": "revenue",
+          "value": "999",
+          "missing_reason": null,
+          "unit": "INR_crore",
+          "period_start_at": "2025-04-01T00:00:00Z",
+          "period_end_at": "2026-03-31T00:00:00Z",
+          "period_kind": "annual",
+          "scope": "consolidated",
+          "locator": "html:table[0]/tr[1]/td[1]"
+        }
+      },
+      "expected_outcome": null,
+      "expected_fields": null,
+      "required_abstention_reason": null,
+      "reviewer_ref": null,
+      "reviewed_at": null,
+      "human_verified": false
+    },
+    {
+      "case_id": "M2-DEV-03",
+      "synthetic": true,
+      "source_revision": "SYN-FINREF-R1",
+      "source_text": "revenue = 100 INR_crore; 2025-04-01T00:00:00Z/2026-03-31T00:00:00Z; annual; consolidated",
+      "available_at": "2026-06-01T00:00:00Z",
+      "analysis_cutoff_at": "2026-06-02T00:00:00Z",
+      "proposed_claim": {
+        "issuer_id": "SYN-FINREF",
+        "listing_id": "SYN-FINREF",
+        "revision_id": "SYN-FINREF-R1",
+        "evidence_id": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "quote": "revenue = 100 INR_crore; 2025-04-01T00:00:00Z/2026-03-31T00:00:00Z; annual; consolidated",
+        "fact": {
+          "metric": "revenue",
+          "value": "100",
+          "missing_reason": null,
+          "unit": "INR",
+          "period_start_at": "2025-04-01T00:00:00Z",
+          "period_end_at": "2026-03-31T00:00:00Z",
+          "period_kind": "annual",
+          "scope": "consolidated",
+          "locator": "html:table[0]/tr[1]/td[1]"
+        }
+      },
+      "expected_outcome": null,
+      "expected_fields": null,
+      "required_abstention_reason": null,
+      "reviewer_ref": null,
+      "reviewed_at": null,
+      "human_verified": false
+    },
+    {
+      "case_id": "M2-DEV-04",
+      "synthetic": true,
+      "source_revision": "SYN-FINREF-R1",
+      "source_text": "revenue = 100 INR_crore; 2025-04-01T00:00:00Z/2026-03-31T00:00:00Z; annual; consolidated",
+      "available_at": "2026-06-01T00:00:00Z",
+      "analysis_cutoff_at": "2026-06-02T00:00:00Z",
+      "proposed_claim": {
+        "issuer_id": "SYN-FINREF",
+        "listing_id": "SYN-FINREF",
+        "revision_id": "SYN-FINREF-R1",
+        "evidence_id": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "quote": "revenue = 100 INR_crore; 2025-04-01T00:00:00Z/2026-03-31T00:00:00Z; annual; consolidated",
+        "fact": {
+          "metric": "revenue",
+          "value": "100",
+          "missing_reason": null,
+          "unit": "USD",
+          "period_start_at": "2025-04-01T00:00:00Z",
+          "period_end_at": "2026-03-31T00:00:00Z",
+          "period_kind": "annual",
+          "scope": "consolidated",
+          "locator": "html:table[0]/tr[1]/td[1]"
+        }
+      },
+      "expected_outcome": null,
+      "expected_fields": null,
+      "required_abstention_reason": null,
+      "reviewer_ref": null,
+      "reviewed_at": null,
+      "human_verified": false
+    },
+    {
+      "case_id": "M2-DEV-05",
+      "synthetic": true,
+      "source_revision": "SYN-FINREF-R1",
+      "source_text": "revenue = 100 INR_crore; 2025-04-01T00:00:00Z/2026-03-31T00:00:00Z; annual; consolidated",
+      "available_at": "2026-06-01T00:00:00Z",
+      "analysis_cutoff_at": "2026-06-02T00:00:00Z",
+      "proposed_claim": {
+        "issuer_id": "SYN-FINREF",
+        "listing_id": "SYN-FINREF",
+        "revision_id": "SYN-FINREF-R1",
+        "evidence_id": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "quote": "revenue = 100 INR_crore; 2025-04-01T00:00:00Z/2026-03-31T00:00:00Z; annual; consolidated",
+        "fact": {
+          "metric": "revenue",
+          "value": "100",
+          "missing_reason": null,
+          "unit": "INR_crore",
+          "period_start_at": "2025-04-01T00:00:00Z",
+          "period_end_at": "2027-03-31T00:00:00Z",
+          "period_kind": "annual",
+          "scope": "consolidated",
+          "locator": "html:table[0]/tr[1]/td[1]"
+        }
+      },
+      "expected_outcome": null,
+      "expected_fields": null,
+      "required_abstention_reason": null,
+      "reviewer_ref": null,
+      "reviewed_at": null,
+      "human_verified": false
+    },
+    {
+      "case_id": "M2-DEV-06",
+      "synthetic": true,
+      "source_revision": "SYN-FINREF-R1",
+      "source_text": "revenue = 100 INR_crore; 2025-04-01T00:00:00Z/2026-03-31T00:00:00Z; annual; consolidated",
+      "available_at": "2026-06-01T00:00:00Z",
+      "analysis_cutoff_at": "2026-06-02T00:00:00Z",
+      "proposed_claim": {
+        "issuer_id": "OTHER",
+        "listing_id": "SYN-FINREF",
+        "revision_id": "SYN-FINREF-R1",
+        "evidence_id": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "quote": "revenue = 100 INR_crore; 2025-04-01T00:00:00Z/2026-03-31T00:00:00Z; annual; consolidated",
+        "fact": {
+          "metric": "revenue",
+          "value": "100",
+          "missing_reason": null,
+          "unit": "INR_crore",
+          "period_start_at": "2025-04-01T00:00:00Z",
+          "period_end_at": "2026-03-31T00:00:00Z",
+          "period_kind": "annual",
+          "scope": "consolidated",
+          "locator": "html:table[0]/tr[1]/td[1]"
+        }
+      },
+      "expected_outcome": null,
+      "expected_fields": null,
+      "required_abstention_reason": null,
+      "reviewer_ref": null,
+      "reviewed_at": null,
+      "human_verified": false
+    },
+    {
+      "case_id": "M2-DEV-07",
+      "synthetic": true,
+      "source_revision": "SYN-FINREF-R1",
+      "source_text": "revenue = 100 INR_crore; 2025-04-01T00:00:00Z/2026-03-31T00:00:00Z; annual; consolidated",
+      "available_at": "2026-06-01T00:00:00Z",
+      "analysis_cutoff_at": "2026-06-02T00:00:00Z",
+      "proposed_claim": {
+        "issuer_id": "SYN-FINREF",
+        "listing_id": "SYN-FINREF",
+        "revision_id": "SYN-UNRETRIEVED",
+        "evidence_id": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "quote": "revenue = 100 INR_crore; 2025-04-01T00:00:00Z/2026-03-31T00:00:00Z; annual; consolidated",
+        "fact": {
+          "metric": "revenue",
+          "value": "100",
+          "missing_reason": null,
+          "unit": "INR_crore",
+          "period_start_at": "2025-04-01T00:00:00Z",
+          "period_end_at": "2026-03-31T00:00:00Z",
+          "period_kind": "annual",
+          "scope": "consolidated",
+          "locator": "html:table[0]/tr[1]/td[1]"
+        }
+      },
+      "expected_outcome": null,
+      "expected_fields": null,
+      "required_abstention_reason": null,
+      "reviewer_ref": null,
+      "reviewed_at": null,
+      "human_verified": false
+    },
+    {
+      "case_id": "M2-DEV-08",
+      "synthetic": true,
+      "source_revision": "SYN-FINREF-R1",
+      "source_text": "revenue = 100 INR_crore; 2025-04-01T00:00:00Z/2026-03-31T00:00:00Z; annual; consolidated",
+      "available_at": "2026-06-01T00:00:00Z",
+      "analysis_cutoff_at": "2026-06-02T00:00:00Z",
+      "proposed_claim": {
+        "issuer_id": "SYN-FINREF",
+        "listing_id": "SYN-FINREF",
+        "revision_id": "SYN-FINREF-R1",
+        "evidence_id": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+        "quote": "revenue = 100 INR_crore; 2025-04-01T00:00:00Z/2026-03-31T00:00:00Z; annual; consolidated",
+        "fact": {
+          "metric": "revenue",
+          "value": "100",
+          "missing_reason": null,
+          "unit": "INR_crore",
+          "period_start_at": "2025-04-01T00:00:00Z",
+          "period_end_at": "2026-03-31T00:00:00Z",
+          "period_kind": "annual",
+          "scope": "consolidated",
+          "locator": "html:table[0]/tr[1]/td[1]"
+        }
+      },
+      "expected_outcome": null,
+      "expected_fields": null,
+      "required_abstention_reason": null,
+      "reviewer_ref": null,
+      "reviewed_at": null,
+      "human_verified": false
+    },
+    {
+      "case_id": "M2-DEV-09",
+      "synthetic": true,
+      "source_revision": "SYN-FINREF-R1",
+      "source_text": "revenue = 100 INR_crore; 2025-04-01T00:00:00Z/2026-03-31T00:00:00Z; annual; consolidated",
+      "available_at": "2026-06-01T00:00:00Z",
+      "analysis_cutoff_at": "2026-06-02T00:00:00Z",
+      "proposed_claim": {
+        "issuer_id": "SYN-FINREF",
+        "listing_id": "SYN-FINREF",
+        "revision_id": "SYN-FINREF-R1",
+        "evidence_id": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "quote": "revenue = 100 INR_crore; 2025-04-01T00:00:00Z/2026-03-31T00:00:00Z; annual; consolidated",
+        "fact": {
+          "metric": "revenue",
+          "value": "100",
+          "missing_reason": null,
+          "unit": "INR_crore",
+          "period_start_at": "2025-04-01T00:00:00Z",
+          "period_end_at": "2026-03-31T00:00:00Z",
+          "period_kind": "annual",
+          "scope": "standalone",
+          "locator": "html:table[0]/tr[1]/td[1]"
+        }
+      },
+      "expected_outcome": null,
+      "expected_fields": null,
+      "required_abstention_reason": null,
+      "reviewer_ref": null,
+      "reviewed_at": null,
+      "human_verified": false
+    },
+    {
+      "case_id": "M2-DEV-10",
+      "synthetic": true,
+      "source_revision": "SYN-FINREF-R1",
+      "source_text": "revenue = 100 INR_crore; 2025-04-01T00:00:00Z/2026-03-31T00:00:00Z; annual; consolidated",
+      "available_at": "2026-06-01T00:00:00Z",
+      "analysis_cutoff_at": "2026-06-02T00:00:00Z",
+      "proposed_claim": {
+        "issuer_id": "SYN-FINREF",
+        "listing_id": "SYN-FINREF",
+        "revision_id": "SYN-FINREF-R1",
+        "evidence_id": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "quote": "The company is a safe investment.",
+        "fact": {
+          "metric": "revenue",
+          "value": "100",
+          "missing_reason": null,
+          "unit": "INR_crore",
+          "period_start_at": "2025-04-01T00:00:00Z",
+          "period_end_at": "2026-03-31T00:00:00Z",
+          "period_kind": "annual",
+          "scope": "consolidated",
+          "locator": "html:table[0]/tr[1]/td[1]"
+        }
+      },
+      "expected_outcome": null,
+      "expected_fields": null,
+      "required_abstention_reason": null,
+      "reviewer_ref": null,
+      "reviewed_at": null,
+      "human_verified": false
+    }
+  ],
+  "holdout": "Not authored or evaluated here. Independent human reviewer must supply/freeze a separate untouched holdout."
+}
