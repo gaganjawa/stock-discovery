@@ -1,0 +1,214 @@
+{
+  "version": "financial-exact-selection-1",
+  "protocol_hash": "15d54477314bb1d1db8e0cbd5e4cc2df27ce2a30da8a5355888e8dfc4a3233bc",
+  "source": {
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1067491/000106749125000010/exv99w08.htm",
+    "capture_method": "Public web-tool rendered excerpt; selected noncontiguous scope/title context and table, whitespace normalized.",
+    "source_lines": [
+      "4",
+      "21",
+      "3016-3023"
+    ],
+    "captured_at": "2026-10-31T16:23:37Z",
+    "original_document_sha256": null,
+    "original_public_availability_at": null,
+    "raw_local_download": "HTTP403; stopped; no retries or access-control workaround",
+    "rights_reference": "https://www.sec.gov/about/webmaster-frequently-asked-questions",
+    "human_verified": false,
+    "production_grant_activated": false,
+    "profile": {
+      "layout": "pipe-two-groups-two-years-1",
+      "text_hash": "2a6b3a9b36c3a64aacda7410994da56a6b4e6b7719746c998ed1203f766c1319",
+      "headers": [
+        [
+          "Particulars",
+          "Three months ended March 31,",
+          "Year ended March 31,"
+        ],
+        [
+          "",
+          "2025",
+          "2024",
+          "2025",
+          "2024"
+        ]
+      ],
+      "context_markers": [
+        "IFRS INR Earning Release",
+        "interim consolidated financial statements",
+        "crore"
+      ],
+      "unit": "INR_crore",
+      "scope": "consolidated",
+      "evidence_id": "SEC-INFY-2025-REVENUE-EXCERPT"
+    }
+  },
+  "dataset_hash": "c8a8f2d8cb261ce515683f73935a34d39713e9859939e2c3ca79392cf0e4e496",
+  "cases": [
+    {
+      "status": "VERIFIED_DEVELOPMENT_CELL",
+      "proposal": {
+        "status": "extracted",
+        "value": "162990",
+        "unit": "INR_crore",
+        "scope": "consolidated",
+        "period": "Year ended March 31, 2025",
+        "evidence_id": "SEC-INFY-2025-REVENUE-EXCERPT",
+        "quote": "Total revenue from operations | 40,925 | 37,923 | 162,990 | 153,670"
+      },
+      "citation": {
+        "row_label": "Total revenue from operations",
+        "period": "Year ended March 31, 2025",
+        "value": "162990",
+        "unit": "INR_crore",
+        "scope": "consolidated",
+        "evidence_id": "SEC-INFY-2025-REVENUE-EXCERPT",
+        "source_hash": "2a6b3a9b36c3a64aacda7410994da56a6b4e6b7719746c998ed1203f766c1319",
+        "locator": "row:Total revenue from operations/column:Year ended March 31, 2025",
+        "quote": "Total revenue from operations | 40,925 | 37,923 | 162,990 | 153,670"
+      },
+      "accepted": true,
+      "reason": "exact_row_period_scope",
+      "actionable": false,
+      "case_id": "annual-current",
+      "selection_mode": "deterministic_exact",
+      "validator_version": "financial-exact-selection-1",
+      "request_hash": "c70d85d5c7dfcdfc636107c07f8376894aeab2c3eabf55e557bf41b7700e3237",
+      "source_hash": "2a6b3a9b36c3a64aacda7410994da56a6b4e6b7719746c998ed1203f766c1319",
+      "source_kind": "captured_public_excerpt",
+      "cutoff_at": "2026-10-31T16:23:37Z",
+      "human_verified": false,
+      "holdout": false,
+      "model": null,
+      "prompt_hash": null,
+      "model_calls": 0,
+      "reserved_units": 0,
+      "cost_usd": "0",
+      "publication_authorized": false
+    },
+    {
+      "status": "VERIFIED_DEVELOPMENT_CELL",
+      "proposal": {
+        "status": "extracted",
+        "value": "153670",
+        "unit": "INR_crore",
+        "scope": "consolidated",
+        "period": "Year ended March 31, 2024",
+        "evidence_id": "SEC-INFY-2025-REVENUE-EXCERPT",
+        "quote": "Total revenue from operations | 40,925 | 37,923 | 162,990 | 153,670"
+      },
+      "citation": {
+        "row_label": "Total revenue from operations",
+        "period": "Year ended March 31, 2024",
+        "value": "153670",
+        "unit": "INR_crore",
+        "scope": "consolidated",
+        "evidence_id": "SEC-INFY-2025-REVENUE-EXCERPT",
+        "source_hash": "2a6b3a9b36c3a64aacda7410994da56a6b4e6b7719746c998ed1203f766c1319",
+        "locator": "row:Total revenue from operations/column:Year ended March 31, 2024",
+        "quote": "Total revenue from operations | 40,925 | 37,923 | 162,990 | 153,670"
+      },
+      "accepted": true,
+      "reason": "exact_row_period_scope",
+      "actionable": false,
+      "case_id": "annual-prior",
+      "selection_mode": "deterministic_exact",
+      "validator_version": "financial-exact-selection-1",
+      "request_hash": "f02e5bd035bc48eb660759cbd62b35e54a776311d6194d89fa058e135f59ebd4",
+      "source_hash": "2a6b3a9b36c3a64aacda7410994da56a6b4e6b7719746c998ed1203f766c1319",
+      "source_kind": "captured_public_excerpt",
+      "cutoff_at": "2026-10-31T16:23:37Z",
+      "human_verified": false,
+      "holdout": false,
+      "model": null,
+      "prompt_hash": null,
+      "model_calls": 0,
+      "reserved_units": 0,
+      "cost_usd": "0",
+      "publication_authorized": false
+    },
+    {
+      "status": "INSUFFICIENT_EVIDENCE",
+      "proposal": null,
+      "citation": null,
+      "accepted": false,
+      "reason": "table_period_missing",
+      "actionable": false,
+      "case_id": "missing-period",
+      "selection_mode": "deterministic_exact",
+      "validator_version": "financial-exact-selection-1",
+      "request_hash": "0a4a5e298985f2fd4c4d15564f523736d84a11156940ccd285204daa93292fff",
+      "source_hash": "2a6b3a9b36c3a64aacda7410994da56a6b4e6b7719746c998ed1203f766c1319",
+      "source_kind": "captured_public_excerpt",
+      "cutoff_at": "2026-10-31T16:23:37Z",
+      "human_verified": false,
+      "holdout": false,
+      "model": null,
+      "prompt_hash": null,
+      "model_calls": 0,
+      "reserved_units": 0,
+      "cost_usd": "0",
+      "publication_authorized": false
+    },
+    {
+      "status": "INSUFFICIENT_EVIDENCE",
+      "proposal": null,
+      "citation": null,
+      "accepted": false,
+      "reason": "missing_or_conflicting_table_row",
+      "actionable": false,
+      "case_id": "conflict",
+      "selection_mode": "deterministic_exact",
+      "validator_version": "financial-exact-selection-1",
+      "request_hash": "d1a5711b65d34093fe9c4a12ce69586b7e3c93e2fa57ebdb4988373c3068e13d",
+      "source_hash": "5ba34c7611f6b7db9aa61da9bb811f948f6dc606de73ace94303d372a579af95",
+      "source_kind": "adversarial_mutation",
+      "cutoff_at": "2026-10-31T16:23:37Z",
+      "human_verified": false,
+      "holdout": false,
+      "model": null,
+      "prompt_hash": null,
+      "model_calls": 0,
+      "reserved_units": 0,
+      "cost_usd": "0",
+      "publication_authorized": false
+    }
+  ],
+  "human_verified": false,
+  "holdout_used": false,
+  "quality_accepted": false,
+  "model": null,
+  "prompt_hash": null,
+  "new_model_calls": 0,
+  "new_reserved_units": 0,
+  "historical_model_reservations": "34 / 680000 units preserved in prior immutable reports; not reset or reclassified as this run",
+  "reservation_change": 0,
+  "duplicate_result_identical": true,
+  "reference_kind": "developer/parser reference; not human ground truth",
+  "metrics": {
+    "exact_positive_selection": {
+      "numerator": 2,
+      "denominator": 2,
+      "value": 1.0
+    },
+    "exact_negative_abstention": {
+      "numerator": 2,
+      "denominator": 2,
+      "value": 1.0
+    },
+    "model_selection_accuracy": null,
+    "model_abstention_accuracy": null,
+    "positive_wilson95": [
+      0.34238022750665303,
+      1
+    ],
+    "negative_wilson95": [
+      0.34238022750665303,
+      1
+    ]
+  },
+  "limitations": [
+    "Four known development cases; deterministic reference checks are not independent human quality measurement.",
+    "Original-document/PIT/source qualification and semantic research remain unaccepted."
+  ]
+}
