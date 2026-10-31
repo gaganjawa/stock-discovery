@@ -1,0 +1,38 @@
+{
+  "id": "M2-financial-extraction-quality-1",
+  "status": "fixed_proposal_requires_human_approval",
+  "defined_before_holdout_use": true,
+  "heldout_used": false,
+  "minimum_human_verified_holdout_cases": 50,
+  "thresholds": {
+    "extraction_recall_min": "0.95",
+    "accepted_claim_precision_min": "1.0",
+    "citation_support_min": "1.0",
+    "numeric_correctness_min": "1.0",
+    "unsupported_claim_rate_max": "0",
+    "temporal_leakage_count_max": 0,
+    "required_abstention_recall_min": "1.0"
+  },
+  "denominators": {
+    "extraction_recall": "correct required fields extracted / human-labelled supported required fields",
+    "accepted_claim_precision": "human-supported accepted material claims / all accepted material claims",
+    "citation_support": "accepted claims whose every citation supports the claim / all accepted claims",
+    "numeric_correctness": "accepted numeric claims correct in figure, unit, currency, period and scope / all accepted numeric claims",
+    "unsupported_claim_rate": "unsupported accepted claims / all accepted claims",
+    "required_abstention_recall": "human-labelled insufficient/unsupported cases correctly abstained / all human-labelled cases requiring abstention"
+  },
+  "zero_denominators": "unavailable, never perfect by default",
+  "maturity": "quality acceptance unavailable until labels independently reviewed and protocol approved",
+  "required_reference_evidence": [
+    "reviewer reference",
+    "review timestamp",
+    "source hash/revision and availability",
+    "expected fields and reasons",
+    "independent second review of disagreements",
+    "approved frozen reference hash",
+    "untouched independently supplied holdout"
+  ],
+  "confidence_reporting": "Report raw counts, denominator, per-error strata and uncertainty; small samples do not establish general financial accuracy.",
+  "strategy_approval": false,
+  "publication_authorized": false
+}

@@ -13,8 +13,9 @@ from .rag_retrieval import CONTEXT, calculate_ratio, conflicts
 from .rag_research import financial_text
 from .agent_research import JUDGE_PROMPT
 from .agent_contracts import JudgeReport
+from .financial_claims import ExtractedClaim,verify_claim
 
-VERSION = 'historical-factual-1.3.1'
+VERSION = 'historical-factual-1.4.0'
 REVIEW_PROMPT = JUDGE_PROMPT+' Assess historical support only. Missing valuation blocks recommendations, not independent historical observations. Copy evidence_ids only from the assessed claim citations, never candidate IDs.'
 REVIEW_PROMPT_HASH = digest([REVIEW_PROMPT,JudgeReport.model_json_schema()])
 PROMPT = ('Report historical financial evidence, independently of investment suitability. '
@@ -24,6 +25,10 @@ PROMPT = ('Report historical financial evidence, independently of investment sui
     'Optionally select source_excerpts from excerpt_candidates, copying candidate_id, text and citation_ids exactly. '
     'These are attributed source statements, not verified financial figures or established event truth. '
     'Do not paraphrase, infer sentiment or infer complete news coverage. '
+    'Extract financial claims from source_passages only when metric, ISO period dates, scope and unit are explicit. '
+    'Use extracted_claims with issuer_id, listing_id, revision_id, evidence_id, exact quote and a FinancialRow fact. '
+    'Use reference_locators for locator identity only; independently read figures from source text. '
+    'Do not infer missing context or invent calculations; unsupported layouts must abstain. '
     'For relations, select exactly two latest comparable growth candidate IDs and classify whether '
     'their changes have same_direction or opposite_direction. Prefer comparing revenue or earnings '
     'with operating cash flow. The service independently checks your classification. '
@@ -57,6 +62,7 @@ class Response(Strict):
     interpretations: Annotated[tuple[Interpretation,...],Field(max_length=3)]
     relations: Annotated[tuple[Relation,...],Field(max_length=2)] = ()
     source_excerpts: Annotated[tuple[SelectedFact,...],Field(max_length=3)] = ()
+    extracted_claims: Annotated[tuple[ExtractedClaim,...],Field(max_length=8)] = ()
 
 
 PROMPT_HASH = digest([VERSION,PROMPT,Response.model_json_schema()])
@@ -142,14 +148,18 @@ def limitations(bundle):
     return list(dict.fromkeys(out))
 
 
-def model_context(bundle,catalogue):
+def model_context(bundle,catalogue,*,extraction_only=False):
     # A compact view of exact candidates avoids repeating large citation objects.
     # The full catalogue and source bundle remain stored and checked by the service.
     latest=max((c['periods'][-1]['end'] for c in catalogue),default='')
     selected=[c for c in catalogue if c['periods'][-1]['end']==latest]
-    return dict(issuer_id=bundle.query.issuer_id,horizon=bundle.query.horizon,
+    return dict(issuer_id=bundle.query.issuer_id,listing_id=bundle.query.listing_id,horizon=bundle.query.horizon,cutoff_at=bundle.query.cutoff_at,
+        source_passages=[dict(evidence_id=c.evidence_id,revision_id=c.revision_id,text=c.excerpt)
+            for h in bundle.hits for c in h.citations if c.excerpt],
+        reference_locators=[dict(metric=f.metric,revision_id=f.citation.revision_id,locator=f.source_locator)
+            for f in bundle.facts if f.formula is None and f.source_locator],
         candidates=[dict(candidate_id=c['candidate_id'],text=c['text'],
-            citation_ids=list(dict.fromkeys(x['evidence_id'] for x in c['citations']))) for c in selected],
+            citation_ids=list(dict.fromkeys(x['evidence_id'] for x in c['citations']))) for c in selected if not extraction_only],
         excerpt_candidates=[dict(candidate_id=c['candidate_id'],text=c['text'],
             citation_ids=list(dict.fromkeys(x['evidence_id'] for x in c['citations']))) for c in excerpt_candidates(bundle)],
         limitations=limitations(bundle),contradictions=bundle.contradictions,
@@ -168,9 +178,9 @@ def screen_interpretation(text):
 
 def validate_response(raw,bundle,catalogue):
     # Parse each claim separately: one bad statement must not erase other facts.
-    obj=json.loads(raw);check(isinstance(obj,dict) and {'factual_claims','interpretations'}<=set(obj)<={'factual_claims','interpretations','relations','source_excerpts'},'factual response fields')
+    obj=json.loads(raw);check(isinstance(obj,dict) and {'factual_claims','interpretations'}<=set(obj)<={'factual_claims','interpretations','relations','source_excerpts','extracted_claims'},'factual response fields')
     check(all(isinstance(obj[k],list) for k in obj),'claim arrays required')
-    check(len(obj['factual_claims'])<=8 and len(obj['interpretations'])<=3 and len(obj.get('relations',[]))<=2 and len(obj.get('source_excerpts',[]))<=3,'claim count limit')
+    check(len(obj['factual_claims'])<=8 and len(obj['interpretations'])<=3 and len(obj.get('relations',[]))<=2 and len(obj.get('source_excerpts',[]))<=3 and len(obj.get('extracted_claims',[]))<=8,'claim count limit')
     canonical={c['candidate_id']:c for c in candidates(bundle)}
     check(catalogue==list(canonical.values()),'candidate catalogue parity')
     excerpts={c['candidate_id']:c for c in excerpt_candidates(bundle)}
@@ -185,6 +195,9 @@ def validate_response(raw,bundle,catalogue):
                     ids=tuple(dict.fromkeys(x['evidence_id'] for x in source['citations']))
                     check(c.citation_ids==ids,'citation ID/locator parity')
                     accepted.append(dict(candidate_id=c.candidate_id,text=c.text,citations=source['citations'],validation='exact_fact_and_citation_passed'))
+                elif kind=='extracted_claims':
+                    verified=verify_claim(row,bundle)
+                    if not any(x.get('reference_fact_id')==verified['reference_fact_id'] for x in accepted):accepted.append(verified)
                 elif kind=='source_excerpts':
                     c=SelectedFact.model_validate_json(json.dumps(row))
                     check(c.candidate_id in excerpts,'unknown excerpt candidate')

@@ -59,3 +59,9 @@ The first M6 screen is implemented locally using the STK-079 authenticated swing
 ## Delivered checkpoint and next increment
 
 PR #20 merged at `907849399be33a0a6d178212b64b151de62320e9` with required checks passing. The first M6 screen is delivered; the full milestone remains partial. M2's next bounded increment uses existing fixed-RAG to select and independently match exact source excerpts, alongside verified financial facts. It does not establish event truth, news completeness or semantic quality. See `STK-052-source-excerpts.md` for validation, including the failed full-suite lock timeout and unchanged isolated rerun. Exact-commit CI/lifecycle remain required before merge.
+
+## PR21 review and M2 structured extraction
+
+PR21 merged at `831feb0` after a reproduced alias-citation P2 was corrected in `8b429cd`; required CI passed including all 417 PostgreSQL cases and lifecycle checks. The original `386ff5e` run was cancelled by the correction push, not a successful pinned run. Historical local lock-timeout cause remains unresolved; a deterministic timeout/rollback probe now passes.
+
+The next increment wires structured model proposals from source passages into the existing factual worker, independent stored-fact/passage/unit/period/entity/conflict checks and company report. It supports a narrow explicit row grammar and does not qualify arbitrary filings. A ten-case synthetic development review packet is prepared with null human labels; proposed thresholds and denominators are fixed before holdout use. No actual model ran because local Ollama/T9 are unavailable. Real research quality remains partial and unmeasured.
