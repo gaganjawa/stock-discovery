@@ -566,7 +566,8 @@
         "announcement",
         "annual_report",
         "quarterly_report",
-        "news"
+        "news",
+        "coverage_review"
       ],
       "title": "Category",
       "type": "string"

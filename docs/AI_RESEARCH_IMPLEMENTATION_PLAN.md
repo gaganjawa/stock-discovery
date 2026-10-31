@@ -1,0 +1,51 @@
+# AI research implementation plan
+
+Owner-authorized roadmap, 31 October 2026. Existing architecture and ticket IDs remain authoritative. No real-money execution.
+
+## Current checkpoint
+
+M0 focused review passed with no substantiated additional P1/P2 findings. The corrected three P2 areas retain typed filing classification, strict real BUY geometry and authorized historical/current identity dependencies. Previous executed results: 705 backend/worker, 414 PostgreSQL (zero skips), 56 STK-079 database/API, 114 focused, 13 script tests; migrations and three contract validators passed. These overlapping results were not rerun for delivery.
+
+Main protection was enabled with explicit owner approval: GitHub Actions `checks`, strict up-to-date branch, PR merges, administrator enforcement, no force pushes/deletions. CI and merge evidence must be recorded after execution.
+
+## Fixed milestones
+
+### M0 — Close STK-079
+Review corrected stored-evidence swing integration, deliver PR, required CI and verified merge.
+Status: review passed, delivery pending.
+
+### M1 — Establish real research data
+One authorized NSE instrument with traceable prices/documents and point-in-time availability.
+Status: pending; reuse completed infrastructure before filling demonstrated gaps.
+
+### M2 — AI company research
+Cited structured company research with independent deterministic claim verification and preregistered quality evaluation.
+Status: pending; reuse completed infrastructure before filling demonstrated gaps.
+
+### M3 — Quantitative strategy evaluation
+Deterministic baseline and hypothesis-driven improvements evaluated without tuning frozen holdouts.
+Status: pending; reuse completed infrastructure before filling demonstrated gaps.
+
+### M4 — Combined research recommendation
+Versioned synthesis of verified AI and technical findings with deterministic risk vetoes.
+Status: pending; reuse completed infrastructure before filling demonstrated gaps.
+
+### M5 — Historical replay and ground truth
+Freeze as-of research, reveal subsequent outcomes and compare baselines with leakage controls.
+Status: pending; reuse completed infrastructure before filling demonstrated gaps.
+
+### M6 — User-facing dashboard
+Research, bounded discovery and historical replay usable through existing React application.
+Status: pending; reuse completed infrastructure before filling demonstrated gaps.
+
+### M7 — Product acceptance
+Separate synthetic software evidence, real-data acceptance and measured research quality.
+Status: pending; reuse completed infrastructure before filling demonstrated gaps.
+
+## Safety and external blockers
+
+Source grants do not establish provider policy. Missing rights, retention/deletion support, raw-price semantics, current instrument settings or complete filing/event coverage remain insufficient evidence. No synthetic fixture establishes real qualification or profitability. Human-reviewed reference labels, predefined thresholds and untouched holdouts are required for research-quality acceptance. Publication, paper admission and live trading stay blocked.
+
+## Continuation
+
+Read `AI_RESEARCH_PROGRESS.json`, actual Git state and PR checks first. Record files, actual tests, commit/PR/merge, blockers and exact next step at each milestone. Do not repeat expensive completed tests without a new reason.

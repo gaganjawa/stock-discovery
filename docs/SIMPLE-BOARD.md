@@ -88,3 +88,16 @@ Phase 4 (20 October): **PARTIAL / permission stop condition reached**. New provi
 D3-11 validation (24 October 2026): **590 unique backend/worker tests exercised** across the regression/integration suites and final targeted additions (**194 database integration cases, zero skips**), plus **10 script tests** and **4 browser workflows**. Migration upgrade/repeat/downgrade/re-upgrade/atomic rollback, contract validators and frontend production build passed. [Acceptance record](D3-11-ACCEPTANCE.md) separates actual PostgreSQL/browser execution from fictional market/model evidence. Exact-commit GitHub CI is reported on the separate draft PR. No changes depend on or modify PR #12; no live operations, strategy approval, D3-12 or merge.
 
 STK-074 read-side follow-up: manual company/evidence/research reads now have transactional original-grant fences; legacy scans without original universe linkage fail closed. CI mandatory gates are split without duplicate PostgreSQL execution. [Design and measured CI baseline](STK-074-read-fences-ci.md). Uncommitted, pending independent review; REAL-001 operations remain PARTIAL and publication/admission/trading remain BLOCKED.
+
+31 October 2026 — **STK-079 / D3-13 single-instrument research slice:** implementation
+based on main after merged PRs #17/#18; focused review passed, PR/CI delivery pending.
+[Stored-evidence swing integration](STK-079-real-swing-integration.md) connects
+STK-014 qualification, STK-074 read fences, existing indicators/strategy and
+hypothetical sizing to the authenticated company API. Synthetic acceptance only;
+no genuine NSE instrument qualified or provider activated. Full D3-13 release and
+REAL-001 operational acceptance remain incomplete. Publication, paper admission
+and trading remain BLOCKED.
+
+Owner-authorized AI roadmap: [implementation plan](AI_RESEARCH_IMPLEMENTATION_PLAN.md)
+and [durable checkpoint](AI_RESEARCH_PROGRESS.json). M0 closes this slice before
+the real-data, grounded AI, synthesis, historical replay and UI milestones.

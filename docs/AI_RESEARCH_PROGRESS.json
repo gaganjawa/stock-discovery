@@ -1,0 +1,179 @@
+{
+  "schema_version": 1,
+  "updated_at": "2026-10-31",
+  "current_milestone": "M0",
+  "branch": "feat/stk-079-real-swing-integration",
+  "worktree": "stk-074-grant-fences",
+  "last_successful_commit": "8d7f5bbda8ddd13ee387e4bab5211e957cc4d1c2",
+  "pr": null,
+  "completed_tests": {
+    "backend_worker": 705,
+    "postgresql": 414,
+    "stk079_postgresql_api": 56,
+    "focused_qualification_strategy": 114,
+    "scripts": 13,
+    "contract_validators": 3,
+    "migration_lifecycle": "passed",
+    "syntax_whitespace": "passed",
+    "provenance": "prior execution evidence; not rerun for Git delivery"
+  },
+  "failed_tests": [],
+  "known_blockers": [
+    "Real-source rights/retention/adjustment and complete evidence remain unqualified.",
+    "Human research-quality calibration and prospective policy approval remain unapproved."
+  ],
+  "pending_changes": [
+    "backend/app/real_research.py",
+    "docs/SIMPLE-BOARD.md",
+    "docs/contracts/evidence/document.schema.json",
+    "shared/stock_discovery_analysis/evidence.py",
+    "shared/stock_discovery_analysis/real_views.py",
+    "shared/stock_discovery_analysis/strategy.py",
+    "backend/tests/integration/test_swing_research.py",
+    "backend/tests/test_swing_research.py",
+    "docs/STK-079-real-swing-integration.md",
+    "shared/stock_discovery_analysis/swing_research.py"
+  ],
+  "next_action": "Commit reviewed STK-079 and roadmap checkpoint, push and open draft PR; verify required CI before merge.",
+  "milestones": [
+    {
+      "id": "M0",
+      "objective": "Close STK-079",
+      "completion_criteria": "Review corrected stored-evidence swing integration, deliver PR, required CI and verified merge.",
+      "status": "review_passed_delivery_pending",
+      "dependency_status": "main baseline verified",
+      "files_changed": [
+        "backend/app/real_research.py",
+        "docs/SIMPLE-BOARD.md",
+        "docs/contracts/evidence/document.schema.json",
+        "shared/stock_discovery_analysis/evidence.py",
+        "shared/stock_discovery_analysis/real_views.py",
+        "shared/stock_discovery_analysis/strategy.py",
+        "backend/tests/integration/test_swing_research.py",
+        "backend/tests/test_swing_research.py",
+        "docs/STK-079-real-swing-integration.md",
+        "shared/stock_discovery_analysis/swing_research.py"
+      ],
+      "tests": {
+        "backend_worker": 705,
+        "postgresql": 414,
+        "stk079_postgresql_api": 56,
+        "focused_qualification_strategy": 114,
+        "scripts": 13,
+        "contract_validators": 3,
+        "migration_lifecycle": "passed",
+        "syntax_whitespace": "passed",
+        "provenance": "prior execution evidence; not rerun for Git delivery"
+      },
+      "commit_sha": null,
+      "pr_url": null,
+      "blockers": [],
+      "next_step": "Commit reviewed STK-079 and roadmap checkpoint, push and open draft PR; verify required CI before merge."
+    },
+    {
+      "id": "M1",
+      "objective": "Establish real research data",
+      "completion_criteria": "One authorized NSE instrument with traceable prices/documents and point-in-time availability.",
+      "status": "pending",
+      "dependency_status": "previous milestone not yet accepted; independent work may proceed when externally blocked",
+      "files_changed": [],
+      "tests": {},
+      "commit_sha": null,
+      "pr_url": null,
+      "blockers": [
+        "Acceptance requires inspection and reuse of existing implementation."
+      ],
+      "next_step": "Inspect existing components against milestone criteria before implementing missing integration."
+    },
+    {
+      "id": "M2",
+      "objective": "AI company research",
+      "completion_criteria": "Cited structured company research with independent deterministic claim verification and preregistered quality evaluation.",
+      "status": "pending",
+      "dependency_status": "previous milestone not yet accepted; independent work may proceed when externally blocked",
+      "files_changed": [],
+      "tests": {},
+      "commit_sha": null,
+      "pr_url": null,
+      "blockers": [
+        "Acceptance requires inspection and reuse of existing implementation."
+      ],
+      "next_step": "Inspect existing components against milestone criteria before implementing missing integration."
+    },
+    {
+      "id": "M3",
+      "objective": "Quantitative strategy evaluation",
+      "completion_criteria": "Deterministic baseline and hypothesis-driven improvements evaluated without tuning frozen holdouts.",
+      "status": "pending",
+      "dependency_status": "previous milestone not yet accepted; independent work may proceed when externally blocked",
+      "files_changed": [],
+      "tests": {},
+      "commit_sha": null,
+      "pr_url": null,
+      "blockers": [
+        "Acceptance requires inspection and reuse of existing implementation."
+      ],
+      "next_step": "Inspect existing components against milestone criteria before implementing missing integration."
+    },
+    {
+      "id": "M4",
+      "objective": "Combined research recommendation",
+      "completion_criteria": "Versioned synthesis of verified AI and technical findings with deterministic risk vetoes.",
+      "status": "pending",
+      "dependency_status": "previous milestone not yet accepted; independent work may proceed when externally blocked",
+      "files_changed": [],
+      "tests": {},
+      "commit_sha": null,
+      "pr_url": null,
+      "blockers": [
+        "Acceptance requires inspection and reuse of existing implementation."
+      ],
+      "next_step": "Inspect existing components against milestone criteria before implementing missing integration."
+    },
+    {
+      "id": "M5",
+      "objective": "Historical replay and ground truth",
+      "completion_criteria": "Freeze as-of research, reveal subsequent outcomes and compare baselines with leakage controls.",
+      "status": "pending",
+      "dependency_status": "previous milestone not yet accepted; independent work may proceed when externally blocked",
+      "files_changed": [],
+      "tests": {},
+      "commit_sha": null,
+      "pr_url": null,
+      "blockers": [
+        "Acceptance requires inspection and reuse of existing implementation."
+      ],
+      "next_step": "Inspect existing components against milestone criteria before implementing missing integration."
+    },
+    {
+      "id": "M6",
+      "objective": "User-facing dashboard",
+      "completion_criteria": "Research, bounded discovery and historical replay usable through existing React application.",
+      "status": "pending",
+      "dependency_status": "previous milestone not yet accepted; independent work may proceed when externally blocked",
+      "files_changed": [],
+      "tests": {},
+      "commit_sha": null,
+      "pr_url": null,
+      "blockers": [
+        "Acceptance requires inspection and reuse of existing implementation."
+      ],
+      "next_step": "Inspect existing components against milestone criteria before implementing missing integration."
+    },
+    {
+      "id": "M7",
+      "objective": "Product acceptance",
+      "completion_criteria": "Separate synthetic software evidence, real-data acceptance and measured research quality.",
+      "status": "pending",
+      "dependency_status": "previous milestone not yet accepted; independent work may proceed when externally blocked",
+      "files_changed": [],
+      "tests": {},
+      "commit_sha": null,
+      "pr_url": null,
+      "blockers": [
+        "Acceptance requires inspection and reuse of existing implementation."
+      ],
+      "next_step": "Inspect existing components against milestone criteria before implementing missing integration."
+    }
+  ]
+}

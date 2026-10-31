@@ -16,6 +16,21 @@ def tick(value, up=False):
     return value.quantize(D('.01'),rounding=ROUND_CEILING if up else ROUND_FLOOR)
 
 
+def swing_conditions(f, close):
+    return f['ema10']>f['ema30'] and close>f['breakout20'] and f['relative_volume20']>=D('1.5')
+
+
+def swing_levels(high, atr14, tick_size):
+    """Existing breakout/2-ATR/2R geometry on an explicitly supplied tick grid."""
+    if any(not v.is_finite() or v<=0 for v in (high,atr14,tick_size)):
+        raise ValueError('invalid price geometry')
+    def grid(value, up=False):
+        return (value/tick_size).to_integral_value(rounding=ROUND_CEILING if up else ROUND_FLOOR)*tick_size
+    entry=grid(high+tick_size,True)
+    stop=grid(entry-2*atr14)
+    return dict(entry=entry,stop=stop,target=grid(entry+2*(entry-stop),True),entry_cap=grid(entry*D('1.01'),True))
+
+
 def analyze(dataset: Dataset, instrument_id: str, cutoff: datetime, *, code_version: str,
             generated_at: datetime|None=None) -> dict:
     bars=dataset.asof(instrument_id,cutoff)
@@ -24,14 +39,12 @@ def analyze(dataset: Dataset, instrument_id: str, cutoff: datetime, *, code_vers
     ready=cutoff+timedelta(minutes=1)
     future=[s for s in dataset.calendar.sessions if s.opens_at>ready]
     if len(future)<5: quality.append('calendar_horizon_unavailable')
-    conditions=bool(f and f['ema10']>f['ema30'] and bars[-1].close>f['breakout20'] and f['relative_volume20']>=D('1.5'))
+    conditions=bool(f and swing_conditions(f,bars[-1].close))
     action='INSUFFICIENT_EVIDENCE' if quality else ('BUY' if conditions else 'WAIT')
     execution=None; forecast=None; risk=None
     if action=='BUY':
-        entry=tick(bars[-1].high+D('.01'),True)
-        stop=tick(entry-2*f['atr14'])
-        target=tick(entry+2*(entry-stop),True)
-        entry_cap=tick(entry*D('1.01'),True)
+        levels=swing_levels(bars[-1].high,f['atr14'],D('.01'))
+        entry,stop,target,entry_cap=(levels[k] for k in ('entry','stop','target','entry_cap'))
         if stop<=D('.05'):
             quality.append('invalid_stop'); action='INSUFFICIENT_EVIDENCE'
         else:

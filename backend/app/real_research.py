@@ -1,5 +1,7 @@
 """Authenticated REAL-001 readiness. Never falls back to synthetic records."""
-from fastapi import APIRouter,Depends
+from fastapi import APIRouter,Depends,Response
+from typing import Literal
+from stock_discovery_contracts.v2 import Timestamp
 from .auth import require_auth
 
 router=APIRouter(prefix='/v1/real-research',dependencies=[Depends(require_auth)])
@@ -74,12 +76,17 @@ def companies():
 
 from .research import db
 @router.get('/companies/{listing}')
-def company_detail(listing:str,conn=Depends(db)):
+def company_detail(listing:str,response:Response,conn=Depends(db),analysis:Literal['company','swing']='company',cutoff_at:Timestamp|None=None):
     from fastapi import HTTPException
     from stock_discovery_analysis.real_views import company
     config=view_config()
     if listing not in config.listing_ids:raise HTTPException(404,'Company is not configured')
-    try:return company(conn,config,listing)
+    try:
+        if analysis=='swing':
+            from stock_discovery_analysis.swing_research import research
+            response.headers['Cache-Control']='no-store'
+            return research(conn,config,listing,cutoff_at=cutoff_at)
+        return company(conn,config,listing)
     except PermissionError:raise HTTPException(403,'Source permission denied') from None
     except (ValueError,OSError,KeyError):raise HTTPException(503,'Real company inputs are unavailable or ambiguous') from None
 
