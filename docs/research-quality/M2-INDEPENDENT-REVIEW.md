@@ -23,4 +23,19 @@ Source quotes and values are supplied by deterministic parsing after model selec
 
 Do not repurpose any development packet, excerpt, mutation or debugging output as an untouched holdout. An independent reviewer must supply separate permitted evidence and labels, kept unavailable to prompt tuning. The existing `M2-heldout-registration.json` remains empty and unevaluated. Before any holdout execution, approve/freeze the existing proposed protocol (`M2-financial-extraction-protocol.json`), including its minimum 50 independently verified cases, thresholds and denominators; register the reference hash, reviewer and time. Review disagreements independently. No developer-generated labels become human labels automatically.
 
-After human development review, select and freeze a configuration that passes both positive and negative development checks, then perform the separately approved holdout. Current v3 and v4 each pass negative abstention but miss one of two positives. M2 remains blocked; publication, paper admission and trading remain blocked.
+After human development review, select and freeze a configuration that passes both positive and negative development checks, then perform the separately approved holdout. Saved v3/v4 model runs each pass negative abstention but miss one of two positives. The exact-route supplement now passes 2/2 positive and 2/2 negative development cases **without model inference**; this does not correct or replace those model measurements. M2 remains blocked; publication, paper admission and trading remain blocked.
+
+## Final development handoff and required return
+
+Review these existing artifacts together; keep your completed review in a separate, versioned file:
+
+- `M2-financial-review-packet.json`: the original ten development cases, never a holdout.
+- `M2-hybrid-human-review.json`: the captured excerpt, expected cells and known adversarial cases.
+- `M2-abstention-review-supplement.json`: saved model outputs and verifier decisions across prompt versions.
+- `M2-exact-human-review-supplement.json` and `M2-exact-selection-development.json`: deterministic results and source locators; **model accuracy unavailable**.
+
+The external reviewer must supply their identity/reference, independence declaration, UTC review time, hashes of reviewed artifacts, independently checked original source identity and availability (or UNRESOLVED), and a per-case signed decision. Each decision must state entity/scope, annual versus quarterly period, currency/unit, independently transcribed value or reason to abstain, exact source location, citation support, numerical/verifier correctness, and disagreement resolution. Confirm that the contradictory row is a developer mutation, not official evidence. Missing original-file/hash/PIT/rights evidence stays UNRESOLVED. A second independent reviewer must resolve disagreements; neither the developer nor another LLM supplies independent human truth.
+
+Separately, the independent custodian must supply the 50 unseen permitted cases and human references described in `M2-UNSEEN-EVALUATION-HANDOFF.md`. Supply only a safe manifest/reference and access instructions initially; keep case contents outside development/tuning access. Exclude all ten development cases, the four familiar examples and their mutations/near duplicates. The blank template has no populated cases or labels.
+
+The owner must explicitly approve the existing proposed thresholds and frozen execution configuration **before** holdout use. No approval, reviewer, label or evaluation has been added by preparing this handoff. Development review, policy approval and unseen-evaluation acceptance are three separate requirements. Non-actionable product development may proceed under the latest roadmap instruction; none of these gates is waived.

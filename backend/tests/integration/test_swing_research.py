@@ -43,7 +43,7 @@ def setup(conn,tmp_path,case='buy'):
         scopes=tuple(SCOPES.values()),regions=('IN',),external_processors=(),retention_days=365,deletion_deadline_days=0,
         attribution='SYNTHETIC TEST ONLY',max_units_per_operation=100,audit_tombstones_permitted=False)
     if case=='no_acquire':grant=grant.model_copy(update={'allowed_uses':('store','derive','extract')})
-    if case=='adverse_event':grant=grant.model_copy(update={'scopes':grant.scopes+('financial_facts',)})
+    if case in ('adverse_event','combined_financial'):grant=grant.model_copy(update={'scopes':grant.scopes+('financial_facts',)})
     other=grant.model_copy(update={'grant_id':'TEST-G2','source_id':'test-other'})
     grants=[grant,other] if case in ('mixed','mixed_no_filing') else [grant]
     if case=='historical_parent':
@@ -94,7 +94,7 @@ def setup(conn,tmp_path,case='buy'):
             content_hash=content_hash(body),locator='test',metadata_only=True))
         doc=Document(revision=rev,issuer_id='test-issuer',title='Synthetic test',attribution='SYNTHETIC TEST ONLY',
             category='annual_report' if rid=='filing' else 'coverage_review',authority='issuer_primary' if rid=='filing' else 'secondary',media_type='application/vnd.stock-evidence+json'
-            if case=='adverse_event' and rid=='filing' else 'text/plain',body=body)
+            if case in ('adverse_event','combined_financial') and rid=='filing' else 'text/plain',body=body)
         stream=Stream(stream_id=rid,source_id='test-only',account_ref='test',scope='filings')
         result=ingest_evidence_page(conn,stream,EvidencePage(cursor=None,next_cursor=None,complete=True,records=(doc.model_dump(mode='json'),)),access=access)
         assert result['quarantined']==0
@@ -102,6 +102,12 @@ def setup(conn,tmp_path,case='buy'):
     filing='Fabricated filing, no market claims.'
     if case=='adverse_event':filing=json.dumps(dict(schema_version='1.0.0',text='Synthetic default claim.',facts=[],
         events=[dict(event_type='default',statement='Synthetic default claim.',status='unverified',locator='test')]))
+    if case=='combined_financial':filing=json.dumps(dict(schema_version='1.0.0',
+        text='SYNTHETIC TEST ONLY. Fictional comparative annual revenue, earnings and cash flow.',events=[],
+        facts=[dict(metric=m,value=v,missing_reason=None,unit='INR',period_start_at=f'{y}-01-01T00:00:00Z',
+            period_end_at=f'{y}-12-31T23:59:59Z',period_kind='annual',scope='consolidated',locator=f'test:{y}:{m}')
+            for y,values in ((2024,('100','10','15')),(2025,('120','15','12')))
+            for m,v in zip(('revenue','earnings','operating_cash_flow'),values)]))
     if case not in ('no_filing','mixed_no_filing'):rows.append(document('filing',filing))
     if case=='missing_settings':rows=[r for r in rows if r.revision_id!='identity']
     cov=[dict(requirement=name,covers_from=stamp(start),covers_through=cutoff,fresh_until=stamp(point+timedelta(days=1)),

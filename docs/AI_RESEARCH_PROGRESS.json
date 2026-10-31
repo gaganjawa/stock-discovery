@@ -1,17 +1,29 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-31",
-  "current_milestone": "M2 exact development selection passes; independent human/holdout gate BLOCKED",
-  "branch": "feat/stk-052-exact-financial-selection",
+  "updated_at": "2026-11-01",
+  "current_milestone": "M2 quality BLOCKED; non-actionable combined company research and synthetic replay UI integration",
+  "branch": "feat/stk-052-054-combined-research",
   "worktree": "stk-074-grant-fences",
-  "last_successful_commit": "54b27deb950322846183671c334bc634bc6b0ec0",
+  "last_successful_commit": "ceacc432abc1e02c55f4edce599a6cf2ef4e10dc",
   "pr": null,
   "completed_tests": {
-    "backend_worker": 757,
-    "combined_focused": 31,
-    "included_postgres": 10,
-    "syntax_json_whitespace": "passed",
-    "mandatory_exact_commit_ci": "pending"
+    "backend_worker": 769,
+    "new_focused_postgres": 11,
+    "focused_unit_and_regression": 56,
+    "script_tests": 13,
+    "contract_validators": 3,
+    "browser_mock_desktop_mobile": 4,
+    "postgres_lifecycle": "passed before final cached-claim hardening",
+    "mandatory_exact_commit_ci": "not delivered yet",
+    "new_actual_inference_calls": 0,
+    "postgres": 442,
+    "postgres_skipped": 0,
+    "final_focused_postgres": 16,
+    "final_focused_unit": 69,
+    "browser_authenticated_replay": 1,
+    "frontend_build": "passed",
+    "syntax_whitespace": "passed",
+    "validation_note": "769 full backend/worker and 442 PostgreSQL cases ran before final cached-claim hardening; final 69 unit and 16 PostgreSQL targeted cases cover that change. Counts overlap; final mandatory exact-commit CI remains required."
   },
   "failed_tests": [
     {
@@ -27,9 +39,9 @@
     "Actual representative-source extraction quality not passed; human holdout unverified."
   ],
   "pending_changes": [
-    "Exact route, regressions, zero-inference result and independent review/holdout preparation"
+    "STK-052/054 combined research integration, tests, external-review worksheet and checkpoint"
   ],
-  "next_action": "Deliver/review exact financial selection through protected CI. Independent human custodian must review M2-INDEPENDENT-REVIEW.md and M2-exact-human-review-supplement.json, approve proposed protocol and supply 50 unseen cases using M2-UNSEEN-EVALUATION-HANDOFF.md. Blank slots are not cases or labels. No model inference needed for exact cells; M2 acceptance remains BLOCKED, no roadmap promotion.",
+  "next_action": "Finish validation and focused review of combined company API/UI and synthetic frozen replay context; deliver via protected CI. Then extend frozen financial/technical replay using existing immutable evaluation contracts. Independent reviewer must supply source review, 50 unseen human-labelled permitted cases and frozen reference; proposed thresholds still need explicit owner approval.",
   "milestones": [
     {
       "id": "M0",
@@ -111,17 +123,16 @@
         "provenance": "Fresh local runs this increment; counts overlap focused tests, not research-quality acceptance.",
         "scripts": 13
       },
-      "commit_sha": "b9d48908eef665f7e1416bd8056d41911751b8c6",
-      "pr_url": "https://github.com/gaganjawa/stock-discovery/pull/26",
+      "commit_sha": "c1d8bf352f1bcb687c7d31ad102a281745cc617b",
+      "pr_url": "https://github.com/gaganjawa/stock-discovery/pull/27",
       "blockers": [
         "Human-verified reference/independent holdout and quality approval remain missing; developer labels are provisional.",
         "General real filing layouts require verified source-span profiles; current extraction only accepts explicit rows.",
         "M1 rights, raw prices and complete filing/event historical availability remain unqualified.",
         "llama.cpp backend has synthetic subprocess acceptance only; actual executable unavailable.",
-        "Representative-table model extraction returned zero verified cells; installed-model superiority not established.",
-        "Current daily development inference reservations exhausted (200000); no reset/refund or additional calls."
+        "Representative-table model extraction returned zero verified cells; installed-model superiority not established."
       ],
-      "next_step": "Deliver/review exact financial selection through protected CI. Independent human custodian must review M2-INDEPENDENT-REVIEW.md and M2-exact-human-review-supplement.json, approve proposed protocol and supply 50 unseen cases using M2-UNSEEN-EVALUATION-HANDOFF.md. Blank slots are not cases or labels. No model inference needed for exact cells; M2 acceptance remains BLOCKED, no roadmap promotion.",
+      "next_step": "External independent reviewer/custodian and explicit protocol approval required. Product development proceeds independently without quality acceptance.",
       "prior_pr21": {
         "number": 21,
         "url": "https://github.com/gaganjawa/stock-discovery/pull/21",
@@ -273,7 +284,20 @@
         "reviewer": null,
         "unseen_populated_cases": 0,
         "unseen_template_slots": 50
-      }
+      },
+      "prior_pr27": {
+        "number": 27,
+        "url": "https://github.com/gaganjawa/stock-discovery/pull/27",
+        "head_sha": "c1d8bf352f1bcb687c7d31ad102a281745cc617b",
+        "state": "merged",
+        "ci_run": "https://github.com/gaganjawa/stock-discovery/actions/runs/41228086897",
+        "ci_status": "unit/postgres/ui/checks success",
+        "merge_sha": "ceacc432abc1e02c55f4edce599a6cf2ef4e10dc",
+        "postgres": 431,
+        "zero_skips": true,
+        "migration_lifecycle": "passed in exact-commit CI"
+      },
+      "independent_review_handoff": "docs/research-quality/M2-INDEPENDENT-REVIEW.md finalized; reviewer and all holdout labels remain absent"
     },
     {
       "id": "M3",
@@ -294,53 +318,79 @@
       "id": "M4",
       "objective": "Combined research recommendation",
       "completion_criteria": "Versioned synthesis of verified AI and technical findings with deterministic risk vetoes.",
-      "status": "pending",
-      "dependency_status": "previous milestone not yet accepted; independent work may proceed when externally blocked",
-      "files_changed": [],
-      "tests": {},
+      "status": "non_actionable_increment_validated_pending_PR_review",
+      "dependency_status": "Independent development explicitly authorized; acceptance depends on unapproved M1/M2 and historical gates.",
+      "files_changed": [
+        "shared/stock_discovery_analysis/combined_research.py",
+        "frontend/src/CombinedResearch.tsx",
+        "docs/STK-052-054-combined-research.md"
+      ],
+      "tests": {
+        "new_focused_postgres": 11,
+        "final_combined_and_evidence_postgres": 16,
+        "desktop_mobile_browser": 4,
+        "authenticated_replay_browser": 1,
+        "scope": "Synthetic software evidence only; overlapping counts"
+      },
       "commit_sha": null,
       "pr_url": null,
       "blockers": [
         "Acceptance requires inspection and reuse of existing implementation."
       ],
-      "next_step": "Inspect existing components against milestone criteria before implementing missing integration."
+      "next_step": "Complete protected delivery; do not equate synthetic software acceptance with real or financial-quality acceptance."
     },
     {
       "id": "M5",
       "objective": "Historical replay and ground truth",
       "completion_criteria": "Freeze as-of research, reveal subsequent outcomes and compare baselines with leakage controls.",
-      "status": "pending",
-      "dependency_status": "previous milestone not yet accepted; independent work may proceed when externally blocked",
-      "files_changed": [],
-      "tests": {},
+      "status": "non_actionable_increment_validated_pending_PR_review",
+      "dependency_status": "Independent development explicitly authorized; acceptance depends on unapproved M1/M2 and historical gates.",
+      "files_changed": [
+        "shared/stock_discovery_analysis/combined_research.py",
+        "frontend/src/CombinedResearch.tsx",
+        "docs/STK-052-054-combined-research.md"
+      ],
+      "tests": {
+        "new_focused_postgres": 11,
+        "final_combined_and_evidence_postgres": 16,
+        "desktop_mobile_browser": 4,
+        "authenticated_replay_browser": 1,
+        "scope": "Synthetic software evidence only; overlapping counts"
+      },
       "commit_sha": null,
       "pr_url": null,
       "blockers": [
         "Acceptance requires inspection and reuse of existing implementation."
       ],
-      "next_step": "Reuse existing freeze/reveal and immutable governance for real historical integration; no new replay has been accepted."
+      "next_step": "Complete protected delivery; do not equate synthetic software acceptance with real or financial-quality acceptance."
     },
     {
       "id": "M6",
       "objective": "User-facing dashboard",
       "completion_criteria": "Research, bounded discovery and historical replay usable through existing React application.",
-      "status": "partial_first_screen_merged",
-      "dependency_status": "previous milestone not yet accepted; independent work may proceed when externally blocked",
+      "status": "non_actionable_increment_validated_pending_PR_review",
+      "dependency_status": "Independent development explicitly authorized; acceptance depends on unapproved M1/M2 and historical gates.",
       "files_changed": [
         "frontend/src/RealCompany.tsx",
         "frontend/src/RealSwing.tsx",
-        "frontend/tests/real-swing.spec.ts"
+        "frontend/tests/real-swing.spec.ts",
+        "shared/stock_discovery_analysis/combined_research.py",
+        "frontend/src/CombinedResearch.tsx",
+        "docs/STK-052-054-combined-research.md"
       ],
       "tests": {
-        "production_build": "passed",
-        "synthetic_desktop_mobile_browser": 2
+        "new_focused_postgres": 11,
+        "final_combined_and_evidence_postgres": 16,
+        "desktop_mobile_browser": 4,
+        "authenticated_replay_browser": 1,
+        "scope": "Synthetic software evidence only; overlapping counts"
       },
       "commit_sha": "c924912b3e0d5597bef088591ba2ae5c2aa8cdba",
       "pr_url": "https://github.com/gaganjawa/stock-discovery/pull/20",
       "blockers": [
         "Acceptance requires inspection and reuse of existing implementation."
       ],
-      "next_step": "Full AI synthesis, discovery ranking and historical freeze/reveal UI remain incomplete.",
+      "next_step": "Complete protected delivery; do not equate synthetic software acceptance with real or financial-quality acceptance.",
       "merge_sha": "907849399be33a0a6d178212b64b151de62320e9"
     },
     {
@@ -359,5 +409,15 @@
       "next_step": "Inspect existing components against milestone criteria before implementing missing integration."
     }
   ],
-  "runtime_cleanup": "Task-owned Ollama stopped; task-owned disposable PostgreSQL container and volume removed. Results and conservative accounting preserved; actual operational data untouched."
+  "runtime_cleanup": "Task-owned PostgreSQL container/volume and Vite/API/synthetic-only job processor stopped and removed. No actual database or model runtime used.",
+  "product_development_authorization": "Latest owner instruction permits independent non-actionable A\u2013D implementation while external M2 acceptance is blocked; no acceptance gate waived.",
+  "implementation_review": "Focused source, grant/transaction, cached-claim, as-of and UI review completed; no known P1/P2. Fresh independent PR review and exact-commit CI required before merge.",
+  "development_test_failures": [
+    {
+      "test": "Initial combined integration fixture",
+      "result": "3 failed / 4 passed",
+      "cause": "Scripted provider expected full citations instead of the existing compact citation_ids prompt contract.",
+      "resolution": "Corrected test adapter only; final targeted integration passed."
+    }
+  ]
 }
