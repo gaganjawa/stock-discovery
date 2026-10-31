@@ -1,13 +1,8 @@
-import { test, expect } from '@playwright/test'
-import { readFileSync, existsSync } from 'node:fs'
-const token=process.env.AUTH_TOKEN??(existsSync('../.env')?readFileSync('../.env','utf8').split('\n').find(x=>x.startsWith('AUTH_TOKEN='))?.slice(11):undefined)
+import { test, expect } from './fixtures/authenticated'
 
 test('three horizons, four decisions, research comparison and permission-gated source inspection',async({page})=>{
  test.setTimeout(180000)
- if(!token)throw new Error('Set the local test owner key')
  await page.goto('/#dashboard')
- await page.getByLabel('Owner access key').fill(token)
- await page.getByRole('button',{name:'Sign in',exact:true}).click()
  const discovery=page.getByRole('region',{name:'Three-horizon discovery'})
  await expect(discovery).toBeVisible()
  for(const name of ['Swing','Short-term','Long-term']){

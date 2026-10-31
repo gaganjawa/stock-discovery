@@ -1,13 +1,9 @@
-import {test,expect} from '@playwright/test'
-import {readFileSync,existsSync} from 'node:fs'
+import {test,expect} from './fixtures/authenticated'
+import {readFileSync} from 'node:fs'
 const manifest=JSON.parse(readFileSync(new URL('./fixtures/governance.json',import.meta.url),'utf8'))
-const token=process.env.AUTH_TOKEN??(existsSync('../.env')?readFileSync('../.env','utf8').split('\n').find(x=>x.startsWith('AUTH_TOKEN='))?.slice(11):undefined)
 
 test('immutable experiment registry, explicit unavailable outcomes and promotion blockers',async({page})=>{
- if(!token)throw new Error('Set the disposable test owner key')
  await page.goto('/')
- await page.getByLabel('Owner access key').fill(token)
- await page.getByRole('button',{name:'Sign in',exact:true}).click()
  await expect(page.getByRole('button',{name:'Sign out',exact:true})).toBeVisible()
  const origin=new URL(page.url()).origin
  const eid='SYN-BROWSER-'+crypto.randomUUID(),tid='TRIAL-'+crypto.randomUUID()

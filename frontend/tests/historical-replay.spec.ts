@@ -1,10 +1,6 @@
-import {test,expect} from '@playwright/test'
+import {test,expect} from './fixtures/authenticated'
 test('full fictional financial freeze and technical outcome remain distinct',async({page})=>{
- const token=process.env.AUTH_TOKEN
- if(!token)throw Error('Set the synthetic browser-test access key')
  await page.goto('/#dashboard')
- await page.getByLabel('Owner access key').fill(token)
- await page.getByRole('button',{name:'Sign in',exact:true}).click()
  await expect(page.getByRole('button',{name:'Sign out'})).toBeVisible()
  const initialize=page.getByRole('button',{name:'Load synthetic history'})
  if(await initialize.count())await initialize.click()
