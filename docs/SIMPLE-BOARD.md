@@ -108,3 +108,11 @@ Production build and two synthetic desktop/mobile browser regressions passed.
 No source acquisition or inference is triggered by opening the screen. Full AI
 synthesis, discovery ranking and historical replay UI remain incomplete.
 M1 real-data acceptance remains blocked; see [exact evidence gaps](AI_RESEARCH_DATA_ACCEPTANCE.md).
+
+31 October — STK-054 first swing research screen merged via PR #20 (`9078493`)
+with all required checks passed. Full M6 remains partial. STK-052 / M2 now adds
+model-selected exact source excerpts to the existing factual report; attributed
+quotations stay separate from verified numbers and event truth. 712 unit tests,
+25 fixed-RAG PostgreSQL cases, 37 affected database cases and 2 browser cases
+passed. Full database run: 415 passed / 1 existing expiry-lock timeout; isolated
+three-case rerun passed. Required PR CI/lifecycle pending; no real quality acceptance.

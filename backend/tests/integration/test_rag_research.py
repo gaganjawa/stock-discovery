@@ -261,3 +261,34 @@ def test_independent_factual_review_is_new_immutable_run_with_own_budget(db):
     assert db.execute("SELECT payload FROM discovery.rag_results WHERE run_id='SYN-run'").fetchone()[0]==parent_json
     assert db.execute('SELECT count(*) FROM discovery.rag_reservations').fetchone()[0]==2
     assert review_factual_run(db,parent_run_id='SYN-run',run_id='SYN-review',access=access(),budget=Budget(account='SYN-review-budget'),judge=RejectingJudge())['cache_reused']
+
+
+@pytest.mark.parametrize('revoke_during_call',[False,True])
+def test_factual_source_excerpts_use_existing_budget_cache_and_rights(db,revoke_during_call):
+    state={'revoked':False};g=access().load_grant(None)
+    a=evidence_access(load_grant=lambda s:g.model_copy(update={'status':'revoked','revoked_at':NOW}) if state['revoked'] else g)
+    class Factual(MockResearchProvider):
+        calls=0
+        def assess(self,request,**kw):
+            self.calls+=1;context=json.loads(request)['bundle']
+            assert context['excerpt_candidates']
+            chosen=context['excerpt_candidates'][0]
+            state['revoked']=revoke_during_call
+            return json.dumps(dict(factual_claims=context['candidates'][:1],interpretations=[],source_excerpts=[chosen]))
+    model=Factual()
+    result=run(db,provider=model,factual_report=True,access=a)
+    assert model.calls==1 and result['accounting']['actual_cost']=='0'
+    if revoke_during_call:
+        assert result['status']=='abstained' and 'factual_report' not in result
+    else:
+        assert result['status']=='completed'
+        report=result['factual_report'];assert report['accepted_source_excerpts'] and report['accepted_claims']
+        assert not report['qualified'] and report['publication']=='blocked'
+        assert all(not q['event_truth_verified'] for q in report['accepted_source_excerpts'])
+        before=db.execute('SELECT payload FROM discovery.rag_results WHERE run_id=%s',('SYN-run',)).fetchone()[0]
+        assert run(db,provider=model,factual_report=True,access=a)['cache_reused']
+        assert model.calls==1
+        assert db.execute('SELECT payload FROM discovery.rag_results WHERE run_id=%s',('SYN-run',)).fetchone()[0]==before
+        state['revoked']=True
+        with pytest.raises(PermissionError):run(db,provider=model,factual_report=True,access=a)
+    assert db.execute('SELECT count(*) FROM discovery.rag_reservations').fetchone()[0]==1
