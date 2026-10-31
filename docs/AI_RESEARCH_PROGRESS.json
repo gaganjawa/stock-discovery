@@ -1,16 +1,17 @@
 {
   "schema_version": 1,
   "updated_at": "2026-10-31",
-  "current_milestone": "M2 hybrid development positives recovered; human quality and negative model abstention blocked",
-  "branch": "feat/stk-052-hybrid-financial-selection",
+  "current_milestone": "M2 BLOCKED: negative abstention recovered, positive regression and independent human/holdout missing",
+  "branch": "feat/stk-052-explicit-financial-abstention",
   "worktree": "stk-074-grant-fences",
-  "last_successful_commit": "999a9cc8fec95d40a9786110d942648407054095",
+  "last_successful_commit": "2607e091e9002e4c68aa2321ae76c8edd0286922",
   "pr": null,
   "completed_tests": {
-    "backend_worker_before_final_report_helper": 745,
-    "final_focused": 10,
-    "isolated_postgres": 7,
-    "full_exact_commit_ci": "pending"
+    "backend_worker_v3": 748,
+    "final_combined_focused": 20,
+    "included_postgres": 8,
+    "syntax_json_whitespace": "passed",
+    "mandatory_exact_commit_ci": "pending"
   },
   "failed_tests": [
     {
@@ -26,9 +27,9 @@
     "Actual representative-source extraction quality not passed; human holdout unverified."
   ],
   "pending_changes": [
-    "Hybrid M2 development increment; prior evidence unchanged"
+    "M2 abstention code, regressions, preserved versioned experiments and reviewer worksheet"
   ],
-  "next_action": "Deliver hybrid selection increment through required CI/review. Human packet is ready at docs/research-quality/M2-hybrid-human-review.json. Correct negative model selections under separately bounded development protocol; VL structured-output compatibility unresolved. No M3\u2013M7 until independent human/holdout gate passes.",
+  "next_action": "Deliver abstention correction/experiments through required CI and review. Human reviewer should complete docs/research-quality/M2-INDEPENDENT-REVIEW.md with separate signed reference evidence. No reviewer or unseen holdout exists. Investigate annual/quarterly model selection under a separately bounded protocol before M2 promotion; no further calls in this run.",
   "milestones": [
     {
       "id": "M0",
@@ -90,7 +91,7 @@
       "id": "M2",
       "objective": "AI company research",
       "completion_criteria": "Cited structured company research with independent deterministic claim verification and preregistered quality evaluation.",
-      "status": "hybrid_positive_development_only",
+      "status": "BLOCKED_human_holdout_and_positive_selection",
       "dependency_status": "M1 real-data acceptance externally blocked; synthetic integration authorized",
       "files_changed": [
         "shared/stock_discovery_analysis/factual_research.py",
@@ -110,8 +111,8 @@
         "provenance": "Fresh local runs this increment; counts overlap focused tests, not research-quality acceptance.",
         "scripts": 13
       },
-      "commit_sha": "999a9cc8fec95d40a9786110d942648407054095",
-      "pr_url": "https://github.com/gaganjawa/stock-discovery/pull/24",
+      "commit_sha": "c50e3da3ee459c0957824f4495603faab24526c3",
+      "pr_url": "https://github.com/gaganjawa/stock-discovery/pull/25",
       "blockers": [
         "Human-verified reference/independent holdout and quality approval remain missing; developer labels are provisional.",
         "General real filing layouts require verified source-span profiles; current extraction only accepts explicit rows.",
@@ -120,7 +121,7 @@
         "Representative-table model extraction returned zero verified cells; installed-model superiority not established.",
         "Current daily development inference reservations exhausted (200000); no reset/refund or additional calls."
       ],
-      "next_step": "Deliver hybrid selection increment through required CI/review. Human packet is ready at docs/research-quality/M2-hybrid-human-review.json. Correct negative model selections under separately bounded development protocol; VL structured-output compatibility unresolved. No M3\u2013M7 until independent human/holdout gate passes.",
+      "next_step": "Deliver abstention correction/experiments through required CI and review. Human reviewer should complete docs/research-quality/M2-INDEPENDENT-REVIEW.md with separate signed reference evidence. No reviewer or unseen holdout exists. Investigate annual/quarterly model selection under a separately bounded protocol before M2 promotion; no further calls in this run.",
       "prior_pr21": {
         "number": 21,
         "url": "https://github.com/gaganjawa/stock-discovery/pull/21",
@@ -229,6 +230,27 @@
         "human_verified": false,
         "total_preserved_reservations": 26,
         "total_units": 520000
+      },
+      "prior_pr25": {
+        "number": 25,
+        "url": "https://github.com/gaganjawa/stock-discovery/pull/25",
+        "head_sha": "c50e3da3ee459c0957824f4495603faab24526c3",
+        "state": "merged",
+        "ci_run": "https://github.com/gaganjawa/stock-discovery/actions/runs/41224878830",
+        "ci_status": "unit/postgres/ui/checks all passed at c50e3da",
+        "merge_sha": "2607e091e9002e4c68aa2321ae76c8edd0286922"
+      },
+      "abstention_results": {
+        "v2_positive": "2/2",
+        "v2_negative": "0/2",
+        "v3_positive": "1/2",
+        "v3_negative": "2/2",
+        "v4_positive": "1/2",
+        "v4_negative": "2/2",
+        "quality_accepted": false,
+        "new_VL_calls": 0,
+        "new_calls": 8,
+        "total_reserved_units": 680000
       }
     },
     {

@@ -1,0 +1,433 @@
+{
+  "kind": "DEVELOPMENT review supplement, never holdout",
+  "original_packet": "M2-hybrid-human-review.json",
+  "source": {
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1067491/000106749125000010/exv99w08.htm",
+    "capture_method": "Public web-tool rendered excerpt; selected noncontiguous scope/title context and table, whitespace normalized.",
+    "source_lines": [
+      "4",
+      "21",
+      "3016-3023"
+    ],
+    "captured_at": "2026-10-31T16:23:37Z",
+    "original_document_sha256": null,
+    "original_public_availability_at": null,
+    "raw_local_download": "HTTP403; stopped; no retries or access-control workaround",
+    "rights_reference": "https://www.sec.gov/about/webmaster-frequently-asked-questions",
+    "human_verified": false,
+    "production_grant_activated": false,
+    "profile": {
+      "layout": "pipe-two-groups-two-years-1",
+      "text_hash": "2a6b3a9b36c3a64aacda7410994da56a6b4e6b7719746c998ed1203f766c1319",
+      "headers": [
+        [
+          "Particulars",
+          "Three months ended March 31,",
+          "Year ended March 31,"
+        ],
+        [
+          "",
+          "2025",
+          "2024",
+          "2025",
+          "2024"
+        ]
+      ],
+      "context_markers": [
+        "IFRS INR Earning Release",
+        "interim consolidated financial statements",
+        "crore"
+      ],
+      "unit": "INR_crore",
+      "scope": "consolidated",
+      "evidence_id": "SEC-INFY-2025-REVENUE-EXCERPT"
+    }
+  },
+  "human_verified": false,
+  "reviewer_ref": null,
+  "reviewed_at": null,
+  "reviewer_independence": null,
+  "official_entity_confirmation": null,
+  "cases": [
+    {
+      "case_id": "annual-current",
+      "source_kind": "captured_public_excerpt",
+      "excerpt": "IFRS INR Earning Release\ninterim consolidated financial statements\nRevenues for the three months and year ended March 31, 2025 and March 31, 2024 is as follows:\n(In [Image] crore)\nParticulars | Three months ended March 31, | Year ended March 31,\n | 2025 | 2024 | 2025 | 2024\nRevenue from software services | 38,999 | 36,064 | 155,395 | 145,285\nRevenue from products and platforms | 1,926 | 1,859 | 7,595 | 8,385\nTotal revenue from operations | 40,925 | 37,923 | 162,990 | 153,670\n",
+      "developer_reference": {
+        "row_label": "Total revenue from operations",
+        "period": "Year ended March 31, 2025",
+        "value": "162990",
+        "unit": "INR_crore",
+        "scope": "consolidated",
+        "evidence_id": "SEC-INFY-2025-REVENUE-EXCERPT",
+        "source_hash": "2a6b3a9b36c3a64aacda7410994da56a6b4e6b7719746c998ed1203f766c1319",
+        "locator": "row:Total revenue from operations/column:Year ended March 31, 2025",
+        "quote": "Total revenue from operations | 40,925 | 37,923 | 162,990 | 153,670"
+      },
+      "outputs": [
+        {
+          "run": "M2-hybrid-v2-actual-development.json",
+          "raw_output": "{\"cell_id\":\"C03\"}",
+          "selected_cell": {
+            "row_label": "Total revenue from operations",
+            "period": "Year ended March 31, 2025",
+            "value": "162990",
+            "unit": "INR_crore",
+            "scope": "consolidated",
+            "evidence_id": "SEC-INFY-2025-REVENUE-EXCERPT",
+            "source_hash": "2a6b3a9b36c3a64aacda7410994da56a6b4e6b7719746c998ed1203f766c1319",
+            "locator": "row:Total revenue from operations/column:Year ended March 31, 2025",
+            "quote": "Total revenue from operations | 40,925 | 37,923 | 162,990 | 153,670"
+          },
+          "accepted": true,
+          "error": null,
+          "contract_valid": true,
+          "application_report": {
+            "status": "VERIFIED_DEVELOPMENT_CELL",
+            "findings": [
+              {
+                "status": "extracted",
+                "value": "162990",
+                "unit": "INR_crore",
+                "scope": "consolidated",
+                "period": "Year ended March 31, 2025",
+                "evidence_id": "SEC-INFY-2025-REVENUE-EXCERPT",
+                "quote": "Total revenue from operations | 40,925 | 37,923 | 162,990 | 153,670"
+              }
+            ],
+            "text": "Consolidated total revenue from operations: 162990 INR_crore; Year ended March 31, 2025.",
+            "uncertainties": [
+              "Developer-pinned source profile; independent human review and original-document/PIT qualification pending."
+            ],
+            "actionable": false
+          }
+        },
+        {
+          "run": "M2-hybrid-v3-actual-development.json",
+          "raw_output": "{\"cell_id\":\"C03\"}",
+          "selected_cell": {
+            "row_label": "Total revenue from operations",
+            "period": "Year ended March 31, 2025",
+            "value": "162990",
+            "unit": "INR_crore",
+            "scope": "consolidated",
+            "evidence_id": "SEC-INFY-2025-REVENUE-EXCERPT",
+            "source_hash": "2a6b3a9b36c3a64aacda7410994da56a6b4e6b7719746c998ed1203f766c1319",
+            "locator": "row:Total revenue from operations/column:Year ended March 31, 2025",
+            "quote": "Total revenue from operations | 40,925 | 37,923 | 162,990 | 153,670"
+          },
+          "accepted": true,
+          "error": null,
+          "contract_valid": true,
+          "application_report": {
+            "status": "VERIFIED_DEVELOPMENT_CELL",
+            "findings": [
+              {
+                "status": "extracted",
+                "value": "162990",
+                "unit": "INR_crore",
+                "scope": "consolidated",
+                "period": "Year ended March 31, 2025",
+                "evidence_id": "SEC-INFY-2025-REVENUE-EXCERPT",
+                "quote": "Total revenue from operations | 40,925 | 37,923 | 162,990 | 153,670"
+              }
+            ],
+            "text": "Consolidated total revenue from operations: 162990 INR_crore; Year ended March 31, 2025.",
+            "uncertainties": [
+              "Developer-pinned source profile; independent human review and original-document/PIT qualification pending."
+            ],
+            "actionable": false
+          }
+        },
+        {
+          "run": "M2-hybrid-v4-actual-development.json",
+          "raw_output": "{\"cell_id\":\"C06\"}",
+          "selected_cell": {
+            "row_label": "Total revenue from operations",
+            "period": "Three months ended March 31, 2025",
+            "value": "40925",
+            "unit": "INR_crore",
+            "scope": "consolidated",
+            "evidence_id": "SEC-INFY-2025-REVENUE-EXCERPT",
+            "source_hash": "2a6b3a9b36c3a64aacda7410994da56a6b4e6b7719746c998ed1203f766c1319",
+            "locator": "row:Total revenue from operations/column:Three months ended March 31, 2025",
+            "quote": "Total revenue from operations | 40,925 | 37,923 | 162,990 | 153,670"
+          },
+          "accepted": false,
+          "error": "ValueError",
+          "contract_valid": true,
+          "application_report": {
+            "status": "INSUFFICIENT_EVIDENCE",
+            "findings": [],
+            "uncertainties": [
+              "Model selection was not verified."
+            ],
+            "actionable": false
+          }
+        }
+      ],
+      "human_reference": null,
+      "review_decision": null,
+      "review_notes": null
+    },
+    {
+      "case_id": "annual-prior",
+      "source_kind": "captured_public_excerpt",
+      "excerpt": "IFRS INR Earning Release\ninterim consolidated financial statements\nRevenues for the three months and year ended March 31, 2025 and March 31, 2024 is as follows:\n(In [Image] crore)\nParticulars | Three months ended March 31, | Year ended March 31,\n | 2025 | 2024 | 2025 | 2024\nRevenue from software services | 38,999 | 36,064 | 155,395 | 145,285\nRevenue from products and platforms | 1,926 | 1,859 | 7,595 | 8,385\nTotal revenue from operations | 40,925 | 37,923 | 162,990 | 153,670\n",
+      "developer_reference": {
+        "row_label": "Total revenue from operations",
+        "period": "Year ended March 31, 2024",
+        "value": "153670",
+        "unit": "INR_crore",
+        "scope": "consolidated",
+        "evidence_id": "SEC-INFY-2025-REVENUE-EXCERPT",
+        "source_hash": "2a6b3a9b36c3a64aacda7410994da56a6b4e6b7719746c998ed1203f766c1319",
+        "locator": "row:Total revenue from operations/column:Year ended March 31, 2024",
+        "quote": "Total revenue from operations | 40,925 | 37,923 | 162,990 | 153,670"
+      },
+      "outputs": [
+        {
+          "run": "M2-hybrid-v2-actual-development.json",
+          "raw_output": "{\"cell_id\":\"C10\"}",
+          "selected_cell": {
+            "row_label": "Total revenue from operations",
+            "period": "Year ended March 31, 2024",
+            "value": "153670",
+            "unit": "INR_crore",
+            "scope": "consolidated",
+            "evidence_id": "SEC-INFY-2025-REVENUE-EXCERPT",
+            "source_hash": "2a6b3a9b36c3a64aacda7410994da56a6b4e6b7719746c998ed1203f766c1319",
+            "locator": "row:Total revenue from operations/column:Year ended March 31, 2024",
+            "quote": "Total revenue from operations | 40,925 | 37,923 | 162,990 | 153,670"
+          },
+          "accepted": true,
+          "error": null,
+          "contract_valid": true,
+          "application_report": {
+            "status": "VERIFIED_DEVELOPMENT_CELL",
+            "findings": [
+              {
+                "status": "extracted",
+                "value": "153670",
+                "unit": "INR_crore",
+                "scope": "consolidated",
+                "period": "Year ended March 31, 2024",
+                "evidence_id": "SEC-INFY-2025-REVENUE-EXCERPT",
+                "quote": "Total revenue from operations | 40,925 | 37,923 | 162,990 | 153,670"
+              }
+            ],
+            "text": "Consolidated total revenue from operations: 153670 INR_crore; Year ended March 31, 2024.",
+            "uncertainties": [
+              "Developer-pinned source profile; independent human review and original-document/PIT qualification pending."
+            ],
+            "actionable": false
+          }
+        },
+        {
+          "run": "M2-hybrid-v3-actual-development.json",
+          "raw_output": "{\"cell_id\":\"C07\"}",
+          "selected_cell": {
+            "row_label": "Total revenue from operations",
+            "period": "Three months ended March 31, 2024",
+            "value": "37923",
+            "unit": "INR_crore",
+            "scope": "consolidated",
+            "evidence_id": "SEC-INFY-2025-REVENUE-EXCERPT",
+            "source_hash": "2a6b3a9b36c3a64aacda7410994da56a6b4e6b7719746c998ed1203f766c1319",
+            "locator": "row:Total revenue from operations/column:Three months ended March 31, 2024",
+            "quote": "Total revenue from operations | 40,925 | 37,923 | 162,990 | 153,670"
+          },
+          "accepted": false,
+          "error": "ValueError",
+          "contract_valid": true,
+          "application_report": {
+            "status": "INSUFFICIENT_EVIDENCE",
+            "findings": [],
+            "uncertainties": [
+              "Model selection was not verified."
+            ],
+            "actionable": false
+          }
+        },
+        {
+          "run": "M2-hybrid-v4-actual-development.json",
+          "raw_output": "{\"cell_id\":\"C10\"}",
+          "selected_cell": {
+            "row_label": "Total revenue from operations",
+            "period": "Year ended March 31, 2024",
+            "value": "153670",
+            "unit": "INR_crore",
+            "scope": "consolidated",
+            "evidence_id": "SEC-INFY-2025-REVENUE-EXCERPT",
+            "source_hash": "2a6b3a9b36c3a64aacda7410994da56a6b4e6b7719746c998ed1203f766c1319",
+            "locator": "row:Total revenue from operations/column:Year ended March 31, 2024",
+            "quote": "Total revenue from operations | 40,925 | 37,923 | 162,990 | 153,670"
+          },
+          "accepted": true,
+          "error": null,
+          "contract_valid": true,
+          "application_report": {
+            "status": "VERIFIED_DEVELOPMENT_CELL",
+            "findings": [
+              {
+                "status": "extracted",
+                "value": "153670",
+                "unit": "INR_crore",
+                "scope": "consolidated",
+                "period": "Year ended March 31, 2024",
+                "evidence_id": "SEC-INFY-2025-REVENUE-EXCERPT",
+                "quote": "Total revenue from operations | 40,925 | 37,923 | 162,990 | 153,670"
+              }
+            ],
+            "text": "Consolidated total revenue from operations: 153670 INR_crore; Year ended March 31, 2024.",
+            "uncertainties": [
+              "Developer-pinned source profile; independent human review and original-document/PIT qualification pending."
+            ],
+            "actionable": false
+          }
+        }
+      ],
+      "human_reference": null,
+      "review_decision": null,
+      "review_notes": null
+    },
+    {
+      "case_id": "missing-period",
+      "source_kind": "captured_public_excerpt",
+      "excerpt": "IFRS INR Earning Release\ninterim consolidated financial statements\nRevenues for the three months and year ended March 31, 2025 and March 31, 2024 is as follows:\n(In [Image] crore)\nParticulars | Three months ended March 31, | Year ended March 31,\n | 2025 | 2024 | 2025 | 2024\nRevenue from software services | 38,999 | 36,064 | 155,395 | 145,285\nRevenue from products and platforms | 1,926 | 1,859 | 7,595 | 8,385\nTotal revenue from operations | 40,925 | 37,923 | 162,990 | 153,670\n",
+      "developer_reference": null,
+      "outputs": [
+        {
+          "run": "M2-hybrid-v2-actual-development.json",
+          "raw_output": "{\"cell_id\":\"C03\"}",
+          "selected_cell": {
+            "row_label": "Total revenue from operations",
+            "period": "Year ended March 31, 2025",
+            "value": "162990",
+            "unit": "INR_crore",
+            "scope": "consolidated",
+            "evidence_id": "SEC-INFY-2025-REVENUE-EXCERPT",
+            "source_hash": "2a6b3a9b36c3a64aacda7410994da56a6b4e6b7719746c998ed1203f766c1319",
+            "locator": "row:Total revenue from operations/column:Year ended March 31, 2025",
+            "quote": "Total revenue from operations | 40,925 | 37,923 | 162,990 | 153,670"
+          },
+          "accepted": false,
+          "error": "ValueError",
+          "contract_valid": true,
+          "application_report": {
+            "status": "INSUFFICIENT_EVIDENCE",
+            "findings": [],
+            "uncertainties": [
+              "Model selection was not verified."
+            ],
+            "actionable": false
+          }
+        },
+        {
+          "run": "M2-hybrid-v3-actual-development.json",
+          "raw_output": "{\"cell_id\":\"ABSTAIN\"}",
+          "selected_cell": null,
+          "accepted": false,
+          "error": null,
+          "contract_valid": true,
+          "application_report": {
+            "status": "INSUFFICIENT_EVIDENCE",
+            "findings": [],
+            "uncertainties": [
+              "No supported selection."
+            ],
+            "actionable": false
+          }
+        },
+        {
+          "run": "M2-hybrid-v4-actual-development.json",
+          "raw_output": "{\"cell_id\":\"ABSTAIN\"}",
+          "selected_cell": null,
+          "accepted": false,
+          "error": null,
+          "contract_valid": true,
+          "application_report": {
+            "status": "INSUFFICIENT_EVIDENCE",
+            "findings": [],
+            "uncertainties": [
+              "No supported selection."
+            ],
+            "actionable": false
+          }
+        }
+      ],
+      "human_reference": null,
+      "review_decision": null,
+      "review_notes": null
+    },
+    {
+      "case_id": "conflict",
+      "source_kind": "adversarial_mutation",
+      "excerpt": "IFRS INR Earning Release\ninterim consolidated financial statements\nRevenues for the three months and year ended March 31, 2025 and March 31, 2024 is as follows:\n(In [Image] crore)\nParticulars | Three months ended March 31, | Year ended March 31,\n | 2025 | 2024 | 2025 | 2024\nRevenue from software services | 38,999 | 36,064 | 155,395 | 145,285\nRevenue from products and platforms | 1,926 | 1,859 | 7,595 | 8,385\nTotal revenue from operations | 40,925 | 37,923 | 162,990 | 153,670\nTotal revenue from operations | 1 | 2 | 3 | 4\n",
+      "developer_reference": null,
+      "outputs": [
+        {
+          "run": "M2-hybrid-v2-actual-development.json",
+          "raw_output": "{\"cell_id\":\"C06\"}",
+          "selected_cell": {
+            "row_label": "Revenue from software services",
+            "period": "Year ended March 31, 2025",
+            "value": "155395",
+            "unit": "INR_crore",
+            "scope": "consolidated",
+            "evidence_id": "SEC-INFY-2025-REVENUE-EXCERPT",
+            "source_hash": "5ba34c7611f6b7db9aa61da9bb811f948f6dc606de73ace94303d372a579af95",
+            "locator": "row:Revenue from software services/column:Year ended March 31, 2025",
+            "quote": "Revenue from software services | 38,999 | 36,064 | 155,395 | 145,285"
+          },
+          "accepted": false,
+          "error": "ValueError",
+          "contract_valid": true,
+          "application_report": {
+            "status": "INSUFFICIENT_EVIDENCE",
+            "findings": [],
+            "uncertainties": [
+              "Model selection was not verified."
+            ],
+            "actionable": false
+          }
+        },
+        {
+          "run": "M2-hybrid-v3-actual-development.json",
+          "raw_output": "{\"cell_id\":\"ABSTAIN\"}",
+          "selected_cell": null,
+          "accepted": false,
+          "error": null,
+          "contract_valid": true,
+          "application_report": {
+            "status": "INSUFFICIENT_EVIDENCE",
+            "findings": [],
+            "uncertainties": [
+              "No supported selection."
+            ],
+            "actionable": false
+          }
+        },
+        {
+          "run": "M2-hybrid-v4-actual-development.json",
+          "raw_output": "{ \"cell_id\": \"ABSTAIN\" }",
+          "selected_cell": null,
+          "accepted": false,
+          "error": null,
+          "contract_valid": true,
+          "application_report": {
+            "status": "INSUFFICIENT_EVIDENCE",
+            "findings": [],
+            "uncertainties": [
+              "No supported selection."
+            ],
+            "actionable": false
+          }
+        }
+      ],
+      "human_reference": null,
+      "review_decision": null,
+      "review_notes": null
+    }
+  ]
+}

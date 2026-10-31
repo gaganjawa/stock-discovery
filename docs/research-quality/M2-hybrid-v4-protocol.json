@@ -1,0 +1,40 @@
+{
+  "version": "financial-cell-selection-4",
+  "prompt_hash": "af138e03d412c3a9f587be39098b6c759f51fb48aa3c2bb4bdbbb136e1e80ca4",
+  "models": [
+    "qwen2.5-coder:7b"
+  ],
+  "cases": [
+    "annual-current",
+    "annual-prior",
+    "missing-period",
+    "conflict"
+  ],
+  "maximum_new_calls": 4,
+  "budget": {
+    "account": "M2-span-development",
+    "max_run_units": 20000,
+    "max_day_units": 680000,
+    "max_month_units": 2000000,
+    "max_output_units": 1800,
+    "max_seconds": 120,
+    "max_run_cost": "0",
+    "max_day_cost": "0",
+    "max_month_cost": "0"
+  },
+  "prior_reserved_units": 600000,
+  "additional_authorized_development_units": 80000,
+  "authorization": "Owner requested coding-model-only negative-case correction; preserve all 26 prior reservations.",
+  "context": 16384,
+  "temperature": 0,
+  "seed": 0,
+  "output_limit": 1800,
+  "human_verified": false,
+  "holdout_used": false,
+  "success_criterion": "2/2 supported model selections and 2/2 explicit contract-valid model abstentions; rejection is not abstention",
+  "changes": [
+    "Restore quote, locator and source hash in candidate context"
+  ],
+  "causal_limit": "One context change from v3; repeated development cases, no held-out quality assertion.",
+  "purpose": "Final four-call development diagnostic: restore full source-cell context only; preserve explicit abstention and row/period metadata."
+}
