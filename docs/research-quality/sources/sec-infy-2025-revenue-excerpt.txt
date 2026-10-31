@@ -1,0 +1,9 @@
+IFRS INR Earning Release
+interim consolidated financial statements
+Revenues for the three months and year ended March 31, 2025 and March 31, 2024 is as follows:
+(In [Image] crore)
+Particulars | Three months ended March 31, | Year ended March 31,
+ | 2025 | 2024 | 2025 | 2024
+Revenue from software services | 38,999 | 36,064 | 155,395 | 145,285
+Revenue from products and platforms | 1,926 | 1,859 | 7,595 | 8,385
+Total revenue from operations | 40,925 | 37,923 | 162,990 | 153,670

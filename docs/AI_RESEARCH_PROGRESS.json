@@ -1,34 +1,17 @@
 {
   "schema_version": 1,
   "updated_at": "2026-10-31",
-  "current_milestone": "M2 optional runtimes and actual synthetic development inference",
-  "branch": "feat/stk-052-configurable-research-runtime",
+  "current_milestone": "M2 representative-source development benchmark; quality NOT PASSED",
+  "branch": "feat/stk-052-financial-span-evaluation",
   "worktree": "stk-074-grant-fences",
-  "last_successful_commit": "f05d329296643dab2195748256ecab9bbeb7b432",
-  "pr": {
-    "number": 22,
-    "url": "https://github.com/gaganjawa/stock-discovery/pull/22",
-    "head_sha": "4a1e0a1e96abd917f9d9bc3fa2d9005ba7a8c053",
-    "state": "merged",
-    "ci_run": "https://github.com/gaganjawa/stock-discovery/actions/runs/41216191234",
-    "ci_status": {
-      "unit": "passed",
-      "postgres": "passed",
-      "ui": "passed",
-      "checks": "passed"
-    },
-    "merge_sha": "f05d329296643dab2195748256ecab9bbeb7b432",
-    "postgres": 419,
-    "zero_skips": true,
-    "migration_lifecycle": "passed in exact-commit GitHub CI"
-  },
+  "last_successful_commit": "103f5ffb6c05ea80a516ecc37f5385b837307b68",
+  "pr": null,
   "completed_tests": {
-    "backend_worker": 736,
-    "filing_rag_postgres": 30,
-    "focused_financial_factual_rag_runtime": 89,
-    "provider_pilot": 48,
+    "backend_worker": 740,
+    "span_and_existing_financial_postgres": 10,
     "syntax_json_diff": "passed",
-    "provenance": "fresh local execution; overlapping counts; full exact-commit CI required"
+    "provenance": "Fresh local runs this increment; counts overlap focused tests, not research-quality acceptance.",
+    "scripts": 13
   },
   "failed_tests": [
     {
@@ -40,12 +23,13 @@
   ],
   "known_blockers": [
     "Real-source rights/retention/adjustment and complete evidence remain unqualified.",
-    "Human research-quality calibration and prospective policy approval remain unapproved."
+    "Human research-quality calibration and prospective policy approval remain unapproved.",
+    "Actual representative-source extraction quality not passed; human holdout unverified."
   ],
   "pending_changes": [
-    "runtime/provider and prompt changes, regressions, developer review packet and actual synthetic run evidence"
+    "M2 table-span harness, synthetic regressions, disclosed public-source benchmark results and checkpoint; not yet committed."
   ],
-  "next_action": "Deliver runtime increment through required CI. Continue verified source-span layout support, human-reference review and combined research integration; no research-quality acceptance from development calls.",
+  "next_action": "Review/deliver the span development harness through protected CI. M2 has not passed: diagnose model extraction and response-format failures on development cases within an explicit bounded resource plan; obtain independent human reference/holdout. Do not start M3\u2013M7 before M2 acceptance.",
   "milestones": [
     {
       "id": "M0",
@@ -107,7 +91,7 @@
       "id": "M2",
       "objective": "AI company research",
       "completion_criteria": "Cited structured company research with independent deterministic claim verification and preregistered quality evaluation.",
-      "status": "runtime_increment_reviewed_ci_pending",
+      "status": "development_quality_not_passed",
       "dependency_status": "M1 real-data acceptance externally blocked; synthetic integration authorized",
       "files_changed": [
         "shared/stock_discovery_analysis/factual_research.py",
@@ -121,22 +105,22 @@
         "docs/AI_RESEARCH_IMPLEMENTATION_PLAN.md"
       ],
       "tests": {
-        "backend_worker": 736,
-        "filing_rag_postgres": 30,
-        "focused_financial_factual_rag_runtime": 89,
-        "provider_pilot": 48,
-        "syntax_json_diff": "passed",
-        "provenance": "fresh local execution; overlapping counts; full exact-commit CI required"
+        "backend_worker": 740,
+        "span_and_existing_financial_postgres": 10,
+        "syntax_json_diff": "pending final check",
+        "provenance": "Fresh local runs this increment; counts overlap focused tests, not research-quality acceptance."
       },
-      "commit_sha": "4a1e0a1e96abd917f9d9bc3fa2d9005ba7a8c053",
-      "pr_url": "https://github.com/gaganjawa/stock-discovery/pull/22",
+      "commit_sha": "9eeb2cb072f89368280c6cf3983aec190f6816fd",
+      "pr_url": "https://github.com/gaganjawa/stock-discovery/pull/23",
       "blockers": [
         "Human-verified reference/independent holdout and quality approval remain missing; developer labels are provisional.",
         "General real filing layouts require verified source-span profiles; current extraction only accepts explicit rows.",
         "M1 rights, raw prices and complete filing/event historical availability remain unqualified.",
-        "llama.cpp backend has synthetic subprocess acceptance only; actual executable unavailable."
+        "llama.cpp backend has synthetic subprocess acceptance only; actual executable unavailable.",
+        "Representative-table model extraction returned zero verified cells; installed-model superiority not established.",
+        "Current daily development inference reservations exhausted (200000); no reset/refund or additional calls."
       ],
-      "next_step": "Deliver runtime increment through required CI. Continue verified source-span layout support, human-reference review and combined research integration; no research-quality acceptance from development calls.",
+      "next_step": "Review/deliver the span development harness through protected CI. M2 has not passed: diagnose model extraction and response-format failures on development cases within an explicit bounded resource plan; obtain independent human reference/holdout. Do not start M3\u2013M7 before M2 acceptance.",
       "prior_pr21": {
         "number": 21,
         "url": "https://github.com/gaganjawa/stock-discovery/pull/21",
@@ -188,6 +172,44 @@
         "cost_usd": "0",
         "evidence": "docs/research-quality/M2-actual-local-development.json",
         "human_verified": false
+      },
+      "prior_pr23": {
+        "number": 23,
+        "url": "https://github.com/gaganjawa/stock-discovery/pull/23",
+        "head_sha": "9eeb2cb072f89368280c6cf3983aec190f6816fd",
+        "state": "merged",
+        "ci_run": "https://github.com/gaganjawa/stock-discovery/actions/runs/41218435904",
+        "ci_status": {
+          "unit": "passed",
+          "postgres": "passed",
+          "ui": "passed",
+          "checks": "passed"
+        },
+        "merge_sha": "103f5ffb6c05ea80a516ecc37f5385b837307b68",
+        "postgres": 421,
+        "zero_skips": true,
+        "migration_lifecycle": "passed in exact-commit GitHub CI"
+      },
+      "branch": "feat/stk-052-financial-span-evaluation",
+      "span_evaluation": {
+        "real_source": "Selected SEC Infosys 2025 IFRS INR revenue table excerpt, not original HTML; original availability/hash unknown; raw download HTTP403 stopped.",
+        "actual_calls": 10,
+        "models": [
+          "qwen2.5-coder:7b",
+          "qwen3-vl:8b"
+        ],
+        "per_model_original_positive_extraction": "0/2",
+        "original_strict_negative_abstention": "0/2 per model",
+        "coder_status_only_negative_abstention": "2/2",
+        "diagnostic": "Coder valid abstention on supported positive; VL empty final response. Neither extracted a supported cell.",
+        "unsupported_acceptance": "UNAVAILABLE; zero accepted denominator",
+        "reserved_units": 200000,
+        "cost_usd": "0",
+        "human_verified": false,
+        "quality_accepted": false,
+        "holdout_used": false,
+        "report": "docs/research-quality/M2-span-actual-development.json",
+        "analysis": "docs/research-quality/M2-span-results-analysis.json"
       }
     },
     {
@@ -273,5 +295,6 @@
       ],
       "next_step": "Inspect existing components against milestone criteria before implementing missing integration."
     }
-  ]
+  ],
+  "runtime_cleanup": "Task-owned Ollama stopped and disposable PostgreSQL container/volume removed after exporting results; no actual database or grants touched."
 }

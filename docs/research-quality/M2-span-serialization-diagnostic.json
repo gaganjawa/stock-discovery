@@ -1,0 +1,345 @@
+{
+  "kind": "actual_local_development_span_evaluation",
+  "human_verified": false,
+  "holdout_used": false,
+  "quality_accepted": false,
+  "source": {
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1067491/000106749125000010/exv99w08.htm",
+    "capture_method": "Public web-tool rendered excerpt; selected noncontiguous scope/title context and table, whitespace normalized.",
+    "source_lines": [
+      "4",
+      "21",
+      "3016-3023"
+    ],
+    "captured_at": "2026-10-31T16:23:37Z",
+    "original_document_sha256": null,
+    "original_public_availability_at": null,
+    "raw_local_download": "HTTP403; stopped; no retries or access-control workaround",
+    "rights_reference": "https://www.sec.gov/about/webmaster-frequently-asked-questions",
+    "human_verified": false,
+    "production_grant_activated": false,
+    "profile": {
+      "layout": "pipe-two-groups-two-years-1",
+      "text_hash": "2a6b3a9b36c3a64aacda7410994da56a6b4e6b7719746c998ed1203f766c1319",
+      "headers": [
+        [
+          "Particulars",
+          "Three months ended March 31,",
+          "Year ended March 31,"
+        ],
+        [
+          "",
+          "2025",
+          "2024",
+          "2025",
+          "2024"
+        ]
+      ],
+      "context_markers": [
+        "IFRS INR Earning Release",
+        "interim consolidated financial statements",
+        "crore"
+      ],
+      "unit": "INR_crore",
+      "scope": "consolidated",
+      "evidence_id": "SEC-INFY-2025-REVENUE-EXCERPT"
+    }
+  },
+  "dataset_hash": "75dead4d27576bdd93e9fdcb3e7b4f65d3014381cf41b30b8adbc295c0a9e136",
+  "protocol_hash": "9c3e01d4ed038e48255d927c11da8b4ce246045e092dfc40a6616ac127071521",
+  "prompt_hash": "ccb4b0c3a70bfff47db926c878096123c01ccef64c517595ab33daded1e4f10d",
+  "cutoff_at": "2026-10-31T16:23:37Z",
+  "existing_development_packet_sha256": "c4d260d559b0b6b5b0a026f7f75ff21c89074ff6f01cd6f6db036f2be59f3943",
+  "models": [
+    {
+      "model": {
+        "id": "qwen2.5-coder:7b",
+        "version": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+        "content_hash": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364"
+      },
+      "cases": [
+        {
+          "case_id": "annual-current",
+          "expected": {
+            "row_label": "Total revenue from operations",
+            "period": "Year ended March 31, 2025",
+            "value": "162990",
+            "unit": "INR_crore",
+            "scope": "consolidated",
+            "evidence_id": "SEC-INFY-2025-REVENUE-EXCERPT",
+            "source_hash": "2a6b3a9b36c3a64aacda7410994da56a6b4e6b7719746c998ed1203f766c1319",
+            "locator": "row:Total revenue from operations/column:Year ended March 31, 2025",
+            "quote": "Total revenue from operations | 40,925 | 37,923 | 162,990 | 153,670"
+          },
+          "proposal": {
+            "status": "insufficient_evidence",
+            "value": null,
+            "unit": null,
+            "scope": null,
+            "period": null,
+            "evidence_id": null,
+            "quote": null
+          },
+          "accepted": false,
+          "error": null,
+          "denial": null,
+          "model": {
+            "id": "qwen2.5-coder:7b",
+            "version": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+            "content_hash": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364"
+          },
+          "prompt_hash": "ccb4b0c3a70bfff47db926c878096123c01ccef64c517595ab33daded1e4f10d",
+          "request_hash": "b62c5cc5ea8d563a61687c1dc263b006584aef536a16461df0229de641cb90f4",
+          "source_hash": "2a6b3a9b36c3a64aacda7410994da56a6b4e6b7719746c998ed1203f766c1319",
+          "source_kind": "captured_public_excerpt",
+          "cutoff_at": "2026-10-31T16:23:37Z",
+          "human_verified": false,
+          "holdout": false,
+          "actionable": false,
+          "latency_ms": 11389,
+          "raw_response": "{\n  \"status\": \"insufficient_evidence\",\n  \"value\": null,\n  \"unit\": null,\n  \"scope\": null,\n  \"period\": null,\n  \"evidence_id\": null,\n  \"quote\": null\n}",
+          "accounting": {
+            "input_bytes": 2810,
+            "output_bytes": 147,
+            "reserved_units": 20000,
+            "reservation_released": false,
+            "actual_cost_usd": "0"
+          }
+        }
+      ],
+      "usage": [
+        {
+          "model": {
+            "id": "qwen2.5-coder:7b",
+            "version": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+            "content_hash": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364"
+          },
+          "status": "returned",
+          "prompt_eval_count": 570,
+          "eval_count": 53,
+          "total_duration": 11377932292,
+          "load_duration": 8714354625,
+          "wall_ms": 11380,
+          "cost": "0"
+        }
+      ],
+      "metrics": {
+        "run_kind": "development",
+        "human_verified": false,
+        "holdout_used": false,
+        "quality_accepted": false,
+        "strategy_promotion": false,
+        "dataset_hash": "75dead4d27576bdd93e9fdcb3e7b4f65d3014381cf41b30b8adbc295c0a9e136",
+        "protocol_hash": "9c3e01d4ed038e48255d927c11da8b4ce246045e092dfc40a6616ac127071521",
+        "cases": 1,
+        "metrics": {
+          "numeric_accuracy": {
+            "numerator": 0,
+            "denominator": 1,
+            "value": 0.0
+          },
+          "unit_accuracy": {
+            "numerator": 0,
+            "denominator": 1,
+            "value": 0.0
+          },
+          "period_accuracy": {
+            "numerator": 0,
+            "denominator": 1,
+            "value": 0.0
+          },
+          "citation_identity": {
+            "numerator": 0,
+            "denominator": 1,
+            "value": 0.0
+          },
+          "source_span_support": {
+            "numerator": 0,
+            "denominator": 1,
+            "value": 0.0
+          },
+          "extraction_recall": {
+            "numerator": 0,
+            "denominator": 1,
+            "value": 0.0
+          },
+          "unsupported_accepted": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null
+          },
+          "required_abstention": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null
+          },
+          "runtime_failure": {
+            "numerator": 0,
+            "denominator": 1,
+            "value": 0.0
+          }
+        },
+        "counts": {
+          "positive": 1,
+          "negative": 0,
+          "accepted": 0,
+          "correct_accepted": 0
+        },
+        "abstention_wilson95": null,
+        "limitations": [
+          "Developer/parser references are not independently human-verified labels.",
+          "Field metrics include failed/abstained positive cases; unsupported acceptance uses accepted claims only.",
+          "Invalid or failed model calls are not counted as successful model abstentions.",
+          "Small development samples cannot establish general financial accuracy or model superiority."
+        ],
+        "report_hash": "eb63b320149954c706bc25a4b623102688abeb6da140e90f53fd864c5226d3ab"
+      }
+    },
+    {
+      "model": {
+        "id": "qwen3-vl:8b",
+        "version": "9cf69da2b16d097f7def535917c4b55a95d6c7ee5700eb69ab86b01b3cfca487",
+        "content_hash": "9cf69da2b16d097f7def535917c4b55a95d6c7ee5700eb69ab86b01b3cfca487"
+      },
+      "cases": [
+        {
+          "case_id": "annual-current",
+          "expected": {
+            "row_label": "Total revenue from operations",
+            "period": "Year ended March 31, 2025",
+            "value": "162990",
+            "unit": "INR_crore",
+            "scope": "consolidated",
+            "evidence_id": "SEC-INFY-2025-REVENUE-EXCERPT",
+            "source_hash": "2a6b3a9b36c3a64aacda7410994da56a6b4e6b7719746c998ed1203f766c1319",
+            "locator": "row:Total revenue from operations/column:Year ended March 31, 2025",
+            "quote": "Total revenue from operations | 40,925 | 37,923 | 162,990 | 153,670"
+          },
+          "proposal": null,
+          "accepted": false,
+          "error": "JSONDecodeError",
+          "denial": null,
+          "model": {
+            "id": "qwen3-vl:8b",
+            "version": "9cf69da2b16d097f7def535917c4b55a95d6c7ee5700eb69ab86b01b3cfca487",
+            "content_hash": "9cf69da2b16d097f7def535917c4b55a95d6c7ee5700eb69ab86b01b3cfca487"
+          },
+          "prompt_hash": "ccb4b0c3a70bfff47db926c878096123c01ccef64c517595ab33daded1e4f10d",
+          "request_hash": "0c7e6168d6fd2e9a0308c8aff0895f12964afd3f2565d1e0dce7a55dc7237dc3",
+          "source_hash": "2a6b3a9b36c3a64aacda7410994da56a6b4e6b7719746c998ed1203f766c1319",
+          "source_kind": "captured_public_excerpt",
+          "cutoff_at": "2026-10-31T16:23:37Z",
+          "human_verified": false,
+          "holdout": false,
+          "actionable": false,
+          "latency_ms": 11070,
+          "raw_response": "",
+          "accounting": {
+            "input_bytes": 2810,
+            "output_bytes": 0,
+            "reserved_units": 20000,
+            "reservation_released": false,
+            "actual_cost_usd": "0"
+          }
+        }
+      ],
+      "usage": [
+        {
+          "model": {
+            "id": "qwen3-vl:8b",
+            "version": "9cf69da2b16d097f7def535917c4b55a95d6c7ee5700eb69ab86b01b3cfca487",
+            "content_hash": "9cf69da2b16d097f7def535917c4b55a95d6c7ee5700eb69ab86b01b3cfca487"
+          },
+          "status": "returned",
+          "prompt_eval_count": 551,
+          "eval_count": 51,
+          "total_duration": 11063565625,
+          "load_duration": 8234142625,
+          "wall_ms": 11066,
+          "cost": "0"
+        },
+        {
+          "model": {
+            "id": "qwen3-vl:8b",
+            "version": "9cf69da2b16d097f7def535917c4b55a95d6c7ee5700eb69ab86b01b3cfca487",
+            "content_hash": "9cf69da2b16d097f7def535917c4b55a95d6c7ee5700eb69ab86b01b3cfca487"
+          },
+          "status": "failed_ambiguous_usage",
+          "wall_ms": 11066,
+          "cost": "0"
+        }
+      ],
+      "metrics": {
+        "run_kind": "development",
+        "human_verified": false,
+        "holdout_used": false,
+        "quality_accepted": false,
+        "strategy_promotion": false,
+        "dataset_hash": "75dead4d27576bdd93e9fdcb3e7b4f65d3014381cf41b30b8adbc295c0a9e136",
+        "protocol_hash": "9c3e01d4ed038e48255d927c11da8b4ce246045e092dfc40a6616ac127071521",
+        "cases": 1,
+        "metrics": {
+          "numeric_accuracy": {
+            "numerator": 0,
+            "denominator": 1,
+            "value": 0.0
+          },
+          "unit_accuracy": {
+            "numerator": 0,
+            "denominator": 1,
+            "value": 0.0
+          },
+          "period_accuracy": {
+            "numerator": 0,
+            "denominator": 1,
+            "value": 0.0
+          },
+          "citation_identity": {
+            "numerator": 0,
+            "denominator": 1,
+            "value": 0.0
+          },
+          "source_span_support": {
+            "numerator": 0,
+            "denominator": 1,
+            "value": 0.0
+          },
+          "extraction_recall": {
+            "numerator": 0,
+            "denominator": 1,
+            "value": 0.0
+          },
+          "unsupported_accepted": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null
+          },
+          "required_abstention": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null
+          },
+          "runtime_failure": {
+            "numerator": 1,
+            "denominator": 1,
+            "value": 1.0
+          }
+        },
+        "counts": {
+          "positive": 1,
+          "negative": 0,
+          "accepted": 0,
+          "correct_accepted": 0
+        },
+        "abstention_wilson95": null,
+        "limitations": [
+          "Developer/parser references are not independently human-verified labels.",
+          "Field metrics include failed/abstained positive cases; unsupported acceptance uses accepted claims only.",
+          "Invalid or failed model calls are not counted as successful model abstentions.",
+          "Small development samples cannot establish general financial accuracy or model superiority."
+        ],
+        "report_hash": "4c4cedf22ef99a7f672ee1b27aa8365f42b105ca9d47383703a7f2dffb5beeb5"
+      }
+    }
+  ]
+}
