@@ -90,7 +90,7 @@ D3-11 validation (24 October 2026): **590 unique backend/worker tests exercised*
 STK-074 read-side follow-up: manual company/evidence/research reads now have transactional original-grant fences; legacy scans without original universe linkage fail closed. CI mandatory gates are split without duplicate PostgreSQL execution. [Design and measured CI baseline](STK-074-read-fences-ci.md). Uncommitted, pending independent review; REAL-001 operations remain PARTIAL and publication/admission/trading remain BLOCKED.
 
 31 October 2026 — **STK-079 / D3-13 single-instrument research slice:** implementation
-based on main after merged PRs #17/#18; focused review passed, PR/CI delivery pending.
+merged via PR #19 at `f409bca`; required exact-commit CI passed for `c9d8df1`.
 [Stored-evidence swing integration](STK-079-real-swing-integration.md) connects
 STK-014 qualification, STK-074 read fences, existing indicators/strategy and
 hypothetical sizing to the authenticated company API. Synthetic acceptance only;
@@ -101,3 +101,10 @@ and trading remain BLOCKED.
 Owner-authorized AI roadmap: [implementation plan](AI_RESEARCH_IMPLEMENTATION_PLAN.md)
 and [durable checkpoint](AI_RESEARCH_PROGRESS.json). M0 closes this slice before
 the real-data, grounded AI, synthesis, historical replay and UI milestones.
+
+STK-054 / M6 first research screen: connects the existing company view to stored
+swing qualification, indicators, hypothetical levels/sizing and explicit gaps.
+Production build and two synthetic desktop/mobile browser regressions passed.
+No source acquisition or inference is triggered by opening the screen. Full AI
+synthesis, discovery ranking and historical replay UI remain incomplete.
+M1 real-data acceptance remains blocked; see [exact evidence gaps](AI_RESEARCH_DATA_ACCEPTANCE.md).

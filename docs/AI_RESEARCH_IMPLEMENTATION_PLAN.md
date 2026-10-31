@@ -4,7 +4,7 @@ Owner-authorized roadmap, 31 October 2026. Existing architecture and ticket IDs 
 
 ## Current checkpoint
 
-M0 focused review passed with no substantiated additional P1/P2 findings. The corrected three P2 areas retain typed filing classification, strict real BUY geometry and authorized historical/current identity dependencies. Previous executed results: 705 backend/worker, 414 PostgreSQL (zero skips), 56 STK-079 database/API, 114 focused, 13 script tests; migrations and three contract validators passed. These overlapping results were not rerun for delivery.
+M0 merged via PR #19 at `f409bca866bb906121438b45f18a0876cbae72bf`, with all required CI successful for `c9d8df1`. Focused review found no substantiated additional P1/P2 findings. The corrected three P2 areas retain typed filing classification, strict real BUY geometry and authorized historical/current identity dependencies. Previous executed results: 705 backend/worker, 414 PostgreSQL (zero skips), 56 STK-079 database/API, 114 focused, 13 script tests; migrations and three contract validators passed. These overlapping results were not rerun for delivery.
 
 Main protection was enabled with explicit owner approval: GitHub Actions `checks`, strict up-to-date branch, PR merges, administrator enforcement, no force pushes/deletions. CI and merge evidence must be recorded after execution.
 
@@ -12,7 +12,7 @@ Main protection was enabled with explicit owner approval: GitHub Actions `checks
 
 ### M0 — Close STK-079
 Review corrected stored-evidence swing integration, deliver PR, required CI and verified merge.
-Status: review passed, delivery pending.
+Status: complete; PR #19 merged and main ancestry verified.
 
 ### M1 — Establish real research data
 One authorized NSE instrument with traceable prices/documents and point-in-time availability.
@@ -49,3 +49,9 @@ Source grants do not establish provider policy. Missing rights, retention/deleti
 ## Continuation
 
 Read `AI_RESEARCH_PROGRESS.json`, actual Git state and PR checks first. Record files, actual tests, commit/PR/merge, blockers and exact next step at each milestone. Do not repeat expensive completed tests without a new reason.
+
+## Current independent work while M0 CI runs
+
+M1 source inspection is recorded in `AI_RESEARCH_DATA_ACCEPTANCE.md`; actual data acceptance remains blocked, not complete. Existing RAG, financial candidate verification, agent and replay engines must be reused for M2–M5. Existing Phase 7 local model evidence is narrow factual/directional reasoning; it is not general financial qualification. Human-reviewed labels and a fixed evaluation policy are still needed before research-quality holdout evaluation.
+
+The first M6 screen is implemented locally using the STK-079 authenticated swing endpoint. Production build and two synthetic desktop/mobile browser cases passed. It clears old results on cutoff changes, refresh, navigation and denied reads. It neither acquires market data nor invokes inference itself. Full AI synthesis, discovery ranking and historical freeze/reveal UI are not completed by this screen. Its delivery must use a separate branch/PR after M0.
