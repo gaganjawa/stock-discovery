@@ -1,0 +1,36 @@
+{
+  "id": "M2-span-serialization-diagnostic-2",
+  "defined_before_execution": true,
+  "run_kind": "development",
+  "human_verified": false,
+  "holdout_used": false,
+  "models": [
+    "qwen2.5-coder:7b",
+    "qwen3-vl:8b"
+  ],
+  "model_rationale": "Installed coding baseline versus installed general-instruction candidate; neither is established as finance-optimal.",
+  "cases": [
+    "annual-current"
+  ],
+  "maximum_inference_calls": 2,
+  "prompt_hash": "ccb4b0c3a70bfff47db926c878096123c01ccef64c517595ab33daded1e4f10d",
+  "budget": {
+    "account": "M2-span-development",
+    "max_run_units": 20000,
+    "max_day_units": 200000,
+    "max_month_units": 2000000,
+    "max_output_units": 1800,
+    "max_seconds": 120,
+    "max_run_cost": "0",
+    "max_day_cost": "0",
+    "max_month_cost": "0"
+  },
+  "reference": "Developer/parser-checked public table excerpt; not independently human verified.",
+  "thresholds_source": "M2-financial-extraction-protocol.json; not approved for research-quality acceptance",
+  "failed_calls": "Retained in positive denominators; never counted as successful model abstention.",
+  "tuning": "No prompt or reference tuning during this run; original ten development cases remain unchanged.",
+  "cutoff_at": "2026-10-31T16:23:37Z",
+  "purpose": "Decoded header serialization and retained raw-output diagnostic; not replacement quality benchmark.",
+  "prior_results": "M2-span-actual-development.json remains authoritative for original four-case run",
+  "budget_change": "NONE; uses the remaining 40000 of the existing 200000 daily reservation budget."
+}

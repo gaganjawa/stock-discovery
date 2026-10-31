@@ -1,0 +1,42 @@
+{
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1067491/000106749125000010/exv99w08.htm",
+  "capture_method": "Public web-tool rendered excerpt; selected noncontiguous scope/title context and table, whitespace normalized.",
+  "source_lines": [
+    "4",
+    "21",
+    "3016-3023"
+  ],
+  "captured_at": "2026-10-31T16:23:37Z",
+  "original_document_sha256": null,
+  "original_public_availability_at": null,
+  "raw_local_download": "HTTP403; stopped; no retries or access-control workaround",
+  "rights_reference": "https://www.sec.gov/about/webmaster-frequently-asked-questions",
+  "human_verified": false,
+  "production_grant_activated": false,
+  "profile": {
+    "layout": "pipe-two-groups-two-years-1",
+    "text_hash": "2a6b3a9b36c3a64aacda7410994da56a6b4e6b7719746c998ed1203f766c1319",
+    "headers": [
+      [
+        "Particulars",
+        "Three months ended March 31,",
+        "Year ended March 31,"
+      ],
+      [
+        "",
+        "2025",
+        "2024",
+        "2025",
+        "2024"
+      ]
+    ],
+    "context_markers": [
+      "IFRS INR Earning Release",
+      "interim consolidated financial statements",
+      "crore"
+    ],
+    "unit": "INR_crore",
+    "scope": "consolidated",
+    "evidence_id": "SEC-INFY-2025-REVENUE-EXCERPT"
+  }
+}

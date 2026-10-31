@@ -132,3 +132,14 @@ ran twice on synthetic rows: first 0 accepted / 3 rejected; after a prompt-only
 clarification, 2 financial rows accepted / 1 extra candidate rejected. Both runs
 retained; no verifier relaxation, genuine filing, held-out or human quality acceptance.
 Ten developer labels remain human-unverified; independent holdout registration empty.
+
+STK-052 / M2: PR23 merged (`103f5ff`), all required exact-commit checks passed,
+421 PostgreSQL cases, zero skips and lifecycle checks. Representative public SEC
+table-span development benchmark now records actual local coding versus general
+instruction model calls: **0/2 supported cells extracted per model**; original
+failed run and separate diagnostic preserved. No model-superiority claim.
+740 unit and 10 isolated affected PostgreSQL tests passed locally. M2 quality
+NOT PASSED; independent human holdout UNAVAILABLE. Current 200000-unit daily
+reservation cap exhausted, USD0 API cost. See [results and boundaries](STK-052-financial-span-evaluation.md).
+Original-file/PIT/source qualification and human review remain blocked;
+M3–M7 must wait for M2 acceptance. Publication/admission/trading remain BLOCKED.

@@ -1,0 +1,147 @@
+{
+  "prompt": "Extract the requested row and reporting-period column only from the supplied disclosure excerpt. Return status extracted with the numeric value as a string (no thousands separators), unit INR_crore, scope consolidated, the requested period label and provided evidence_id. Quote the ENTIRE selected row exactly with spaces around |, including all its numeric columns. Do not use outside knowledge. If the requested period is absent, the same row is duplicated/conflicting or context is insufficient, return insufficient_evidence and set all other fields to JSON null. No calculations or investment advice.",
+  "schema": {
+    "additionalProperties": false,
+    "properties": {
+      "status": {
+        "enum": [
+          "extracted",
+          "insufficient_evidence"
+        ],
+        "title": "Status",
+        "type": "string"
+      },
+      "value": {
+        "anyOf": [
+          {
+            "minLength": 1,
+            "pattern": "\\S",
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "title": "Value"
+      },
+      "unit": {
+        "anyOf": [
+          {
+            "minLength": 1,
+            "pattern": "\\S",
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "title": "Unit"
+      },
+      "scope": {
+        "anyOf": [
+          {
+            "minLength": 1,
+            "pattern": "\\S",
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "title": "Scope"
+      },
+      "period": {
+        "anyOf": [
+          {
+            "minLength": 1,
+            "pattern": "\\S",
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "title": "Period"
+      },
+      "evidence_id": {
+        "anyOf": [
+          {
+            "minLength": 1,
+            "pattern": "\\S",
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "title": "Evidence Id"
+      },
+      "quote": {
+        "anyOf": [
+          {
+            "minLength": 1,
+            "pattern": "\\S",
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "title": "Quote"
+      }
+    },
+    "required": [
+      "status",
+      "value",
+      "unit",
+      "scope",
+      "period",
+      "evidence_id",
+      "quote"
+    ],
+    "title": "Proposal",
+    "type": "object"
+  },
+  "code_sha256": {
+    "worker/worker/financial_span_evaluation.py": "ea62647185065a1dbb266abd945992b48e7201bb4ebfa46ec73262a0e9b43d60",
+    "worker/worker/providers/table_spans.py": "a76be0671c07621e8fd9281da357deea014b3a8e13faac67db25003bd92dd0cc",
+    "shared/stock_discovery_analysis/financial_evaluation.py": "1922714b5f0c527e063e5225076a1076907117daedb4b7011d510aef85a308f7"
+  },
+  "context_layout": "source_text,target_row,period,evidence_id,scope,unit,cutoff_at; no decoded column_labels",
+  "original_protocol": {
+    "id": "M2-span-development-1",
+    "defined_before_execution": true,
+    "run_kind": "development",
+    "human_verified": false,
+    "holdout_used": false,
+    "models": [
+      "qwen2.5-coder:7b",
+      "qwen3-vl:8b"
+    ],
+    "model_rationale": "Installed coding baseline versus installed general-instruction candidate; neither is established as finance-optimal.",
+    "cases": [
+      "annual-current",
+      "annual-prior",
+      "missing-period",
+      "conflict"
+    ],
+    "maximum_inference_calls": 8,
+    "prompt_hash": "d9281a2ae5a8b0c1d3ec1aae9f31384e46181b864684211d6734fd1415c3c874",
+    "budget": {
+      "account": "M2-span-development",
+      "max_run_units": 20000,
+      "max_day_units": 200000,
+      "max_month_units": 2000000,
+      "max_output_units": 1800,
+      "max_seconds": 120,
+      "max_run_cost": "0",
+      "max_day_cost": "0",
+      "max_month_cost": "0"
+    },
+    "reference": "Developer/parser-checked public table excerpt; not independently human verified.",
+    "thresholds_source": "M2-financial-extraction-protocol.json; not approved for research-quality acceptance",
+    "failed_calls": "Retained in positive denominators; never counted as successful model abstention.",
+    "tuning": "No prompt or reference tuning during this run; original ten development cases remain unchanged.",
+    "cutoff_at": "2026-10-31T16:23:37Z"
+  }
+}

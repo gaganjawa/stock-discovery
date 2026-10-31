@@ -1,0 +1,596 @@
+{
+  "kind": "supplemental_descriptive_analysis_no_new_inference",
+  "original_reports_unchanged": true,
+  "quality_gate": "FAIL",
+  "human_verified": false,
+  "models": [
+    {
+      "run": "M2-span-actual-development.json",
+      "model": {
+        "id": "qwen2.5-coder:7b",
+        "version": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+        "content_hash": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364"
+      },
+      "metrics": {
+        "run_kind": "development",
+        "human_verified": false,
+        "holdout_used": false,
+        "quality_accepted": false,
+        "strategy_promotion": false,
+        "dataset_hash": "c8a8f2d8cb261ce515683f73935a34d39713e9859939e2c3ca79392cf0e4e496",
+        "protocol_hash": "87737d1f801828f333ccf7af4e23d3ebbd06b13ad448af803e6f80022e3f52aa",
+        "cases": 4,
+        "metrics": {
+          "numeric_accuracy": {
+            "numerator": 0,
+            "denominator": 2,
+            "value": 0.0
+          },
+          "unit_accuracy": {
+            "numerator": 0,
+            "denominator": 2,
+            "value": 0.0
+          },
+          "period_accuracy": {
+            "numerator": 0,
+            "denominator": 2,
+            "value": 0.0
+          },
+          "citation_identity": {
+            "numerator": 0,
+            "denominator": 2,
+            "value": 0.0
+          },
+          "source_span_support": {
+            "numerator": 0,
+            "denominator": 2,
+            "value": 0.0
+          },
+          "extraction_recall": {
+            "numerator": 0,
+            "denominator": 2,
+            "value": 0.0
+          },
+          "unsupported_accepted": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null
+          },
+          "required_abstention": {
+            "numerator": 0,
+            "denominator": 2,
+            "value": 0.0
+          },
+          "runtime_failure": {
+            "numerator": 4,
+            "denominator": 4,
+            "value": 1.0
+          },
+          "citation_support": {
+            "numerator": 0,
+            "denominator": 2,
+            "value": 0.0
+          },
+          "contradiction_abstention": {
+            "numerator": 0,
+            "denominator": 1,
+            "value": 0.0
+          },
+          "abstention_status_only": {
+            "numerator": 2,
+            "denominator": 2,
+            "value": 1.0
+          }
+        },
+        "counts": {
+          "positive": 2,
+          "negative": 2,
+          "accepted": 0,
+          "correct_accepted": 0
+        },
+        "abstention_wilson95": [
+          0,
+          0.6576197724933469
+        ],
+        "limitations": [
+          "Developer/parser references are not independently human-verified labels.",
+          "Field metrics include failed/abstained positive cases; unsupported acceptance uses accepted claims only.",
+          "Required abstention is strict response-contract validity; status-only abstention is reported separately.",
+          "runtime_failure includes response-contract and JSON errors, not just server failures.",
+          "Field accuracy includes non-extraction on positive cases; it does not imply every failure was a wrong numeric prediction.",
+          "Small development samples cannot establish general financial accuracy or model superiority."
+        ],
+        "report_hash": "20f7b9f146b2debd5dc2eacf8936ce0a01c4e937279d4abc318c9118cd3e40a8"
+      },
+      "usage": [
+        {
+          "model": {
+            "id": "qwen2.5-coder:7b",
+            "version": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+            "content_hash": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364"
+          },
+          "status": "returned",
+          "prompt_eval_count": 448,
+          "eval_count": 70,
+          "total_duration": 10953602459,
+          "load_duration": 8267406542,
+          "wall_ms": 10958,
+          "cost": "0"
+        },
+        {
+          "model": {
+            "id": "qwen2.5-coder:7b",
+            "version": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+            "content_hash": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364"
+          },
+          "status": "returned",
+          "prompt_eval_count": 448,
+          "eval_count": 70,
+          "total_duration": 3603450458,
+          "load_duration": 927371250,
+          "wall_ms": 3605,
+          "cost": "0"
+        },
+        {
+          "model": {
+            "id": "qwen2.5-coder:7b",
+            "version": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+            "content_hash": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364"
+          },
+          "status": "returned",
+          "prompt_eval_count": 448,
+          "eval_count": 70,
+          "total_duration": 3602375041,
+          "load_duration": 930078125,
+          "wall_ms": 3604,
+          "cost": "0"
+        },
+        {
+          "model": {
+            "id": "qwen2.5-coder:7b",
+            "version": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+            "content_hash": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364"
+          },
+          "status": "returned",
+          "prompt_eval_count": 465,
+          "eval_count": 70,
+          "total_duration": 3700050167,
+          "load_duration": 930222458,
+          "wall_ms": 3702,
+          "cost": "0"
+        }
+      ]
+    },
+    {
+      "run": "M2-span-actual-development.json",
+      "model": {
+        "id": "qwen3-vl:8b",
+        "version": "9cf69da2b16d097f7def535917c4b55a95d6c7ee5700eb69ab86b01b3cfca487",
+        "content_hash": "9cf69da2b16d097f7def535917c4b55a95d6c7ee5700eb69ab86b01b3cfca487"
+      },
+      "metrics": {
+        "run_kind": "development",
+        "human_verified": false,
+        "holdout_used": false,
+        "quality_accepted": false,
+        "strategy_promotion": false,
+        "dataset_hash": "c8a8f2d8cb261ce515683f73935a34d39713e9859939e2c3ca79392cf0e4e496",
+        "protocol_hash": "87737d1f801828f333ccf7af4e23d3ebbd06b13ad448af803e6f80022e3f52aa",
+        "cases": 4,
+        "metrics": {
+          "numeric_accuracy": {
+            "numerator": 0,
+            "denominator": 2,
+            "value": 0.0
+          },
+          "unit_accuracy": {
+            "numerator": 0,
+            "denominator": 2,
+            "value": 0.0
+          },
+          "period_accuracy": {
+            "numerator": 0,
+            "denominator": 2,
+            "value": 0.0
+          },
+          "citation_identity": {
+            "numerator": 0,
+            "denominator": 2,
+            "value": 0.0
+          },
+          "source_span_support": {
+            "numerator": 0,
+            "denominator": 2,
+            "value": 0.0
+          },
+          "extraction_recall": {
+            "numerator": 0,
+            "denominator": 2,
+            "value": 0.0
+          },
+          "unsupported_accepted": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null
+          },
+          "required_abstention": {
+            "numerator": 0,
+            "denominator": 2,
+            "value": 0.0
+          },
+          "runtime_failure": {
+            "numerator": 4,
+            "denominator": 4,
+            "value": 1.0
+          },
+          "citation_support": {
+            "numerator": 0,
+            "denominator": 2,
+            "value": 0.0
+          },
+          "contradiction_abstention": {
+            "numerator": 0,
+            "denominator": 1,
+            "value": 0.0
+          },
+          "abstention_status_only": {
+            "numerator": 0,
+            "denominator": 2,
+            "value": 0.0
+          }
+        },
+        "counts": {
+          "positive": 2,
+          "negative": 2,
+          "accepted": 0,
+          "correct_accepted": 0
+        },
+        "abstention_wilson95": [
+          0,
+          0.6576197724933469
+        ],
+        "limitations": [
+          "Developer/parser references are not independently human-verified labels.",
+          "Field metrics include failed/abstained positive cases; unsupported acceptance uses accepted claims only.",
+          "Required abstention is strict response-contract validity; status-only abstention is reported separately.",
+          "runtime_failure includes response-contract and JSON errors, not just server failures.",
+          "Field accuracy includes non-extraction on positive cases; it does not imply every failure was a wrong numeric prediction.",
+          "Small development samples cannot establish general financial accuracy or model superiority."
+        ],
+        "report_hash": "509f4fb870fb61b9c45d716ab003af6c1c0042c5614bb2c8dc98a96827974b0a"
+      },
+      "usage": [
+        {
+          "model": {
+            "id": "qwen3-vl:8b",
+            "version": "9cf69da2b16d097f7def535917c4b55a95d6c7ee5700eb69ab86b01b3cfca487",
+            "content_hash": "9cf69da2b16d097f7def535917c4b55a95d6c7ee5700eb69ab86b01b3cfca487"
+          },
+          "status": "returned",
+          "prompt_eval_count": 429,
+          "eval_count": 130,
+          "total_duration": 15560138666,
+          "load_duration": 11251600833,
+          "wall_ms": 15562,
+          "cost": "0"
+        },
+        {
+          "model": {
+            "id": "qwen3-vl:8b",
+            "version": "9cf69da2b16d097f7def535917c4b55a95d6c7ee5700eb69ab86b01b3cfca487",
+            "content_hash": "9cf69da2b16d097f7def535917c4b55a95d6c7ee5700eb69ab86b01b3cfca487"
+          },
+          "status": "failed_ambiguous_usage",
+          "wall_ms": 15562,
+          "cost": "0"
+        },
+        {
+          "model": {
+            "id": "qwen3-vl:8b",
+            "version": "9cf69da2b16d097f7def535917c4b55a95d6c7ee5700eb69ab86b01b3cfca487",
+            "content_hash": "9cf69da2b16d097f7def535917c4b55a95d6c7ee5700eb69ab86b01b3cfca487"
+          },
+          "status": "returned",
+          "prompt_eval_count": 429,
+          "eval_count": 51,
+          "total_duration": 3910737625,
+          "load_duration": 1461744292,
+          "wall_ms": 3913,
+          "cost": "0"
+        },
+        {
+          "model": {
+            "id": "qwen3-vl:8b",
+            "version": "9cf69da2b16d097f7def535917c4b55a95d6c7ee5700eb69ab86b01b3cfca487",
+            "content_hash": "9cf69da2b16d097f7def535917c4b55a95d6c7ee5700eb69ab86b01b3cfca487"
+          },
+          "status": "failed_ambiguous_usage",
+          "wall_ms": 3913,
+          "cost": "0"
+        },
+        {
+          "model": {
+            "id": "qwen3-vl:8b",
+            "version": "9cf69da2b16d097f7def535917c4b55a95d6c7ee5700eb69ab86b01b3cfca487",
+            "content_hash": "9cf69da2b16d097f7def535917c4b55a95d6c7ee5700eb69ab86b01b3cfca487"
+          },
+          "status": "returned",
+          "prompt_eval_count": 429,
+          "eval_count": 51,
+          "total_duration": 4005558958,
+          "load_duration": 1502266291,
+          "wall_ms": 4007,
+          "cost": "0"
+        },
+        {
+          "model": {
+            "id": "qwen3-vl:8b",
+            "version": "9cf69da2b16d097f7def535917c4b55a95d6c7ee5700eb69ab86b01b3cfca487",
+            "content_hash": "9cf69da2b16d097f7def535917c4b55a95d6c7ee5700eb69ab86b01b3cfca487"
+          },
+          "status": "failed_ambiguous_usage",
+          "wall_ms": 4007,
+          "cost": "0"
+        },
+        {
+          "model": {
+            "id": "qwen3-vl:8b",
+            "version": "9cf69da2b16d097f7def535917c4b55a95d6c7ee5700eb69ab86b01b3cfca487",
+            "content_hash": "9cf69da2b16d097f7def535917c4b55a95d6c7ee5700eb69ab86b01b3cfca487"
+          },
+          "status": "returned",
+          "prompt_eval_count": 446,
+          "eval_count": 42,
+          "total_duration": 3688962500,
+          "load_duration": 1457304875,
+          "wall_ms": 3692,
+          "cost": "0"
+        },
+        {
+          "model": {
+            "id": "qwen3-vl:8b",
+            "version": "9cf69da2b16d097f7def535917c4b55a95d6c7ee5700eb69ab86b01b3cfca487",
+            "content_hash": "9cf69da2b16d097f7def535917c4b55a95d6c7ee5700eb69ab86b01b3cfca487"
+          },
+          "status": "failed_ambiguous_usage",
+          "wall_ms": 3692,
+          "cost": "0"
+        }
+      ]
+    },
+    {
+      "run": "M2-span-serialization-diagnostic.json",
+      "model": {
+        "id": "qwen2.5-coder:7b",
+        "version": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+        "content_hash": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364"
+      },
+      "metrics": {
+        "run_kind": "development",
+        "human_verified": false,
+        "holdout_used": false,
+        "quality_accepted": false,
+        "strategy_promotion": false,
+        "dataset_hash": "75dead4d27576bdd93e9fdcb3e7b4f65d3014381cf41b30b8adbc295c0a9e136",
+        "protocol_hash": "9c3e01d4ed038e48255d927c11da8b4ce246045e092dfc40a6616ac127071521",
+        "cases": 1,
+        "metrics": {
+          "numeric_accuracy": {
+            "numerator": 0,
+            "denominator": 1,
+            "value": 0.0
+          },
+          "unit_accuracy": {
+            "numerator": 0,
+            "denominator": 1,
+            "value": 0.0
+          },
+          "period_accuracy": {
+            "numerator": 0,
+            "denominator": 1,
+            "value": 0.0
+          },
+          "citation_identity": {
+            "numerator": 0,
+            "denominator": 1,
+            "value": 0.0
+          },
+          "source_span_support": {
+            "numerator": 0,
+            "denominator": 1,
+            "value": 0.0
+          },
+          "extraction_recall": {
+            "numerator": 0,
+            "denominator": 1,
+            "value": 0.0
+          },
+          "unsupported_accepted": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null
+          },
+          "required_abstention": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null
+          },
+          "runtime_failure": {
+            "numerator": 0,
+            "denominator": 1,
+            "value": 0.0
+          },
+          "citation_support": {
+            "numerator": 0,
+            "denominator": 1,
+            "value": 0.0
+          },
+          "contradiction_abstention": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null
+          },
+          "abstention_status_only": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null
+          }
+        },
+        "counts": {
+          "positive": 1,
+          "negative": 0,
+          "accepted": 0,
+          "correct_accepted": 0
+        },
+        "abstention_wilson95": null,
+        "limitations": [
+          "Developer/parser references are not independently human-verified labels.",
+          "Field metrics include failed/abstained positive cases; unsupported acceptance uses accepted claims only.",
+          "Required abstention is strict response-contract validity; status-only abstention is reported separately.",
+          "runtime_failure includes response-contract and JSON errors, not just server failures.",
+          "Field accuracy includes non-extraction on positive cases; it does not imply every failure was a wrong numeric prediction.",
+          "Small development samples cannot establish general financial accuracy or model superiority."
+        ],
+        "report_hash": "9b442a21446c7cf49fe65d8540ba19418e3d3aae19dca601ae028b45a3dd82b6"
+      },
+      "usage": [
+        {
+          "model": {
+            "id": "qwen2.5-coder:7b",
+            "version": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+            "content_hash": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364"
+          },
+          "status": "returned",
+          "prompt_eval_count": 570,
+          "eval_count": 53,
+          "total_duration": 11377932292,
+          "load_duration": 8714354625,
+          "wall_ms": 11380,
+          "cost": "0"
+        }
+      ]
+    },
+    {
+      "run": "M2-span-serialization-diagnostic.json",
+      "model": {
+        "id": "qwen3-vl:8b",
+        "version": "9cf69da2b16d097f7def535917c4b55a95d6c7ee5700eb69ab86b01b3cfca487",
+        "content_hash": "9cf69da2b16d097f7def535917c4b55a95d6c7ee5700eb69ab86b01b3cfca487"
+      },
+      "metrics": {
+        "run_kind": "development",
+        "human_verified": false,
+        "holdout_used": false,
+        "quality_accepted": false,
+        "strategy_promotion": false,
+        "dataset_hash": "75dead4d27576bdd93e9fdcb3e7b4f65d3014381cf41b30b8adbc295c0a9e136",
+        "protocol_hash": "9c3e01d4ed038e48255d927c11da8b4ce246045e092dfc40a6616ac127071521",
+        "cases": 1,
+        "metrics": {
+          "numeric_accuracy": {
+            "numerator": 0,
+            "denominator": 1,
+            "value": 0.0
+          },
+          "unit_accuracy": {
+            "numerator": 0,
+            "denominator": 1,
+            "value": 0.0
+          },
+          "period_accuracy": {
+            "numerator": 0,
+            "denominator": 1,
+            "value": 0.0
+          },
+          "citation_identity": {
+            "numerator": 0,
+            "denominator": 1,
+            "value": 0.0
+          },
+          "source_span_support": {
+            "numerator": 0,
+            "denominator": 1,
+            "value": 0.0
+          },
+          "extraction_recall": {
+            "numerator": 0,
+            "denominator": 1,
+            "value": 0.0
+          },
+          "unsupported_accepted": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null
+          },
+          "required_abstention": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null
+          },
+          "runtime_failure": {
+            "numerator": 1,
+            "denominator": 1,
+            "value": 1.0
+          },
+          "citation_support": {
+            "numerator": 0,
+            "denominator": 1,
+            "value": 0.0
+          },
+          "contradiction_abstention": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null
+          },
+          "abstention_status_only": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null
+          }
+        },
+        "counts": {
+          "positive": 1,
+          "negative": 0,
+          "accepted": 0,
+          "correct_accepted": 0
+        },
+        "abstention_wilson95": null,
+        "limitations": [
+          "Developer/parser references are not independently human-verified labels.",
+          "Field metrics include failed/abstained positive cases; unsupported acceptance uses accepted claims only.",
+          "Required abstention is strict response-contract validity; status-only abstention is reported separately.",
+          "runtime_failure includes response-contract and JSON errors, not just server failures.",
+          "Field accuracy includes non-extraction on positive cases; it does not imply every failure was a wrong numeric prediction.",
+          "Small development samples cannot establish general financial accuracy or model superiority."
+        ],
+        "report_hash": "5e319e9bc4ef6924cbb8bb703e5c2b5635aea9bf75db4b989ae18c0970622314"
+      },
+      "usage": [
+        {
+          "model": {
+            "id": "qwen3-vl:8b",
+            "version": "9cf69da2b16d097f7def535917c4b55a95d6c7ee5700eb69ab86b01b3cfca487",
+            "content_hash": "9cf69da2b16d097f7def535917c4b55a95d6c7ee5700eb69ab86b01b3cfca487"
+          },
+          "status": "returned",
+          "prompt_eval_count": 551,
+          "eval_count": 51,
+          "total_duration": 11063565625,
+          "load_duration": 8234142625,
+          "wall_ms": 11066,
+          "cost": "0"
+        },
+        {
+          "model": {
+            "id": "qwen3-vl:8b",
+            "version": "9cf69da2b16d097f7def535917c4b55a95d6c7ee5700eb69ab86b01b3cfca487",
+            "content_hash": "9cf69da2b16d097f7def535917c4b55a95d6c7ee5700eb69ab86b01b3cfca487"
+          },
+          "status": "failed_ambiguous_usage",
+          "wall_ms": 11066,
+          "cost": "0"
+        }
+      ]
+    }
+  ]
+}
