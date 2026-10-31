@@ -1,29 +1,29 @@
 {
   "schema_version": 1,
   "updated_at": "2026-11-01",
-  "current_milestone": "M2 quality BLOCKED; non-actionable combined company research and synthetic replay UI integration",
-  "branch": "feat/stk-052-054-combined-research",
+  "current_milestone": "M5/M6 full synthetic historical evidence freeze/reveal; M1/M2 acceptance BLOCKED",
+  "branch": "feat/stk-037-043-historical-research-freeze",
   "worktree": "stk-074-grant-fences",
-  "last_successful_commit": "ceacc432abc1e02c55f4edce599a6cf2ef4e10dc",
+  "last_successful_commit": "db61f7c1921e80821b711760a650f6f2455088bb",
   "pr": null,
   "completed_tests": {
-    "backend_worker": 769,
-    "new_focused_postgres": 11,
-    "focused_unit_and_regression": 56,
+    "backend_worker": 774,
+    "new_historical_postgres": 19,
+    "all_postgres_before_final_link_and_generation_time_hardening": 460,
+    "postgres_skipped": 0,
+    "migration_lifecycle": "passed",
+    "final_focused_postgres": 32,
     "script_tests": 13,
     "contract_validators": 3,
-    "browser_mock_desktop_mobile": 4,
-    "postgres_lifecycle": "passed before final cached-claim hardening",
-    "mandatory_exact_commit_ci": "not delivered yet",
-    "new_actual_inference_calls": 0,
-    "postgres": 442,
-    "postgres_skipped": 0,
-    "final_focused_postgres": 16,
-    "final_focused_unit": 69,
-    "browser_authenticated_replay": 1,
+    "browser_workflows_before_optional_ai_field": 4,
     "frontend_build": "passed",
+    "mandatory_exact_commit_ci": "not delivered yet",
+    "new_actual_model_calls": 0,
+    "final_historical_postgres": 19,
+    "final_focused_unit": 26,
+    "final_browser_authenticated_replay": 2,
     "syntax_whitespace": "passed",
-    "validation_note": "769 full backend/worker and 442 PostgreSQL cases ran before final cached-claim hardening; final 69 unit and 16 PostgreSQL targeted cases cover that change. Counts overlap; final mandatory exact-commit CI remains required."
+    "validation_note": "774 backend/worker and 460 PostgreSQL plus lifecycle passed before final manifest-link/timestamp/optional-run-ID hardening; final 32 targeted PostgreSQL followed by 19 historical cases and 26 focused unit checks cover final corrections. Browser 4 earlier + 2 final overlap; counts are not additive."
   },
   "failed_tests": [
     {
@@ -39,9 +39,9 @@
     "Actual representative-source extraction quality not passed; human holdout unverified."
   ],
   "pending_changes": [
-    "STK-052/054 combined research integration, tests, external-review worksheet and checkpoint"
+    "STK-037/043/059 implementation, tests, documentation and checkpoint ready for draft PR delivery"
   ],
-  "next_action": "Finish validation and focused review of combined company API/UI and synthetic frozen replay context; deliver via protected CI. Then extend frozen financial/technical replay using existing immutable evaluation contracts. Independent reviewer must supply source review, 50 unseen human-labelled permitted cases and frozen reference; proposed thresholds still need explicit owner approval.",
+  "next_action": "Complete final checks and fresh focused review; deliver full historical evidence replay via protected CI. Then advance existing dashboard/history navigation and end-to-end historical acceptance using the same snapshots and evaluator. M1 rights/archive qualification, M2 independent human/50-case holdout and policy approval remain BLOCKED; no actionable recommendations or AI-performance acceptance.",
   "milestones": [
     {
       "id": "M0",
@@ -318,7 +318,7 @@
       "id": "M4",
       "objective": "Combined research recommendation",
       "completion_criteria": "Versioned synthesis of verified AI and technical findings with deterministic risk vetoes.",
-      "status": "non_actionable_increment_validated_pending_PR_review",
+      "status": "non_actionable_preview_merged",
       "dependency_status": "Independent development explicitly authorized; acceptance depends on unapproved M1/M2 and historical gates.",
       "files_changed": [
         "shared/stock_discovery_analysis/combined_research.py",
@@ -332,65 +332,106 @@
         "authenticated_replay_browser": 1,
         "scope": "Synthetic software evidence only; overlapping counts"
       },
-      "commit_sha": null,
-      "pr_url": null,
+      "commit_sha": "d63f784e28f4fcba2169baa8123e89f9e4476309",
+      "pr_url": "https://github.com/gaganjawa/stock-discovery/pull/28",
       "blockers": [
         "Acceptance requires inspection and reuse of existing implementation."
       ],
-      "next_step": "Complete protected delivery; do not equate synthetic software acceptance with real or financial-quality acceptance."
+      "next_step": "Verify PR28 exact d63f784 CI and fresh independent review of cached financial revalidation, single-transaction fencing, stale-evidence handling and replay isolation. Merge only after required gates. Then wire complete financial/technical frozen snapshots and future reveal through existing historical evaluation contracts; current synthetic replay context has no financial evidence and is not combined-performance acceptance. M2 external reviewer/50 unseen cases and explicit proposed-threshold approval remain BLOCKED; independent non-actionable product work may continue.",
+      "merge_sha": "db61f7c1921e80821b711760a650f6f2455088bb"
     },
     {
       "id": "M5",
       "objective": "Historical replay and ground truth",
       "completion_criteria": "Freeze as-of research, reveal subsequent outcomes and compare baselines with leakage controls.",
-      "status": "non_actionable_increment_validated_pending_PR_review",
+      "status": "full_synthetic_increment_validated_pending_independent_PR_review",
       "dependency_status": "Independent development explicitly authorized; acceptance depends on unapproved M1/M2 and historical gates.",
       "files_changed": [
-        "shared/stock_discovery_analysis/combined_research.py",
+        "backend/app/research.py",
+        "backend/tests/integration/test_historical_research.py",
+        "docs/STK-037-043-historical-evidence.md",
+        "docs/STK-052-054-combined-research.md",
         "frontend/src/CombinedResearch.tsx",
-        "docs/STK-052-054-combined-research.md"
+        "frontend/src/HistoricalSnapshot.tsx",
+        "frontend/tests/historical-replay.spec.ts",
+        "shared/stock_discovery_analysis/combined_research.py",
+        "shared/stock_discovery_analysis/historical_fixtures.py",
+        "shared/stock_discovery_analysis/historical_research.py",
+        "shared/stock_discovery_analysis/service.py"
       ],
       "tests": {
-        "new_focused_postgres": 11,
-        "final_combined_and_evidence_postgres": 16,
-        "desktop_mobile_browser": 4,
-        "authenticated_replay_browser": 1,
-        "scope": "Synthetic software evidence only; overlapping counts"
+        "backend_worker": 774,
+        "new_historical_postgres": 19,
+        "all_postgres_before_final_link_and_generation_time_hardening": 460,
+        "postgres_skipped": 0,
+        "migration_lifecycle": "passed",
+        "final_focused_postgres": 32,
+        "script_tests": 13,
+        "contract_validators": 3,
+        "browser_workflows_before_optional_ai_field": 4,
+        "frontend_build": "passed",
+        "mandatory_exact_commit_ci": "not delivered yet",
+        "new_actual_model_calls": 0,
+        "final_historical_postgres": 19,
+        "final_focused_unit": 26,
+        "final_browser_authenticated_replay": 2,
+        "syntax_whitespace": "passed",
+        "validation_note": "774 backend/worker and 460 PostgreSQL plus lifecycle passed before final manifest-link/timestamp/optional-run-ID hardening; final 32 targeted PostgreSQL followed by 19 historical cases and 26 focused unit checks cover final corrections. Browser 4 earlier + 2 final overlap; counts are not additive."
       },
       "commit_sha": null,
       "pr_url": null,
       "blockers": [
         "Acceptance requires inspection and reuse of existing implementation."
       ],
-      "next_step": "Complete protected delivery; do not equate synthetic software acceptance with real or financial-quality acceptance."
+      "next_step": "Complete final checks and fresh focused review; deliver full historical evidence replay via protected CI. Then advance existing dashboard/history navigation and end-to-end historical acceptance using the same snapshots and evaluator. M1 rights/archive qualification, M2 independent human/50-case holdout and policy approval remain BLOCKED; no actionable recommendations or AI-performance acceptance."
     },
     {
       "id": "M6",
       "objective": "User-facing dashboard",
       "completion_criteria": "Research, bounded discovery and historical replay usable through existing React application.",
-      "status": "non_actionable_increment_validated_pending_PR_review",
+      "status": "full_synthetic_increment_validated_pending_independent_PR_review",
       "dependency_status": "Independent development explicitly authorized; acceptance depends on unapproved M1/M2 and historical gates.",
       "files_changed": [
+        "backend/app/research.py",
+        "backend/tests/integration/test_historical_research.py",
+        "docs/STK-037-043-historical-evidence.md",
+        "docs/STK-052-054-combined-research.md",
+        "frontend/src/CombinedResearch.tsx",
+        "frontend/src/HistoricalSnapshot.tsx",
         "frontend/src/RealCompany.tsx",
         "frontend/src/RealSwing.tsx",
+        "frontend/tests/historical-replay.spec.ts",
         "frontend/tests/real-swing.spec.ts",
         "shared/stock_discovery_analysis/combined_research.py",
-        "frontend/src/CombinedResearch.tsx",
-        "docs/STK-052-054-combined-research.md"
+        "shared/stock_discovery_analysis/historical_fixtures.py",
+        "shared/stock_discovery_analysis/historical_research.py",
+        "shared/stock_discovery_analysis/service.py"
       ],
       "tests": {
-        "new_focused_postgres": 11,
-        "final_combined_and_evidence_postgres": 16,
-        "desktop_mobile_browser": 4,
-        "authenticated_replay_browser": 1,
-        "scope": "Synthetic software evidence only; overlapping counts"
+        "backend_worker": 774,
+        "new_historical_postgres": 19,
+        "all_postgres_before_final_link_and_generation_time_hardening": 460,
+        "postgres_skipped": 0,
+        "migration_lifecycle": "passed",
+        "final_focused_postgres": 32,
+        "script_tests": 13,
+        "contract_validators": 3,
+        "browser_workflows_before_optional_ai_field": 4,
+        "frontend_build": "passed",
+        "mandatory_exact_commit_ci": "not delivered yet",
+        "new_actual_model_calls": 0,
+        "final_historical_postgres": 19,
+        "final_focused_unit": 26,
+        "final_browser_authenticated_replay": 2,
+        "syntax_whitespace": "passed",
+        "validation_note": "774 backend/worker and 460 PostgreSQL plus lifecycle passed before final manifest-link/timestamp/optional-run-ID hardening; final 32 targeted PostgreSQL followed by 19 historical cases and 26 focused unit checks cover final corrections. Browser 4 earlier + 2 final overlap; counts are not additive."
       },
-      "commit_sha": "c924912b3e0d5597bef088591ba2ae5c2aa8cdba",
-      "pr_url": "https://github.com/gaganjawa/stock-discovery/pull/20",
+      "commit_sha": null,
+      "pr_url": null,
       "blockers": [
         "Acceptance requires inspection and reuse of existing implementation."
       ],
-      "next_step": "Complete protected delivery; do not equate synthetic software acceptance with real or financial-quality acceptance.",
+      "next_step": "Complete final checks and fresh focused review; deliver full historical evidence replay via protected CI. Then advance existing dashboard/history navigation and end-to-end historical acceptance using the same snapshots and evaluator. M1 rights/archive qualification, M2 independent human/50-case holdout and policy approval remain BLOCKED; no actionable recommendations or AI-performance acceptance.",
       "merge_sha": "907849399be33a0a6d178212b64b151de62320e9"
     },
     {
@@ -409,15 +450,31 @@
       "next_step": "Inspect existing components against milestone criteria before implementing missing integration."
     }
   ],
-  "runtime_cleanup": "Task-owned PostgreSQL container/volume and Vite/API/synthetic-only job processor stopped and removed. No actual database or model runtime used.",
+  "runtime_cleanup": "Task-owned PostgreSQL container/volumes and local UI/API removed; bounded synthetic-only job processor exited. No actual database, provider or model used.",
   "product_development_authorization": "Latest owner instruction permits independent non-actionable A\u2013D implementation while external M2 acceptance is blocked; no acceptance gate waived.",
-  "implementation_review": "Focused source, grant/transaction, cached-claim, as-of and UI review completed; no known P1/P2. Fresh independent PR review and exact-commit CI required before merge.",
+  "implementation_review": "Focused review found and corrected reconstruction timestamp reuse and missing manifest/document linkage; no known remaining P1/P2. Independent PR review and mandatory exact-commit CI still required.",
   "development_test_failures": [
     {
-      "test": "Initial combined integration fixture",
-      "result": "3 failed / 4 passed",
-      "cause": "Scripted provider expected full citations instead of the existing compact citation_ids prompt contract.",
-      "resolution": "Corrected test adapter only; final targeted integration passed."
+      "stage": "Initial new replay implementation",
+      "causes": [
+        "Shared writer local instrument variable corrected",
+        "Strict PostgreSQL JSON contracts require model_validate_json",
+        "Synthetic conflict fixture needed explicit extraction quota",
+        "Test session needed existing Origin header",
+        "Fence SQL rejection needed sanitized PermissionError translation"
+      ],
+      "resolution": "Production/fixture corrections verified by 19 historical and 32 final targeted PostgreSQL tests; not classified flaky."
     }
-  ]
+  ],
+  "prior_pr28": {
+    "number": 28,
+    "url": "https://github.com/gaganjawa/stock-discovery/pull/28",
+    "head_sha": "d63f784e28f4fcba2169baa8123e89f9e4476309",
+    "state": "merged",
+    "ci_run": "https://github.com/gaganjawa/stock-discovery/actions/runs/41229923558",
+    "ci_status": "unit/postgres/ui/checks success",
+    "merge_sha": "db61f7c1921e80821b711760a650f6f2455088bb",
+    "postgres": 442,
+    "migration_lifecycle": "passed"
+  }
 }

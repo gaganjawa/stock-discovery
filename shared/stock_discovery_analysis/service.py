@@ -25,6 +25,11 @@ def load_dataset(conn,version):
 
 def freeze(conn,dataset: Dataset,instrument_id: str,cutoff: datetime,code_version: str) -> dict:
     analysis=json_value(analyze(dataset,instrument_id,cutoff,code_version=code_version))
+    return persist_analysis(conn,analysis,dataset.version)
+
+
+def persist_analysis(conn,analysis,dataset_version):
+    """Existing immutable run/decision writer, shared by versioned replay arms."""
     r=analysis['recommendation']
     with conn.transaction():
         conn.execute('SELECT pg_advisory_xact_lock(hashtextextended(%s,0))',(r['run_id'],))
@@ -32,12 +37,12 @@ def freeze(conn,dataset: Dataset,instrument_id: str,cutoff: datetime,code_versio
         if existing: return existing[0]['analysis']
         conn.execute('''INSERT INTO research.runs(run_id,mode,information_cutoff_at,started_at,completed_at,status,
             dataset_version,code_version,strategy_version,manifest) VALUES (%s,%s,%s,%s,%s,'completed',%s,%s,%s,%s)''',
-            (r['run_id'],r['mode'],r['information_cutoff_at'],r['generated_at'],r['generated_at'],dataset.version,
-             code_version,r['strategy']['version'],Jsonb({'analysis':analysis,'dataset_version':dataset.version})))
+            (r['run_id'],r['mode'],r['information_cutoff_at'],r['generated_at'],r['generated_at'],dataset_version,
+             r['versions']['code'],r['strategy']['version'],Jsonb({'analysis':analysis,'dataset_version':dataset_version})))
         conn.execute('''INSERT INTO research.decisions(recommendation_id,instrument_id,run_id,schema_version,
             information_cutoff_at,generated_at,decision_available_at,action,position_effect,payload)
             VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)''',
-            (r['recommendation_id'],instrument_id,r['run_id'],r['schema_version'],r['information_cutoff_at'],
+            (r['recommendation_id'],r['instrument']['instrument_id'],r['run_id'],r['schema_version'],r['information_cutoff_at'],
              r['generated_at'],r['decision_available_at'],r['action'],r['position_effect'],Jsonb(r)))
     return analysis
 
@@ -46,10 +51,20 @@ def read_frozen(conn,recommendation_id):
     row=conn.execute('''SELECT r.manifest FROM research.runs r JOIN research.decisions d USING(run_id)
         WHERE d.recommendation_id=%s''',(recommendation_id,)).fetchone()
     if row is None: raise KeyError('recommendation not found')
-    return row[0]['analysis']
+    analysis=row[0]['analysis']
+    if 'historical_snapshot' in analysis:
+        from .historical_research import authorize_snapshot
+        with conn.transaction():authorize_snapshot(conn,analysis['historical_snapshot'])
+    return analysis
 
 
 def reveal(conn,recommendation_id,evaluated_at=None):
+    # Keep dependency locks through evaluation and append-only outcome storage.
+    with conn.transaction():
+        return _reveal(conn,recommendation_id,evaluated_at)
+
+
+def _reveal(conn,recommendation_id,evaluated_at=None):
     a=read_frozen(conn,recommendation_id)
     d=load_dataset(conn,a['recommendation']['versions']['dataset'])
     now=evaluated_at or datetime.now(timezone.utc)
