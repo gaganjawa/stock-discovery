@@ -98,3 +98,18 @@ def test_benchmark_requires_knowledge_clock_and_rejects_actions_and_future_outco
     action=CorporateAction('SYN-dividend','SYN-ALPHA','dividend',d.calendar.sessions[40].opens_at,D(1),d.calendar.provenance)
     changed=replace(d,actions=(*d.actions,action))
     assert synthetic_benchmark(changed,'SYN-ALPHA',start,end,D(1000),knowledge_at=knowledge.isoformat())['reason']=='benchmark_actions_unsupported'
+
+
+def test_benchmark_rejects_late_disclosed_action_known_by_outcome_cutoff():
+    from datetime import timedelta
+    from stock_discovery_analysis.calendar import CorporateAction
+    a,d,knowledge=scenario([('102','105','101','104'),('104','111','103','108')])
+    start=a['recommendation']['information_cutoff_at'];end=d.calendar.sessions[41].closes_at.isoformat()
+    provenance=replace(d.calendar.provenance,published_at=d.calendar.sessions[42].closes_at,
+        available_at=d.calendar.sessions[42].closes_at,fetched_at=d.calendar.sessions[42].closes_at)
+    action=CorporateAction('SYN-late-dividend','SYN-ALPHA','dividend',d.calendar.sessions[40].opens_at,D(1),provenance)
+    changed=replace(d,actions=(*d.actions,action))
+    r=synthetic_benchmark(changed,'SYN-ALPHA',start,end,D(1000),knowledge_at=knowledge.isoformat())
+    assert r['status']=='unavailable' and r['reason']=='benchmark_actions_unsupported'
+    earlier=(d.calendar.sessions[41].closes_at+timedelta(minutes=1)).isoformat()
+    assert synthetic_benchmark(changed,'SYN-ALPHA',start,end,D(1000),knowledge_at=earlier)['status']=='available'

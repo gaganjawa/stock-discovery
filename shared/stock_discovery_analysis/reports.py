@@ -74,10 +74,10 @@ def synthetic_benchmark(dataset,instrument,start,end,capital,*,knowledge_at=None
     from .universe import universe_asof
     if any(instrument not in universe_asof(dataset.memberships,s.closes_at) for s in sessions):
         return unavailable('benchmark_universe_change_unqualified')
-    if action_crosses_window(dataset.actions,instrument,a,b,b):return unavailable('benchmark_actions_unsupported')
     if knowledge_at is None:return unavailable('benchmark_knowledge_cutoff_missing')
     knowledge=dt(knowledge_at)
     if knowledge<b:return unavailable('benchmark_outcome_immature')
+    if action_crosses_window(dataset.actions,instrument,a,b,knowledge):return unavailable('benchmark_actions_unsupported')
     bars={c.starts_at:c for c in dataset.asof(instrument,knowledge)}
     missing=[s for s in sessions if s.opens_at not in bars or bars[s.opens_at].ends_at!=s.closes_at or bars[s.opens_at].volume<=0]
     if missing:return {**unavailable('benchmark_missing_observations'),'missing_observations':len(missing)}
