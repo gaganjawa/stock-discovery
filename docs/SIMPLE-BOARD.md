@@ -182,3 +182,12 @@ and exact-commit CI are required; genuine NSE qualification, M2 independent
 human/50-case quality acceptance and operational acceptance are not advanced.
 Next priority is M3's remaining observation-supported benchmark/risk-adjusted and
 walk-forward acceptance, reusing the existing D3-10/11 evaluators and controls.
+
+1 November — PR31 merged (`6d6a2c8`) after exact `a0ee567` required checks and
+fresh review; the missing aggregate was resolved by an exact-commit CI rerun.
+STK-041/042 [performance evaluation](STK-041-042-performance-evaluation.md) extends
+the existing Scorecard with descriptive risk, costed synthetic reference, honest
+coverage/denominators and purged partition outcomes. Registered walk-forward and
+AI-pair results remain unavailable where evidence is absent. No threshold or
+acceptance approval; M1/M2 and REAL-001 operational blockers are unchanged.
+Delivery and actual validation totals are recorded in the durable checkpoint.

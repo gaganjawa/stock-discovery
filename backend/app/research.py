@@ -189,9 +189,10 @@ def replay_job(body:Selection,conn=Depends(db)):
 
 
 @router.get('/scorecard',dependencies=[Depends(require_auth)])
-def scores(conn=Depends(db),cohort:str|None=None):
+def scores(response:Response,conn=Depends(db),cohort:str|None=None,benchmark_instrument:str|None=Query(default=None,max_length=80)):
+    response.headers['Cache-Control']='no-store'
     try:
-        with conn.transaction():return scorecard(conn,cohort)
+        with conn.transaction():return scorecard(conn,cohort,benchmark_instrument)
     except PermissionError:raise HTTPException(403,'Historical evidence is unavailable or restricted') from None
     except ValueError as exc: raise HTTPException(400,str(exc))
 

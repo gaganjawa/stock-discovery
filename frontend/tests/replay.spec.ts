@@ -86,6 +86,17 @@ test('authenticated synthetic freeze, reveal, scorecard and future placeholders'
  await groups.selectOption(chosenGroup!)
  const selectedScores=await (await groupResponse).json()
  expect(selectedScores.selected_cohort).toBe(chosenGroup)
+ const performance=page.getByRole('region',{name:'Strategy performance evaluation',exact:true})
+ await expect(performance).toContainText('TECHNICAL ONLY')
+ await expect(performance).toContainText('eligible pairs 0')
+ await expect(performance).toContainText('Registered walk-forward: unavailable')
+ const benchmarkResponse=page.waitForResponse(r=>r.url().includes('benchmark_instrument=SYN-BETA'))
+ await performance.getByLabel('Fictional benchmark').selectOption('SYN-BETA')
+ const benchmarkReport=(await (await benchmarkResponse).json()).performance
+ await expect(performance).toContainText(benchmarkReport.report_id)
+ const reference=performance.getByRole('region',{name:'Benchmark comparison',exact:true})
+ await expect(reference).toContainText(benchmarkReport.benchmark.status)
+ if(benchmarkReport.benchmark.reason)await expect(reference).toContainText(benchmarkReport.benchmark.reason.replaceAll('_',' '))
  const chronology=page.getByRole('region',{name:'Chronological split audit',exact:true})
  await expect(chronology).toContainText('never realized profits')
  await expect(chronology).toContainText(selectedScores.chronological_validation.audit_id)
@@ -161,6 +172,10 @@ test('authenticated synthetic freeze, reveal, scorecard and future placeholders'
    expect(audit.outcomes.some((o:any)=>o.recommendation_id===rid)).toBeTruthy()
   }
  }
+ await page.route('**/api/v1/scorecard?**',r=>r.fulfill({status:403,json:{detail:'Historical evidence is unavailable or restricted'}}))
+ await page.getByRole('button',{name:'Refresh scorecard',exact:true}).click()
+ await expect(page.getByRole('region',{name:'Strategy performance evaluation',exact:true})).toHaveCount(0)
+ await page.unroute('**/api/v1/scorecard?**')
  await page.getByRole('link',{name:'Portfolio',exact:true}).click()
  await expect(page.getByRole('region',{name:'Paper portfolio and outcomes'})).toBeVisible()
  await page.getByRole('link',{name:'IPO',exact:true}).click()

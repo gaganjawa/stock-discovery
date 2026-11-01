@@ -1,6 +1,6 @@
 """STK-002 metric definitions reused verbatim; runtime helpers below."""
 from collections import Counter
-from decimal import Decimal as D
+from decimal import Decimal as D, localcontext
 from datetime import datetime
 
 def require(value,message):
@@ -138,5 +138,30 @@ def portfolio(curve):
         maximum = max(maximum, 1 - value / peak)
     return dict(time_weighted_return=wealth[-1]-1, maximum_drawdown=maximum,
                 wealth_index=wealth, equity=equity, cash_profit=equity[-1]-equity[0]-sum(flow), reason=None)
+
+
+def risk_ratios(returns, *, risk_free=None):
+    """Descriptive per-session ratios, not annualized or independent-sample claims.
+
+    The caller must establish a complete equal-session return series. No inferred
+    risk-free rate: the explicit synthetic cash comparator is zero when supplied.
+    Sortino uses all-session target semideviation; Sharpe uses sample deviation.
+    """
+    values=[money(v) for v in returns]
+    result=dict(intervals=len(values),sharpe=None,sortino=None,annualized=False,
+        method='per-session-sample-sharpe-all-session-target-sortino-v1',
+        risk_free_per_session=risk_free,sharpe_reason=None,sortino_reason=None)
+    reason='risk_free_unavailable' if risk_free is None else 'insufficient_return_intervals' if len(values)<2 else None
+    if reason:return {**result,'sharpe_reason':reason,'sortino_reason':reason}
+    with localcontext() as ctx:
+        ctx.prec=34
+        excess=[v-money(risk_free) for v in values];n=D(len(excess));mean=sum(excess,D(0))/n
+        variance=sum(((v-mean)**2 for v in excess),D(0))/(n-1)
+        downside=sum((min(D(0),v)**2 for v in excess),D(0))/n
+        result.update(sharpe=mean/variance.sqrt() if variance else None,
+            sortino=mean/downside.sqrt() if downside else None,
+            sharpe_reason=None if variance else 'zero_return_variance',
+            sortino_reason=None if downside else 'no_downside_deviation')
+    return result
 
 

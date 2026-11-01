@@ -124,3 +124,16 @@ and separates synthetic end-to-end coverage from genuine data requirements. The
 retention, sources, timestamps and raw price/volume semantics. Independent M2
 review and the unseen 50-case holdout stay BLOCKED, with prior artifacts unchanged.
 No additional four-example model run or infrastructure experiment is justified.
+
+PR31 merged under protected main at `6d6a2c8` after exact `a0ee567` CI attempt 2
+produced unit/postgres/ui/**checks** success. The initial completed constituent
+jobs lacked the required aggregate; no protection bypass was used. Fresh review
+found no P1/P2 in ranking, scopes, permission checks, leakage or immutability.
+
+M3 now integrates the existing evaluator/portfolio/split contracts into a
+[read-only performance screen](STK-041-042-performance-evaluation.md): explicit
+observations/denominators, descriptive risk ratios, costed fictional benchmark,
+purged partition outcomes and stable evidence identity. Missing data remains
+unavailable. Registered untouched walk-forward, genuine benchmark/strategy
+acceptance and independently qualified AI pairs are not fabricated. Existing
+D3-11 and Experiment governance remain the preregistered path.
