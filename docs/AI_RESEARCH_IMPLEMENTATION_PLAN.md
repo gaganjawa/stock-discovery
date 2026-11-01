@@ -137,3 +137,18 @@ purged partition outcomes and stable evidence identity. Missing data remains
 unavailable. Registered untouched walk-forward, genuine benchmark/strategy
 acceptance and independently qualified AI pairs are not fabricated. Existing
 D3-11 and Experiment governance remain the preregistered path.
+
+PR32 merged under protected main at `f172a28` after exact `02af305` CI passed:
+790 unit, 482 PostgreSQL (zero skips), lifecycle and 13 browser workflows. Fresh
+review reproduced/fixed a P2: late-disclosed in-window actions must be checked at
+the recorded outcome knowledge cutoff, not merely the observation end. The original
+`eb6dca1` was superseded; it is not the final accepted commit.
+
+STK-041/042 now adds [registered fold reporting](STK-041-042-registered-folds.md) to
+the existing governance API/Scorecard. It reads sealed versioned trials and pinned
+ledger outcomes with current source authorization, no holdout reservation/evaluation,
+strict phase/configuration separation and no compounding of separate portfolios.
+Failed, pending, missing and immature evidence stays visible. The
+[remaining product acceptance handoff](PRODUCT-ACCEPTANCE-HANDOFF.md) audits actual
+workflow boundaries and gives the minimal M1/M2 owner/reviewer inputs. It identifies
+the remaining Discovery-to-history identity link without fabricating shared data.

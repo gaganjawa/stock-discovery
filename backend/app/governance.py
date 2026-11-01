@@ -1,6 +1,6 @@
 """Owner-authenticated experiment governance; no model or broker calls."""
 from typing import Literal
-from fastapi import APIRouter,Depends,HTTPException,Header,Query
+from fastapi import APIRouter,Depends,HTTPException,Header,Query,Response
 from stock_discovery_contracts.v2 import Strict,Text
 from stock_discovery_analysis import governance as store
 from stock_discovery_analysis.governance_contracts import Experiment,Trial
@@ -33,6 +33,13 @@ def listing(cursor:str|None=None,limit:int=Query(default=100,ge=1,le=100),conn=D
     rows=conn.execute("SELECT experiment_id,manifest_hash,registered_at,manifest->>'horizon',manifest->>'comparison' FROM discovery.experiments"+where+" ORDER BY registered_at DESC,experiment_id DESC LIMIT %s",(*params,limit+1)).fetchall()
     return dict(experiments=[dict(experiment_id=r[0],manifest_hash=r[1],registered_at=r[2].isoformat(),horizon=r[3],comparison=r[4]) for r in rows[:limit]],
         next_cursor=rows[limit-1][0] if len(rows)>limit else None,q_ml_enabled=False)
+
+
+@router.get('/fold-results')
+def fold_results(response:Response,experiment_id:list[Text]=Query(min_length=1,max_length=10),conn=Depends(db)):
+    from stock_discovery_analysis.fold_reporting import registered_folds
+    response.headers['Cache-Control']='no-store'
+    return invoke(registered_folds,conn,experiment_id)
 
 
 @router.get('/{eid}')

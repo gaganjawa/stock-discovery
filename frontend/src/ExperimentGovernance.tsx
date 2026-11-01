@@ -1,4 +1,5 @@
 import {useEffect,useState} from 'react'
+import {RegisteredFoldResults} from './RegisteredFoldResults'
 
 type Summary={experiment_id:string;horizon:string;comparison:string;registered_at:string}
 type Result={status:string;error_code?:string;evidence_class?:string;arms?:Record<string,{decisions:number;resolved_trades:number;missing_outcomes:number;research_failed:number;no_picks:boolean;win_rate:string|null;portfolio_return:string|null;benchmark_reason:string;forecast_quality:{matured:number;provisional:number}}>}
@@ -14,6 +15,7 @@ export function ExperimentGovernance({onUnauthorized}:{onUnauthorized:()=>void})
   <h2>Experiment governance</h2><p>Compare quantitative research, fixed RAG and bounded investigation using frozen inputs and recorded outcomes. Historical AI research remains exploratory.</p>
   <p className="notice">Strategy promotion blocked. Policy thresholds and independent prospective evidence are required. Q+ML is disabled.</p>
   <button disabled={busy} onClick={()=>void load()}>Refresh experiments</button>
+  <RegisteredFoldResults experiments={items} onUnauthorized={onUnauthorized} onRestricted={()=>{setDetail(null);setItems([]);setError('Source permission denied. Stored results are hidden.')}}/>
   {error&&<p role="alert">{error}</p>}
   {!items.length&&!error&&<p>No registered experiments. Preregister the hypothesis, splits, versions and stopping rules through the authenticated experiment API before evaluating outcomes.</p>}
   {items.map(item=><p key={item.experiment_id}><button disabled={busy} onClick={()=>void inspect(item.experiment_id)}>{item.experiment_id}</button> · {label(item.horizon)} · {label(item.comparison)} · {new Date(item.registered_at).toLocaleString()}</p>)}
