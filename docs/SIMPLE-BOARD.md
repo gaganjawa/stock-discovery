@@ -191,3 +191,13 @@ coverage/denominators and purged partition outcomes. Registered walk-forward and
 AI-pair results remain unavailable where evidence is absent. No threshold or
 acceptance approval; M1/M2 and REAL-001 operational blockers are unchanged.
 Delivery and actual validation totals are recorded in the durable checkpoint.
+
+2 November — PR32 merged (`f172a28`) after corrected exact `02af305` checks passed
+(790 unit, 482 PostgreSQL, lifecycle, 13 browser). The reproduced benchmark
+knowledge-cutoff defect is fixed; original evaluation artifacts remain intact.
+STK-041/042 [registered fold reporting](STK-041-042-registered-folds.md) connects
+existing sealed trials/outcomes to Scorecard, with immutable references, source
+fences, separate phases, honest counts and unavailable pooled-return/benchmark/AI
+results. Independent review and exact-commit CI remain required for this increment.
+[Product acceptance handoff](PRODUCT-ACCEPTANCE-HANDOFF.md) records remaining software
+gaps and the minimum external M1/M2 inputs. Genuine acceptance/activation stays blocked.
