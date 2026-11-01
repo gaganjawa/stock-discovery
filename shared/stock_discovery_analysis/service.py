@@ -137,7 +137,7 @@ def cohort_metadata(r):
     return {'id':hashlib.sha256(canonical(values).encode()).hexdigest(),**values}
 
 
-def scorecard(conn,cohort=None):
+def scorecard(conn,cohort=None,benchmark_instrument=None):
     records=conn.execute('''SELECT d.payload,o.payload FROM research.decisions d LEFT JOIN LATERAL
         (SELECT payload FROM research.trade_outcomes WHERE recommendation_id=d.recommendation_id
          ORDER BY evaluated_at DESC,outcome_id DESC LIMIT 1) o ON true ORDER BY d.generated_at,d.recommendation_id''').fetchall()
@@ -167,8 +167,11 @@ def scorecard(conn,cohort=None):
         detail.append({'recommendation_id':r['recommendation_id'],'status':t.get('status','missing'),
                        'portfolio':portfolio(curve),'exclusions':o.get('exclusions',[]) if o else ['not_evaluated']})
     split_audit=split_report(load_dataset(conn,records[0][0]['versions']['dataset']),[a for a,_ in portfolio_records]) if records and len({cohort_metadata(r)['id'] for r,_ in records})==1 else {'status':'unavailable','reason':'select_one_nonempty_version_group'}
-    return json_value({'chronological_validation':split_audit,'cohorts':sorted(cohorts.values(),key=lambda c:c['id']),'selected_cohort':cohort,**summarize(rows),'eligibility':rows,'isolated_trade_portfolios':detail,
-        'portfolio':replay_portfolio(portfolio_records),
+    p=replay_portfolio(portfolio_records)
+    from .reports import performance_report
+    performance=performance_report(load_dataset(conn,records[0][0]['versions']['dataset']),portfolio_records,rows,p,split_audit,benchmark_instrument) if records and len({cohort_metadata(r)['id'] for r,_ in records})==1 else dict(status='unavailable',reason='select_one_nonempty_version_group')
+    return json_value({'performance':performance,'chronological_validation':split_audit,'cohorts':sorted(cohorts.values(),key=lambda c:c['id']),'selected_cohort':cohort,**summarize(rows),'eligibility':rows,'isolated_trade_portfolios':detail,
+        'portfolio':p,
         'validation_report':validation_report(rows,[a for a,_ in portfolio_records]),
         'benchmark':{'return':None,'reason':'no_permitted_comparable_benchmark'},'cash_benchmark_return':'0',
         'promotion':{'status':'insufficient_evidence','reason':'synthetic software tests; EP-1 requires at least 30 complete months and approved policy'},
