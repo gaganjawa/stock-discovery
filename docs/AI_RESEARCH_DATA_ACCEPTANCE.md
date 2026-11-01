@@ -34,6 +34,14 @@ Only public documentation was read. No authenticated market-data request, financ
 
 ## Current result
 
+2 November follow-up: see the [source reconciliation and minimal owner handoff](PRODUCT-ACCEPTANCE-HANDOFF.md#m1--ownerprovider-handoff-one-infy-instrument).
+The saved scoped Upstox grant was located and inspected without credentials or
+provider values. Local configuration allows universe/calendar/prices/numerical
+facts and numerical-snapshot filings, not actions/news. This is not verification
+of database fences, current data or external contractual authority. New official
+NSE bhavcopy/MCP and vendor documentation are assessed there without activation;
+raw-price, coverage, original-document and retention gates are unchanged.
+
 M1 real-data acceptance: BLOCKED by the specific missing inputs above. Software integration already exists for prices, filings, numerical facts and local factual research; rebuilding it would not resolve these external requirements. No new active grant or qualified real instrument was created.
 
 Independent work can continue on M2 verified-claim coverage, M4 deterministic synthesis, M5 replay integration and M6 UI using clearly labelled synthetic fixtures. Human reference labels and thresholds must be fixed before held-out research-quality evaluation. No synthetic score establishes predictive accuracy or AI superiority.
