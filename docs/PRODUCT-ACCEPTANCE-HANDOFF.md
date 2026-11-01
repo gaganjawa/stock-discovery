@@ -10,17 +10,19 @@ private licence inspection, new labels, model run or operational acceptance.
 | Discovery → technical/research comparison | Five **fictional** D3-09 listings, immutable ranked batches, citations and missing/conflicting states; bounded dashboard comparison. This is not a qualified NSE universe. |
 | Historical analysis → full freeze → future reveal | Existing Dataset-based Replay freezes technical, fictional financial and optional contemporaneous AI context. Saved-run reopening hides future data until explicit Reveal; baseline and combined abstention stay separate. |
 | Outcomes → performance and registered trials | Existing fill/cost/portfolio arithmetic, Scorecard and D3-11 govern outcomes. Registered-fold reporting reads sealed results without evaluating holdouts. Absent benchmark, immature outcomes, repeated folds and zero qualified pairs stay unavailable. |
-| One continuous product journey | Discovery's `SYN-D309-*` publication listings and Replay's `SYN-ALPHA/BETA/GAMMA` dataset are distinct fixture domains. They are tested separately; they cannot be silently renamed or treated as one complete end-to-end investment experiment. |
+| One continuous product journey | STK-043/059 links Discovery to its actual publication history, pinned recorded ledger outcomes and explicit trial registrations. Missing links remain unavailable. Discovery's `SYN-D309-*` and Replay's `SYN-ALPHA/BETA/GAMMA` remain distinct fixture domains, not one investment experiment. |
 | Genuine company research | The real company/swing view uses trusted storage/qualification and returns insufficiency when required inputs are missing. Development extraction and mocked UI tests do not qualify genuine financial research. |
 | Operational acceptance | REAL-001 remains PARTIAL. Sleep/wake, supervised continuous operation, calendar/rights lifecycle and recovery evidence need their actual acceptance procedures. A passed software suite is not overnight acceptance. |
 
-Smallest next engineering task: **STK-043/059**, connect discovery selection to its
-actual immutable research/outcome/history identifiers in the existing UI. Reuse
-existing publication, portfolio and trial views; show unavailable where no matching
-record exists. Do not manufacture a legacy Dataset identity or admit a position to
-make that link work. Validate with existing synthetic records. A real single-path
-acceptance run still requires M1; actual AI-versus-technical acceptance requires M2
-and preregistered paired historical/forward evidence.
+The [STK-043/059 navigation slice](STK-043-059-discovery-history.md) connects actual
+immutable IDs through the existing publication, portfolio outcome and trial views.
+It does not manufacture a legacy Dataset identity or admit a position merely to
+populate a view. No further synthetic model experiments or independent infrastructure
+are required by this audit. Remaining delivery gates are focused PR review and exact
+CI, then a supervised genuinely qualified one-instrument acceptance run requiring M1.
+Actual AI-versus-technical acceptance additionally requires M2 and preregistered
+paired historical/forward evidence. The synthetic journey proves software behavior,
+including absence/denial; it supplies no genuine investment-performance denominator.
 
 The current browser/API suites validate auth, read denial, listing comparison,
 freeze/reopen/reveal, original technical outcomes, financial abstention and registered

@@ -1,5 +1,5 @@
 """Authenticated portfolio API. Fictional observations cannot feed forward books."""
-from fastapi import APIRouter, Depends, Header
+from fastapi import APIRouter, Depends, Header, Query, Response
 from .auth import require_auth
 from .research import db
 from .discovery import error
@@ -49,7 +49,16 @@ def fictional_session(pid:str,idempotency_key:str=Header(min_length=1,max_length
 
 
 @router.get('/{pid}/outcomes/{rid}')
-def outcome(pid:str,rid:str,conn=Depends(db)):
+def outcome(pid:str,rid:str,response:Response,sequence:int|None=Query(default=None,ge=1),
+            expected_hash:str|None=Query(default=None,pattern='^[0-9a-f]{64}$'),conn=Depends(db)):
+    response.headers['Cache-Control']='no-store'
+    if sequence is not None or expected_hash is not None:
+        if sequence is None or expected_hash is None:raise error(400,'pinned_outcome_reference_required')
+        from stock_discovery_analysis.discovery_history import recorded_outcome
+        try:return recorded_outcome(conn,pid,rid,sequence,expected_hash)
+        except KeyError:raise error(404,'outcome_not_found') from None
+        except PermissionError:raise error(403,'source_permission_denied') from None
+        except ValueError:raise error(409,'saved_evidence_inconsistent') from None
     data=call(report,conn,pid)
     order=next((o for o in data['decisions'] if o['recommendation_id']==rid),None)
     if order is None:raise error(404,'outcome_not_found')

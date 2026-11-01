@@ -1,28 +1,31 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-01T19:44:50.928696+00:00",
-  "current_milestone": "M3 STK-041/042 registered fold reporting",
-  "branch": "feat/stk-041-042-registered-fold-results",
+  "updated_at": "2026-11-01T20:22:32.193575+00:00",
+  "current_milestone": "M7 STK-043/059 connected synthetic research/history navigation \u2014 validated, awaiting PR review/CI",
+  "branch": "feat/stk-043-059-discovery-history",
   "worktree": "stk-074-grant-fences",
-  "last_successful_commit": "f172a28f0aaa6e6074f79259ad01c10971648573",
+  "last_successful_commit": "8d336486f645c49e8f7f919a1226636004dd0360",
   "pr": null,
   "completed_tests": {
     "backend_worker": 794,
-    "postgres": 501,
-    "postgres_zero_skips": true,
-    "migration_lifecycle": "passed",
-    "fold_unit_cases": 4,
-    "fold_PostgreSQL_cases": 19,
-    "new_cases_included_in_full_totals": true,
-    "browser_fresh_stack": 13,
-    "frontend_build": "passed",
-    "docker_smoke": "passed",
+    "focused_PostgreSQL": 78,
+    "focused_browser": 1,
+    "frontend_build": "passed on final UI",
     "contract_validators": 3,
     "script_tests": 13,
-    "syntax_whitespace": "passed",
+    "full_postgres": "passed",
+    "full_browser": 14,
     "actual_provider_calls": 0,
     "actual_model_calls": 0,
-    "mandatory_exact_commit_ci": "not delivered yet"
+    "mandatory_exact_commit_ci": "not delivered yet",
+    "postgres": 516,
+    "postgres_zero_skips": true,
+    "migration_lifecycle": "passed; upgrade/repeat/downgrade/re-upgrade/atomic rollback",
+    "full_browser_duration": "2.6 minutes",
+    "docker_smoke": "passed",
+    "syntax_whitespace": "passed including five untracked files",
+    "navigation_PostgreSQL_cases": 15,
+    "new_cases_included_in_full_postgres_total": true
   },
   "failed_tests": [
     {
@@ -38,9 +41,9 @@
     "Actual representative-source extraction quality not passed; human holdout unverified."
   ],
   "pending_changes": [
-    "Validated registered-fold API/UI/adapter/tests, implementation documentation, E2E gap audit/handoff, board and checkpoint awaiting focused commit/draft PR"
+    "Validated STK-043/059 implementation/tests/docs and preserved checkpoint awaiting focused Git delivery; no unrelated or private files included."
   ],
-  "next_action": "Deliver registered-fold draft PR; verify exact-commit required CI and independent review before protected merge. Then STK-043/059: connect discovery selection to its actual immutable research/outcome/history IDs, displaying unavailable where no matching records exist; never relabel fixture identities. M1 provider/source/retention qualification and M2 independent human/50-case references remain external blockers.",
+  "next_action": "Deliver focused STK-043/059 draft PR, verify exact mandatory CI and independent review before protected merge. No additional independent engineering gap was confirmed by this audit. Next genuine acceptance requires the existing M1 provider/rights/raw-data/PIT packet, M2 independent reviewer/50 unseen cases and approved protocol, genuine strategy/benchmark/forward evidence and separately authorized supervised operational acceptance. No new model experiments or unrelated infrastructure.",
   "milestones": [
     {
       "id": "M0",
@@ -302,19 +305,19 @@
       "id": "M3",
       "objective": "Quantitative strategy evaluation",
       "completion_criteria": "Deterministic baseline and hypothesis-driven improvements evaluated without tuning frozen holdouts.",
-      "status": "registered_fold_reporting_validated_pending_PR_review",
+      "status": "registered_fold_reporting_merged_real_acceptance_blocked",
       "dependency_status": "previous milestone not yet accepted; independent work may proceed when externally blocked",
       "files_changed": [],
       "tests": {},
-      "commit_sha": "eb6dca1d7780495a4ad195d3ea345bec8dad35a9",
-      "pr_url": "https://github.com/gaganjawa/stock-discovery/pull/32",
+      "commit_sha": "74d7b15d6fa3e85ee81fcec72d593bc0f0f5a62b",
+      "pr_url": "https://github.com/gaganjawa/stock-discovery/pull/33",
       "blockers": [
         "Independent PR review and exact-commit CI",
         "Qualified actual strategy/benchmark/cost and point-in-time observations",
         "Registered untouched walk-forward fold evidence; EP-1 remains unratified",
         "Independent M2 financial quality and genuine paired AI evidence absent"
       ],
-      "next_step": "Deliver registered-fold draft PR; verify exact-commit required CI and independent review before protected merge. Then STK-043/059: connect discovery selection to its actual immutable research/outcome/history IDs, displaying unavailable where no matching records exist; never relabel fixture identities. M1 provider/source/retention qualification and M2 independent human/50-case references remain external blockers.",
+      "next_step": "No pooled return/AI claim; await genuinely qualified registered walk-forward evidence.",
       "last_increment_tests": {
         "backend_worker": 794,
         "postgres": 501,
@@ -474,7 +477,7 @@
       "id": "M7",
       "objective": "Product acceptance",
       "completion_criteria": "Separate synthetic software evidence, real-data acceptance and measured research quality.",
-      "status": "partial_synthetic_components_tested_genuine_end_to_end_blocked",
+      "status": "connected_synthetic_workflow_validated_pending_PR_genuine_acceptance_blocked",
       "dependency_status": "previous milestone not yet accepted; independent work may proceed when externally blocked",
       "files_changed": [],
       "tests": {},
@@ -483,15 +486,15 @@
       "blockers": [
         "Acceptance requires inspection and reuse of existing implementation."
       ],
-      "next_step": "Inspect existing components against milestone criteria before implementing missing integration."
+      "next_step": "Deliver focused STK-043/059 draft PR, verify exact mandatory CI and independent review before protected merge. No additional independent engineering gap was confirmed by this audit. Next genuine acceptance requires the existing M1 provider/rights/raw-data/PIT packet, M2 independent reviewer/50 unseen cases and approved protocol, genuine strategy/benchmark/forward evidence and separately authorized supervised operational acceptance. No new model experiments or unrelated infrastructure."
     }
   ],
   "runtime_cleanup": "Verified: all task-owned registered-folds PostgreSQL/Compose containers and volumes removed. Temporary test-scoped idle-sleep inhibitor exited with the browser run. Actual databases, private evidence and unrelated worktrees untouched.",
   "product_development_authorization": "Latest owner instruction permits independent non-actionable A\u2013D implementation while external M2 acceptance is blocked; no acceptance gate waived.",
   "implementation_review": {
-    "status": "Fresh author source review found no confirmed remaining P1/P2; separate independent PR review required",
-    "reviewed": "Immutable trial/result/audit hashes, frozen versions and source clocks, original/current grants and restrictions, pinned ledger clocks, read/deny concurrency, no holdout evaluation, disjoint additive-only metrics and no pooled portfolio/AI claim.",
-    "known_p3": "Per-artifact and per-fold authorization work can be expensive; explicit 10-experiment/100-trial/dependency bounds are not a full-universe latency acceptance."
+    "status": "Fresh full source review: no confirmed P1/P2; separate independent PR review and mandatory exact-commit CI required before merge",
+    "reviewed": "Exact listing/horizon/arm/mode publication scope and stable cursor; frozen decision/order/hash identity and pinned sequences; original/current source rights and durable fences across dependency locks; no implicit inference, evaluation, holdout access or mutation; denial clearing and cancellation; existing API compatibility and explicit unavailable fixture relationships.",
+    "known_p3": "Repeated per-dependency authorization and long-ledger query cost; no large-universe latency acceptance."
   },
   "development_test_failures": [
     {
@@ -699,6 +702,29 @@
         },
         "review": "One reproduced P2: late-disclosed in-window action ignored by benchmark. Failed regression then fixed at 02af305 using recorded outcome knowledge cutoff; later-than-knowledge action stays excluded. Other reviewed risk, denominator, revocation and chronology paths had no confirmed P1/P2. Protected merge after final exact checks."
       }
+    },
+    {
+      "milestone": "STK-041/042 PR33",
+      "head_sha": "74d7b15d6fa3e85ee81fcec72d593bc0f0f5a62b",
+      "merge_sha": "8d336486f645c49e8f7f919a1226636004dd0360",
+      "prior_local_results": {
+        "backend_worker": 794,
+        "postgres": 501,
+        "postgres_zero_skips": true,
+        "migration_lifecycle": "passed",
+        "fold_unit_cases": 4,
+        "fold_PostgreSQL_cases": 19,
+        "new_cases_included_in_full_totals": true,
+        "browser_fresh_stack": 13,
+        "frontend_build": "passed",
+        "docker_smoke": "passed",
+        "contract_validators": 3,
+        "script_tests": 13,
+        "syntax_whitespace": "passed",
+        "actual_provider_calls": 0,
+        "actual_model_calls": 0,
+        "mandatory_exact_commit_ci": "PASS: run 41343487187 at 74d7b15; unit, PostgreSQL, UI and required checks aggregate all success. Exact SHA workflow confirmed by GitHub."
+      }
     }
   ],
   "prior_pr30": {
@@ -751,5 +777,28 @@
       "migration_lifecycle": "passed"
     },
     "review": "One reproduced P2: late-disclosed in-window action ignored by benchmark. Failed regression then fixed at 02af305 using recorded outcome knowledge cutoff; later-than-knowledge action stays excluded. Other reviewed risk, denominator, revocation and chronology paths had no confirmed P1/P2. Protected merge after final exact checks."
-  }
+  },
+  "prior_pr33": {
+    "number": 33,
+    "url": "https://github.com/gaganjawa/stock-discovery/pull/33",
+    "head_sha": "74d7b15d6fa3e85ee81fcec72d593bc0f0f5a62b",
+    "base": "main",
+    "draft": false,
+    "state": "merged",
+    "ci_run": "https://github.com/gaganjawa/stock-discovery/actions/runs/41343487187",
+    "checks": {
+      "unit": "success",
+      "postgres": "success",
+      "ui": "success",
+      "checks": "success"
+    },
+    "review": "Fresh independent correctness review: no confirmed P1/P2 in registered provenance, frozen versions, source revocation, chronological/holdout isolation, overlap aggregation, capital separation, hidden mutation or fail-closed evidence. Four focused aggregation tests passed again. Protected main enforced; no bypass.",
+    "merge_sha": "8d336486f645c49e8f7f919a1226636004dd0360"
+  },
+  "navigation_validation_notes": [
+    "Initial fixtures corrected nonexistent agent_reservations to agent_results and fixed restriction reason to existing revoked enum; no production behavior changed for either fixture issue.",
+    "First browser probe confirmed Discovery detail omitted original cutoff; added immutable information cutoff and publication timestamp. Same focused journey then passed, including zero POSTs during read/reveal/registration navigation.",
+    "No provider, broker, model, historical-evaluation artifact or actual REAL database access."
+  ],
+  "resource_cleanup": "Verified complete: task-owned browser project and volumes plus standalone synthetic PostgreSQL removed. Actual REAL database and other worktrees untouched; temporary test-scoped sleep inhibitor exited with tests."
 }

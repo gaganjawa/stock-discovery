@@ -103,6 +103,16 @@ def recommendation_evidence(rid:str,conn=Depends(db)):
     return dict(evidence=a['recommendation']['evidence'],citations=a['citations'],permissions=a['permissions'])
 
 
+@router.get('/recommendations/{rid}/history')
+def history(rid:str,response:Response,before:str|None=Query(default=None,max_length=200),limit:int=Query(default=20,ge=1,le=50),conn=Depends(db)):
+    from stock_discovery_analysis.discovery_history import related_history
+    response.headers['Cache-Control']='no-store'
+    try:return related_history(conn,rid,before=before,limit=limit)
+    except KeyError:raise error(404,'saved_evidence_not_found') from None
+    except PermissionError:raise error(403,'source_permission_denied') from None
+    except ValueError:raise error(409,'saved_evidence_inconsistent') from None
+
+
 @router.get('/evidence/{revision_id}')
 def evidence(revision_id:str,recommendation_id:str,conn=Depends(db)):
     a=recommendation(recommendation_id,conn)

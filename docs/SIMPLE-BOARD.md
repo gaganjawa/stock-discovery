@@ -201,3 +201,12 @@ fences, separate phases, honest counts and unavailable pooled-return/benchmark/A
 results. Independent review and exact-commit CI remain required for this increment.
 [Product acceptance handoff](PRODUCT-ACCEPTANCE-HANDOFF.md) records remaining software
 gaps and the minimum external M1/M2 inputs. Genuine acceptance/activation stays blocked.
+
+2 November — PR33 merged (`8d336486`) under protected main after exact `74d7b15`
+unit/PostgreSQL/UI/aggregate success and fresh correctness review, with no confirmed
+P1/P2. STK-043/059 [Discovery navigation](STK-043-059-discovery-history.md) links
+existing frozen publications, recorded/pinned outcomes and explicit registry
+references. Unrelated fixture identities and missing histories remain distinct;
+reads never create inference, outcomes or admissions. Review/CI delivery state and
+fresh acceptance counts are in the checkpoint. M1/M2, genuine forward/benchmark,
+policy, operational, publication and trading approvals remain blocked.
