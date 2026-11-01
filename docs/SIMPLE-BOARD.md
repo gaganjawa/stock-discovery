@@ -210,3 +210,19 @@ references. Unrelated fixture identities and missing histories remain distinct;
 reads never create inference, outcomes or admissions. Review/CI delivery state and
 fresh acceptance counts are in the checkpoint. M1/M2, genuine forward/benchmark,
 policy, operational, publication and trading approvals remain blocked.
+
+2 November — PR34 merged (`63e2cfcc`) after exact `27b0ffc` protected checks and
+independent review: 794 unit, 516 PostgreSQL/zero skips, lifecycle, 14 browsers.
+The [final synthetic workflow audit and M1 handoff](PRODUCT-ACCEPTANCE-HANDOFF.md)
+found no demonstrated new software gap. Primary focus: STK-004/005/007/014 INFY
+source qualification. Saved private grant metadata was found; action/news scopes,
+raw-price semantics, original filings/clocks and retention remain unresolved.
+No provider activated, private payload copied, model run, holdout consumed or real
+recommendation approved. M1/M2, genuine evaluation and operational gates remain blocked.
+
+2 November — STK-004/014 M1 provider decision handoff prepared, documentation only.
+[Comparison, owner sequence and three unsent inquiries](PRODUCT-ACCEPTANCE-HANDOFF.md#owner-decision-table--cost-and-proposed-combination)
+separate NSE free access/full-product tariffs from TrueData's unquoted API and
+simulation restrictions. Saved Upstox scope is preserved; `historical_replay` is
+not locally authorized. No new source/grant, dataset change or synthetic feature.
+Next action is owner/provider clarification; M1 remains BLOCKED.

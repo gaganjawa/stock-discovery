@@ -34,9 +34,33 @@ Only public documentation was read. No authenticated market-data request, financ
 
 ## Current result
 
+2 November follow-up: see the [source reconciliation and minimal owner handoff](PRODUCT-ACCEPTANCE-HANDOFF.md#m1--ownerprovider-handoff-one-infy-instrument).
+The saved scoped Upstox grant was located and inspected without credentials or
+provider values. Local configuration allows universe/calendar/prices/numerical
+facts and numerical-snapshot filings, not actions/news. This is not verification
+of database fences, current data or external contractual authority. New official
+NSE bhavcopy/MCP and vendor documentation are assessed there without activation;
+raw-price, coverage, original-document and retention gates are unchanged.
+
 M1 real-data acceptance: BLOCKED by the specific missing inputs above. Software integration already exists for prices, filings, numerical facts and local factual research; rebuilding it would not resolve these external requirements. No new active grant or qualified real instrument was created.
 
-Independent work can continue on M2 verified-claim coverage, M4 deterministic synthesis, M5 replay integration and M6 UI using clearly labelled synthetic fixtures. Human reference labels and thresholds must be fixed before held-out research-quality evaluation. No synthetic score establishes predictive accuracy or AI superiority.
+The bounded synthetic MVP has now completed its current software scope through
+merged PR34 (`63e2cfcc`). Earlier independent M2/M4/M5/M6 development remains valid
+history; it is not a request for more synthetic features or repeated experiments.
+Human reference labels and thresholds must be fixed before held-out research-quality
+evaluation. No synthetic score establishes predictive accuracy or AI superiority.
+
+### Provider decision boundary — 2 November 2026
+
+The [owner decision table](PRODUCT-ACCEPTANCE-HANDOFF.md#owner-decision-table--cost-and-proposed-combination)
+compares existing Upstox inputs, NSE MCP/bhavcopy, TrueData and a secondary vendor.
+The [three unsent inquiries](PRODUCT-ACCEPTANCE-HANDOFF.md#provider-inquiry-drafts--ready-to-send-not-sent)
+request product-specific rights, raw-price/volume semantics, complete action/event
+coverage, original clocks, retention/backups/deletion and an applicable personal quote.
+Public prices and API access are not grants; the local Upstox use list also lacks
+`historical_replay`. No permission was extended or authenticated provider called.
+Do not choose a paid plan, register a new grant or change an adapter until an
+applicable permitted source and a demonstrated technical gap are established.
 
 ## Explicit one-instrument release checklist — 1 November 2026
 

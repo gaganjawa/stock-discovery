@@ -165,3 +165,27 @@ evaluation or inference is implied. Missing and revoked relationships stay unava
 After this software increment, the existing M1/M2 handoff, genuine evaluation and
 supervised operational acceptance remain the identified gates; no unrelated
 infrastructure or repeated model experiment is scheduled.
+
+PR34 merged under protected main at `63e2cfcc` after exact `27b0ffc` unit,
+PostgreSQL, UI and aggregate success and independent source review. The final
+bounded synthetic product audit found no demonstrated missing software capability
+requiring another feature. Exact CI confirms 794 unit, 516 PostgreSQL (zero skips),
+migration lifecycle and 14 browser workflows. No new P1/P2 correction was needed.
+
+Primary focus returns to M1 under existing STK-004/005/007/014: reconcile the saved
+private Upstox scope with raw Swing requirements; obtain one permitted raw INFY
+price/volume/action packet and original disclosures with truthful availability
+and retention evidence. The [handoff](PRODUCT-ACCEPTANCE-HANDOFF.md) distinguishes
+existing file-level permission, public-source candidates and unverified policy.
+New source activation is not authorized. M2 independent review/50-case holdout,
+genuine strategy/benchmark/forward, operational and trading gates remain blocked.
+
+2 November M1 decision checkpoint: the five pending PR34 closure documents were
+committed at `860e06b`; production code and frozen evaluations are unchanged. The
+[provider decision table and unsent inquiries](PRODUCT-ACCEPTANCE-HANDOFF.md#owner-decision-table--cost-and-proposed-combination)
+now distinguish free data access, full-product tariffs and unquoted API access.
+Preferred clarification: existing Upstox scope + official NSE raw EOD + SEC originals;
+TrueData historical-only API is conditional on a quote and resolution of published
+simulation restrictions. No complete genuine INFY packet or retention compliance is
+accepted. Next: owner/provider decisions and lawful evidence, then only demonstrated
+ingestion/qualification gaps. No additional synthetic features are scheduled.
