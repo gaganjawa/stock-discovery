@@ -170,3 +170,15 @@ without changing authentication or rate limits. STK-043/059 now integrates
 [saved historical research](STK-043-059-saved-replay-dashboard.md), source-authorized
 reopening and fictional multi-date/instrument batches into Dashboard and Replay.
 Coverage counts remain separate from eligible pairs (zero); AI performance unavailable.
+
+1 November — PR30 merged (`7f87b1c`), exact `bcb51e6` unit/postgres/ui/checks
+successful under verified protection. STK-058/059 [bounded discovery acceptance](STK-058-059-product-acceptance.md)
+exposes existing frozen priority components, a technical-condition filter and
+two-to-four-company comparison within one fictional batch/horizon/research arm.
+Original strategy/evaluator acceptance is audited and the explicit M1 qualification
+checklist names missing permissions, clocks, coverage and price/volume semantics.
+Local validation/delivery state is in the durable checkpoint. Independent review
+and exact-commit CI are required; genuine NSE qualification, M2 independent
+human/50-case quality acceptance and operational acceptance are not advanced.
+Next priority is M3's remaining observation-supported benchmark/risk-adjusted and
+walk-forward acceptance, reusing the existing D3-10/11 evaluators and controls.

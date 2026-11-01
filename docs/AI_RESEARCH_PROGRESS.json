@@ -1,24 +1,29 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-01",
-  "current_milestone": "M6 saved replay discovery/navigation and multi-date/instrument synthetic evaluation",
-  "branch": "feat/stk-043-059-saved-replay-dashboard",
+  "updated_at": "2026-11-01T08:43:59.435110+00:00",
+  "current_milestone": "M6 STK-058/059 bounded discovery comparison; M3 acceptance audit",
+  "branch": "feat/stk-058-059-bounded-discovery-acceptance",
   "worktree": "stk-074-grant-fences",
-  "last_successful_commit": "466de93360564952c38b9e86dea405245cae2307",
+  "last_successful_commit": "7f87b1c0f06ee146a71ad600eb462b4aa1c472cc",
   "pr": null,
   "completed_tests": {
     "backend_worker": 777,
-    "postgres": 470,
-    "postgres_skips": 0,
-    "focused_saved_and_historical_postgres": 28,
+    "postgres": 478,
+    "postgres_zero_skips": true,
     "migration_lifecycle": "passed",
-    "scripts": 13,
+    "focused_comparison_and_publication": 21,
+    "focused_quant_strategy_rights_qualification": 171,
+    "focused_counts_overlap_full": true,
     "contract_validators": 3,
-    "browser_fresh_stack": 13,
+    "script_tests": 13,
     "frontend_build": "passed",
+    "browser": "passed after confirmed column-header accessibility fix",
+    "actual_provider_calls": 0,
     "actual_model_calls": 0,
-    "mandatory_exact_commit_ci": "not delivered yet",
-    "syntax_whitespace": "passed"
+    "mandatory_exact_commit_ci": "not yet delivered",
+    "browser_fresh_stack": 13,
+    "syntax_whitespace": "passed",
+    "docker_smoke": "passed"
   },
   "failed_tests": [
     {
@@ -34,9 +39,9 @@
     "Actual representative-source extraction quality not passed; human holdout unverified."
   ],
   "pending_changes": [
-    "STK-043/059 saved research API/UI, existing worker financial batches, tests, docs and checkpoint"
+    "Validated STK-058/059 dashboard, regressions, acceptance audit/checklist, board and checkpoint awaiting focused commit/draft PR"
   ],
-  "next_action": "Verify saved-replay dashboard draft PR exact-commit CI and conduct fresh independent review. Merge only after required gates. Continue existing end-to-end software acceptance; M1 real source/archive qualification, M2 independent 50-case human labels, and actionable policy approval remain BLOCKED.",
+  "next_action": "Finish bounded discovery browser acceptance and fresh review; commit/push focused draft PR and verify mandatory exact-commit CI. Independent review required before merge. Next engineering priority M3: audit missing risk-adjusted benchmark/walk-forward acceptance against existing D3-10/11, implement only observation-supported gaps; real data and M2 human holdout remain blocked.",
   "milestones": [
     {
       "id": "M0",
@@ -298,7 +303,7 @@
       "id": "M3",
       "objective": "Quantitative strategy evaluation",
       "completion_criteria": "Deterministic baseline and hypothesis-driven improvements evaluated without tuning frozen holdouts.",
-      "status": "pending",
+      "status": "audited_partial_existing_quant_and_evaluator_software",
       "dependency_status": "previous milestone not yet accepted; independent work may proceed when externally blocked",
       "files_changed": [],
       "tests": {},
@@ -307,7 +312,7 @@
       "blockers": [
         "Acceptance requires inspection and reuse of existing implementation."
       ],
-      "next_step": "Inspect existing components against milestone criteria before implementing missing integration."
+      "next_step": "STK-041/042: inspect observation-supported risk-adjusted metrics, benchmark provenance and predeclared walk-forward reporting gaps; reuse D3-10/11; preserve frozen references and report unavailable where observations are absent."
     },
     {
       "id": "M4",
@@ -339,7 +344,7 @@
       "id": "M5",
       "objective": "Historical replay and ground truth",
       "completion_criteria": "Freeze as-of research, reveal subsequent outcomes and compare baselines with leakage controls.",
-      "status": "full_synthetic_freeze_merged_batch_navigation_increment_in_validation",
+      "status": "synthetic_full_freeze_saved_navigation_batch_merged",
       "dependency_status": "Independent development explicitly authorized; acceptance depends on unapproved M1/M2 and historical gates.",
       "files_changed": [
         "backend/app/research.py",
@@ -385,7 +390,7 @@
       "id": "M6",
       "objective": "User-facing dashboard",
       "completion_criteria": "Research, bounded discovery and historical replay usable through existing React application.",
-      "status": "saved_replay_dashboard_validated_pending_PR_review",
+      "status": "bounded_discovery_validated_pending_draft_PR_review",
       "dependency_status": "Independent development explicitly authorized; acceptance depends on unapproved M1/M2 and historical gates.",
       "files_changed": [
         "backend/app/research.py",
@@ -417,19 +422,39 @@
         "mandatory_exact_commit_ci": "not delivered yet",
         "syntax_whitespace": "passed"
       },
-      "commit_sha": null,
-      "pr_url": null,
+      "commit_sha": "bcb51e6cd8311a997634a26de1b4cfb68f0419d8",
+      "pr_url": "https://github.com/gaganjawa/stock-discovery/pull/30",
       "blockers": [
-        "Acceptance requires inspection and reuse of existing implementation."
+        "Independent review and exact-commit CI for bounded comparison",
+        "Genuine universe/input rights and M2 quality acceptance blocked"
       ],
-      "next_step": "Verify saved-replay dashboard draft PR exact-commit CI and conduct fresh independent review. Merge only after required gates. Continue existing end-to-end software acceptance; M1 real source/archive qualification, M2 independent 50-case human labels, and actionable policy approval remain BLOCKED.",
-      "merge_sha": "907849399be33a0a6d178212b64b151de62320e9"
+      "next_step": "Finish bounded discovery browser acceptance and fresh review; commit/push focused draft PR and verify mandatory exact-commit CI. Independent review required before merge. Next engineering priority M3: audit missing risk-adjusted benchmark/walk-forward acceptance against existing D3-10/11, implement only observation-supported gaps; real data and M2 human holdout remain blocked.",
+      "merge_sha": "7f87b1c0f06ee146a71ad600eb462b4aa1c472cc",
+      "last_increment_tests": {
+        "backend_worker": 777,
+        "postgres": 478,
+        "postgres_zero_skips": true,
+        "migration_lifecycle": "passed",
+        "focused_comparison_and_publication": 21,
+        "focused_quant_strategy_rights_qualification": 171,
+        "focused_counts_overlap_full": true,
+        "contract_validators": 3,
+        "script_tests": 13,
+        "frontend_build": "passed",
+        "browser": "passed after confirmed column-header accessibility fix",
+        "actual_provider_calls": 0,
+        "actual_model_calls": 0,
+        "mandatory_exact_commit_ci": "not yet delivered",
+        "browser_fresh_stack": 13,
+        "syntax_whitespace": "passed",
+        "docker_smoke": "passed"
+      }
     },
     {
       "id": "M7",
       "objective": "Product acceptance",
       "completion_criteria": "Separate synthetic software evidence, real-data acceptance and measured research quality.",
-      "status": "pending",
+      "status": "partial_synthetic_components_tested_genuine_end_to_end_blocked",
       "dependency_status": "previous milestone not yet accepted; independent work may proceed when externally blocked",
       "files_changed": [],
       "tests": {},
@@ -441,15 +466,34 @@
       "next_step": "Inspect existing components against milestone criteria before implementing missing integration."
     }
   ],
-  "runtime_cleanup": "Task-owned stk029-ci Compose stack and stk043-history-validation database/volumes removed after tests. Original worktrees, private evidence and actual databases untouched.",
+  "runtime_cleanup": "All task-owned disposable PostgreSQL and Compose containers/volumes removed; actual REAL database untouched.",
   "product_development_authorization": "Latest owner instruction permits independent non-actionable A\u2013D implementation while external M2 acceptance is blocked; no acceptance gate waived.",
-  "implementation_review": "Focused source review: final metadata rights recheck after later locks; denied rows expose no source values; frozen reopen returns cutoff-only bars without outcomes; source-denied UI clears data; explicit full batch preserves technical-only identities and rejects malformed flags. No known P1/P2. Fresh independent PR review and mandatory exact-commit CI required.",
+  "implementation_review": {
+    "status": "Fresh source inspection found no confirmed P1/P2; separate independent PR review still required",
+    "publication_trading": "blocked",
+    "known_p3": "Per-record source checks may be expensive at large universe/history sizes; only five listings validated."
+  },
   "development_test_failures": [
     {
       "stage": "Full browser rerun on reused task-owned stack",
       "result": "12 passed / 1 failed",
       "cause": "Existing mock discovery research budget exhausted by multiple prior full-suite/reproduction runs; UI correctly withheld research.",
       "resolution": "Fresh CI-equivalent disposable database: all 13 browser workflows passed; production budgets unchanged."
+    },
+    {
+      "increment": "STK-058/059",
+      "failure": "Local smoke used the default Compose project, not the task-owned project",
+      "resolution": "Explicit COMPOSE_PROJECT_NAME; smoke passed; no application change"
+    },
+    {
+      "increment": "STK-058/059",
+      "failure": "Browser launcher omitted AUTH_TOKEN; 4 mocked tests passed and 9 authenticated cases stopped before execution",
+      "resolution": "Export the matching synthetic test key; no authentication/rate-limit change"
+    },
+    {
+      "increment": "STK-058/059",
+      "failure": "Corrected browser launch: 12 passed, discovery columnheader assertion failed",
+      "resolution": "Explicit th scope=col accessibility markup; fresh full browser suite 13 passed"
     }
   ],
   "prior_pr28": {
@@ -533,6 +577,39 @@
         },
         "fresh_snapshot_review_postgres": 19
       }
+    },
+    {
+      "milestone": "PR30 saved replay",
+      "prior_results_not_rerun": {
+        "backend_worker": 777,
+        "postgres": 470,
+        "postgres_skips": 0,
+        "focused_saved_and_historical_postgres": 28,
+        "migration_lifecycle": "passed",
+        "scripts": 13,
+        "contract_validators": 3,
+        "browser_fresh_stack": 13,
+        "frontend_build": "passed",
+        "actual_model_calls": 0,
+        "mandatory_exact_commit_ci": "in progress at bcb51e6; not yet confirmed successful",
+        "syntax_whitespace": "passed"
+      },
+      "head_sha": "bcb51e6cd8311a997634a26de1b4cfb68f0419d8",
+      "merge_sha": "7f87b1c0f06ee146a71ad600eb462b4aa1c472cc"
     }
-  ]
+  ],
+  "prior_pr30": {
+    "number": 30,
+    "head_sha": "bcb51e6cd8311a997634a26de1b4cfb68f0419d8",
+    "merge_sha": "7f87b1c0f06ee146a71ad600eb462b4aa1c472cc",
+    "state": "merged",
+    "ci_run": "https://github.com/gaganjawa/stock-discovery/actions/runs/41240205721",
+    "checks": {
+      "unit": "success",
+      "postgres": "success",
+      "ui": "success",
+      "checks": "success"
+    },
+    "review": "Fresh source review: no P1/P2 in authorization, stable pagination, immutable reopening, batch idempotency, cutoff/future separation or zero-pair metrics. Main protection verified; no bypass."
+  }
 }

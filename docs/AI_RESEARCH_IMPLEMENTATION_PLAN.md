@@ -110,3 +110,17 @@ it while retaining UI login/security coverage and all production throttles.
 The [STK-043/059 saved-replay dashboard](STK-043-059-saved-replay-dashboard.md) adds
 bounded history discovery, exact reopening, side-by-side evidence, a cutoff chart
 marker and existing-worker financial batches. Paired AI metrics stay unavailable.
+
+PR30 merged under protected main at `7f87b1c` after exact `bcb51e6` unit/postgres/
+ui/checks succeeded. Fresh source review found no P1/P2 in saved authorization,
+stable pages, immutable reopening, idempotent batches or future separation.
+
+The next bounded [STK-058/059 dashboard increment](STK-058-059-product-acceptance.md)
+exposes **existing** frozen ranking components and compares up to four fictional
+companies within one batch/horizon/research arm. It does not add a score or engine.
+The same record audits existing strategy/replay acceptance against original tickets
+and separates synthetic end-to-end coverage from genuine data requirements. The
+[M1 checklist](AI_RESEARCH_DATA_ACCEPTANCE.md) now names exact missing rights,
+retention, sources, timestamps and raw price/volume semantics. Independent M2
+review and the unseen 50-case holdout stay BLOCKED, with prior artifacts unchanged.
+No additional four-example model run or infrastructure experiment is justified.
