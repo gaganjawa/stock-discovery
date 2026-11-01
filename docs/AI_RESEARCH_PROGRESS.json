@@ -1,11 +1,26 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-01T20:57:34.471267+00:00",
-  "current_milestone": "M1 INFY provider/owner decision boundary \u2014 no complete input packet qualified",
+  "updated_at": "2026-11-01T21:41:52.662497+00:00",
+  "current_milestone": "M1 bounded official-source validation \u2014 descriptive Upstox verified; NSE sessions/SEC retrieval blocked; no qualified packet",
   "branch": "feat/stk-004-014-m1-source-qualification",
   "worktree": "stk-074-grant-fences",
   "last_successful_commit": "63e2cfcc002f8b078974b7af6c6cba5aa2d2820d",
-  "pr": null,
+  "pr": {
+    "number": 35,
+    "url": "https://github.com/gaganjawa/stock-discovery/pull/35",
+    "state": "open",
+    "draft": true,
+    "head_sha_before_followup": "34099d9d75f8cc25a9307bee9462393108bec125",
+    "ci_run": "https://github.com/gaganjawa/stock-discovery/actions/runs/41349618209",
+    "pre_followup_checks": {
+      "unit": "success",
+      "postgres": "success",
+      "ui": "success",
+      "checks": "success"
+    },
+    "followup_ci": "must verify separately after delivery",
+    "merged": false
+  },
   "completed_tests": {
     "fresh_upstox_qualification_mock_tests": 96,
     "verified_pr34_exact_ci": {
@@ -40,9 +55,9 @@
     "Actual representative-source extraction quality not passed; human holdout unverified."
   ],
   "pending_changes": [
-    "PR34 five-document closure committed at 860e06b002bf8d792cdbd447a00d4a8f02d81c7a. Documentation-only M1 provider comparison, costs, qualification sequence and unsent inquiries prepared for protected PR delivery; no production changes."
+    "Documentation-only actual official-source probes and permission/access distinctions for STK-004/014; no production correction justified. Prepare follow-up on existing PR35; preserved prior results remain historical."
   ],
-  "next_action": "Owner/provider decision: send or explicitly authorize the three drafted inquiries, retain applicable rights/raw/coverage/retention answers, and approve any quoted product and bounded acquisition separately. Codex can assess replies and existing metadata without source activation; implement only a demonstrated authorized format gap. Do not add synthetic features. M1, M2 independent review/50 unseen cases/proposed protocol, genuine strategy/benchmark/forward, operations, publication/admission/trading remain blocked.",
+  "next_action": "Resolve official NSE MCP session continuity (observed freshly issued session rejected) and identified SEC original/submissions access (HTTP403), without bypassing controls. Published terms suffice for covered informational reads/public filing reuse; no universal provider-reply prerequisite. Raw OHLCV/volume, complete calendar/action/disclosure coverage, original availability, effective settings, applicable storage/retention and production grant/fence checks still required. No extra synthetic features, source activation, models, holdout use or trading.",
   "milestones": [
     {
       "id": "M0",
@@ -102,7 +117,7 @@
         "Complete authorized filing/event/action/calendar coverage",
         "Exact retention/deletion and original archive/publication evidence"
       ],
-      "next_step": "Owner/provider decision: send or explicitly authorize the three drafted inquiries, retain applicable rights/raw/coverage/retention answers, and approve any quoted product and bounded acquisition separately. Codex can assess replies and existing metadata without source activation; implement only a demonstrated authorized format gap. Do not add synthetic features. M1, M2 independent review/50 unseen cases/proposed protocol, genuine strategy/benchmark/forward, operations, publication/admission/trading remain blocked."
+      "next_step": "Resolve official NSE MCP session continuity (observed freshly issued session rejected) and identified SEC original/submissions access (HTTP403), without bypassing controls. Published terms suffice for covered informational reads/public filing reuse; no universal provider-reply prerequisite. Raw OHLCV/volume, complete calendar/action/disclosure coverage, original availability, effective settings, applicable storage/retention and production grant/fence checks still required. No extra synthetic features, source activation, models, holdout use or trading."
     },
     {
       "id": "M2",
@@ -952,6 +967,103 @@
       "Assess redacted provider replies against existing contracts",
       "Validate supplied metadata and identify only demonstrated implementation gaps"
     ],
-    "protected_delivery": "Feature branch to draft PR targeting main; required checks/up-to-date branch/admin enforcement verified; owner review and merge pending, no settings changed"
+    "protected_delivery": "Feature branch to draft PR targeting main; required checks/up-to-date branch/admin enforcement verified; owner review and merge pending, no settings changed",
+    "next_step_superseded_by": "m1_official_source_probes: owner explicitly authorized bounded queries; published permissions used without requiring an individual permission reply"
+  },
+  "m1_official_source_probes": {
+    "review_date_ist": "2026-11-02",
+    "software_commit": "34099d9d75f8cc25a9307bee9462393108bec125",
+    "record": "docs/PRODUCT-ACCEPTANCE-HANDOFF.md#actual-official-source-probes--2-november-2026",
+    "permission_basis": "Published official NSE informational interface, existing scoped Upstox private market-data authority, SEC public filing reuse and fair-access policy. Covered activities do not require an additional individual reply; SDK code licences do not license market data.",
+    "nse": {
+      "endpoint": "https://mcp.nseindia.in/bhavcopy/cm/mcp",
+      "transport": "streamable HTTP, protocol 2025-06-18, JSON and SSE accepted",
+      "first_initialize_fetched_at": "2026-11-01T21:30:58.199084+00:00",
+      "initialize_attempts": 6,
+      "initialize_http_status": 200,
+      "notification_statuses": [
+        202,
+        404
+      ],
+      "observed_error": "Session not found with freshly assigned session",
+      "tool_discovery": "One HTTP200 SSE response could not be read by the initial JSON-only diagnostic; subsequent streaming attempts encountered session rejection/timeout. No market tool invoked.",
+      "session_free_discovery_http": 400,
+      "session_delete_status": 501,
+      "market_results_obtained": false,
+      "market_content_retained": false,
+      "persistent_storage_permission_established": false,
+      "root_cause": "session continuity failure observed; server/client/affinity cause not established"
+    },
+    "upstox": {
+      "access_preflight": "Existing saved current acquire/derive grants for universe/prices/calendar passed; explicit diagnostic only, no production database-fence qualification",
+      "existing_diagnostic": "scripts/verify_upstox_access.py",
+      "first_probe_checked_at": "2026-11-01T21:35:04.104556+00:00",
+      "first_probe_http_statuses": [
+        200,
+        200,
+        200
+      ],
+      "sample_candles": 11,
+      "sample_from": "2026-10-01",
+      "sample_through": "2026-10-16",
+      "calendar_sample_dates": [
+        "2026-10-16",
+        "2026-10-30"
+      ],
+      "typed_adapter": "worker.providers.upstox.Upstox.instruments/session/candles",
+      "initial_typed_attempt": "source_rate_limited before candle network request; preserved",
+      "spaced_typed_attempt_observed_at": "2026-11-01T21:38:05.197255+00:00",
+      "spaced_typed_attempt_completed_at": "2026-11-01T21:38:07.591148+00:00",
+      "requests_spaced_seconds": 0.7,
+      "typed_candle_date": "2026-10-30",
+      "typed_candles": 1,
+      "session_aligned": true,
+      "nonnegative_integer_volume": true,
+      "adjustment_basis": "split_bonus_adjusted",
+      "raw_volume_semantics_verified": false,
+      "tick_lot_fields_observed": true,
+      "historical_effective_settings_qualified": false,
+      "values_retained_in_repository": false,
+      "immutable_revisions_persisted": false
+    },
+    "sec": {
+      "submissions_endpoint": "https://data.sec.gov/submissions/CIK0001067491.json",
+      "submissions_status": 403,
+      "submissions_fetched_at": "2026-11-01T21:31:54.843317+00:00",
+      "original_url": "https://www.sec.gov/Archives/edgar/data/1067491/000106749125000010/exv99w08.htm",
+      "original_status": 403,
+      "original_fetched_at": "2026-11-01T21:36:20.120942+00:00",
+      "client_user_agent": "StockDiscovery private single-owner research (https://github.com/gaganjawa/stock-discovery)",
+      "direct_requests": 2,
+      "unattended_retries": 0,
+      "reuse_permission_established": true,
+      "original_bytes_acquired": false,
+      "cik_from_known_url": "1067491",
+      "accession_candidate_from_known_url": "0001067491-25-000010",
+      "api_accession_metadata_verified": false,
+      "acceptance_at": null,
+      "first_public_available_at": null,
+      "original_hash": null,
+      "web_reader": "Submissions inaccessible; cached rendering of known official exhibit readable, not an original-byte acquisition or current API receipt",
+      "bypass_or_identity_rotation": false
+    },
+    "fresh_fixture_validation": {
+      "command": "PYTHONPATH=backend:shared:worker .venv/bin/python -m pytest backend/tests/test_swing_qualification.py backend/tests/test_source_rights.py worker/tests/test_real_upstox.py worker/tests/test_real_documents.py worker/tests/test_real_filings.py -q",
+      "passed": 173,
+      "failed": 0,
+      "skipped": 0,
+      "seconds": 1.06,
+      "full_local_suite_or_database_run": false,
+      "separate_from_actual_endpoint_evidence": true
+    },
+    "production_changes_justified": false,
+    "datasets_or_actual_database_modified": false,
+    "new_sources_or_grants_activated": false,
+    "nse_market_content_persisted": false,
+    "credentials_exposed": false,
+    "provider_messages_sent": false,
+    "models_or_training_run": false,
+    "fully_qualified_infy_packet": false,
+    "acceptance_gates_changed": false
   }
 }

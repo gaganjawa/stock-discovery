@@ -189,3 +189,13 @@ TrueData historical-only API is conditional on a quote and resolution of publish
 simulation restrictions. No complete genuine INFY packet or retention compliance is
 accepted. Next: owner/provider decisions and lawful evidence, then only demonstrated
 ingestion/qualification gaps. No additional synthetic features are scheduled.
+
+2 November subsequent STK-004/014 validation: PR35's pre-follow-up `34099d9` passed
+all four mandatory jobs. The [official-source probe record](PRODUCT-ACCEPTANCE-HANDOFF.md#actual-official-source-probes--2-november-2026)
+separates published permissions from runtime failures: informational NSE queries
+are permitted but session continuity failed; permitted Upstox descriptive samples
+work and remain adjusted; SEC reuse is covered but direct original/API access
+returned 403. Fresh 173 focused fixture tests passed. No production defect or
+adapter correction justified; no retained dataset, source/grant or gate changed.
+Next: resolve actual protocol/access and raw/coverage gaps, using existing adapters;
+do not demand new permission replies for uses already covered by published terms.

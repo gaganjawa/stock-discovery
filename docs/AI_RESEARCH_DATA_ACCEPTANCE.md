@@ -62,6 +62,26 @@ Public prices and API access are not grants; the local Upstox use list also lack
 Do not choose a paid plan, register a new grant or change an adapter until an
 applicable permitted source and a demonstrated technical gap are established.
 
+### Subsequent owner-authorized official-source validation
+
+The [actual probe record](PRODUCT-ACCEPTANCE-HANDOFF.md#actual-official-source-probes--2-november-2026)
+supersedes any implication that all reads require an individual provider reply.
+Published terms cover informational NSE MCP access, existing permitted private
+Upstox checks and public SEC filing reuse. Code/SDK licences do not license data.
+NSE storage/simulation restrictions remain relevant to persistent ingestion/replay.
+
+Observed: NSE initialize HTTP200 followed by unstable sessions/404 and one SSE
+tool-list response; no market-tool result. Existing Upstox diagnostic HTTP200,
+11 historical rows plus one later typed, closed-session-aligned adjusted candle.
+Local rate limiting denied the rapid third request; normal request spacing worked
+without changing the cap. SEC submissions and the known original archive URL both
+returned 403 to the identified direct client; its reuse permission is established,
+while original bytes, API accession metadata and truthful availability remain missing.
+No dataset/grant/database mutation or source activation. Fresh fixture regressions:
+173 passed, zero failures/skips; live observations and test evidence remain separate.
+M1 remains BLOCKED on actual raw/complete evidence and applicable storage/retention,
+not a universal requirement for written permission to perform already covered reads.
+
 ## Explicit one-instrument release checklist — 1 November 2026
 
 Target: **INFY / NSE equity only**. No new provider request, private evidence review,

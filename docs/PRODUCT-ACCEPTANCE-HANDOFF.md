@@ -1,8 +1,10 @@
 # Remaining product acceptance — minimal handoff
 
 2 November 2026 (IST). Repository, exact-commit CI, public documentation and
-sanitized private grant-metadata review. No credentials/provider payloads inspected,
-provider probe, new labels, model run or operational acceptance.
+sanitized private grant-metadata review, followed by explicitly owner-authorized
+official-source probes. No production ingestion, new labels, model run or
+operational acceptance. Earlier documentation-only findings are preserved below;
+the subsequent probe section distinguishes actual requests from prior evidence.
 
 ## Verified scope and remaining engineering
 
@@ -72,7 +74,7 @@ configuration and no file revocation marker, allowing acquire/store/derive for
 universe, calendar, prices, financial facts and numerical-snapshot filings; action
 and news scopes deny. It specifies 30-day local retention, zero-day deletion and no
 audit tombstones. These configured limits are not newly established provider terms.
-No credentials, financial values or database were inspected or changed. Durable
+In that earlier review no credentials, financial values or database were inspected or changed. Durable
 database fences, original acquisition rows, runtime selection and freshness still
 require their own checks; the shell has no active real-view configuration.
 The saved grant's use list includes `acquire`, `store`, `extract`, `derive`, `embed`
@@ -86,13 +88,16 @@ local basis file exists; its existence does not make it a signed provider licenc
 | Dated NSE sessions | Previously observed session revisions are reusable for their recorded dates under the same conditions. The operations record's future coverage is historical evidence, not proof of current completeness/freshness. |
 | Upstox daily candles | Permission-reviewed descriptive inputs, labelled `split_bonus_adjusted`. They **do not qualify the raw Swing price/volume requirement**. More sessions alone do not cure this. |
 | Structured financial observations | Phase 5 records 24 retained facts, with later partial updates. Their broad private-use basis was a documented scope inference. They are not an original issuer filing, verified archival publication time or complete current filing/event coverage. No values or current acceptance are asserted here. |
-| An original INFY EDGAR 20-F/6-K | SEC's [reuse statement](https://www.sec.gov/about/webmaster-frequently-asked-questions) is freshly verified permission evidence for public filings. A full authentic, lawfully obtained document and its clocks/hash are still missing from the accepted input packet; the familiar development excerpt is insufficient. No filing request or 403 workaround was attempted. |
+| An original INFY EDGAR 20-F/6-K | SEC's [reuse statement](https://www.sec.gov/about/webmaster-frequently-asked-questions) supplies published permission for public filings; a separate permission reply is unnecessary for that covered reuse. A full authentic document and its clocks/hash are still missing from the accepted input packet. The subsequent requests below failed with 403; no access workaround was attempted. |
 
 **No complete genuine INFY Swing input packet is presently qualified.** The above
 separates permission evidence, active installation authorization and data quality;
 one does not establish the other two.
 
 ### Raw-price reconciliation and documented alternatives
+
+This comparison preserves the documentation-only assessment before the bounded
+probes; actual connection/status results are recorded in the later probe section.
 
 `worker/worker/providers/upstox.py:138` requests V3 daily candles; line 168 assigns
 `split_bonus_adjusted`. `observed_revision` preserves actual fetch availability and
@@ -148,8 +153,8 @@ research, not reconstructed point-in-time evaluation. Neither a price API nor
 
 | Order | Work / owner | Pass condition or stop |
 |---|---|---|
-| 1 | **Owner:** send/authorize the inquiries below and retain the replies; confirm intended processing/backup regions and desired research versus historical evaluation scope. | Applicable product/use/retention evidence exists. No credentials in email or chat; no source enabled by a reply alone. |
-| 2 | **Codex, without provider activation:** reconcile replies with STK-004/014 and existing grant/retention/fence contracts; identify narrow required changes. | Allowed and denied scopes are explicit, with grant version and policy references. Owner approval is needed for a new grant, scope or source; unresolved rights stop that path. |
+| 1 | **Codex:** use applicable published terms for covered operations; the owner has now authorized bounded informational NSE, existing permitted Upstox and SEC probes. **Owner:** only send/authorize inquiries for still-unresolved uses or technical support, and confirm intended processing/backup regions. | Published permission can be sufficient; an individual provider reply is not a universal prerequisite. Uncertain/prohibited storage and replay remain isolated. No credentials in email or chat. |
+| 2 | **Codex, without source activation:** reconcile published policies and any additional replies with STK-004/014 and existing grant/retention/fence contracts; identify narrow required changes. | Allowed and denied scopes are explicit, with grant version and policy references. New persistent source/grant activation remains separate from these probes; a reply alone does not activate it. |
 | 3 | **Owner:** approve a specific all-in quote if needed, exact source uses and bounded acquisition, or provide lawfully obtained original files/metadata. | Spending and source access explicitly authorized. Free access still requires source/use qualification. |
 | 4 | **Codex after authorization:** reuse existing ingestion to preserve original INFY identity, raw OHLCV for at least 30 distinct complete closed sessions, calendar, actions, effective tick/lot and disclosure/event revisions. Map only a demonstrated unsupported authorized format. | Actual acquisition and original-grant lineage preserved; no current statement/date backfill or guessed raw/volume basis. No assumed lot/tick/eligibility. |
 | 5 | **Codex + independent review:** validate coverage, freshness, retention capability and all STK-014 inputs; pin the genuine review packet. | If the window contains unsupported actions, gaps, absent events/filings, unknown availability or deletion duties the software cannot meet, retain `INSUFFICIENT_EVIDENCE`. Do not hide actions by changing the cutoff or attest completeness from silence. |
@@ -163,7 +168,7 @@ invent original timestamps/human labels or treat a signed-in token as a licence.
 ### Provider inquiry drafts — ready to send, not sent
 
 These describe the intended use; they assert no entitlement or institutional/
-academic status. No provider was contacted, form submitted, trial started or
+academic status. No provider representative was messaged, form submitted, trial started or
 credential shared. Replies must identify the applicable policy/product/version.
 
 #### NSE
@@ -311,6 +316,72 @@ cannot be borrowed from market-data permission.
 
 The exact per-input checklist is [M1 data acceptance](AI_RESEARCH_DATA_ACCEPTANCE.md).
 No new source, grant or contractual permission is asserted by this handoff.
+
+### Actual official-source probes — 2 November 2026
+
+PR35 at `34099d9` passed unit/PostgreSQL/UI/aggregate checks in
+[run 41349618209](https://github.com/gaganjawa/stock-discovery/actions/runs/41349618209).
+This is the pre-follow-up commit, not evidence that a later documentation commit
+already passed CI. No production code, grant file, retained source dataset or
+actual database was changed during the following checks.
+
+#### Published permission is operation-specific
+
+| Source | Covered operation and evidence | Boundary retained |
+|---|---|---|
+| NSE MCP | The [official interface](https://www.nseindia.com/nse-mcp) expressly supports informational, non-commercial access by third-party apps/AI. This permits the bounded protocol/informational probes without a new permission reply. | It incorporates [NSE terms](https://www.nseindia.com/static/nse-terms-of-use), including restrictions on storage and simulation. No applicable persistent PostgreSQL/backtest licence was established. No market responses were retained, no NSE grant activated, and no website scraping fallback used. |
+| Upstox | [Free read-only Analytics access](https://upstox.com/developer/api-documentation/analytics-token/), [published terms](https://upstox.com/terms-of-use-and-privacy-policy/) and the existing Phase 4/5 scope support the owner-authorized private connectivity/adapter checks. Saved current acquire/derive permissions were checked before use. | This is not a new financial/news licence or confirmation of database fence state. Credential possession is not the rights basis. No stored evidence reused, ingestion transaction or scope extension occurred. |
+| SEC EDGAR | [Published reuse permission](https://www.sec.gov/about/webmaster-frequently-asked-questions) covers public filings. [Official APIs](https://www.sec.gov/search-filings/edgar-application-programming-interfaces) require no key; [fair-access guidance](https://www.sec.gov/about/developer-resources) requires an identified, bounded client. No separate reuse reply is needed. | Permission does not guarantee runtime access, independent financial accuracy, complete event coverage or an original dissemination timestamp. An acceptance timestamp alone is not first availability. |
+
+No new SDK/wrapper was installed or copied. A transport/SDK code licence governs
+that code; it does not grant rights to the returned market data. The SEC filing
+reuse policy is content permission, distinct from a software licence. No training,
+paid service, broker operation, redistribution or provider message occurred.
+
+#### Actual endpoint results, not inferred coverage
+
+| Endpoint / operation | Observed result | Qualification consequence |
+|---|---|---|
+| `https://mcp.nseindia.in/bhavcopy/cm/mcp`, streamable HTTP | Six bounded initialization attempts returned HTTP200, protocol `2025-06-18`. One initialized notification returned 202 and tool discovery returned HTTP200 SSE; a JSON-only diagnostic parser could not read that SSE response. Later streaming-capable attempts returned HTTP404 `Session not found` for the freshly supplied session, or timed out. A session-free discovery request returned 400 `Session ID missing`. Three session DELETE attempts returned 501. | The server requires session state; the observed session continuity failure is unresolved, not a proven production-adapter defect or licensing denial. No market tool was invoked and **no INFY OHLCV, volume, session or action dataset was returned/validated**. Do not claim the advertised history/action coverage passed. Connections closed; server-side session deletion was unsupported. |
+| Upstox official NSE instrument master; V3 INFY history, 1–16 October | Existing `scripts/verify_upstox_access.py`: all three requests HTTP200; 11 candles, labels 1–16 October; dated 16 October timing endpoint returned one NSE row. Only counts/connection metadata retained. | Descriptive connectivity works. Eleven sampled rows are not 30 qualified sessions; one timing response does not establish a complete calendar. |
+| Upstox master + dated 30 October timing + one-day V3 INFY candles | Existing `Upstox.instruments/session/candles`: one typed candle, session-aligned, nonnegative integer volume, `split_bonus_adjusted`. Instrument master contained tick/lot fields; historical effective settings/eligibility were not established. First rapid attempt was blocked locally by `source_rate_limited` before its candle request; a new bounded diagnostic with 0.7-second request spacing succeeded under the unchanged cap. | No price/volume values persisted or published. Raw volume semantics remain unverified; adjusted prices remain adjusted. No immutable database revision or coverage review was created. |
+| `https://data.sec.gov/submissions/CIK0001067491.json` | One identified-client GET: HTTP403 at `2026-11-01T21:31:54.843317+00:00`; body discarded. Official web-reader access also failed. | No submissions index, current accession metadata or acceptance clock acquired. Technical access blocker, **not missing reuse permission**. |
+| Known original exhibit `https://www.sec.gov/Archives/edgar/data/1067491/000106749125000010/exv99w08.htm` | One same-client GET: HTTP403 at `2026-11-01T21:36:20.120942+00:00`; no original bytes retained. The normal web reader could show its cached official page, identified as Exhibit 99.8, audited interim consolidated statements for the three months/year ended 31 March 2025. | CIK `1067491` and accession candidate `0001067491-25-000010` come from the known URL, not a newly verified API/index record. Cached rendered text is not an original-byte acquisition receipt or a current filing packet. Acceptance, dissemination and first-public-availability timestamps remain unknown; no hash or historical availability invented. |
+
+The declared direct SEC client was
+`StockDiscovery private single-owner research (https://github.com/gaganjawa/stock-discovery)`;
+there were two sequential direct SEC requests, separated by minutes, no automated
+retry, proxy/identity rotation or access-control workaround. An owner contact email
+was not invented. A future configured EDGAR client should follow the published
+declared-contact guidance; the cause of the 403 has not been established.
+
+#### STK-014 result and next genuinely blocked step
+
+| Input | Current measured status |
+|---|---|
+| Source use | Bounded informational queries and public SEC reuse covered as above. NSE persistent storage/replay is not established. Original/current grants and durable fences must still be checked at any future production use. |
+| Raw daily prices / raw volume / 30 sessions | **Not qualified.** Upstox samples remain adjusted; no NSE price result. No relabelling, reverse adjustment or fabricated history. |
+| Closed-session calendar / actions | Two actual dated Upstox responses, not complete history. No NSE action result; corporate-action/news scopes in the saved grant remain denied. |
+| Effective tick/lot, identity and eligibility | Actual identity/settings fields observed, without a historically effective settings/eligibility packet or immutable persistence. No fixture defaults used. |
+| Filing / material events / original clocks | SEC reuse allowed, but direct retrieval failed. Cached old exhibit does not establish current complete filing/event coverage or truthful historical availability. |
+| Retention/deletion | No new source-content retention or licence obligation asserted. Existing configured limits and fences remain unchanged; unsupported actual obligations still deny qualification. |
+
+Fresh deterministic fixture validation: **173 passed, zero failures/skips** across
+`test_swing_qualification.py`, `test_source_rights.py`, `test_real_upstox.py`,
+`test_real_documents.py` and `test_real_filings.py`. This is distinct from the live
+HTTP results above and supplies no genuine accepted input packet. No new failing
+production regression was established, so no adapter, qualifier, migration or
+grant-fence behavior was changed. Full application/database/browser suites were
+not rerun locally for this documentation-only follow-up.
+
+Next: establish a functioning documented NSE session and lawful raw-price/volume
+coverage, and retrieve the SEC original/index using a compliant identifiable client
+or an owner-provided ordinary official download with its actual acquisition clocks.
+Do not bypass either service's access controls. Provider technical support or a
+working compatible client/network may be needed for the observed failures; this
+does not create a blanket requirement for new permission letters. Only uncovered
+storage/use/retention questions need additional applicable policy evidence. Keep
+M1 unqualified and M2/strategy/operational/publication/admission/trading gates blocked.
 
 ## M2 — independent reviewer/custodian handoff
 

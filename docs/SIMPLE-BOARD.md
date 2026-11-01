@@ -226,3 +226,10 @@ separate NSE free access/full-product tariffs from TrueData's unquoted API and
 simulation restrictions. Saved Upstox scope is preserved; `historical_replay` is
 not locally authorized. No new source/grant, dataset change or synthetic feature.
 Next action is owner/provider clarification; M1 remains BLOCKED.
+
+2 November — STK-004/014 [bounded official-source probes](PRODUCT-ACCEPTANCE-HANDOFF.md#actual-official-source-probes--2-november-2026):
+NSE initializes but session continuity fails; no market-tool result. Upstox live
+descriptive samples pass and stay adjusted. SEC reuse permission is published,
+but direct API/original requests return 403. Fresh 173 focused fixture tests pass.
+No production change justified; datasets/grants/fences/gates unchanged. Resolve
+technical access and missing qualifying inputs, not blanket permission letters.
