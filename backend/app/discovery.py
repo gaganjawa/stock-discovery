@@ -1,7 +1,7 @@
 """Authenticated additive v2 discovery readers. Legacy /api/v1 is unchanged."""
 import os
 from typing import Literal
-from fastapi import APIRouter, Depends, Header, HTTPException, Query
+from fastapi import APIRouter, Depends, Header, HTTPException, Query, Response
 from .auth import require_auth
 from .research import db
 from stock_discovery_analysis.publication_store import RunRequest, enqueue, run_status, read_artifact, require_sources, now
@@ -56,8 +56,10 @@ def discovery(horizon:Profile='swing',cohort:Cohort='quant',mode:Literal['synthe
     rows=conn.execute('''SELECT recommendation_id,sort_key FROM discovery.recommendations WHERE run_id=%s AND cohort=%s
         AND (%s::text IS NULL OR sort_key>%s) ORDER BY sort_key LIMIT %s''',
         (batch['run_id'],cohort,cursor,cursor,limit+1)).fetchall()
-    recs=[read_artifact(conn,r[0])['recommendation'] for r in rows[:limit]]
+    artifacts=[read_artifact(conn,r[0]) for r in rows[:limit]]
+    recs=[a['recommendation'] for a in artifacts]
     return {**batch,'batch_id':batch['run_id'],'coverage':batch['coverage'][cohort],'recommendations':recs,'latest_run':current,
+        'rankings':{a['recommendation']['recommendation_id']:a['ranking'] for a in artifacts},
         'next_cursor':rows[limit-1][1] if len(rows)>limit else None,
         'empty_reason':'no_qualifying_picks' if not recs and cursor is None else None}
 
@@ -70,8 +72,25 @@ def recommendation(rid:str,conn=Depends(db)):
 
 
 @router.get('/recommendations/{rid}/comparisons')
-def comparisons(rid:str,conn=Depends(db)):
+def comparisons(rid:str,response:Response,compare_to:list[str]=Query(default=[],max_length=3),conn=Depends(db)):
+    response.headers['Cache-Control']='no-store'
     a=recommendation(rid,conn);r=a['recommendation']
+    if compare_to:
+        ids=[rid,*compare_to]
+        if len(set(ids))!=len(ids):raise error(400,'duplicate_comparison_id')
+        artifacts=[a,*[recommendation(other,conn) for other in compare_to]]
+        def scope(item):
+            rec=item['recommendation']
+            return (rec['run_id'],rec['mode'],rec['horizon']['profile'],rec['information_cutoff_at'],rec['cohort']['arm'])
+        if r['mode']!='synthetic' or any(scope(item)!=scope(a) for item in artifacts):
+            raise error(400,'comparison_scope_mismatch')
+        # Never merge separate runs, horizons or research arms into one ranking.
+        # Return only the existing frozen research fields, without future outcomes.
+        artifacts.sort(key=lambda item:(item['ranking']['action_tier'],-int(item['ranking']['quant_score']),item['ranking']['listing_id']))
+        return dict(items=[dict(recommendation=item['recommendation'],ranking=item['ranking'],
+            metrics=item['quantitative']['metrics']) for item in artifacts],
+            batch_id=r['run_id'],labels=['MOCK','SHADOW','NON-ACTIONABLE'],
+            note='Frozen fictional research priority, not expected return or AI performance. No admission or execution authorization.')
     rows=conn.execute('SELECT recommendation_id FROM discovery.recommendations WHERE run_id=%s AND listing_id=%s ORDER BY cohort',
         (r['run_id'],r['instrument']['instrument_id'])).fetchall()
     return dict(recommendations=[recommendation(row[0],conn)['recommendation'] for row in rows],
