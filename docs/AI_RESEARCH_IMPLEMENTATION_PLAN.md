@@ -152,3 +152,16 @@ Failed, pending, missing and immature evidence stays visible. The
 [remaining product acceptance handoff](PRODUCT-ACCEPTANCE-HANDOFF.md) audits actual
 workflow boundaries and gives the minimal M1/M2 owner/reviewer inputs. It identifies
 the remaining Discovery-to-history identity link without fabricating shared data.
+
+PR33 merged under protected main at `8d336486` after exact `74d7b15` unit,
+PostgreSQL, UI and aggregate success. Fresh correctness review found no confirmed
+P1/P2 in frozen lineage, source restrictions, phase isolation, overlap aggregation
+or read-only reporting; four focused aggregation tests passed again.
+
+STK-043/059 now connects [Discovery to its actual saved records](STK-043-059-discovery-history.md):
+immutable publication history, explicitly revealed pinned portfolio outcomes and
+existing trial registration links into Scorecard. No legacy dataset mapping, new
+evaluation or inference is implied. Missing and revoked relationships stay unavailable.
+After this software increment, the existing M1/M2 handoff, genuine evaluation and
+supervised operational acceptance remain the identified gates; no unrelated
+infrastructure or repeated model experiment is scheduled.

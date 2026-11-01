@@ -6,10 +6,10 @@ type Report={report_id:string;status:string;reason:string|null;folds:Fold[];aggr
 const phase=(v:string)=>({train:'Development',validation:'Validation',test:'Protected holdout',forward:'Forward'}[v]??v)
 const label=(v?:string|null)=>v?.replaceAll('_',' ')??'Unavailable'
 const metric=(v?:string|number|null)=>v==null?'Unavailable':String(v)
-export function RegisteredFoldResults({experiments,onUnauthorized,onRestricted}:{experiments:{experiment_id:string}[];onUnauthorized:()=>void;onRestricted:()=>void}){
+export function RegisteredFoldResults({experiments,onUnauthorized,onRestricted,initialExperimentId}:{experiments:{experiment_id:string}[];onUnauthorized:()=>void;onRestricted:()=>void;initialExperimentId?:string}){
  const [selected,setSelected]=useState<string[]>([]),[report,setReport]=useState<Report|null>(null),[error,setError]=useState(''),[busy,setBusy]=useState(false)
  const active=useRef<AbortController|null>(null)
- useEffect(()=>{active.current?.abort();setReport(null);setSelected([]);setError('');setBusy(false);return()=>active.current?.abort()},[experiments])
+ useEffect(()=>{active.current?.abort();setReport(null);setSelected(initialExperimentId?[initialExperimentId]:[]);setError('');setBusy(false);return()=>active.current?.abort()},[experiments,initialExperimentId])
  async function load(){active.current?.abort();const c=new AbortController();active.current=c;setReport(null);setError('');setBusy(true)
   try{const q=new URLSearchParams();selected.forEach(id=>q.append('experiment_id',id));const r=await fetch('/v1/experiments/fold-results?'+q,{signal:c.signal,cache:'no-store'});c.signal.throwIfAborted()
    if(r.status===401)onUnauthorized();if(r.status===403)onRestricted();if(!r.ok)throw Error(r.status===403?'Registered evidence is restricted. Results withheld.':'Registered fold evidence is unavailable or inconsistent.')

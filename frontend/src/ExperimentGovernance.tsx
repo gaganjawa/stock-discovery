@@ -1,21 +1,23 @@
-import {useEffect,useState} from 'react'
+import {useEffect,useMemo,useState} from 'react'
 import {RegisteredFoldResults} from './RegisteredFoldResults'
 
 type Summary={experiment_id:string;horizon:string;comparison:string;registered_at:string}
 type Result={status:string;error_code?:string;evidence_class?:string;arms?:Record<string,{decisions:number;resolved_trades:number;missing_outcomes:number;research_failed:number;no_picks:boolean;win_rate:string|null;portfolio_return:string|null;benchmark_reason:string;forecast_quality:{matured:number;provisional:number}}>}
 type Detail={manifest:{experiment_id:string;hypothesis:string;historical_llm_contamination:string;stopping_rule:string};promotion:{eligible:boolean;reasons:string[]};history:{sequence:number;kind:string;at:string}[];trials:{trial_id:string;request:{split:string};result:Result|null}[]}
 const label=(s:string)=>s.replaceAll('_',' ')
-export function ExperimentGovernance({onUnauthorized}:{onUnauthorized:()=>void}){
+export function ExperimentGovernance({onUnauthorized,initialExperimentId}:{onUnauthorized:()=>void;initialExperimentId?:string}){
  const [items,setItems]=useState<Summary[]>([]),[detail,setDetail]=useState<Detail|null>(null),[error,setError]=useState(''),[busy,setBusy]=useState(false)
  async function get(path:string){const r=await fetch('/v1/experiments'+path);if(!r.ok){setItems([]);setDetail(null);if(r.status===401)onUnauthorized();throw new Error(r.status===403?'Source permission denied. Stored results are hidden.':'Experiment records are unavailable.')}return r.json()}
  async function load(){setBusy(true);setError('');setDetail(null);try{setItems((await get('')).experiments)}catch(e){setError((e as Error).message)}finally{setBusy(false)}}
  async function inspect(id:string){setBusy(true);setDetail(null);setError('');try{setDetail(await get('/'+encodeURIComponent(id)))}catch(e){setError((e as Error).message)}finally{setBusy(false)}}
  useEffect(()=>{void load()},[])
+ const foldItems=useMemo(()=>initialExperimentId&&!items.some(e=>e.experiment_id===initialExperimentId)?[{experiment_id:initialExperimentId},...items]:items,[items,initialExperimentId])
  return <section className="panel" aria-label="Experiment governance">
   <h2>Experiment governance</h2><p>Compare quantitative research, fixed RAG and bounded investigation using frozen inputs and recorded outcomes. Historical AI research remains exploratory.</p>
   <p className="notice">Strategy promotion blocked. Policy thresholds and independent prospective evidence are required. Q+ML is disabled.</p>
   <button disabled={busy} onClick={()=>void load()}>Refresh experiments</button>
-  <RegisteredFoldResults experiments={items} onUnauthorized={onUnauthorized} onRestricted={()=>{setDetail(null);setItems([]);setError('Source permission denied. Stored results are hidden.')}}/>
+  {initialExperimentId&&<p>Selected research registration: {initialExperimentId}. Results require a fresh authorized read; no trial will be evaluated.</p>}
+  <RegisteredFoldResults experiments={foldItems} initialExperimentId={initialExperimentId} onUnauthorized={onUnauthorized} onRestricted={()=>{setDetail(null);setItems([]);setError('Source permission denied. Stored results are hidden.')}}/>
   {error&&<p role="alert">{error}</p>}
   {!items.length&&!error&&<p>No registered experiments. Preregister the hypothesis, splits, versions and stopping rules through the authenticated experiment API before evaluating outcomes.</p>}
   {items.map(item=><p key={item.experiment_id}><button disabled={busy} onClick={()=>void inspect(item.experiment_id)}>{item.experiment_id}</button> · {label(item.horizon)} · {label(item.comparison)} · {new Date(item.registered_at).toLocaleString()}</p>)}
