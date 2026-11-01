@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-01T20:42:29.145323+00:00",
-  "current_milestone": "M1 INFY raw-source/permission/retention qualification \u2014 existing software merged",
+  "updated_at": "2026-11-01T20:57:34.471267+00:00",
+  "current_milestone": "M1 INFY provider/owner decision boundary \u2014 no complete input packet qualified",
   "branch": "feat/stk-004-014-m1-source-qualification",
   "worktree": "stk-074-grant-fences",
   "last_successful_commit": "63e2cfcc002f8b078974b7af6c6cba5aa2d2820d",
@@ -23,7 +23,8 @@
     "actual_provider_calls": 0,
     "actual_model_calls": 0,
     "migrations_or_actual_database_operations": 0,
-    "git_diff_whitespace": "passed"
+    "git_diff_whitespace": "passed",
+    "execution_provenance": "Counts above were recorded before this documentation/provider-decision task; no application, database or browser suite rerun for this revision."
   },
   "failed_tests": [
     {
@@ -39,9 +40,9 @@
     "Actual representative-source extraction quality not passed; human holdout unverified."
   ],
   "pending_changes": [
-    "Documentation-only final synthetic acceptance audit, M1 public-policy/private-grant-scope reconciliation, board/roadmap and preserved checkpoint; intentionally uncommitted. No production changes or new synthetic features."
+    "PR34 five-document closure committed at 860e06b002bf8d792cdbd447a00d4a8f02d81c7a. Documentation-only M1 provider comparison, costs, qualification sequence and unsent inquiries prepared for protected PR delivery; no production changes."
   ],
-  "next_action": "M1: resolve raw-price/volume source and corporate-action/event scope plus original filing/availability and retention evidence using the located saved configuration. Current database fences/freshness remain unverified. No new source activation, provider calls or gate relaxation without explicit authorization. Implement only a demonstrated format-mapping gap after permitted source selection. Preserve M2 independent human review/50 unseen cases/proposed protocol; no holdout use or repeated model experiments. Genuine strategy/benchmark/forward and operational/publication/trading gates remain blocked.",
+  "next_action": "Owner/provider decision: send or explicitly authorize the three drafted inquiries, retain applicable rights/raw/coverage/retention answers, and approve any quoted product and bounded acquisition separately. Codex can assess replies and existing metadata without source activation; implement only a demonstrated authorized format gap. Do not add synthetic features. M1, M2 independent review/50 unseen cases/proposed protocol, genuine strategy/benchmark/forward, operations, publication/admission/trading remain blocked.",
   "milestones": [
     {
       "id": "M0",
@@ -85,9 +86,13 @@
       "objective": "Establish real research data",
       "completion_criteria": "One authorized NSE instrument with traceable prices/documents and point-in-time availability.",
       "status": "BLOCKED_raw_coverage_original_disclosures_retention",
-      "dependency_status": "previous milestone not yet accepted; independent work may proceed when externally blocked",
+      "dependency_status": "M0 and bounded synthetic software integration merged; provider/owner evidence remains external and unaccepted.",
       "files_changed": [
-        "docs/AI_RESEARCH_DATA_ACCEPTANCE.md"
+        "docs/AI_RESEARCH_DATA_ACCEPTANCE.md",
+        "docs/PRODUCT-ACCEPTANCE-HANDOFF.md",
+        "docs/AI_RESEARCH_IMPLEMENTATION_PLAN.md",
+        "docs/AI_RESEARCH_PROGRESS.json",
+        "docs/SIMPLE-BOARD.md"
       ],
       "tests": {},
       "commit_sha": null,
@@ -97,7 +102,7 @@
         "Complete authorized filing/event/action/calendar coverage",
         "Exact retention/deletion and original archive/publication evidence"
       ],
-      "next_step": "M1: resolve raw-price/volume source and corporate-action/event scope plus original filing/availability and retention evidence using the located saved configuration. Current database fences/freshness remain unverified. No new source activation, provider calls or gate relaxation without explicit authorization. Implement only a demonstrated format-mapping gap after permitted source selection. Preserve M2 independent human review/50 unseen cases/proposed protocol; no holdout use or repeated model experiments. Genuine strategy/benchmark/forward and operational/publication/trading gates remain blocked."
+      "next_step": "Owner/provider decision: send or explicitly authorize the three drafted inquiries, retain applicable rights/raw/coverage/retention answers, and approve any quoted product and bounded acquisition separately. Codex can assess replies and existing metadata without source activation; implement only a demonstrated authorized format gap. Do not add synthetic features. M1, M2 independent review/50 unseen cases/proposed protocol, genuine strategy/benchmark/forward, operations, publication/admission/trading remain blocked."
     },
     {
       "id": "M2",
@@ -890,11 +895,11 @@
     "fully_qualified_infy_packet": false,
     "raw_blocker": "Upstox adapter assigns split_bonus_adjusted; current V3 docs expose no verified raw option; existing qualifier requires raw OHLC/volume and complete action-free coverage. No relabelling or gate changes.",
     "alternatives_reviewed_only": [
-      "NSE EOD/UDiFF licensed product",
+      "NSE EOD/UDiFF licensed product: current domestic CM EOD tariff INR 100000/year/site/medium, EOD corporate INR 500000/year/site, excluding taxes; not a personal one-ISIN quote",
       "NSE academic-research basket does not establish private investment-app eligibility",
-      "NSE bhavcopy MCP documents unadjusted history; application use/retention remains unverified; no connection or invocation",
-      "Global Datafeeds AdjustSplits=false is documented; simulation exclusion and full volume/action/retention entitlement need resolution",
-      "TrueData realtime authorization is not proof of raw/history or end-user rights"
+      "NSE bhavcopy MCP: free data/no API key, five years of EOD, up to three months/call, prices unadjusted for splits/bonuses and corporate-action ex-date tool. Complete coverage, other adjustment/volume semantics, application use/retention and client compatibility remain unverified; no connection or invocation",
+      "TrueData: 10+ years advertised daily bars; personal historical API price unverified. Velocity advertised from INR 1699/month excludes API access. Published virtual/paper-trading restriction requires explicit use clarification; raw volume/actions, clocks and retention unverified",
+      "Global Datafeeds: AdjustSplits=false documented; simulation exclusion and full action/volume/retention entitlement unresolved; no quote"
     ],
     "filings_permission": "SEC public EDGAR reuse verified; lawful full original/accession/clocks/hash still needed; familiar excerpt does not qualify",
     "provider_community_reverification": "Web reader could not retrieve prior threads; earlier attributed permission decisions preserved, not extended or represented as freshly verified contractual authority",
@@ -904,6 +909,49 @@
       "Documented permitted raw INFY OHLC/volume route plus complete calendar/action coverage and effective instrument settings",
       "Lawful original INFY filing/quarterly/material-event coverage with truthful availability/acquisition provenance",
       "Exact retention/derived/backup/deletion/audit obligations; unsupported contractual requirements keep source blocked"
-    ]
+    ],
+    "saved_allowed_uses": [
+      "acquire",
+      "store",
+      "extract",
+      "derive",
+      "embed",
+      "paper_evaluation"
+    ],
+    "historical_replay_locally_authorized": false
+  },
+  "m1_provider_decision_handoff": {
+    "as_of_date_ist": "2026-11-02",
+    "closure_commit": "860e06b002bf8d792cdbd447a00d4a8f02d81c7a",
+    "scope": "Existing STK-004/005/007/014/074, D3-02 rights/feasibility and REAL-001 M1; documentation only",
+    "recommendation": "Clarify existing Upstox identity/calendar plus official NSE raw EOD and original SEC filings first; TrueData historical-only API quote only if applicable use and raw semantics can be verified. No complete approved route exists.",
+    "decision_record": "docs/PRODUCT-ACCEPTANCE-HANDOFF.md",
+    "inquiry_drafts_prepared": [
+      "NSE",
+      "Upstox",
+      "TrueData"
+    ],
+    "inquiries_sent": 0,
+    "authenticated_provider_calls": 0,
+    "new_grants_or_sources_activated": 0,
+    "datasets_modified": false,
+    "production_code_modified": false,
+    "new_synthetic_features_or_experiments": false,
+    "human_labels_or_holdout_used": false,
+    "local_validation": "Documentation-only: JSON parse, existing local links/files, scope and whitespace checks; no application/DB/browser rerun required. Exact PR CI must still be verified after push.",
+    "provider_rights_unresolved": true,
+    "fully_qualified_infy_packet": false,
+    "acceptance_status_changed": false,
+    "owner_actions": [
+      "Send or authorize provider inquiries and preserve replies",
+      "Confirm required uses and processing/backup regions; approve any applicable quote/grant changes and bounded acquisition separately",
+      "Provide lawfully acquired originals and truthful clocks; resolve unsupported retention/deletion obligations before use"
+    ],
+    "codex_can_do_without_source_activation": [
+      "Maintain cited comparison and prepare drafts",
+      "Assess redacted provider replies against existing contracts",
+      "Validate supplied metadata and identify only demonstrated implementation gaps"
+    ],
+    "protected_delivery": "Feature branch to draft PR targeting main; required checks/up-to-date branch/admin enforcement verified; owner review and merge pending, no settings changed"
   }
 }

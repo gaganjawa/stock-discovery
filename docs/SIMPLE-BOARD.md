@@ -219,3 +219,10 @@ source qualification. Saved private grant metadata was found; action/news scopes
 raw-price semantics, original filings/clocks and retention remain unresolved.
 No provider activated, private payload copied, model run, holdout consumed or real
 recommendation approved. M1/M2, genuine evaluation and operational gates remain blocked.
+
+2 November — STK-004/014 M1 provider decision handoff prepared, documentation only.
+[Comparison, owner sequence and three unsent inquiries](PRODUCT-ACCEPTANCE-HANDOFF.md#owner-decision-table--cost-and-proposed-combination)
+separate NSE free access/full-product tariffs from TrueData's unquoted API and
+simulation restrictions. Saved Upstox scope is preserved; `historical_replay` is
+not locally authorized. No new source/grant, dataset change or synthetic feature.
+Next action is owner/provider clarification; M1 remains BLOCKED.

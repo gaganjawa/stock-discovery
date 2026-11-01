@@ -179,3 +179,13 @@ and retention evidence. The [handoff](PRODUCT-ACCEPTANCE-HANDOFF.md) distinguish
 existing file-level permission, public-source candidates and unverified policy.
 New source activation is not authorized. M2 independent review/50-case holdout,
 genuine strategy/benchmark/forward, operational and trading gates remain blocked.
+
+2 November M1 decision checkpoint: the five pending PR34 closure documents were
+committed at `860e06b`; production code and frozen evaluations are unchanged. The
+[provider decision table and unsent inquiries](PRODUCT-ACCEPTANCE-HANDOFF.md#owner-decision-table--cost-and-proposed-combination)
+now distinguish free data access, full-product tariffs and unquoted API access.
+Preferred clarification: existing Upstox scope + official NSE raw EOD + SEC originals;
+TrueData historical-only API is conditional on a quote and resolution of published
+simulation restrictions. No complete genuine INFY packet or retention compliance is
+accepted. Next: owner/provider decisions and lawful evidence, then only demonstrated
+ingestion/qualification gaps. No additional synthetic features are scheduled.
