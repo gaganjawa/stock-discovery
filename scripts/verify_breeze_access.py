@@ -257,7 +257,7 @@ def main():
     args = p.parse_args()
     if args.child: return child(args)
     try:
-        with tempfile.TemporaryDirectory(prefix='stk-breeze-private-',dir='/private/tmp') as private:
+        with tempfile.TemporaryDirectory(prefix='stk-breeze-private-') as private:
             run = subprocess.run([sys.executable,__file__,*sys.argv[1:],'--child','--runtime-dir',private],
                 stdout=subprocess.PIPE,stderr=subprocess.DEVNULL,timeout=120,text=True)
             result = json.loads(run.stdout)

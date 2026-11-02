@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-02T18:41:34.259593+00:00",
+  "updated_at": "2026-11-02T18:46:11.044049+00:00",
   "current_milestone": "M1 Breeze access validated \u2014 41 actual daily candles; raw/volume/action/calendar/disclosure/retention qualification still BLOCKED",
   "branch": "feat/stk-004-014-m1-source-qualification",
   "worktree": "stk-074-grant-fences",
@@ -25,7 +25,7 @@
     "breeze_increment_ci": "must verify separately after delivery; earlier exact-commit success does not validate new code",
     "verified_head_before_authenticated_breeze": "db4411271dcbde694ccbe79820c7ae9036daba68",
     "verified_ci_before_authenticated_breeze": "https://github.com/gaganjawa/stock-discovery/actions/runs/41488880956",
-    "authenticated_breeze_followup_ci": "Pending new delivery; prior exact-commit success is not new-head evidence"
+    "authenticated_breeze_followup_ci": "9149d859 unit failed portability; corrected increment requires fresh exact-commit CI"
   },
   "completed_tests": {
     "fresh_upstox_qualification_mock_tests": 96,
@@ -61,7 +61,7 @@
     "Actual representative-source extraction quality not passed; human holdout unverified."
   ],
   "pending_changes": [
-    "STK-004/014 private session preflight, guarded transient official-SDK diagnostic, 54 new synthetic regressions and genuine 41-candle retrieval metadata; no ingestion or source/grant activation. Review and exact-commit CI required for this increment."
+    "STK-004/014 confirmed Linux temporary-directory portability correction plus focused regression and validation record; complete 888 local backend/worker unit tests passed. Deliver without merging; new exact-commit CI required."
   ],
   "next_action": "Deliver PR35 follow-up without merging. Basic Breeze authentication/history access is established: no repeated probe needed. Obtain applicable raw OHLC/share-volume/action semantics, authoritative closed-session/action and disclosure coverage, effective settings, original clocks and retention/revocation/backup obligations. Apply existing qualification and original/current grants/fences before ingestion. No M1/M2/strategy/operational/publication/admission/trading acceptance inferred.",
   "milestones": [
@@ -1242,6 +1242,20 @@
       "Effective instrument settings/eligibility and current/original grants not qualified",
       "Persistence/retention/revocation/backups unverified",
       "M2 human-labelled holdout and genuine strategy/operational/policy gates remain blocked"
-    ]
+    ],
+    "ci_portability_failure": {
+      "head": "9149d85952698d0e19fb6d1c4159afac3a1a8559",
+      "run": "https://github.com/gaganjawa/stock-discovery/actions/runs/41503304845",
+      "unit_passed": 887,
+      "unit_failed": 1,
+      "cause": "Hard-coded macOS /private/tmp absent on Linux; parent caught directory creation failure before timeout test child started",
+      "correction": "Use OS-selected private TemporaryDirectory; assert selected parent and cleanup after timeout; restore simulated child bytecode state in tests",
+      "regression_failed_before_fix": true,
+      "focused_passed_after_fix": 300,
+      "complete_unit_passed_after_fix": 888,
+      "complete_unit_skipped": 0,
+      "existing_deprecation_warnings": 1,
+      "additional_provider_calls": 0
+    }
   }
 }

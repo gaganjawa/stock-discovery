@@ -209,6 +209,18 @@ filing regressions. An initial transport fixture exposed `httpx.Response` treati
 `bytearray` content as a stream; converting to immutable bytes fixed buffered
 SDK `.json()` compatibility before the live run. It was not a provider failure.
 
+Exact-commit CI at `9149d859` (run `41503304845`) then found a concrete Linux
+portability defect: hard-coded `/private/tmp` prevented creation of the child's
+private working directory, so the timeout-cleanup test never reached its mocked
+child. CI recorded **1 failed, 887 passed** in the unit job; not called flaky.
+An explicit system-temp-directory regression failed locally before correction.
+Using `TemporaryDirectory`'s operating-system default fixes that path while
+preserving private permissions and cleanup. The test also restores bytecode
+settings after simulating a child in-process. After correction: **300 focused
+and 888 complete backend/worker unit tests passed**, zero failures/skips (one
+existing Starlette/AnyIO deprecation warning). Database/browser coverage remains
+the mandatory separate CI gate; no additional live Breeze call was made.
+
 No further authenticated probe is needed to prove basic access. The next genuine
 qualification blockers are documented raw OHLC/share-volume/action semantics,
 complete authoritative closed-session/action and filing/material-event coverage,

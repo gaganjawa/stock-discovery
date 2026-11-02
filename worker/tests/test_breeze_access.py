@@ -191,6 +191,7 @@ def test_missing_error_or_wrong_identity_is_rejected():
 
 
 def test_child_sanitizes_sdk_exceptions_and_cleans_connections(tmp_path, credentials, monkeypatch, capsys):
+    monkeypatch.setattr(sys, 'dont_write_bytecode', sys.dont_write_bytecode)
     monkeypatch.setattr(probe, 'load_manual_session', lambda path: credentials)
     monkeypatch.setattr(probe, 'PINS', {})
     class BrokenSDK:
@@ -212,6 +213,7 @@ def test_child_sanitizes_sdk_exceptions_and_cleans_connections(tmp_path, credent
 
 
 def test_parent_timeout_removes_private_sdk_working_directory(tmp_path, monkeypatch, capsys):
+    monkeypatch.setattr(probe.tempfile, 'tempdir', str(tmp_path))
     private = []
     def timeout(command, **kwargs):
         directory = Path(command[-1]); private.append(directory)
@@ -222,5 +224,6 @@ def test_parent_timeout_removes_private_sdk_working_directory(tmp_path, monkeypa
         str(tmp_path), '--quota', str(tmp_path/'quota'), '--start','2020-01-01','--end','2020-01-30',
         '--owner-authorized-transient-read'])
     assert probe.main() == 2
+    assert private[0].parent == tmp_path
     assert not private[0].exists()
     assert json.loads(capsys.readouterr().out)['error'] == 'isolated_probe_timeout_or_failure'
