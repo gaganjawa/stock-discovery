@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-02T19:07:59.035079+00:00",
-  "current_milestone": "M1 exact INFY calendar membership verified; Breeze/NSE EOD OHL and volume discrepancies BLOCK qualification",
+  "updated_at": "2026-11-02T19:27:29.543522+00:00",
+  "current_milestone": "M1 original NSE Final corroborates MCP; Breeze remains UNQUALIFIED for full OHLCV, closing-only research candidate",
   "branch": "feat/stk-004-014-m1-source-qualification",
   "worktree": "stk-074-grant-fences",
   "last_successful_commit": "63e2cfcc002f8b078974b7af6c6cba5aa2d2820d",
@@ -26,7 +26,8 @@
     "verified_head_before_authenticated_breeze": "db4411271dcbde694ccbe79820c7ae9036daba68",
     "verified_ci_before_authenticated_breeze": "https://github.com/gaganjawa/stock-discovery/actions/runs/41488880956",
     "authenticated_breeze_followup_ci": "PASS at exact bda66eb7124774854c5b69ecc2838dac68dc74f8; run 41503723202; unit/postgres/ui/checks success",
-    "sample_qualification_increment_ci": "Must verify fresh documentation commit separately after delivery"
+    "sample_qualification_increment_ci": "PASS at exact 26ed3213b2e50042a6745c94af3814ea9a897aa3; run 41507391584; unit/postgres/ui/checks success",
+    "triangulation_increment_ci": "New documentation commit requires exact-commit CI after delivery"
   },
   "completed_tests": {
     "fresh_upstox_qualification_mock_tests": 96,
@@ -63,9 +64,9 @@
     "Breeze versus official NSE MCP EOD sample disagrees on OHL and all 41 volumes; unit/session/construction cause unresolved."
   ],
   "pending_changes": [
-    "STK-004/014 official calendar, adjustment documentation, genuine NSE/Breeze comparison and original disclosure receipts; documentation only, private probes and source values excluded. New exact-commit CI required."
+    "STK-004/014 three-original-report triangulation, official session/price definitions and source classification; five documentation files only. Private source values and probe scripts excluded."
   ],
-  "next_action": "Deliver PR35 documentation without merging. Exact calendar membership is established and basic Breeze access needs no further repeat probe. Resolve actual Breeze-versus-NSE OHL/volume discrepancies and applicable source retention rights before qualification. Complete actions/disclosures, effective settings and truthful original publication/availability evidence; do not relabel prices, scale volume, infer an action-free window or activate recommendations/trading.",
+  "next_action": "Deliver PR35 documentation without merging. Original NSE Final rows corroborate MCP for all three requested INFY/EQ dates. Breeze is UNQUALIFIED for M1: closes agree, other fields and variable volume ratios do not. Establish a published candle/trade-universe/correction explanation or another permitted full-OHLCV source; verify persistent use/retention and existing action/filing/settings/availability criteria before ingestion. Do not normalize, splice provider fields, issue recommendations or trade.",
   "milestones": [
     {
       "id": "M0",
@@ -1491,6 +1492,298 @@
       "syntax_links_json_whitespace": "passed",
       "local_full_database_or_browser_run": false,
       "new_exact_commit_ci_required": true
+    }
+  },
+  "breeze_three_way_diagnosis": {
+    "date_ist": "2026-11-03",
+    "record": "docs/STK-004-014-breeze-evaluation.md",
+    "starting_ci": {
+      "head": "26ed3213b2e50042a6745c94af3814ea9a897aa3",
+      "run": "https://github.com/gaganjawa/stock-discovery/actions/runs/41507391584",
+      "unit": "success",
+      "postgres": "success",
+      "ui": "success",
+      "checks": "success"
+    },
+    "original_reports": [
+      {
+        "date": "2026-09-01",
+        "url": "https://nsearchives.nseindia.com/content/cm/BhavCopy_NSE_CM_0_0_0_20260901_F_0000.csv.zip",
+        "http_status": 200,
+        "received_at": "2026-11-02T19:22:19.772877+00:00",
+        "bytes": 204810,
+        "sha256": "c5a3ac986df7627ad79897a0d67f069b53361c1e92801cb4699932509453c919",
+        "headers": {
+          "date": "Mon, 02 Nov 2026 19:22:19 GMT",
+          "last-modified": "Tue, 01 Sep 2026 11:02:03 GMT",
+          "content-type": "application/zip"
+        },
+        "csv_sha256": "62af4a8b4e5fad42f2372d7c4a707be4eca362d6c9188283f98d9162a9b13d79",
+        "identity_verified": true,
+        "series": "EQ",
+        "isin": "INE009A01021",
+        "session_id": "F1",
+        "original_publication_at": null
+      },
+      {
+        "date": "2026-10-23",
+        "url": "https://nsearchives.nseindia.com/content/cm/BhavCopy_NSE_CM_0_0_0_20261023_F_0000.csv.zip",
+        "http_status": 200,
+        "received_at": "2026-11-02T19:22:19.923064+00:00",
+        "bytes": 209421,
+        "sha256": "009b57f15cb36e14fa956b2e585b69b23f279eb8532c2c63c0adf0aa2ed77689",
+        "headers": {
+          "date": "Mon, 02 Nov 2026 19:22:19 GMT",
+          "last-modified": "Fri, 23 Oct 2026 11:03:02 GMT",
+          "content-type": "application/zip"
+        },
+        "csv_sha256": "35ccefe3f28abfaee521508be1b1cf41908e463cb94bf7a9220e276a3fae5b21",
+        "identity_verified": true,
+        "series": "EQ",
+        "isin": "INE009A01021",
+        "session_id": "F1",
+        "original_publication_at": null
+      },
+      {
+        "date": "2026-10-30",
+        "url": "https://nsearchives.nseindia.com/content/cm/BhavCopy_NSE_CM_0_0_0_20261030_F_0000.csv.zip",
+        "http_status": 200,
+        "received_at": "2026-11-02T19:22:20.012892+00:00",
+        "bytes": 203326,
+        "sha256": "ce2b0e6615bbc48990bb32ab081f85568451bb6f16fc54bff7d786faa7d2ca44",
+        "headers": {
+          "date": "Mon, 02 Nov 2026 19:22:20 GMT",
+          "last-modified": "Fri, 30 Oct 2026 11:03:02 GMT",
+          "content-type": "application/zip"
+        },
+        "csv_sha256": "3d239e96ba885611a20f2466394ba61061d3bcbf797f412114dd6cd174dd8f1b",
+        "identity_verified": true,
+        "series": "EQ",
+        "isin": "INE009A01021",
+        "session_id": "F1",
+        "original_publication_at": null
+      }
+    ],
+    "column_mapping": {
+      "open": "OpnPric",
+      "high": "HghPric",
+      "low": "LwPric",
+      "close": "ClsPric",
+      "volume": "TtlTradgVol",
+      "separate_last_price": "LastPric"
+    },
+    "nse_mcp_requests": [
+      {
+        "operation": "initialize",
+        "http_status": 200,
+        "received_at": "2026-11-02T19:22:20.306093+00:00",
+        "bytes": 761,
+        "sha256": "4b5b5bca2f330dde807c58c5fca498f85ae2e58840988e22ceb0bf03ca034d07"
+      },
+      {
+        "operation": "notifications/initialized",
+        "http_status": 202,
+        "received_at": "2026-11-02T19:22:20.367056+00:00"
+      },
+      {
+        "operation": "get_corporate_actions",
+        "http_status": 200,
+        "received_at": "2026-11-02T19:22:20.802813+00:00",
+        "bytes": 314,
+        "sha256": "3b78ef3f8ee70b949fe6e9313264823b33051523b776669f15f0e10712b50c17"
+      },
+      {
+        "operation": "get_stock_history",
+        "http_status": 200,
+        "received_at": "2026-11-02T19:22:20.943902+00:00",
+        "bytes": 12954,
+        "sha256": "89a792b14e63351ae82d9faea530ce0d8bbe326d47a059a287014b3eebd055c7"
+      }
+    ],
+    "mcp_symbol_verified": true,
+    "breeze_requests": [
+      {
+        "resource": "security_master",
+        "http_status": 200,
+        "received_at": "2026-11-02T19:22:23.780974+00:00",
+        "bytes": 2859542,
+        "sha256": "c10096eaedec256bdce5cfefe3c3086df4a2e58cd830dd1bb621bf2ad3c6a175",
+        "response_headers": {
+          "content-type": "application/zip",
+          "date": "Mon, 02 Nov 2026 19:22:21 GMT",
+          "last-modified": "Mon, 02 Nov 2026 02:34:02 GMT"
+        }
+      },
+      {
+        "resource": "manual_session_exchange",
+        "http_status": 200,
+        "received_at": "2026-11-02T19:22:23.990844+00:00",
+        "bytes": 575,
+        "response_headers": {
+          "content-type": "application/json; charset=utf-8",
+          "date": "Mon, 02 Nov 2026 19:22:23 GMT"
+        },
+        "provider_status": 200
+      },
+      {
+        "resource": "infy_daily",
+        "http_status": 200,
+        "received_at": "2026-11-02T19:22:24.588766+00:00",
+        "bytes": 6300,
+        "sha256": "656f41d1036565e5295651acee6938bf866998b2959f4e97b45f6900741dbc98",
+        "response_headers": {
+          "content-type": "application/json",
+          "date": "Mon, 02 Nov 2026 19:22:24 GMT"
+        }
+      }
+    ],
+    "breeze_history_hash_matches_original_sample": true,
+    "equality_results": [
+      {
+        "date": "2026-09-01",
+        "fields": {
+          "open": {
+            "B_vs_A": true,
+            "C_vs_A": false,
+            "C_vs_B": false
+          },
+          "high": {
+            "B_vs_A": true,
+            "C_vs_A": false,
+            "C_vs_B": false
+          },
+          "low": {
+            "B_vs_A": true,
+            "C_vs_A": false,
+            "C_vs_B": false
+          },
+          "close": {
+            "B_vs_A": true,
+            "C_vs_A": true,
+            "C_vs_B": true
+          },
+          "volume": {
+            "B_vs_A": true,
+            "C_vs_A": false,
+            "C_vs_B": false
+          }
+        },
+        "breeze_close_equals_official_last": true
+      },
+      {
+        "date": "2026-10-23",
+        "fields": {
+          "open": {
+            "B_vs_A": true,
+            "C_vs_A": false,
+            "C_vs_B": false
+          },
+          "high": {
+            "B_vs_A": true,
+            "C_vs_A": false,
+            "C_vs_B": false
+          },
+          "low": {
+            "B_vs_A": true,
+            "C_vs_A": false,
+            "C_vs_B": false
+          },
+          "close": {
+            "B_vs_A": true,
+            "C_vs_A": true,
+            "C_vs_B": true
+          },
+          "volume": {
+            "B_vs_A": true,
+            "C_vs_A": false,
+            "C_vs_B": false
+          }
+        },
+        "breeze_close_equals_official_last": true
+      },
+      {
+        "date": "2026-10-30",
+        "fields": {
+          "open": {
+            "B_vs_A": true,
+            "C_vs_A": false,
+            "C_vs_B": false
+          },
+          "high": {
+            "B_vs_A": true,
+            "C_vs_A": false,
+            "C_vs_B": false
+          },
+          "low": {
+            "B_vs_A": true,
+            "C_vs_A": false,
+            "C_vs_B": false
+          },
+          "close": {
+            "B_vs_A": true,
+            "C_vs_A": true,
+            "C_vs_B": true
+          },
+          "volume": {
+            "B_vs_A": true,
+            "C_vs_A": false,
+            "C_vs_B": false
+          }
+        },
+        "breeze_close_equals_official_last": true
+      }
+    ],
+    "comparison_formula": {
+      "absolute": "abs(value-reference)",
+      "percentage": "absolute / abs(reference) * 100; zero reference unavailable",
+      "volume_ratio": "unconverted Breeze volume / reference volume",
+      "arithmetic": "finite Decimal; no tolerance or normalization"
+    },
+    "numerical_tables_or_source_values_retained": false,
+    "numerical_owner_report": "Reported transiently for the private owner comparison; no original/source/ratio table stored as a dataset or committed",
+    "confirmed_results": {
+      "original_vs_mcp_matches": 15,
+      "breeze_close_matches": 3,
+      "breeze_other_field_mismatches": 12,
+      "constant_volume_multiplier_supported": false,
+      "breeze_high_above_final_high_dates": [
+        "2026-09-01",
+        "2026-10-30"
+      ],
+      "last_price_equals_close_in_all_three_original_rows": true
+    },
+    "definitions": {
+      "open": "NSE pre-open equilibrium; first normal trade only if no pre-open price discovered",
+      "high_low": "NSE highest/lowest trade prices; precise Breeze trade/sampling/correction universe not established",
+      "close": "CAS equilibrium with defined fallbacks for eligible securities; do not assume legacy VWAP universally",
+      "total_volume": "NSE traded cash-equity quantity; no broker conversion or full-exchange coverage inferred"
+    },
+    "definition_sources": [
+      "https://www.nseindia.com/static/products-services/equity-market-pre-open",
+      "https://nsearchives.nseindia.com/web/sites/default/files/inline-files/TP_CM_Trimmed_NNF_PROTOCOL_6.1.pdf",
+      "https://nsearchives.nseindia.com/content/circulars/CMTR73362.pdf",
+      "https://www.nseindia.com/static/products-services/closing-auction-session",
+      "https://api.icicidirect.com/breezeapi/documents/index.html"
+    ],
+    "root_cause": "Provider-returned candle/data-quality discrepancy relative to original reports; exact sampling/session/correction cause unproved. A subset of the same final trades cannot exceed their maximum.",
+    "source_classification": "UNQUALIFIED_FOR_STK014_M1",
+    "closing_price_only_status": "PROVISIONAL_RESEARCH_CANDIDATE; three original-row numerical matches do not establish general closing semantics or use rights",
+    "production_defect_demonstrated": false,
+    "code_or_strategy_or_grants_changed": false,
+    "source_datasets_persisted": false,
+    "publication_or_trading_activated": false,
+    "probe_sha256": "5da3e18c77345ce420daa7c7a5b71bb89c35979d166505516aefd02b94283b91",
+    "local_synthetic_arithmetic_checks": 4,
+    "additional_breeze_requests": 3,
+    "durable_breeze_reservations_total": 9,
+    "fresh_validation": {
+      "focused_passed": 300,
+      "failed": 0,
+      "skipped": 0,
+      "diagnostic_decimal_checks_passed": 4,
+      "contract_validators_passed": 3,
+      "syntax_json_links_whitespace_private_value_check": "passed",
+      "full_local_database_or_browser_suite_rerun": false
     }
   }
 }

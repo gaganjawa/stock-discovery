@@ -385,3 +385,127 @@ candle-construction explanation; do not adjust one series to force agreement.
 Establish applicable persistent storage obligations and the missing coverage,
 settings and original clocks before ingestion. No provider contact or purchase
 was made; no individual permission reply is demanded for already covered uses.
+
+## Original EOD / MCP / Breeze triangulation — 3 November 2026 IST
+
+Starting commit `26ed3213b2e50042a6745c94af3814ea9a897aa3` passed **unit,
+postgres, ui and checks** in [run 41507391584](https://github.com/gaganjawa/stock-discovery/actions/runs/41507391584).
+PR35 remains draft/unmerged. This increment changes documentation only.
+
+### Original reference acquisition and identity
+
+The [official report catalogue](https://www.nseindia.com/all-reports) provides
+CM-UDiFF Common Bhavcopy Final. Three owner-specified, one-off original report
+downloads were read in memory, not collected into an archive or automated market
+dataset. The downloadable-content exception in the [website terms](https://www.nseindia.com/static/nse-terms-of-use)
+is treated narrowly for this informational inspection; no standing collector,
+redistribution, simulation or permanent provider-storage right is inferred.
+
+All three originals returned HTTP200 from
+`https://nsearchives.nseindia.com/content/cm/`. Each ZIP contained the expected
+same-named CSV. Each selected row had unique `TckrSymb=INFY`, `SctySrs=EQ`,
+`ISIN=INE009A01021`, matching `TradDt` and `BizDt`, and `SsnId=F1`. No ambiguous
+row, alternate series or another provider's field was substituted.
+
+| Date | Original ZIP filename | ZIP SHA-256 |
+|---|---|---|
+| 2026-09-01 | `BhavCopy_NSE_CM_0_0_0_20260901_F_0000.csv.zip` | `c5a3ac986df7627ad79897a0d67f069b53361c1e92801cb4699932509453c919` |
+| 2026-10-23 | `BhavCopy_NSE_CM_0_0_0_20261023_F_0000.csv.zip` | `009b57f15cb36e14fa956b2e585b69b23f279eb8532c2c63c0adf0aa2ed77689` |
+| 2026-10-30 | `BhavCopy_NSE_CM_0_0_0_20261030_F_0000.csv.zip` | `ce2b0e6615bbc48990bb32ab081f85568451bb6f16fc54bff7d786faa7d2ca44` |
+
+Original receipts: `2026-11-02T19:22:19.772877+00:00`,
+`19:22:19.923064+00:00`, `19:22:20.012892+00:00`, respectively. CSV hashes and
+HTTP Last-Modified headers are preserved as metadata, not original publication
+proof. The column mapping was exactly `OpnPric/HghPric/LwPric/ClsPric/TtlTradgVol`;
+`LastPric` was separately inspected, never substituted for `ClsPric`.
+
+### Three-source numeric comparison
+
+**A:** original NSE CM-UDiFF Final row. **B:** official NSE MCP history.
+**C:** pinned official Breeze SDK V2, NSE/cash/1day. One MCP query session and
+one guarded Breeze cycle were used; no retries. Existing private configuration,
+timeouts, GET allowlist and durable ledger were reused. Total Breeze reservations
+across the three genuine cycles are now **nine**, without reset. The latest
+history hash still equals the original 41-candle sample's hash.
+
+Every numeric comparison used finite Decimal values without tolerance or
+normalization. Absolute difference is `abs(value-reference)`; percentage difference
+is that difference divided by `abs(reference)`, times 100. A zero denominator is
+unavailable, not zero. Volume ratios use the unconverted source quantities.
+
+| Date | B versus A | C versus A | C versus B | Volume-ratio conclusion |
+|---|---|---|---|---|
+| 2026-09-01 | All five fields equal; absolute/percentage differences zero | Close equal; open/high/low/volume differ | Same result | Below one |
+| 2026-10-23 | All five fields equal; absolute/percentage differences zero | Close equal; open/high/low/volume differ | Same result | Below one; different from other dates |
+| 2026-10-30 | All five fields equal; absolute/percentage differences zero | Close equal; open/high/low/volume differ | Same result | Below one; different from other dates |
+
+The exact numerical three-date table, absolute/percentage differences and both
+Breeze/NSE ratios were returned to the owner for this private informational
+inspection. They are not published as provider rows or a reusable derived
+dataset in Git. The durable receipt retains source hashes, identity, equality
+flags and procedure hash only. Original reports, MCP payloads, source values,
+ratio tables and SDK/account bodies were not written to a data store.
+
+### Definitions and what the measurements do / do not establish
+
+- **Open:** NSE's [pre-open rules](https://www.nseindia.com/static/products-services/equity-market-pre-open)
+  use the auction equilibrium as the daily open, or the first normal-market trade
+  if no equilibrium is discovered. A broker's first sampled regular-session print
+  is not automatically that official open. We have not established that Breeze
+  uses that alternative calculation.
+- **High/low:** The official [CM protocol](https://nsearchives.nseindia.com/web/sites/default/files/inline-files/TP_CM_Trimmed_NNF_PROTOCOL_6.1.pdf)
+  identifies highest/lowest trade prices, distinct from indicative opening
+  information. Broker sampling can differ from the full executed-trade universe;
+  the precise Breeze sampling/correction/auction policy is not established.
+- **Close versus LTP:** NSE's [2026 CAS SOP, section 5](https://nsearchives.nseindia.com/content/circulars/CMTR73362.pdf)
+  defines auction equilibrium with specified fallbacks for CAS-eligible equities;
+  the [CAS description](https://www.nseindia.com/static/products-services/closing-auction-session)
+  distinguishes the auction and continuous sessions. Do not apply a historical
+  last-half-hour VWAP description indiscriminately to all 2026 stocks. In these
+  three original rows, **LastPric equals ClsPric**. Thus the matching Breeze close
+  cannot distinguish an LTP calculation from an official-close calculation.
+- **Quantity:** Original `TtlTradgVol` is the cash-equity traded quantity, separate
+  from trade count and turnover. Breeze's [API reference](https://api.icicidirect.com/breezeapi/documents/index.html)
+  names traded volume but does not establish an identical full-exchange/session
+  universe or a corrective multiplier. Its [product page](https://api.icicidirect.com/)
+  advertises second-level LTP history; that is not proof of a daily construction
+  formula. No shares/lots conversion is justified by the measured variable ratios.
+
+**Confirmed:** MCP agrees with the original Final reports on all 15 inspected
+fields. The same request/source-identity/date mapping passes, and provider JSON
+values were compared before any strategy, candle adjustment, aggregation or
+rounding by this application. This eliminates this diagnostic's transformation
+and a bad MCP reference as explanations for these specific observations.
+
+**Not a constant unit difference:** volume ratios vary across the dates, with
+unequal deficits. Closes agree while other price fields do not; one price-scale
+factor cannot fix that. Several differences materially exceed tick rounding.
+
+**Auction/sampling is a hypothesis, not a proved root cause:** Breeze high is
+above the original full-day high on 1 September and 30 October; on 23 October
+its low misses the exchange's extreme and its high is below the official high.
+Simply omitting a subset of the same final executed trades cannot generate a
+high above their maximum. Different trade/quote universes, cancellation or
+correction treatment, session construction or a provider data-quality defect
+remain possible. No published Breeze formula was found that proves which cause
+applies. No price or volume was corrected to make the feeds agree.
+
+### Source decision and next prerequisite
+
+**Formal STK-014/M1 classification: UNQUALIFIED SOURCE.** It fails full-OHLCV
+verification. Its closes remain a **provisional closing-price-only research
+candidate** supported by these three original rows and the earlier 41-date MCP
+comparison. That narrow agreement is not a general closing-price contract,
+original availability evidence, retention licence or approval to ingest/reuse
+the source in a recommendation. No hybrid candle is assembled from A/B/C.
+
+Resolve the provider's documented candle/trade-universe/correction semantics or
+obtain an independently permitted full-OHLCV source before swing qualification.
+Applicable storage/retention/revocation/backup terms, complete actions/filings/
+material events, effective settings and truthful availability remain necessary.
+No production code defect was demonstrated; no strategy or source grant changed.
+M1, real recommendations, publication, paper admission and trading remain blocked.
+Fresh validation: **300 relevant regressions passed, zero failures/skips**; four
+private diagnostic Decimal/percentage checks, three contract validators, syntax,
+JSON/local-link, whitespace and credential-exclusion checks passed. No full local
+database/browser rerun or new application regression was needed for documentation.

@@ -55,6 +55,16 @@ evidence is not complete event coverage or a publication timestamp. See the
 [per-criterion disposition](STK-004-014-breeze-evaluation.md#existing-stk-014-criteria--precise-disposition).
 Persistence and all recommendation/trading gates remain disabled.
 
+The [three-original-report triangulation](STK-004-014-breeze-evaluation.md#original-eod--mcp--breeze-triangulation--3-november-2026-ist)
+now confirms MCP against original NSE CM-UDiFF Final INFY/EQ rows for 1 September,
+23 October and 30 October: all 15 OHLCV fields match. Breeze matches the three
+closes only; its other 12 fields differ and its volume ratios are not constant.
+On two dates its high exceeds the original final high, so simply omitting auction
+trades is not a sufficient explanation. The exact construction/correction cause
+is unresolved. **Formal M1 source classification: UNQUALIFIED**; closing-only
+research remains a provisional candidate, not source admission. Source datasets
+and numerical comparison tables were not committed or permanently ingested.
+
 2 November follow-up: see the [source reconciliation and minimal owner handoff](PRODUCT-ACCEPTANCE-HANDOFF.md#m1--ownerprovider-handoff-one-infy-instrument).
 The saved scoped Upstox grant was located and inspected without credentials or
 provider values. Local configuration allows universe/calendar/prices/numerical

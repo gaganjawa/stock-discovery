@@ -256,3 +256,11 @@ closes match 41/41, but open 6/41, high 8/41, low 12/41 and volume 0/41.
 [Full criterion matrix and source receipts](STK-004-014-breeze-evaluation.md#official-source-qualification-follow-up--3-november-2026-ist)
 keep M1 BLOCKED on these discrepancies, rights/retention, complete disclosures,
 settings and original clocks. No production behavior, grants or datasets changed.
+
+3 November IST — STK-004/014 [three-source triangulation](STK-004-014-breeze-evaluation.md#original-eod--mcp--breeze-triangulation--3-november-2026-ist):
+three original NSE Final INFY/EQ rows match MCP on all 15 OHLCV fields; Breeze
+matches closes only (12 other mismatches), with nonconstant volume ratios.
+Source classified UNQUALIFIED for M1; closing-only remains a provisional research
+candidate. Auction/sampling alone is not a proved explanation. No production
+change or stored source dataset. Exact `26ed321` CI passed all four jobs; PR35
+stays draft/unmerged, with new documentation CI required separately.

@@ -79,6 +79,16 @@ adjustment or unit multiplier was inferred. One original issuer quarterly PDF
 was retrieved transiently; announcement/dividend dates do not supply complete
 event coverage or original publication times. Persistent ingestion remains off.
 
+Three original CM-UDiFF Final reports have since corroborated the MCP on all
+15 inspected INFY/EQ fields. Breeze differs in 12, with variable volume deficits
+and high/low discrepancies that a fixed unit conversion cannot explain. The
+[triangulation record](STK-004-014-breeze-evaluation.md#original-eod--mcp--breeze-triangulation--3-november-2026-ist)
+classifies Breeze **UNQUALIFIED for STK-014/M1**, with only a provisional
+closing-price research candidate. Next: establish the published construction/
+correction semantics or another permitted full-OHLCV source, alongside retention
+and the existing coverage/settings/clocks gates. No more sample repetition merely
+to re-establish access or close agreement is required.
+
 ### Reconciled permissions and exact reusable inputs — 2 November
 
 The empty public `grants.real.json` is an inactive default, not proof that the
