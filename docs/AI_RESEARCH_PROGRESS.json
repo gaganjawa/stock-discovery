@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-02T17:06:46.439091+00:00",
-  "current_milestone": "M1 Breeze evaluation \u2014 official INFTEC identity verified; authenticated account/session and daily sample unavailable",
+  "updated_at": "2026-11-02T18:41:34.259593+00:00",
+  "current_milestone": "M1 Breeze access validated \u2014 41 actual daily candles; raw/volume/action/calendar/disclosure/retention qualification still BLOCKED",
   "branch": "feat/stk-004-014-m1-source-qualification",
   "worktree": "stk-074-grant-fences",
   "last_successful_commit": "63e2cfcc002f8b078974b7af6c6cba5aa2d2820d",
@@ -22,7 +22,10 @@
     "merged": false,
     "verified_head_before_breeze": "56400781f2206eefedae5454e899069b090cedc0",
     "verified_ci_before_breeze": "https://github.com/gaganjawa/stock-discovery/actions/runs/41476931902",
-    "breeze_increment_ci": "must verify separately after delivery; earlier exact-commit success does not validate new code"
+    "breeze_increment_ci": "must verify separately after delivery; earlier exact-commit success does not validate new code",
+    "verified_head_before_authenticated_breeze": "db4411271dcbde694ccbe79820c7ae9036daba68",
+    "verified_ci_before_authenticated_breeze": "https://github.com/gaganjawa/stock-discovery/actions/runs/41488880956",
+    "authenticated_breeze_followup_ci": "Pending new delivery; prior exact-commit success is not new-head evidence"
   },
   "completed_tests": {
     "fresh_upstox_qualification_mock_tests": 96,
@@ -58,9 +61,9 @@
     "Actual representative-source extraction quality not passed; human holdout unverified."
   ],
   "pending_changes": [
-    "STK-004/014 Breeze evaluation: unregistered read-only probe contract, 40 synthetic cases, source/SDK/reference review and documentation; no live source activation. Required review and final exact-commit CI remain pending for this increment."
+    "STK-004/014 private session preflight, guarded transient official-SDK diagnostic, 54 new synthetic regressions and genuine 41-candle retrieval metadata; no ingestion or source/grant activation. Review and exact-commit CI required for this increment."
   ],
-  "next_action": "Owner may identify an existing private Breeze configuration path with a registered app and current manually generated API session; do not request secrets in chat or implement TOTP login. Without it, stop at offline validation. Then review isolated official-SDK timeout/logging controls before a bounded NSE cash INFTEC 1day sample over >=30 verified closed sessions. Public historical/backtest use is covered; raw/volume/action/time semantics and persistence/retention still need applicable evidence. No ingestion, source/grant activation or trading without the established gates.",
+  "next_action": "Deliver PR35 follow-up without merging. Basic Breeze authentication/history access is established: no repeated probe needed. Obtain applicable raw OHLC/share-volume/action semantics, authoritative closed-session/action and disclosure coverage, effective settings, original clocks and retention/revocation/backup obligations. Apply existing qualification and original/current grants/fences before ingestion. No M1/M2/strategy/operational/publication/admission/trading acceptance inferred.",
   "milestones": [
     {
       "id": "M0",
@@ -1136,5 +1139,109 @@
     "orders_or_login_exposed": false,
     "M1_accepted": false,
     "M2_human_holdout_accepted": false
+  },
+  "breeze_authenticated_probe": {
+    "date_ist": "2026-11-03",
+    "record": "docs/STK-004-014-breeze-evaluation.md",
+    "previous_evaluation_preserved": "breeze_provider_evaluation records the earlier missing-configuration phase, not the current authenticated result",
+    "sdk_version": "1.0.68",
+    "sdk_sdist_sha256": "8d6e3ef353fe119047e53ab11413b8686903afa195b51a962e378e20914de0c3",
+    "sdk_execution": "Official source extracted and hash-checked in isolated temporary runtime; no project dependency change or reference MCP",
+    "authentication": "SUCCESS",
+    "identity_verified": true,
+    "http_request_count": 3,
+    "authenticated_http_requests": 2,
+    "sdk_methods": [
+      "generate_session",
+      "get_names (local master lookup)",
+      "get_historical_data_v2"
+    ],
+    "requests": [
+      {
+        "resource": "security_master",
+        "http_status": 200,
+        "received_at": "2026-11-02T18:38:54.098089+00:00",
+        "bytes": 2859542,
+        "sha256": "c10096eaedec256bdce5cfefe3c3086df4a2e58cd830dd1bb621bf2ad3c6a175",
+        "response_headers": {
+          "content-type": "application/zip",
+          "date": "Mon, 02 Nov 2026 18:38:52 GMT",
+          "last-modified": "Mon, 02 Nov 2026 02:34:02 GMT"
+        }
+      },
+      {
+        "resource": "manual_session_exchange",
+        "http_status": 200,
+        "received_at": "2026-11-02T18:38:54.304197+00:00",
+        "bytes": 575,
+        "response_headers": {
+          "content-type": "application/json; charset=utf-8",
+          "date": "Mon, 02 Nov 2026 18:38:54 GMT"
+        },
+        "provider_status": 200
+      },
+      {
+        "resource": "infy_daily",
+        "http_status": 200,
+        "received_at": "2026-11-02T18:38:54.925386+00:00",
+        "bytes": 6300,
+        "sha256": "656f41d1036565e5295651acee6938bf866998b2959f4e97b45f6900741dbc98",
+        "response_headers": {
+          "content-type": "application/json",
+          "date": "Mon, 02 Nov 2026 18:38:54 GMT"
+        }
+      }
+    ],
+    "historical": {
+      "provider_status": 200,
+      "candle_count": 41,
+      "invalid_ohlcv_rows": 0,
+      "first_date": "2026-09-01",
+      "last_date": "2026-10-30",
+      "duplicate_date_labels": 0,
+      "chronological_order": "ascending",
+      "timestamps_timezone_aware": false,
+      "missing_sessions": "UNAVAILABLE_authoritative_calendar_not_supplied",
+      "price_basis": "unknown",
+      "volume_basis": "unknown",
+      "corporate_actions": "unverified",
+      "published_at": null,
+      "first_available_at": null,
+      "values_retained": false
+    },
+    "runtime_boundaries": {
+      "get_only": true,
+      "no_redirect_or_retry": true,
+      "timeout_seconds": 120,
+      "per_invocation_requests": 5,
+      "shared_local_ledger_per_minute": 6,
+      "shared_local_ledger_per_rolling_24h": 12,
+      "other_account_clients_accounted": false,
+      "sdk_logs_retained": false,
+      "private_config_ignored_owner_only": true
+    },
+    "fresh_synthetic_validation": {
+      "passed": 300,
+      "failed": 0,
+      "skipped": 0,
+      "breeze_cases": 94,
+      "new_configuration_cases": 24,
+      "new_transport_summary_cases": 30,
+      "live_results_separate": true,
+      "full_local_database_browser_suite_rerun": false
+    },
+    "source_content_or_credentials_retained_in_repository": false,
+    "database_access": false,
+    "source_grant_activated": false,
+    "M1_accepted": false,
+    "other_acceptance_gates_changed": false,
+    "remaining_blockers": [
+      "Unverified raw price/share-volume/corporate-action semantics",
+      "No complete authoritative closed-session/action coverage",
+      "Missing current original filing/event coverage and truthful availability",
+      "Effective instrument settings/eligibility and current/original grants not qualified",
+      "Persistence/retention/revocation/backups unverified",
+      "M2 human-labelled holdout and genuine strategy/operational/policy gates remain blocked"
+    ]
   }
 }

@@ -36,9 +36,12 @@ Only public documentation was read. No authenticated market-data request, financ
 
 [Breeze follow-up](STK-004-014-breeze-evaluation.md) verifies published free
 historical backtesting and official master identity (`INFTEC`, ISIN
-`INE009A01021`). It establishes neither a configured account/session nor genuine
-daily data, raw basis, volume semantics or retention compliance. Offline probe
-contracts cannot supply an accepted STK-014 input. No source/grant activated.
+`INE009A01021`). The **3 November IST** follow-up successfully authenticated the
+official SDK and transiently retrieved 41 daily candles (1 September–30 October
+2026), with no duplicate labels or basic OHLCV failures. Raw basis, volume/action
+semantics, complete closed sessions and retention compliance remain unverified.
+No accepted STK-014 input or source/grant activation resulted; only sanitized
+metadata was retained. This supersedes the initial missing-session observation.
 
 2 November follow-up: see the [source reconciliation and minimal owner handoff](PRODUCT-ACCEPTANCE-HANDOFF.md#m1--ownerprovider-handoff-one-infy-instrument).
 The saved scoped Upstox grant was located and inspected without credentials or

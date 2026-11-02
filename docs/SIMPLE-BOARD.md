@@ -239,3 +239,12 @@ published free backtesting, official public master INFTEC/INFY/ISIN mapping and
 40 offline contract cases verified (246 focused regressions passed). No configured
 account/session or actual daily sample; no SDK/MCP install, source activation,
 dataset mutation or trading capability. M1 remains BLOCKED.
+
+3 November IST — STK-004/014 [authenticated Breeze follow-up](STK-004-014-breeze-evaluation.md#authenticated-sdk-follow-up--3-november-2026-ist):
+official SDK authentication and 41 actual INFY daily candles succeeded with three
+bounded GETs; no duplicate labels/basic OHLCV failures, values discarded. Fresh
+300 focused fixture tests passed separately. Private manual-session preflight,
+GET-only transport, isolated SDK logging and durable local request budget added.
+No source/grant activation or database access; raw/volume/action/calendar,
+disclosure/time and retention requirements still block M1. M2/strategy/
+operational/publication/admission/trading gates unchanged. PR35 remains draft.
