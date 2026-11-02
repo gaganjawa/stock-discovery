@@ -69,6 +69,16 @@ not qualification: persistence/raw/volume/action semantics, authoritative closed
 sessions, disclosures and original clocks remain unverified. No source/grant,
 production SDK integration or reference MCP was activated.
 
+The subsequent [official-source qualification check](STK-004-014-breeze-evaluation.md#official-source-qualification-follow-up--3-november-2026-ist)
+establishes exact membership of the 41 expected regular sessions and finds the
+SDK's unadjusted-history statement. The documented NSE MCP now returns actual
+EOD reference data. Same-date comparison matches every close, but only 6 opens,
+8 highs, 12 lows and **zero volumes** out of 41. Source scope/construction and
+share-volume discrepancies must be resolved before accepting Breeze OHLCV; no
+adjustment or unit multiplier was inferred. One original issuer quarterly PDF
+was retrieved transiently; announcement/dividend dates do not supply complete
+event coverage or original publication times. Persistent ingestion remains off.
+
 ### Reconciled permissions and exact reusable inputs — 2 November
 
 The empty public `grants.real.json` is an inactive default, not proof that the

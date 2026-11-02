@@ -230,3 +230,158 @@ remains acknowledged; no blanket request for new permission letters. These input
 must satisfy existing STK-014 and original/current grant/fence contracts before
 ingestion or a qualified real instrument. M2 human/50-case, genuine evaluation,
 operational, publication, paper-admission and trading approvals remain blocked.
+
+## Official-source qualification follow-up — 3 November 2026 IST
+
+**Exact calendar membership VERIFIED; Breeze OHLCV qualification BLOCKED by
+observed source discrepancies.** No production code, strategy, source grant or
+stored dataset changed. Prior observations above remain historical records.
+
+### Exact CI at the starting commit
+
+Commit `bda66eb7124774854c5b69ecc2838dac68dc74f8`,
+[run 41503723202](https://github.com/gaganjawa/stock-discovery/actions/runs/41503723202):
+**unit PASS, postgres PASS, ui PASS, checks PASS**. PR35 remained draft/unmerged.
+Any subsequent documentation commit requires its own exact-commit CI.
+
+### Calendar and permitted comparison procedure
+
+The official [CM trading-holiday circular NSE/CMTR/71775](https://nsearchives.nseindia.com/content/circulars/CMTR71775.pdf),
+dated 12 December 2025, and the current [2026 equity holiday page](https://www.nseindia.com/resources/exchange-communication-holidays?apiversion=v2)
+confirm 14 September, 2 October and 20 October as holidays. The bounded window
+1 September–30 October contains **41 expected regular sessions**, excluding
+weekends and those three holidays. This reviewed expected set is not a new
+production calendar, evidence of unscheduled closures, or an invented historical
+availability timestamp. Circular receipt: HTTP200 at
+`2026-11-02T18:56:24.309272+00:00`, 176,256 decoded bytes, SHA-256
+`aa97e0afc0ce394097f2fc62631c68e3c2e4c7c23541ed35f21d9fc06b0dcacb`.
+
+The earlier receipt retained no full date-label set or numerical values. Exactly
+one fresh guarded SDK sample was therefore necessary. Private manual-session
+preflight passed; the existing pinned SDK, GET-only transport, quota ledger and
+private child/cleanup controls were reused. No fallback login or extra historical
+retry. This increment used three Breeze HTTP GETs; the durable ledger now
+preserves six reservations across both genuine probes, without reset.
+
+The fresh sample's **actual labels** were compared in memory with that expected
+set: **41 observed, zero missing, zero unexpected, zero duplicates**. Sorted-label
+SHA-256: `1b06dae1421b5e90416b379c96b4dfdc4bd1b57e17cb7086492751db3bd67002`.
+History receipt: `2026-11-02T19:01:23.513557+00:00`, SHA-256
+`656f41d1036565e5295651acee6938bf866998b2959f4e97b45f6900741dbc98`.
+That is **identical to the original sample's response hash**, linking the exact
+membership check to the existing sample rather than merely comparing counts.
+
+The [official NSE MCP interface](https://www.nseindia.com/nse-mcp) now worked through
+its documented streamable-HTTP endpoint. Schema discovery used initialize 200,
+initialized notification 202 and tools/list 200 (SSE). A separate query session
+used initialize 200, notification 202, `get_corporate_actions` 200 and then
+`get_stock_history` 200, without retries. Queries were fixed to INFY; actions
+1 September–3 November, history two months ending 30 October. No pagination/bulk
+scraping, website-API fallback or stored NSE data corpus. MCP informational access
+does not establish storage, simulation or recommendation rights.
+
+### Documented adjustments versus measured agreement
+
+The official SDK's [pinned README](https://github.com/Idirect-Tech/Breeze-Python-SDK/blob/4125106b48932ff99b45d593749dcec21c552558/README.md)
+explicitly states that historical data does not account for corporate adjustments.
+The pinned original returned HTTP200 at `2026-11-02T18:56:24.737700+00:00`, SHA-256
+`a62a6d1acb3b115fec161c52fadf9b78c1b4ee10ff0ab806291ed55b2f1d0b88`;
+the note occurs six times. **This is provider documentation**, not independent
+verification of every candle or of volume adjustment semantics. Existing
+`price_basis='unknown'` diagnostic output was not silently promoted to `raw-v1`.
+
+NSE's official `get_stock_history` tool describes its reference as unadjusted
+bhavcopy OHLCV. The query returned 41 rows inside the target window at
+`2026-11-02T19:00:53.306180+00:00`; parsed JSON-RPC message SHA-256
+`89a792b14e63351ae82d9faea530ce0d8bbe326d47a059a287014b3eebd055c7`.
+Comparison used the same dates and explicit open/high/low/close/volume fields,
+finite Decimal equality, no rounding/tolerance, adjustment or unit conversion.
+All values existed transiently in RAM/child stdin only; receipts retain field
+agreement results, not prices, share counts or raw tool messages.
+
+| Field | Exact matches / 41 | Mismatches / 41 |
+|---|---:|---:|
+| Open | 6 | 35 |
+| High | 8 | 33 |
+| Low | 12 | 29 |
+| Close | 41 | 0 |
+| Volume | 0 | 41 |
+
+On **1 September, 23 October and 30 October**, each representative row matches
+**close only**; **open, high, low and volume all differ**. A private receipt also
+records the exact mismatching fields for every compared date. No numerical
+agreement, acceptable error tolerance or explanation for these differences was
+invented. The comparison identifies a qualification blocker, not a proved defect
+in either provider or in existing strategy code.
+
+NSE's [price/volume reference](https://www.nseindia.com/historical/price-and-volume-data-per-security)
+identifies cash-equity traded quantity, and its [MCP volume documentation](https://www.nseindia.com/nse-mcp)
+describes shares separately from turnover. Breeze's API labels its field traded
+volume but the reviewed reference does not establish its exact NSE-share,
+sampling/session or adjustment convention. **The Breeze field is not verified
+as exchange-total traded shares:** integral values plus 41/41 quantity mismatches
+cannot establish units or a conversion factor. No lots/shares multiplier inferred.
+
+### Original disclosures and separate clocks
+
+- The [official Q2 results index](https://www.infosys.com/investors/reports-filings/quarterly-results/2026-2027/q2.html)
+  and issuer events page identify **23 October 2026** results for the quarter and
+  half-year ended **30 September 2026**. The listed 16:30 IST press conference and
+  18:00 IST earnings call are **event times**, not document-publication clocks.
+- The original [IFRS INR statements](https://www.infosys.com/investors/reports-filings/quarterly-results/2026-2027/q2/documents/consolifrsinr-fy27-q2-and-h1-finstatement.pdf)
+  returned HTTP200; the decoded PDF was acquired transiently at
+  `2026-11-02T19:02:44.849453+00:00`, 1,030,221 bytes, SHA-256
+  `d47fe57f3907f8b99996b5000037aac3f2a42f11059a4a1d0e28b726f9f70ca3`.
+  Its Last-Modified header is `Fri, 23 Oct 2026 10:51:39 GMT`; that header is
+  **not** verified first-public availability. No PDF or financial table retained.
+- The issuer's [board-outcome disclosure](https://www.infosys.com/investors/documents/exchange-filings/2026/outcome-board-meeting23oct2026.pdf)
+  supports **₹26 per equity share interim dividend**, **3 November 2026 record
+  date**, and **11 November payment date** in the official indexed passage. The
+  full original-body download exceeded the diagnostic's 25 MB decoded bound and
+  was discarded; no full-body hash or parser success is claimed. The smaller
+  original quarterly statements above were retrieved instead. Record date is not
+  silently treated as ex-date or an action inside the sampled price window.
+- The bounded NSE action lookup returned without an error/warning. Only lookup
+  status/schema was retained, so it does **not** establish an event count, an
+  independently preserved action list or exhaustive filing/material-event
+  coverage. No empty-list/action-free attestation is created.
+
+**Verified original publication/dissemination timestamps: unavailable.** Filing/
+announcement dates, scheduled event times, server Last-Modified and present-day
+retrieval timestamps remain separate. No third-party timestamp, PDF filename or
+search-engine crawl date fills that gap. Observed-now evidence cannot become
+historically available evidence at an October cutoff through backdating.
+
+### Existing STK-014 criteria — precise disposition
+
+| Criterion | Status | Remaining qualification boundary |
+|---|---|---|
+| Authorized source / intended use | **PARTIAL** | Account read access and published free historical testing established; no original/current stored grant or additional use activated. Informational MCP access is not storage/replay authority. |
+| Retention / revocation / deletion / backups | **BLOCKED** | Applicable persistent and derived-copy obligations not established; persistent provider ingestion remains disabled. |
+| Price and volume basis | **BLOCKED** | Provider documents unadjusted history, but measured OHL/volume disagree; Breeze share-volume and correction/session conventions unresolved. |
+| Regular session membership | **VERIFIED for this sample** | Actual labels equal the 41-session expected set; full point-in-time session records, clocks and original acquisition lineage remain unqualified. |
+| Corporate-action coverage | **PARTIAL** | Specific dividend disclosed; no complete dated permitted action evidence or validated action-free-window attestation. |
+| History / freshness | **PARTIAL** | 41 matching regular date labels, but OHLCV quality unresolved. Sample ends 30 October, not the later 2 November session; no current signal freshness or historical availability certified. |
+| Tick / lot / eligibility / risk | **PARTIAL** | Exact ISIN/symbol mapping verified; effective settings/eligibility/risk packet not established. No defaults introduced. |
+| Filings / material events | **PARTIAL** | Original quarterly PDF and specific indexed dividend disclosure found; original availability and complete event coverage missing. |
+| Provenance / deterministic failures | **PARTIAL** | Retrieval hashes, source URLs and exact comparison receipts exist; no qualified immutable revisions, original/current grants or historical availability invented. |
+| Overall instrument | **BLOCKED / INSUFFICIENT_EVIDENCE** | No `SwingInputs` qualification, real recommendation, publication, admission or trade authorized. |
+
+No production defect was demonstrated, so this increment changes documentation
+only. A private one-shot validation reused the existing guarded child and passed
+six synthetic comparison checks, including identical counts with the wrong
+holiday/session, duplicates, missing dates, absent reference and changed volume.
+These are diagnostic checks, not new platform functionality or real-data
+acceptance. Source values, credentials and the one-shot script are excluded from
+Git. Existing grants, fences, qualification and synthetic fixtures are unchanged.
+Fresh relevant regression run: **300 passed, 0 failed, 0 skipped** across Breeze,
+qualification, source rights, swing research, Upstox and document/filing tests.
+The three existing contract validators, JSON/local-link, syntax and whitespace
+checks passed. No full local database/browser suite was rerun for documentation.
+
+**Next prerequisite:** resolve the measured Breeze-versus-NSE OHL/share-quantity
+differences using permitted original EOD evidence and/or an applicable published
+candle-construction explanation; do not adjust one series to force agreement.
+Establish applicable persistent storage obligations and the missing coverage,
+settings and original clocks before ingestion. No provider contact or purchase
+was made; no individual permission reply is demanded for already covered uses.

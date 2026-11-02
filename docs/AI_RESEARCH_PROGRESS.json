@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-02T18:46:11.044049+00:00",
-  "current_milestone": "M1 Breeze access validated \u2014 41 actual daily candles; raw/volume/action/calendar/disclosure/retention qualification still BLOCKED",
+  "updated_at": "2026-11-02T19:07:59.035079+00:00",
+  "current_milestone": "M1 exact INFY calendar membership verified; Breeze/NSE EOD OHL and volume discrepancies BLOCK qualification",
   "branch": "feat/stk-004-014-m1-source-qualification",
   "worktree": "stk-074-grant-fences",
   "last_successful_commit": "63e2cfcc002f8b078974b7af6c6cba5aa2d2820d",
@@ -25,7 +25,8 @@
     "breeze_increment_ci": "must verify separately after delivery; earlier exact-commit success does not validate new code",
     "verified_head_before_authenticated_breeze": "db4411271dcbde694ccbe79820c7ae9036daba68",
     "verified_ci_before_authenticated_breeze": "https://github.com/gaganjawa/stock-discovery/actions/runs/41488880956",
-    "authenticated_breeze_followup_ci": "9149d859 unit failed portability; corrected increment requires fresh exact-commit CI"
+    "authenticated_breeze_followup_ci": "PASS at exact bda66eb7124774854c5b69ecc2838dac68dc74f8; run 41503723202; unit/postgres/ui/checks success",
+    "sample_qualification_increment_ci": "Must verify fresh documentation commit separately after delivery"
   },
   "completed_tests": {
     "fresh_upstox_qualification_mock_tests": 96,
@@ -58,12 +59,13 @@
   "known_blockers": [
     "Real-source rights/retention/adjustment and complete evidence remain unqualified.",
     "Human research-quality calibration and prospective policy approval remain unapproved.",
-    "Actual representative-source extraction quality not passed; human holdout unverified."
+    "Actual representative-source extraction quality not passed; human holdout unverified.",
+    "Breeze versus official NSE MCP EOD sample disagrees on OHL and all 41 volumes; unit/session/construction cause unresolved."
   ],
   "pending_changes": [
-    "STK-004/014 confirmed Linux temporary-directory portability correction plus focused regression and validation record; complete 888 local backend/worker unit tests passed. Deliver without merging; new exact-commit CI required."
+    "STK-004/014 official calendar, adjustment documentation, genuine NSE/Breeze comparison and original disclosure receipts; documentation only, private probes and source values excluded. New exact-commit CI required."
   ],
-  "next_action": "Deliver PR35 follow-up without merging. Basic Breeze authentication/history access is established: no repeated probe needed. Obtain applicable raw OHLC/share-volume/action semantics, authoritative closed-session/action and disclosure coverage, effective settings, original clocks and retention/revocation/backup obligations. Apply existing qualification and original/current grants/fences before ingestion. No M1/M2/strategy/operational/publication/admission/trading acceptance inferred.",
+  "next_action": "Deliver PR35 documentation without merging. Exact calendar membership is established and basic Breeze access needs no further repeat probe. Resolve actual Breeze-versus-NSE OHL/volume discrepancies and applicable source retention rights before qualification. Complete actions/disclosures, effective settings and truthful original publication/availability evidence; do not relabel prices, scale volume, infer an action-free window or activate recommendations/trading.",
   "milestones": [
     {
       "id": "M0",
@@ -1256,6 +1258,239 @@
       "complete_unit_skipped": 0,
       "existing_deprecation_warnings": 1,
       "additional_provider_calls": 0
+    }
+  },
+  "breeze_sample_qualification": {
+    "date_ist": "2026-11-03",
+    "record": "docs/STK-004-014-breeze-evaluation.md",
+    "starting_head_ci": {
+      "head": "bda66eb7124774854c5b69ecc2838dac68dc74f8",
+      "run": "https://github.com/gaganjawa/stock-discovery/actions/runs/41503723202",
+      "unit": "success",
+      "postgres": "success",
+      "ui": "success",
+      "checks": "success"
+    },
+    "official_public_documents": [
+      {
+        "resource": "calendar",
+        "url": "https://nsearchives.nseindia.com/content/circulars/CMTR71775.pdf",
+        "original_publication_at": null,
+        "first_available_at": null,
+        "http_status": 200,
+        "received_at": "2026-11-02T18:56:24.309272+00:00",
+        "bytes": 176256,
+        "sha256": "aa97e0afc0ce394097f2fc62631c68e3c2e4c7c23541ed35f21d9fc06b0dcacb",
+        "headers": {
+          "content-type": "application/pdf",
+          "date": "Mon, 02 Nov 2026 18:56:24 GMT",
+          "last-modified": "Fri, 12 Dec 2025 07:00:39 GMT"
+        },
+        "body_retained": false
+      },
+      {
+        "resource": "sdk_readme",
+        "url": "https://raw.githubusercontent.com/Idirect-Tech/Breeze-Python-SDK/4125106b48932ff99b45d593749dcec21c552558/README.md",
+        "original_publication_at": null,
+        "first_available_at": null,
+        "http_status": 200,
+        "received_at": "2026-11-02T18:56:24.737700+00:00",
+        "bytes": 86600,
+        "sha256": "a62a6d1acb3b115fec161c52fadf9b78c1b4ee10ff0ab806291ed55b2f1d0b88",
+        "headers": {
+          "content-type": "text/plain; charset=utf-8",
+          "date": "Mon, 02 Nov 2026 18:56:24 GMT"
+        },
+        "body_retained": false,
+        "provider_unadjusted_note_present": true,
+        "unadjusted_note_occurrences": 6,
+        "numerical_verification": false
+      },
+      {
+        "resource": "board_outcome",
+        "url": "https://www.infosys.com/investors/documents/exchange-filings/2026/outcome-board-meeting23oct2026.pdf",
+        "original_publication_at": null,
+        "first_available_at": null,
+        "http_status": 200,
+        "error": "ValueError"
+      }
+    ],
+    "expected_holiday_exclusions": [
+      "2026-09-14",
+      "2026-10-02",
+      "2026-10-20"
+    ],
+    "calendar": {
+      "expected_regular_sessions": 41,
+      "observed_labels": 41,
+      "duplicate_labels": 0,
+      "missing_expected_dates": [],
+      "unexpected_dates": [],
+      "date_label_sha256": "1b06dae1421b5e90416b379c96b4dfdc4bd1b57e17cb7086492751db3bd67002",
+      "exact_regular_session_set_match": true
+    },
+    "nse_reference": {
+      "endpoint": "https://mcp.nseindia.in/bhavcopy/cm/mcp",
+      "requests": [
+        {
+          "operation": "initialize",
+          "http_status": 200,
+          "received_at": "2026-11-02T19:00:52.451453+00:00",
+          "bytes": 761,
+          "sha256": "4b5b5bca2f330dde807c58c5fca498f85ae2e58840988e22ceb0bf03ca034d07"
+        },
+        {
+          "operation": "notifications/initialized",
+          "http_status": 202,
+          "received_at": "2026-11-02T19:00:52.506768+00:00"
+        },
+        {
+          "operation": "get_corporate_actions",
+          "http_status": 200,
+          "received_at": "2026-11-02T19:00:53.182409+00:00",
+          "bytes": 314,
+          "sha256": "3b78ef3f8ee70b949fe6e9313264823b33051523b776669f15f0e10712b50c17"
+        },
+        {
+          "operation": "get_stock_history",
+          "http_status": 200,
+          "received_at": "2026-11-02T19:00:53.306180+00:00",
+          "bytes": 12954,
+          "sha256": "89a792b14e63351ae82d9faea530ce0d8bbe326d47a059a287014b3eebd055c7"
+        }
+      ],
+      "source": "Official NSE bhavcopy MCP informational query; historical tool documents unadjusted prices",
+      "symbol_requested": "INFY",
+      "months": 2,
+      "end_date": "2026-10-30",
+      "rows_in_target_window": 41,
+      "values_retained": false
+    },
+    "field_comparison": {
+      "compared_sessions": 41,
+      "matching_field_counts": {
+        "open": 6,
+        "high": 8,
+        "low": 12,
+        "close": 41,
+        "volume": 0
+      },
+      "mismatching_field_counts": {
+        "open": 35,
+        "high": 33,
+        "low": 29,
+        "close": 0,
+        "volume": 41
+      },
+      "representative_sessions": [
+        {
+          "date": "2026-09-01",
+          "matching_fields": [
+            "close"
+          ],
+          "mismatching_fields": [
+            "open",
+            "high",
+            "low",
+            "volume"
+          ]
+        },
+        {
+          "date": "2026-10-23",
+          "matching_fields": [
+            "close"
+          ],
+          "mismatching_fields": [
+            "open",
+            "high",
+            "low",
+            "volume"
+          ]
+        },
+        {
+          "date": "2026-10-30",
+          "matching_fields": [
+            "close"
+          ],
+          "mismatching_fields": [
+            "open",
+            "high",
+            "low",
+            "volume"
+          ]
+        }
+      ],
+      "missing_reference_dates": [],
+      "numerical_values_retained": false
+    },
+    "new_breeze_http_requests": 3,
+    "breeze_history_receipt": {
+      "resource": "infy_daily",
+      "http_status": 200,
+      "received_at": "2026-11-02T19:01:23.513557+00:00",
+      "bytes": 6300,
+      "sha256": "656f41d1036565e5295651acee6938bf866998b2959f4e97b45f6900741dbc98",
+      "response_headers": {
+        "content-type": "application/json",
+        "date": "Mon, 02 Nov 2026 19:01:23 GMT"
+      }
+    },
+    "history_response_hash_matches_original_sample": true,
+    "volume_semantics": "NSE cash-equity reference is traded quantity/shares; Breeze precise units/session/sampling/adjustment convention remains unverified; 0/41 volume matches; no multiplier inferred",
+    "diagnostic_only_script_sha256": "23e00acb356c0b50a8543e4181ebe7393a9d759b3eac6528582a78a4cd7fb5e3",
+    "synthetic_comparison_checks_passed": 6,
+    "original_issuer_statements": {
+      "resource": "original_ifrs_inr_statements",
+      "url": "https://www.infosys.com/investors/reports-filings/quarterly-results/2026-2027/q2/documents/consolifrsinr-fy27-q2-and-h1-finstatement.pdf",
+      "publication_at": null,
+      "first_available_at": null,
+      "source_document_date": "2026-10-23",
+      "source_document_date_is_availability": false,
+      "body_retained": false,
+      "http_status": 200,
+      "headers": {
+        "content-type": "application/pdf",
+        "content-length": "750724",
+        "date": "Mon, 02 Nov 2026 19:02:44 GMT",
+        "last-modified": "Fri, 23 Oct 2026 10:51:39 GMT"
+      },
+      "received_at": "2026-11-02T19:02:44.849453+00:00",
+      "bytes": 1030221,
+      "sha256": "d47fe57f3907f8b99996b5000037aac3f2a42f11059a4a1d0e28b726f9f70ca3",
+      "original_pdf_acquired_transiently": true
+    },
+    "disclosure_facts": {
+      "results_announced_date": "2026-10-23",
+      "period_ended": "2026-09-30",
+      "interim_dividend_inr_per_equity_share": 26,
+      "dividend_record_date": "2026-11-03",
+      "source": "Official issuer results pages and indexed board-outcome disclosure; not a complete event corpus",
+      "publication_at": null,
+      "first_available_at": null,
+      "event_times_are_publication_times": false
+    },
+    "corporate_action_lookup": {
+      "returned": true,
+      "error_present": false,
+      "warning_present": false,
+      "action_count_or_complete_list_retained": false,
+      "coverage_complete": false
+    },
+    "qualification": "BLOCKED",
+    "price_volume_discrepancy_cause": "UNRESOLVED; no provider or strategy defect asserted",
+    "production_code_or_grants_changed": false,
+    "source_values_or_documents_persisted": false,
+    "database_access": false,
+    "publication_or_trading_enabled": false,
+    "fresh_validation": {
+      "focused_tests_passed": 300,
+      "failed": 0,
+      "skipped": 0,
+      "one_shot_synthetic_checks_passed": 6,
+      "contract_validators_passed": 3,
+      "syntax_links_json_whitespace": "passed",
+      "local_full_database_or_browser_run": false,
+      "new_exact_commit_ci_required": true
     }
   }
 }

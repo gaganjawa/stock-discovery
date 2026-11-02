@@ -248,3 +248,11 @@ GET-only transport, isolated SDK logging and durable local request budget added.
 No source/grant activation or database access; raw/volume/action/calendar,
 disclosure/time and retention requirements still block M1. M2/strategy/
 operational/publication/admission/trading gates unchanged. PR35 remains draft.
+
+3 November IST — STK-004/014 official-source qualification: `bda66eb` passed all
+four exact CI jobs. Actual labels match all 41 regular NSE calendar sessions;
+official SDK documents unadjusted history. Against actual NSE MCP EOD data,
+closes match 41/41, but open 6/41, high 8/41, low 12/41 and volume 0/41.
+[Full criterion matrix and source receipts](STK-004-014-breeze-evaluation.md#official-source-qualification-follow-up--3-november-2026-ist)
+keep M1 BLOCKED on these discrepancies, rights/retention, complete disclosures,
+settings and original clocks. No production behavior, grants or datasets changed.

@@ -43,6 +43,18 @@ semantics, complete closed sessions and retention compliance remain unverified.
 No accepted STK-014 input or source/grant activation resulted; only sanitized
 metadata was retained. This supersedes the initial missing-session observation.
 
+Further official-source qualification on 3 November IST verified **exact**
+membership of all 41 regular NSE sessions, using the official 2026 calendar and
+one necessary fresh sample whose body hash matches the original sample. The
+official SDK documents unadjusted history, but comparison with actual official
+NSE MCP EOD rows found matches of **open 6/41, high 8/41, low 12/41, close 41/41,
+volume 0/41**. This is a demonstrated data-qualification blocker, not grounds to
+adjust either source. Breeze share-volume semantics remain unverified. Original
+quarterly statements were retrieved transiently; specific dividend/record-date
+evidence is not complete event coverage or a publication timestamp. See the
+[per-criterion disposition](STK-004-014-breeze-evaluation.md#existing-stk-014-criteria--precise-disposition).
+Persistence and all recommendation/trading gates remain disabled.
+
 2 November follow-up: see the [source reconciliation and minimal owner handoff](PRODUCT-ACCEPTANCE-HANDOFF.md#m1--ownerprovider-handoff-one-infy-instrument).
 The saved scoped Upstox grant was located and inspected without credentials or
 provider values. Local configuration allows universe/calendar/prices/numerical
