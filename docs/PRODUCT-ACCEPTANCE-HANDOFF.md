@@ -59,6 +59,13 @@ genuine strategy/benchmark/forward and operational acceptance are separate.
 
 ## M1 — owner/provider handoff (one INFY instrument)
 
+Subsequent [Breeze evaluation](STK-004-014-breeze-evaluation.md): published free
+historical/backtest use verified; public master maps INFY's ISIN to **INFTEC**.
+No configured Breeze account/session found, so authenticated historical sampling
+remains blocked. A small offline read-only contract guard is tested; neither it
+nor the SDK/reference MCP is activated. Persistence/raw/volume/action semantics
+remain unverified; this candidate does not qualify an instrument.
+
 ### Reconciled permissions and exact reusable inputs — 2 November
 
 The empty public `grants.real.json` is an inactive default, not proof that the

@@ -42,7 +42,7 @@ Purchases, paid APIs, deployment and broker orders are outside current authoriza
 
 D3-02 validation: the isolated delivery snapshot passes 193 application/worker tests (52 new rights cases) and 7 script tests; 11 database cases skip locally without a test database. Schema consistency, whitespace and documentation-link checks pass. All real-source grants remain absent; no paid call or provider activation occurred. Existing app WIP is preserved. This delivery does not claim STK-004–007 real-use approvals are complete.
 
-D3-03 validation: 243 tests passed in the isolated delivery snapshot, including 39 new cases and 32 total database integration cases; 7 script tests passed. Migration upgrade, repeat upgrade, downgrade, re-upgrade and atomic failure rollback passed on 16 October 2026. PostgreSQL validation uses a disposable container, not the application database. No API key or paid service is used.
+D3-03 validation: 243 tests passed in the isolated delivery snapshot, including 40 new cases and 32 total database integration cases; 7 script tests passed. Migration upgrade, repeat upgrade, downgrade, re-upgrade and atomic failure rollback passed on 16 October 2026. PostgreSQL validation uses a disposable container, not the application database. No API key or paid service is used.
 
 D3-04 validation: the isolated delivery snapshot passes **279 application/worker tests**, including **36 new scheduler cases**, plus **7 script tests** and the frontend build. All **48 database integration tests** and migration upgrade/repeat/downgrade/re-upgrade/failure rollback pass; generated-schema consistency, legacy contract examples and whitespace checks pass. Runtime database grants are unchanged: automatic approval review blocked the proposed permission expansion. See the [scheduler handoff](D3-04-scheduling.md) before activating the restricted runtime worker. No key, paid API or deployment is used.
 
@@ -233,3 +233,9 @@ descriptive samples pass and stay adjusted. SEC reuse permission is published,
 but direct API/original requests return 403. Fresh 173 focused fixture tests pass.
 No production change justified; datasets/grants/fences/gates unchanged. Resolve
 technical access and missing qualifying inputs, not blanket permission letters.
+
+2 November — STK-004/014 [Breeze read-only feasibility](STK-004-014-breeze-evaluation.md):
+published free backtesting, official public master INFTEC/INFY/ISIN mapping and
+40 offline contract cases verified (246 focused regressions passed). No configured
+account/session or actual daily sample; no SDK/MCP install, source activation,
+dataset mutation or trading capability. M1 remains BLOCKED.

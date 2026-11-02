@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-01T21:41:52.662497+00:00",
-  "current_milestone": "M1 bounded official-source validation \u2014 descriptive Upstox verified; NSE sessions/SEC retrieval blocked; no qualified packet",
+  "updated_at": "2026-11-02T17:06:46.439091+00:00",
+  "current_milestone": "M1 Breeze evaluation \u2014 official INFTEC identity verified; authenticated account/session and daily sample unavailable",
   "branch": "feat/stk-004-014-m1-source-qualification",
   "worktree": "stk-074-grant-fences",
   "last_successful_commit": "63e2cfcc002f8b078974b7af6c6cba5aa2d2820d",
@@ -19,7 +19,10 @@
       "checks": "success"
     },
     "followup_ci": "must verify separately after delivery",
-    "merged": false
+    "merged": false,
+    "verified_head_before_breeze": "56400781f2206eefedae5454e899069b090cedc0",
+    "verified_ci_before_breeze": "https://github.com/gaganjawa/stock-discovery/actions/runs/41476931902",
+    "breeze_increment_ci": "must verify separately after delivery; earlier exact-commit success does not validate new code"
   },
   "completed_tests": {
     "fresh_upstox_qualification_mock_tests": 96,
@@ -55,9 +58,9 @@
     "Actual representative-source extraction quality not passed; human holdout unverified."
   ],
   "pending_changes": [
-    "Documentation-only actual official-source probes and permission/access distinctions for STK-004/014; no production correction justified. Prepare follow-up on existing PR35; preserved prior results remain historical."
+    "STK-004/014 Breeze evaluation: unregistered read-only probe contract, 40 synthetic cases, source/SDK/reference review and documentation; no live source activation. Required review and final exact-commit CI remain pending for this increment."
   ],
-  "next_action": "Resolve official NSE MCP session continuity (observed freshly issued session rejected) and identified SEC original/submissions access (HTTP403), without bypassing controls. Published terms suffice for covered informational reads/public filing reuse; no universal provider-reply prerequisite. Raw OHLCV/volume, complete calendar/action/disclosure coverage, original availability, effective settings, applicable storage/retention and production grant/fence checks still required. No extra synthetic features, source activation, models, holdout use or trading.",
+  "next_action": "Owner may identify an existing private Breeze configuration path with a registered app and current manually generated API session; do not request secrets in chat or implement TOTP login. Without it, stop at offline validation. Then review isolated official-SDK timeout/logging controls before a bounded NSE cash INFTEC 1day sample over >=30 verified closed sessions. Public historical/backtest use is covered; raw/volume/action/time semantics and persistence/retention still need applicable evidence. No ingestion, source/grant activation or trading without the established gates.",
   "milestones": [
     {
       "id": "M0",
@@ -107,7 +110,10 @@
         "docs/PRODUCT-ACCEPTANCE-HANDOFF.md",
         "docs/AI_RESEARCH_IMPLEMENTATION_PLAN.md",
         "docs/AI_RESEARCH_PROGRESS.json",
-        "docs/SIMPLE-BOARD.md"
+        "docs/SIMPLE-BOARD.md",
+        "worker/worker/providers/breeze_probe.py",
+        "worker/tests/test_breeze_probe.py",
+        "docs/STK-004-014-breeze-evaluation.md"
       ],
       "tests": {},
       "commit_sha": null,
@@ -117,7 +123,7 @@
         "Complete authorized filing/event/action/calendar coverage",
         "Exact retention/deletion and original archive/publication evidence"
       ],
-      "next_step": "Resolve official NSE MCP session continuity (observed freshly issued session rejected) and identified SEC original/submissions access (HTTP403), without bypassing controls. Published terms suffice for covered informational reads/public filing reuse; no universal provider-reply prerequisite. Raw OHLCV/volume, complete calendar/action/disclosure coverage, original availability, effective settings, applicable storage/retention and production grant/fence checks still required. No extra synthetic features, source activation, models, holdout use or trading."
+      "next_step": "Owner may identify an existing private Breeze configuration path with a registered app and current manually generated API session; do not request secrets in chat or implement TOTP login. Without it, stop at offline validation. Then review isolated official-SDK timeout/logging controls before a bounded NSE cash INFTEC 1day sample over >=30 verified closed sessions. Public historical/backtest use is covered; raw/volume/action/time semantics and persistence/retention still need applicable evidence. No ingestion, source/grant activation or trading without the established gates."
     },
     {
       "id": "M2",
@@ -1065,5 +1071,70 @@
     "models_or_training_run": false,
     "fully_qualified_infy_packet": false,
     "acceptance_gates_changed": false
+  },
+  "breeze_provider_evaluation": {
+    "review_date_ist": "2026-11-02",
+    "tickets": [
+      "STK-004",
+      "STK-014"
+    ],
+    "record": "docs/STK-004-014-breeze-evaluation.md",
+    "sdk_repository": "https://github.com/Idirect-Tech/Breeze-Python-SDK",
+    "sdk_commit": "4125106b48932ff99b45d593749dcec21c552558",
+    "sdk_version": "1.0.68",
+    "sdk_code_licence": "MIT; not a market-data licence",
+    "reference_repository": "https://github.com/aranjan/icici-mcp",
+    "reference_commit": "bc8c96e834b8c21322e799d1eba56da02aaf707a",
+    "reference_review": "Server/auth/CLI and all test modules read, not executed. Order tools and automated TOTP/re-login excluded. No ISIN guard around historical symbol; two test placeholders.",
+    "published_historical_backtest_permission": true,
+    "published_api_data_cost": "Free for eligible ICICIdirect customers; no account costs measured or purchases",
+    "published_api_quota": {
+      "per_minute": 100,
+      "per_day": 5000,
+      "account_aggregate_required": true
+    },
+    "persistence_retention_revocation_backup_terms": "UNVERIFIED; no unlimited storage inferred; unrelated WhatsApp/brokerage-offer terms not treated as a data licence",
+    "configuration_inspection": "Project/workspace env and existing source/config references, environment key names, standard Claude/Codex MCP references and conventional ICICI token cache; no values printed",
+    "usable_account_configuration_found": false,
+    "owner_account_absence_asserted": false,
+    "breeze_sdk_installed_or_imported": false,
+    "reference_mcp_installed_or_executed": false,
+    "public_master_probe": {
+      "url": "https://directlink.icicidirect.com/NewSecurityMaster/SecurityMaster.zip",
+      "http_status": 200,
+      "bounded_gets": 2,
+      "validated_resolver_fetched_at": "2026-11-02T17:02:03.145803+00:00",
+      "last_modified_header": "Mon, 02 Nov 2026 02:32:59 GMT",
+      "archive_sha256": "ffa9cd9822932700287d519a27fa61411bf006fb8f8f79432d88db2a72becf17",
+      "member": "NSEScripMaster.txt",
+      "isin": "INE009A01021",
+      "nse_symbol": "INFY",
+      "breeze_stock_code": "INFTEC",
+      "raw_archive_or_rows_retained": false,
+      "last_modified_is_first_availability": false
+    },
+    "authenticated_breeze_calls": 0,
+    "actual_historical_or_get_names_sdk_calls": 0,
+    "genuine_daily_sessions_measured": 0,
+    "genuine_OHLCV_comparison": "NOT TESTED; no accepted raw baseline or authenticated Breeze sample",
+    "adjustment_volume_corporate_action_clocks": "UNVERIFIED; no raw-v1 annotation",
+    "implementation": "Unregistered two-read probe contract uses existing Stream/Access grant and fence checks. No SDK import/login/order/persistence or production loader/API/worker registration; returns metadata only and always INSUFFICIENT_EVIDENCE.",
+    "runtime_dependency": "Before any future SDK use, review import-time downloads/log files, debug logging, missing HTTP timeout and account quotas; not certified by offline tests",
+    "fresh_validation": {
+      "new_breeze_cases": 40,
+      "focused_total_passed": 246,
+      "failed": 0,
+      "skipped": 0,
+      "elapsed_seconds": 1.15,
+      "mode": "Synthetic SDK fixtures plus existing qualification/source-rights/swing-research/Upstox/document/filing regressions; public master resolver separately exercised live",
+      "additional_regression": "Missing Error metadata is rejected rather than invented as original null."
+    },
+    "development_fixture_failures": "Initial fake Grant/UseRequest retention_days=0 rejected by existing positive-limit schema; tests corrected to 1, not production rights",
+    "missing_account_prerequisite": "Registered Breeze app with app key/secret and current manually generated API session through private local configuration; no password/TOTP secret or automatic login requested",
+    "source_grants_or_dataset_modified": false,
+    "production_ingestion_connected": false,
+    "orders_or_login_exposed": false,
+    "M1_accepted": false,
+    "M2_human_holdout_accepted": false
   }
 }

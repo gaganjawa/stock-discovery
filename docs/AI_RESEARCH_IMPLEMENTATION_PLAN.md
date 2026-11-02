@@ -199,3 +199,10 @@ returned 403. Fresh 173 focused fixture tests passed. No production defect or
 adapter correction justified; no retained dataset, source/grant or gate changed.
 Next: resolve actual protocol/access and raw/coverage gaps, using existing adapters;
 do not demand new permission replies for uses already covered by published terms.
+
+2 November STK-004/014 [Breeze candidate](STK-004-014-breeze-evaluation.md): public
+historical/backtest permission and ISIN-to-INFTEC mapping verified. No usable
+account/session configuration found; no authenticated probe or SDK installation.
+Only the demonstrated stock-code/read-only request-contract gap is implemented,
+with 40 new cases within 246 focused passing tests. Production ingestion is not
+connected; actual 30-session/raw/action/retention qualification remains blocked.
