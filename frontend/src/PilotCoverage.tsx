@@ -33,7 +33,7 @@ export function DailyNote({rows}:{rows:Row[]}) {
  return <div className="daily-note" data-testid="daily-coverage-note">
   <p><strong>Daily note · latest verified session {day(latest)}</strong> · prices current for {current.length} of {rows.length} · charts readable for {ready} of {rows.length}.</p>
   {stale.length>0&&<p data-testid="daily-note-stale">Prices behind: {stale.map(r=>`${name(r)} (last price ${day(r.refresh!.latest_bar)}${r.refresh!.missing_sessions?`, ${r.refresh!.missing_sessions} sessions missing`:''})`).join('; ')}.</p>}
-  {blocked.length>0&&<p data-testid="daily-note-blocked">Chart not readable: {blocked.map(r=>`${name(r)} (${explain(r.reasons[0]??'inputs_unavailable')})`).join('; ')}</p>}
+  {blocked.length>0&&<p data-testid="daily-note-blocked">Chart not readable: {Object.entries(blocked.reduce((g:Record<string,string[]>,r)=>{const k=explain(r.reasons[0]??'inputs_unavailable');(g[k]??=[]).push(name(r));return g},{})).map(([why,names])=>`${names.join(', ')} (${why})`).join('; ')}</p>}
   {!stale.length&&!blocked.length&&<p>Nothing missing.</p>}
  </div>
 }

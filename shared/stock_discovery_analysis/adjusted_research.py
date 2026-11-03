@@ -169,8 +169,9 @@ def boundary_reason(bars, sessions, cutoff):
         expected=[(at(r.data.opens_at),at(r.data.closes_at)) for r in sessions
                   if r.data.kind=='session' and first_close<=at(r.data.closes_at)<=at(cutoff)]
         through_last=[e for e in expected if e[1]<=last_close]
+        distinct=len({s for s,_ in expected})==len({e for _,e in expected})==len(expected)
         # Every stored candle matches a verified session; only later sessions lack prices.
-        if (len(intervals)==len(set(intervals))==len(through_last)==len(set(through_last))
+        if (distinct and len(intervals)==len(set(intervals))==len(through_last)==len(set(through_last))
                 and set(intervals)==set(through_last) and len(expected)>len(through_last)):
             return 'recent_sessions_not_ingested'
     return 'session_boundaries_unverified'

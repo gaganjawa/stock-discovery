@@ -192,3 +192,20 @@ def test_stale_prices_are_named_precisely_and_still_fail_closed():
     assert result.status=='UNAVAILABLE' and not result.metrics
     assert 'recent_sessions_not_ingested' in result.unavailable_reasons
     assert 'session_boundaries_unverified' not in result.unavailable_reasons
+
+
+@pytest.mark.parametrize('where',['matched','tail'])
+def test_competing_calendar_boundaries_are_never_called_stale(where):
+    def stale_with_competing(bars,sessions):
+        for i,r in enumerate(bars):
+            data=r.data.model_dump()
+            for field in ('starts_at','ends_at'):data[field]=(at(data[field])-timedelta(days=1)).strftime('%Y-%m-%dT%H:%M:%SZ')
+            bars[i]=Revision.model_validate({**r.model_dump(),'data':data})
+        first=bars[0].data
+        sessions.insert(0,sessions[0].model_copy(update={'revision_id':'session-earlier','data':SessionData(kind='session',calendar_version='invented',opens_at=first.starts_at,closes_at=first.ends_at)}))
+        base=sessions[5 if where=='matched' else -1].data
+        other=SessionData(kind='session',calendar_version='invented',opens_at=base.opens_at,closes_at=(at(base.closes_at)-timedelta(hours=1)).strftime('%Y-%m-%dT%H:%M:%SZ'))
+        sessions.append(sessions[0].model_copy(update={'revision_id':'session-competing','data':other}))
+    result=run(boundaries=stale_with_competing)
+    assert result.status=='UNAVAILABLE' and 'session_boundaries_unverified' in result.unavailable_reasons
+    assert 'recent_sessions_not_ingested' not in result.unavailable_reasons
