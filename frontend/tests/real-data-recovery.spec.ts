@@ -1,0 +1,20 @@
+import {test,expect} from '@playwright/test'
+// STK-074/079 scripted UI fixtures only; no real company, price or provider data.
+const status=(database:object,readiness:object)=>({blockers:['Database migration required: fixture'],publication_blockers:[],providers:[],models:{note:'Synthetic UI fixture'},scheduler:{prices:'blocked'},forward_paper:{reason:'blocked'},limitations:[],database,readiness})
+for(const width of [1280,390])test('unmigrated database is explained instead of a permission denial '+width,async({page})=>{
+ await page.setViewportSize({width,height:900})
+ await page.route('**/api/v1/session',r=>r.fulfill({json:{authenticated:true}}))
+ await page.route('**/api/v1/dashboard',r=>r.fulfill({json:{datasets:[],jobs:[]}}))
+ await page.route('**/v1/real-research/status',r=>r.fulfill({json:status({schema_version:'0013',required:'0015',state:'migration_required'},{level:'none',today:['Browse the synthetic workflows.'],next:['Level 1: permitted adjusted prices.']})}))
+ await page.route('**/v1/real-research/scan',r=>r.fulfill({status:503,json:{detail:'not configured'}}))
+ await page.route('**/v1/real-research/companies',r=>r.fulfill({json:{listing_ids:['NSE:TEST']}}))
+ await page.route('**/v1/real-research/companies/NSE%3ATEST*',r=>r.fulfill({status:503,json:{detail:'Database migration required: the retained schema is older than this application, so permitted reads fail closed. No data was read or changed.'}}))
+ await page.goto('/#real-research')
+ await expect(page.getByTestId('database-migration-required')).toContainText('0013 must be upgraded to 0015')
+ const banner=page.getByTestId('readiness-banner')
+ await expect(banner).toContainText('No real-data level reached')
+ await expect(banner).toContainText('Level 1: permitted adjusted prices.')
+ const company=page.getByRole('region',{name:'Observed company research'})
+ await expect(company.getByRole('alert')).toContainText('Database migration required')
+ await expect(page.getByText('Source permission denied')).toHaveCount(0)
+})

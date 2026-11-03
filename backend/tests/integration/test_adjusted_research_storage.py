@@ -13,12 +13,13 @@ from stock_discovery_analysis.revision_storage import Stream,ingest_next
 from worker.providers.upstox import observed_revision,RevisionPages
 from stock_discovery_contracts.rights import UseRequest
 
+EARLIER='2026-10-19T11:00:00Z'
 pytestmark=pytest.mark.skipif(not os.getenv('STK_TEST_DATABASE_URL'),reason='requires disposable PostgreSQL')
 @pytest.fixture
 def isolated_url():yield from _isolated_url.__wrapped__()
 
 
-def setup(conn,tmp_path,*,mixed=False,missing=False,boundary=None):
+def setup(conn,tmp_path,*,mixed=False,missing=False,boundary=None,rolling=None,approved=False):
     g=grant();path=tmp_path/'grants.json';path.write_text(json.dumps([g.model_dump(mode='json')]))
     def save(scope,rows,suffix=''):
         s=Stream(stream_id='adjusted-test-'+scope+suffix,source_id='upstox',account_ref='test',scope=scope)
@@ -27,7 +28,7 @@ def setup(conn,tmp_path,*,mixed=False,missing=False,boundary=None):
         r=ingest_next(conn,s,RevisionPages(tuple(rows)),load_grant=lambda:g,request=req,audit=lambda d:None,clock=lambda:NOW)
         assert not r['quarantined']
     listing='NSE:INE009A01021'
-    identity=observed_revision(InstrumentData(kind='instrument',issuer_id='TEST',symbol='TEST',isin='INE009A01021',series='EQ',status='active',lot_size=1,tick_size='0.05',effective_at='2026-01-01T00:00:00Z'),listing=listing,fetched=NOW)
+    identity=observed_revision(InstrumentData(kind='instrument',issuer_id='TEST',symbol='TEST',isin='INE009A01021',series='EQ',status='active',lot_size=1,tick_size='0.05',effective_at='2026-01-01T00:00:00Z'),listing=listing,fetched=EARLIER if rolling else NOW)
     save('universe',[identity]);sessions=[];bars=[]
     for i in range(30):
         day=datetime(2026,9,20,tzinfo=timezone.utc)+timedelta(days=i)
@@ -52,10 +53,20 @@ def setup(conn,tmp_path,*,mixed=False,missing=False,boundary=None):
             sessions.append(observed_revision(SessionData.model_validate(data),listing='NSE',fetched=NOW))
     save('calendar',sessions)
     if missing:bars.pop(10)
-    if mixed:
+    if rolling:
+        # Rolling daily refreshes: an earlier window, then a later overlapping re-fetch.
+        first=[observed_revision(b.data,listing=listing,fetched=EARLIER,parent=identity.revision_id) for b in bars[:20]]
+        save('prices',first,'A');later=[]
+        for i,b in enumerate(bars[10:],10):
+            data=b.data
+            if rolling=='conflict' and i==12:data=data.model_copy(update={'close':'104'})
+            later.append(observed_revision(data,listing=listing,fetched=NOW,parent=identity.revision_id,previous=first[i] if i<20 else None))
+        save('prices',later if rolling!='gap' else later[10:],'B')
+    elif mixed:
         save('prices',bars[:15],'A');save('prices',bars[15:],'B')
     else:save('prices',bars)
-    return ViewConfig(sources=SourceConfig(grant_file=str(path),retention_days=365),listing_ids=(listing,)),listing
+    return ViewConfig(sources=SourceConfig(grant_file=str(path),retention_days=365),listing_ids=(listing,),
+                      adjusted_multi_stream='approved_v1' if approved else 'disabled'),listing
 
 @pytest.mark.parametrize('mode',['valid','mixed','missing','historical','fenced','revoked','missing_grant'])
 def test_adjusted_company_read_and_denials(isolated_url,tmp_path,mode):
@@ -98,3 +109,25 @@ def test_company_rejects_invalid_daily_boundaries(isolated_url,tmp_path,boundary
         assert 'session_boundaries_unverified' in research['unavailable_reasons']
         assert not research['metrics'] and not result['price_series']
         assert not research['execution_qualified'] and not research['paper_admission_authorized']
+
+
+@pytest.mark.parametrize('rolling,approved,expected',[
+    ('agree',False,'batch_identity_missing_or_ambiguous'),('agree',True,None),
+    ('conflict',True,'adjusted_stream_conflict'),('gap',True,'adjusted_stream_continuity_unverified')])
+def test_owner_approved_multi_stream_rule(isolated_url,tmp_path,rolling,approved,expected):
+    with psycopg.connect(isolated_url,autocommit=True) as conn:
+        config,listing=setup(conn,tmp_path,rolling=rolling,approved=approved)
+        before=conn.execute('SELECT count(*) FROM discovery.revisions').fetchone()
+        result=company(conn,config,listing,clock=lambda:NOW);research=result['adjusted_research']
+        assert conn.execute('SELECT count(*) FROM discovery.revisions').fetchone()==before
+        assert not research['execution_qualified'] and not research['actionable'] and not research['paper_admission_authorized']
+        if expected:
+            assert research['status']=='UNAVAILABLE' and expected in research['unavailable_reasons']
+            assert not research['metrics'] and not result['price_series']
+            return
+        assert research['status']=='AVAILABLE_DESCRIPTIVE_ONLY'
+        assert research['batch']['identity_basis']=='verified_ingestion_pages_multi_stream_v1'
+        assert len(research['batch']['stream_batches'])==2 and 'owner_approved_multi_stream_rule_v1' in research['limitations']
+        clocks={o['acquired_at'] for o in research['observations']}
+        assert len(research['observations'])==30 and len(clocks)==2 and research['metrics']['sma20']=='105'
+        assert len(result['price_series'])==30

@@ -5,6 +5,27 @@ from stock_discovery_contracts.v2 import Timestamp
 from .auth import require_auth
 
 router=APIRouter(prefix='/v1/real-research',dependencies=[Depends(require_auth)])
+REQUIRED_SCHEMA='0015'
+MIGRATION_REQUIRED='Database migration required: the retained schema is older than this application, so permitted reads fail closed. No data was read or changed.'
+
+
+def schema_state():
+    """STK-074/079: distinguish an unmigrated database from a source permission denial."""
+    try:
+        import psycopg
+        from stock_discovery_analysis.runtime import setting
+        with psycopg.connect(setting('DATABASE_URL'),connect_timeout=5) as conn:
+            version=conn.execute('SELECT version_num FROM alembic_version').fetchone()[0]
+    except Exception:
+        return dict(schema_version=None,required=REQUIRED_SCHEMA,state='unavailable')
+    return dict(schema_version=version,required=REQUIRED_SCHEMA,state='current' if version==REQUIRED_SCHEMA else 'migration_required')
+
+
+def denied():
+    from fastapi import HTTPException
+    if schema_state()['state']=='migration_required':
+        return HTTPException(503,MIGRATION_REQUIRED)
+    return HTTPException(403,'Source permission denied')
 
 
 @router.get('/status')
@@ -31,7 +52,12 @@ def status():
                        research='blocked',events='blocked',outcomes='blocked'),
         forward_paper=dict(status='blocked',reason='Existing D3-10 admission gates remain in force; research cannot create a position.'),
         limitations=['No prices or financial values are substituted from synthetic data.',
-                     'No performance results exist for this feature.'])
+                     'No performance results exist for this feature.'],
+        database=schema_state(),
+        readiness=dict(level='none',today=['Browse the synthetic workflows; no permitted real company inputs are readable yet.'],
+            next=['Level 1: permitted adjusted prices, charts and descriptive indicators for configured companies.',
+                  'Level 2: qualified original prices, filings, approved policies and independent AI review.',
+                  'Level 3: measured forward paper outcomes for each horizon.']))
 
     import os
     if os.getenv('REAL_RESEARCH_VIEW_CONFIG'):
@@ -51,9 +77,16 @@ def status():
                     blockers=['corporate_action_and_volume_basis_unqualified'])
                 result['blockers'][0]='Observed company inputs are available; full research acceptance remains incomplete.'
                 result['models']['note']='Actual local research attempts and validation outcomes appear in company history. Model financial qualification remains pending.'
+            if detail['adjusted_research']['status']=='AVAILABLE_DESCRIPTIVE_ONLY':
+                result['readiness'].update(level='level_1_descriptive',today=[
+                    'Inspect permitted split/bonus-adjusted daily charts and descriptive indicators (SMA, EMA, ATR, breakout, support).',
+                    'Review stored financial facts, citations and local research history for configured companies.',
+                    'All three horizons remain research-only: no BUY decision, execution-grade P&L, backtest or paper position.'])
         except Exception:
             # Never leak a private configuration path, provider data or secret.
             result['blockers'][0]='Configured company inputs cannot currently be read with verified permissions.'
+    if result['database']['state']=='migration_required':
+        result['blockers'].insert(0,MIGRATION_REQUIRED)
     return result
 
 
@@ -91,7 +124,7 @@ def company_detail(listing:str,response:Response,conn=Depends(db),analysis:Liter
             response.headers['Cache-Control']='no-store'
             return research(conn,config,listing,cutoff_at=cutoff_at)
         return company(conn,config,listing)
-    except PermissionError:raise HTTPException(403,'Source permission denied') from None
+    except PermissionError:raise denied() from None
     except (ValueError,OSError,KeyError):raise HTTPException(503,'Real company inputs are unavailable or ambiguous') from None
 
 
@@ -100,5 +133,5 @@ def latest_scan(conn=Depends(db)):
     from fastapi import HTTPException
     from stock_discovery_analysis.real_scan_view import scan_view
     try:return scan_view(conn,view_config())
-    except PermissionError:raise HTTPException(403,'Source permission denied') from None
+    except PermissionError:raise denied() from None
     except (ValueError,OSError,KeyError):raise HTTPException(503,'Real scan inputs are unavailable') from None

@@ -20,3 +20,19 @@ def test_real_research_auth_and_no_synthetic_fallback(monkeypatch):
     assert body['scheduler']['outcomes']=='blocked'
     assert 'real_policies_required' in body['publication_blockers']
     assert 'cash_flow_reconciliation_unresolved' in body['publication_blockers']
+
+
+def test_unmigrated_database_is_not_reported_as_permission_denial(monkeypatch,tmp_path):
+    from app import real_research
+    monkeypatch.setenv('AUTH_TOKEN','x'*40)
+    monkeypatch.setenv('COOKIE_SECURE','false')
+    monkeypatch.delenv('REAL_RESEARCH_VIEW_CONFIG',raising=False)
+    monkeypatch.setattr(real_research,'schema_state',lambda:dict(schema_version='0013',required='0015',state='migration_required'))
+    c=TestClient(app);c.post('/api/v1/session',json={'token':'x'*40})
+    body=c.get('/v1/real-research/status').json()
+    assert body['database']['state']=='migration_required' and body['blockers'][0].startswith('Database migration required')
+    assert body['readiness']['level']=='none' and body['qualified'] is False
+    error=real_research.denied()
+    assert error.status_code==503 and error.detail.startswith('Database migration required')
+    monkeypatch.setattr(real_research,'schema_state',lambda:dict(schema_version='0015',required='0015',state='current'))
+    assert real_research.denied().status_code==403

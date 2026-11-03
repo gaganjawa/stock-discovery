@@ -23,8 +23,9 @@ class Observation(Strict):
 
 class Batch(Strict):
     identity: Text
-    identity_basis: Literal['verified_ingestion_pages'] = 'verified_ingestion_pages'
+    identity_basis: Literal['verified_ingestion_pages','verified_ingestion_pages_multi_stream_v1'] = 'verified_ingestion_pages'
     page_hashes: tuple[Text, ...] = Field(min_length=1)
+    stream_batches: tuple[Text, ...] = ()
     response_hash: Text | None = None
 
 
@@ -106,6 +107,45 @@ def verify_pages(bars, rows, stream, pages):
     return Batch(identity=digest([stream[0],hashes,[r.revision_id for r in records]]),page_hashes=tuple(hashes))
 
 
+MULTI_STREAM_REASONS={'adjusted_stream_conflict','adjusted_stream_continuity_unverified','batch_stream_limit'}
+
+
+def stream_evidence(conn, stream_id):
+    stream=conn.execute('SELECT stream_id,source_id,scope,complete FROM discovery.streams WHERE stream_id=%s',(stream_id,)).fetchone()
+    stored=conn.execute("SELECT payload,grant_id,grant_version FROM discovery.revisions WHERE stream_id=%s ORDER BY payload->'data'->>'ends_at',revision_id LIMIT 5001",(stream_id,)).fetchall()
+    pages=conn.execute('SELECT cursor_key,content_hash,next_cursor,complete,accepted,quarantined FROM discovery.pages WHERE stream_id=%s LIMIT 5001',(stream_id,)).fetchall()
+    return stream,stored,pages
+
+
+def verify_streams(conn, bars, stream_ids):
+    """Owner rule v1: every contributing stream is fully verified on its own; streams
+    are chained by observation clock, each later stream must overlap earlier ones,
+    and every overlapping candle must be identical. Any conflict fails closed."""
+    check(1<len(stream_ids)<=60, 'batch_stream_limit')
+    verified=[];grants={};by_id={}
+    for sid in stream_ids:
+        stream,stored,pages=stream_evidence(conn,sid)
+        records=tuple(Revision.model_validate(row[0]) for row in stored)
+        verified.append((at(records[0].fetched_at) if records else None,sid,verify_pages(records,stored,stream,pages),records))
+        grants.update({r.revision_id:(row[1],row[2]) for r,row in zip(records,stored)})
+        by_id.update({r.revision_id:r for r in records})
+    check(all(r.revision_id in by_id and by_id[r.revision_id].model_dump()==r.model_dump() for r in bars), 'batch_revision_set_mismatch')
+    verified.sort(key=lambda v:(v[0],v[1]))
+    seen={}
+    for position,(_,_,_,records) in enumerate(verified):
+        overlap=0
+        for r in records:
+            if r.logical_key in seen:
+                check(seen[r.logical_key]==r.data.model_dump(), 'adjusted_stream_conflict');overlap+=1
+            else:seen[r.logical_key]=r.data.model_dump()
+        # Without a shared candle, a provider re-adjustment between streams is undetectable.
+        check(position==0 or overlap>0, 'adjusted_stream_continuity_unverified')
+    return Batch(identity=digest(['multi_stream_v1',[[sid,batch.identity] for _,sid,batch,_ in verified],[r.revision_id for r in bars]]),
+                 identity_basis='verified_ingestion_pages_multi_stream_v1',
+                 page_hashes=tuple(h for _,_,batch,_ in verified for h in batch.page_hashes),
+                 stream_batches=tuple(batch.identity for _,_,batch,_ in verified)),grants
+
+
 def verified_session_boundaries(bars, sessions, cutoff):
     """Match actual daily candles one-to-one to known closed session intervals."""
     if len(bars)<30 or any(r.data.kind!='candle' or r.data.interval!='1d' for r in bars):
@@ -121,7 +161,7 @@ def verified_session_boundaries(bars, sessions, cutoff):
             and set(intervals)==set(expected))
 
 
-def describe(conn, listing, bars, sessions, readiness, cutoff, *, historical_request, provenance):
+def describe(conn, listing, bars, sessions, readiness, cutoff, *, historical_request, provenance, multi_stream=False):
     result=dict(instrument_id=listing,evaluated_at=cutoff,status='UNAVAILABLE',session_coverage={k:tuple(readiness[k]) if k in ('missing_sessions','unverified_bar_sessions') else readiness[k] for k in SessionCoverage.model_fields},
                 calendar_revision_ids=tuple(r.revision_id for r in sessions))
     reasons=[]; batch=None; observations=()
@@ -134,20 +174,21 @@ def describe(conn, listing, bars, sessions, readiness, cutoff, *, historical_req
         reasons.append('session_coverage_unavailable')
     if not reasons:
         rows=conn.execute('SELECT DISTINCT stream_id FROM discovery.revisions WHERE revision_id=ANY(%s)',([r.revision_id for r in bars],)).fetchall()
-        if len(rows)!=1:reasons.append('batch_identity_missing_or_ambiguous')
+        if len(rows)!=1 and not (multi_stream and len(rows)>1):reasons.append('batch_identity_missing_or_ambiguous')
         else:
-            sid=rows[0][0]
-            stream=conn.execute('SELECT stream_id,source_id,scope,complete FROM discovery.streams WHERE stream_id=%s',(sid,)).fetchone()
-            stored=conn.execute("SELECT payload,grant_id,grant_version FROM discovery.revisions WHERE stream_id=%s ORDER BY payload->'data'->>'ends_at',revision_id LIMIT 5001",(sid,)).fetchall()
-            pages=conn.execute('SELECT cursor_key,content_hash,next_cursor,complete,accepted,quarantined FROM discovery.pages WHERE stream_id=%s LIMIT 5001',(sid,)).fetchall()
             try:
-                batch=verify_pages(bars,stored,stream,pages)
+                if len(rows)==1:
+                    stream,stored,pages=stream_evidence(conn,rows[0][0])
+                    batch=verify_pages(bars,stored,stream,pages)
+                    grants={r.revision_id:(row[1],row[2]) for r,row in zip(bars,stored)}
+                else:
+                    batch,grants=verify_streams(conn,bars,sorted(r[0] for r in rows))
                 observations=tuple(Observation(revision_id=r.revision_id,source_version=r.source_revision,
                     instrument_revision_id=r.instrument_revision_id,published_at=r.published_at,available_at=r.available_at,
-                    acquired_at=r.fetched_at,observed_at=r.fetched_at,grant_id=row[1],grant_version=row[2]) for r,row in zip(bars,stored))
+                    acquired_at=r.fetched_at,observed_at=r.fetched_at,grant_id=grants[r.revision_id][0],grant_version=grants[r.revision_id][1]) for r in bars)
                 check(all(at(r.available_at)<=at(r.fetched_at)<=at(cutoff) for r in bars), 'future_adjusted_observation')
-            except ValueError:
-                reasons.append('batch_provenance_unverified');batch=None;observations=()
+            except (ValueError,KeyError) as error:
+                reasons.append(str(error) if str(error) in MULTI_STREAM_REASONS else 'batch_provenance_unverified');batch=None;observations=()
     metrics={}
     if not reasons:
         from .data import Candle
@@ -159,4 +200,6 @@ def describe(conn, listing, bars, sessions, readiness, cutoff, *, historical_req
         metrics={k:format(v,'f') if v is not None else None for k,v in features(series).items()}
         metrics['relative_volume20']=None
         result['status']='AVAILABLE_DESCRIPTIVE_ONLY'
+    if batch is not None and batch.stream_batches:
+        result['limitations']=AdjustedResearch.model_fields['limitations'].default+('owner_approved_multi_stream_rule_v1',)
     return AdjustedResearch(**result,batch=batch,observations=observations,metrics=metrics,unavailable_reasons=tuple(sorted(set(reasons))))

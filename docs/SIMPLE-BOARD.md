@@ -264,3 +264,12 @@ Source classified UNQUALIFIED for M1; closing-only remains a provisional researc
 candidate. Auction/sampling alone is not a proved explanation. No production
 change or stored source dataset. Exact `26ed321` CI passed all four jobs; PR35
 stays draft/unmerged, with new documentation CI required separately.
+
+3 November IST — STK-014/074/079 [takeover audit and real-data recovery](STK-079-takeover-audit.md):
+root cause of the INFY 403 reproduced (retained 0013 schema lacks 0015 read fences).
+Unmigrated databases now report "Database migration required" instead of a source denial,
+with a Level 1/2/3 readiness banner. Read-only owner audit and copy-only migration rehearsal
+scripts were added, plus an owner-gated multi-stream rule (`approved_v1`, off by default).
+The rule combines only individually verified rolling streams that overlap and agree, and fails
+closed on any conflict. Validated on invented rows only. The original database is unchanged, no
+provider call was made, and M1 remains BLOCKED pending the owner rehearsal and approvals.

@@ -3,7 +3,7 @@ import json
 from datetime import timezone
 from decimal import Decimal
 from pathlib import Path
-from typing import Annotated
+from typing import Annotated, Literal
 from pydantic import Field
 from stock_discovery_contracts.v2 import Strict, Text, Ref, Policy, Evidence, check, digest, at
 from .real_access import SourceConfig, source_access
@@ -25,6 +25,8 @@ class ViewConfig(Strict):
     pilot_scope_id: Text | None = None
     pilot_health_file: Text | None = None
     swing: SwingConfig | None = None
+    # STK-014/079: owner-approved combination of separately verified price streams.
+    adjusted_multi_stream: Literal['disabled','approved_v1'] = 'disabled'
 
 
 def eligible_revisions(conn,listing,cutoff,access):
@@ -119,7 +121,8 @@ def _company(conn,config,listing,*,clock,publication_inputs,cutoff_at,access):
     readiness=market_readiness(bars,sessions,cutoff)
     from .adjusted_research import describe
     adjusted_result=describe(conn,listing,bars,sessions,readiness,cutoff,
-        historical_request=cutoff_at is not None,provenance=provenance)
+        historical_request=cutoff_at is not None,provenance=provenance,
+        multi_stream=config.adjusted_multi_stream=='approved_v1')
     display_bars=[r for r in bars if r.source_id!='upstox' or adjusted_result.status=='AVAILABLE_DESCRIPTIVE_ONLY']
     observed_features=adjusted_result.metrics
     feature_reason=','.join(adjusted_result.unavailable_reasons) or 'descriptive_only_action_coverage_and_volume_basis_unqualified'
