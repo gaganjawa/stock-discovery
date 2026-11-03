@@ -86,10 +86,6 @@ def _company(conn,config,listing,*,clock,publication_inputs,cutoff_at,access):
     bars=sorted((r for r in records if r.data.kind=='candle'),key=lambda r:r.data.ends_at)
     check(len({r.data.ends_at for r in bars})==len(bars),'ambiguous_price_sources')
     check(len(bars)<=5000,'price_read_limit')
-    # Never chart mixed back-adjustment observation batches or legacy raw labels.
-    anchors=[r.fetched_at for r in bars if r.source_id=='upstox' and r.data.adjustment_basis=='split_bonus_adjusted']
-    latest_anchor=max(anchors) if anchors else None
-    bars=[r for r in bars if r.source_id!='upstox' or (r.data.adjustment_basis=='split_bonus_adjusted' and r.fetched_at==latest_anchor)]
     documents=[];facts=[];events=[];evidence_bundles=[]
     for r in records:
         if r.data.kind!='document':continue
@@ -119,24 +115,14 @@ def _company(conn,config,listing,*,clock,publication_inputs,cutoff_at,access):
         ends_at=at(r.data.ends_at).replace(tzinfo=timezone.utc),open=Decimal(r.data.open),high=Decimal(r.data.high),
         low=Decimal(r.data.low),close=Decimal(r.data.close),volume=r.data.volume,provenance=provenance(r)) for r in bars
         if r.data.adjustment_basis == 'raw' and r.source_id != 'upstox')
-    # Descriptive indicators may use one current provider-adjusted observation
-    # batch. They never become raw execution inputs or historical PIT evidence.
-    observed_features={}; feature_reason='no_coherent_adjusted_observation_batch'
-    adjusted=[r for r in bars if r.source_id=='upstox' and r.data.adjustment_basis=='split_bonus_adjusted']
-    if adjusted and len(adjusted)==len(bars) and len({r.fetched_at for r in adjusted})==1:
-        from .indicators import features
-        series=tuple(Candle(instrument_id=listing,starts_at=at(r.data.starts_at).replace(tzinfo=timezone.utc),
-            ends_at=at(r.data.ends_at).replace(tzinfo=timezone.utc),open=Decimal(r.data.open),high=Decimal(r.data.high),
-            low=Decimal(r.data.low),close=Decimal(r.data.close),volume=r.data.volume,provenance=provenance(r),
-            adjustment_version='upstox-split-bonus-observed:'+r.fetched_at) for r in adjusted)
-        observed_features={k:format(v,'f') if v is not None else None for k,v in features(series).items()}
-        observed_features['relative_volume20']=None  # Provider volume adjustment not established.
-        feature_reason='descriptive_only_action_coverage_and_volume_basis_unqualified'
     sessions=sorted((r for r in records if r.data.kind=='session'),key=lambda r:r.data.opens_at)
     readiness=market_readiness(bars,sessions,cutoff)
-    if any(day<=readiness['latest_bar'] for day in readiness['missing_sessions'] if readiness['latest_bar']) or readiness['unverified_bar_sessions'] or readiness['duplicate_bars']:
-        observed_features={k:None for k in observed_features}
-        feature_reason='descriptive_indicators_blocked_by_session_coverage'
+    from .adjusted_research import describe
+    adjusted_result=describe(conn,listing,bars,sessions,readiness,cutoff,
+        historical_request=cutoff_at is not None,provenance=provenance)
+    display_bars=[r for r in bars if r.source_id!='upstox' or adjusted_result.status=='AVAILABLE_DESCRIPTIVE_ONLY']
+    observed_features=adjusted_result.metrics
+    feature_reason=','.join(adjusted_result.unavailable_reasons) or 'descriptive_only_action_coverage_and_volume_basis_unqualified'
     calendar=None
     if sessions:
         check(len({r.data.opens_at for r in sessions})==len(sessions),'ambiguous_calendar_sources')
@@ -171,8 +157,9 @@ def _company(conn,config,listing,*,clock,publication_inputs,cutoff_at,access):
         cutoff_at=cutoff,actionable=False,qualified=False,price_series=[dict(time=r.data.ends_at[:10],
             open=r.data.open,high=r.data.high,low=r.data.low,close=r.data.close,volume=r.data.volume,
             revision_id=r.revision_id,fetched_at=r.fetched_at,adjustment_basis=r.data.adjustment_basis,
-            adjustment_observed_at=r.fetched_at,volume_adjustment='unverified' if r.source_id=='upstox' else 'raw') for r in bars],documents=documents,financial_facts=facts,
+            adjustment_observed_at=r.fetched_at,volume_adjustment='unverified' if r.source_id=='upstox' else 'raw') for r in display_bars],documents=documents,financial_facts=facts,
         events=events,quantitative=quantitative,market_readiness=readiness,
+        adjusted_research=adjusted_result.model_dump(mode="json"),
         policy_states={h:dict(ref=p.ref.model_dump(),status=p.status,approval_ref=p.approval_ref) for h,p in policies.items()},
         assessment_state='RESEARCH_ONLY_ASSESSMENT',paper_position_status='not_created',price_features=dict(metrics=observed_features,reason=feature_reason,actionable=False),analysis_history=history,recommendations=[],
         publication_status='not_published',prospective_status='not_configured',
