@@ -273,3 +273,8 @@ scripts were added, plus an owner-gated multi-stream rule (`approved_v1`, off by
 The rule combines only individually verified rolling streams that overlap and agree, and fails
 closed on any conflict. Validated on invented rows only. The original database is unchanged, no
 provider call was made, and M1 remains BLOCKED pending the owner rehearsal and approvals.
+
+3 November IST — STK-079 pilot coverage: `/v1/real-research/coverage` and a panel show each
+configured pilot company as readable, unavailable or denied, with plain reasons. These are
+descriptive only and never actionable. The migration state no longer discloses the schema
+version. One-page [owner approval sheet](STK-079-owner-approval-sheet.md), PROPOSED and not approved.

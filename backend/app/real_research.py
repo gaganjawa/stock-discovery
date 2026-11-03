@@ -17,8 +17,8 @@ def schema_state():
         with psycopg.connect(setting('DATABASE_URL'),connect_timeout=5) as conn:
             version=conn.execute('SELECT version_num FROM alembic_version').fetchone()[0]
     except Exception:
-        return dict(schema_version=None,required=REQUIRED_SCHEMA,state='unavailable')
-    return dict(schema_version=version,required=REQUIRED_SCHEMA,state='current' if version==REQUIRED_SCHEMA else 'migration_required')
+        return dict(state='unavailable')
+    return dict(state='current' if version==REQUIRED_SCHEMA else 'migration_required')
 
 
 def denied():
@@ -126,6 +126,32 @@ def company_detail(listing:str,response:Response,conn=Depends(db),analysis:Liter
         return company(conn,config,listing)
     except PermissionError:raise denied() from None
     except (ValueError,OSError,KeyError):raise HTTPException(503,'Real company inputs are unavailable or ambiguous') from None
+
+
+def coverage_row(conn,config,listing):
+    from stock_discovery_analysis.real_views import company
+    try:detail=company(conn,config,listing)
+    except PermissionError:return dict(listing_id=listing,state='denied',reasons=['source_permission_denied'])
+    except (ValueError,OSError,KeyError) as error:
+        code=str(error) if str(error).replace('_','').isalnum() else 'inputs_unavailable'
+        return dict(listing_id=listing,state='unavailable',reasons=[code])
+    research=detail['adjusted_research'];series=detail['price_series']
+    available=research['status']=='AVAILABLE_DESCRIPTIVE_ONLY'
+    return dict(listing_id=listing,symbol=detail['symbol'],state='available' if available else 'unavailable',
+        reasons=list(research['unavailable_reasons']),sessions=len(series),last_session=series[-1]['time'] if series else None,
+        indicators=sorted(k for k,v in (research['metrics'] or {}).items() if v is not None))
+
+
+@router.get('/coverage')
+def pilot_coverage(response:Response,conn=Depends(db)):
+    """STK-079: per-company Level 1 readiness for the configured pilot; descriptive only."""
+    from fastapi import HTTPException
+    config=view_config()
+    if schema_state()['state']=='migration_required':raise HTTPException(503,MIGRATION_REQUIRED)
+    response.headers['Cache-Control']='no-store'
+    rows=[coverage_row(conn,config,listing) for listing in config.listing_ids]
+    return dict(rows=rows,available=sum(r['state']=='available' for r in rows),total=len(rows),
+                actionable=False,qualified=False,execution_qualified=False)
 
 
 @router.get('/scan')
