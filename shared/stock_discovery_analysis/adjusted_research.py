@@ -106,11 +106,28 @@ def verify_pages(bars, rows, stream, pages):
     return Batch(identity=digest([stream[0],hashes,[r.revision_id for r in records]]),page_hashes=tuple(hashes))
 
 
+def verified_session_boundaries(bars, sessions, cutoff):
+    """Match actual daily candles one-to-one to known closed session intervals."""
+    if len(bars)<30 or any(r.data.kind!='candle' or r.data.interval!='1d' for r in bars):
+        return False
+    intervals=[(at(r.data.starts_at),at(r.data.ends_at)) for r in bars]
+    first_close=min(end for _,end in intervals)
+    expected=[(at(r.data.opens_at),at(r.data.closes_at)) for r in sessions
+              if r.data.kind=='session' and first_close<=at(r.data.closes_at)<=at(cutoff)]
+    # Do not collapse duplicate or competing calendar boundaries into a set.
+    return (len(intervals)==len(expected)==len(set(intervals))
+            and len({start for start,_ in expected})==len(expected)
+            and len({end for _,end in expected})==len(expected)
+            and set(intervals)==set(expected))
+
+
 def describe(conn, listing, bars, sessions, readiness, cutoff, *, historical_request, provenance):
     result=dict(instrument_id=listing,evaluated_at=cutoff,status='UNAVAILABLE',session_coverage={k:tuple(readiness[k]) if k in ('missing_sessions','unverified_bar_sessions') else readiness[k] for k in SessionCoverage.model_fields},
                 calendar_revision_ids=tuple(r.revision_id for r in sessions))
     reasons=[]; batch=None; observations=()
     if historical_request:reasons.append('historical_adjusted_research_not_supported')
+    if not verified_session_boundaries(bars,sessions,cutoff):
+        reasons.append('session_boundaries_unverified')
     if not bars or any(r.source_id!='upstox' or r.data.adjustment_basis!='split_bonus_adjusted' for r in bars):
         reasons.append('adjusted_observations_unavailable')
     if not readiness['warmup_complete'] or readiness['missing_sessions'] or readiness['unverified_bar_sessions'] or readiness['duplicate_bars'] or not readiness['latest_session_present']:

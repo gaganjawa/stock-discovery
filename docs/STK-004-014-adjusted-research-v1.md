@@ -78,3 +78,10 @@ supported). Calendar completeness is still not inferred from session rows.
 Operational limitation: rolling daily updates in separate streams cannot satisfy
 the full-window single-batch proof and remain unavailable. Multi-batch merging is
 not supported; batch identity is not relaxed.
+
+Daily boundary validation uses the actual candle and calendar revisions, not
+readiness flags alone. Each candle must exactly match one known closed session's
+open and close, with at least 30 distinct daily intervals and no missing, extra,
+duplicate or ambiguous intervals in the observed window. Failure returns
+`session_boundaries_unverified`, with metrics and adjusted charts withheld.
+No timestamps are normalized and calendar exhaustiveness remains unattested.

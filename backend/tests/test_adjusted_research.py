@@ -6,7 +6,7 @@ import pytest
 from stock_discovery_analysis.adjusted_research import verify_pages,describe,AdjustedResearch
 from stock_discovery_analysis.revision_fixtures import fixture_records
 from stock_discovery_analysis.revision_storage import Page
-from stock_discovery_analysis.revisions import Revision
+from stock_discovery_analysis.revisions import Revision,SessionData
 from stock_discovery_analysis.data import Provenance
 from stock_discovery_contracts.v2 import digest,at
 
@@ -40,14 +40,22 @@ class Conn:
         if 'FROM discovery.pages' in sql:return Result(self.pages)
         return Result(self.rows)
 
-def run(*,historical=False,change=None):
+def run(*,historical=False,change=None,boundaries=None):
     bars,rows,stream,pages=fixture()
+    sessions=[Revision.model_validate({**r.model_dump(),'revision_id':'session-'+r.revision_id,
+        'listing_id':'NSE','instrument_revision_id':None,
+        'data':SessionData(kind='session',calendar_version='invented',opens_at=r.data.starts_at,closes_at=r.data.ends_at)}) for r in bars]
+    if boundaries:
+        boundaries(bars,sessions)
+        rows=[(r.model_dump(mode='json'),'test-grant','1') for r in bars]
+        page=Page(cursor=None,next_cursor=None,complete=True,records=tuple(r[0] for r in rows))
+        pages=[('',digest(page.model_dump(mode='json')),None,True,len(rows),0)]
     readiness=dict(required_sessions=30,observed_bars=30,missing_sessions=[],unverified_bar_sessions=[],latest_session_present=True,
                    duplicate_bars=False,warmup_complete=True,calendar_completeness='not_attested_by_session_list')
     if change:change(bars,rows,pages,readiness)
     def prov(r):
         return Provenance(r.source_id,r.source_revision,*(at(t).replace(tzinfo=timezone.utc) for t in (r.published_at,r.available_at,r.fetched_at)),'observed_live')
-    return describe(Conn(rows,stream,pages),'NSE:TEST',bars,[],readiness,NOW,historical_request=historical,provenance=prov)
+    return describe(Conn(rows,stream,pages),'NSE:TEST',bars,sessions,readiness,NOW,historical_request=historical,provenance=prov)
 
 def test_verified_pages_support_descriptive_prices_only():
     r=run();assert r.status=='AVAILABLE_DESCRIPTIVE_ONLY'
@@ -146,3 +154,26 @@ def test_nullable_indicators_and_unavailable_result_round_trip():
     assert result==AdjustedResearch.model_validate_json(result.model_dump_json())
     result=run(historical=True)
     assert result==AdjustedResearch.model_validate_json(result.model_dump_json())
+
+@pytest.mark.parametrize('mode',['late_open','early_open','early_close','late_close','missing','extra','duplicate','ambiguous'])
+def test_actual_session_boundaries_override_optimistic_readiness(mode):
+    def change(bars,sessions):
+        if mode in ('late_open','early_open','early_close','late_close'):
+            field='starts_at' if 'open' in mode else 'ends_at'
+            hours=1 if mode.startswith('late') else -1
+            data=bars[0].data.model_dump()
+            data[field]=(at(data[field])+timedelta(hours=hours)).strftime('%Y-%m-%dT%H:%M:%SZ')
+            bars[0]=Revision.model_validate({**bars[0].model_dump(),'data':data})
+        elif mode=='missing':sessions.pop(10)
+        elif mode=='extra':
+            raw=bars[0].model_dump();raw['revision_id']='extra'
+            for field in ('starts_at','ends_at'):
+                raw['data'][field]=(at(raw['data'][field])-timedelta(days=1)).strftime('%Y-%m-%dT%H:%M:%SZ')
+            bars.append(Revision.model_validate(raw))
+        elif mode=='duplicate':sessions.append(sessions[0])
+        else:
+            data=sessions[0].data.model_dump();data['opens_at']='2026-09-20T05:00:00Z'
+            sessions.append(sessions[0].model_copy(update={'data':SessionData.model_validate(data)}))
+    result=run(boundaries=change)
+    assert result.status=='UNAVAILABLE' and not result.metrics
+    assert 'session_boundaries_unverified' in result.unavailable_reasons

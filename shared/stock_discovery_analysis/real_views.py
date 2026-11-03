@@ -124,7 +124,8 @@ def _company(conn,config,listing,*,clock,publication_inputs,cutoff_at,access):
     observed_features=adjusted_result.metrics
     feature_reason=','.join(adjusted_result.unavailable_reasons) or 'descriptive_only_action_coverage_and_volume_basis_unqualified'
     calendar=None
-    if sessions:
+    if sessions and not (any(r.source_id=='upstox' for r in bars)
+                         and 'session_boundaries_unverified' in adjusted_result.unavailable_reasons):
         check(len({r.data.opens_at for r in sessions})==len(sessions),'ambiguous_calendar_sources')
         calendar=Calendar(version=digest([r.revision_id for r in sessions]),
             sessions=tuple(Session(at(r.data.opens_at).replace(tzinfo=timezone.utc),at(r.data.closes_at).replace(tzinfo=timezone.utc)) for r in sessions),

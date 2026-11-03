@@ -18,7 +18,7 @@ pytestmark=pytest.mark.skipif(not os.getenv('STK_TEST_DATABASE_URL'),reason='req
 def isolated_url():yield from _isolated_url.__wrapped__()
 
 
-def setup(conn,tmp_path,*,mixed=False,missing=False):
+def setup(conn,tmp_path,*,mixed=False,missing=False,boundary=None):
     g=grant();path=tmp_path/'grants.json';path.write_text(json.dumps([g.model_dump(mode='json')]))
     def save(scope,rows,suffix=''):
         s=Stream(stream_id='adjusted-test-'+scope+suffix,source_id='upstox',account_ref='test',scope=scope)
@@ -34,6 +34,22 @@ def setup(conn,tmp_path,*,mixed=False,missing=False):
         stamp=lambda h:day.replace(hour=h).strftime('%Y-%m-%dT%H:%M:%SZ')
         sessions.append(observed_revision(SessionData(kind='session',calendar_version='invented',opens_at=stamp(4),closes_at=stamp(10)),listing='NSE',fetched=NOW))
         bars.append(observed_revision(CandleData(kind='candle',interval='1d',starts_at=stamp(4),ends_at=stamp(10),open='100',high='110',low='90',close='105',volume=1000,adjustment_basis='split_bonus_adjusted'),listing=listing,fetched=NOW,parent=identity.revision_id))
+    if boundary:
+        if boundary in ('late_open','early_open','early_close','late_close'):
+            data=bars[0].data.model_dump();field='starts_at' if 'open' in boundary else 'ends_at'
+            stamp=datetime.fromisoformat(data[field].replace('Z','+00:00'))+timedelta(hours=1 if boundary.startswith('late') else -1)
+            data[field]=stamp.strftime('%Y-%m-%dT%H:%M:%SZ')
+            bars[0]=observed_revision(CandleData.model_validate(data),listing=listing,fetched=NOW,parent=identity.revision_id)
+        elif boundary=='missing':sessions.pop(10)
+        elif boundary=='extra':
+            data=bars[0].data.model_dump()
+            for field in ('starts_at','ends_at'):
+                data[field]=(datetime.fromisoformat(data[field].replace('Z','+00:00'))-timedelta(days=1)).strftime('%Y-%m-%dT%H:%M:%SZ')
+            bars.insert(0,observed_revision(CandleData.model_validate(data),listing=listing,fetched=NOW,parent=identity.revision_id))
+        else:
+            data=sessions[0].data.model_dump();data['calendar_version']='competing-calendar'
+            if boundary=='ambiguous':data['opens_at']='2026-09-20T05:00:00Z'
+            sessions.append(observed_revision(SessionData.model_validate(data),listing='NSE',fetched=NOW))
     save('calendar',sessions)
     if missing:bars.pop(10)
     if mixed:
@@ -71,3 +87,14 @@ def test_adjusted_company_read_and_denials(isolated_url,tmp_path,mode):
             assert len(research['observations'])==30 and research['metrics']['sma20']=='105'
             assert company(conn,config,listing,clock=lambda:NOW)['adjusted_research']==research
         else:assert not research['metrics'] and not result['price_series']
+
+@pytest.mark.parametrize('boundary',['late_open','early_open','early_close','late_close','missing','extra','duplicate','ambiguous'])
+def test_company_rejects_invalid_daily_boundaries(isolated_url,tmp_path,boundary):
+    with psycopg.connect(isolated_url,autocommit=True) as conn:
+        config,listing=setup(conn,tmp_path,boundary=boundary)
+        result=company(conn,config,listing,clock=lambda:NOW)
+        research=result['adjusted_research']
+        assert research['status']=='UNAVAILABLE'
+        assert 'session_boundaries_unverified' in research['unavailable_reasons']
+        assert not research['metrics'] and not result['price_series']
+        assert not research['execution_qualified'] and not research['paper_admission_authorized']
