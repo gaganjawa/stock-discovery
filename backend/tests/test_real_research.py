@@ -71,13 +71,13 @@ def test_pilot_coverage_reports_each_company_without_inventing_prices(monkeypatc
     # STK-079: one unexpected failure stays on its own row; private text never leaves the server.
     assert e==dict(listing_id='NSE:E',state='unavailable',reasons=['unexpected_runtimeerror'])
     assert f==dict(listing_id='NSE:F',state='unavailable',reasons=['inputs_unavailable'])
-    assert (details['B'].status_code,details['B'].json()['detail'])==(403,'Source permission denied: grant_expired')
+    assert (details['B'].status_code,details['B'].json()['detail'])==(403,'Source permission denied')
     assert (details['C'].status_code,details['C'].json()['detail'])==(503,'Real company inputs are unavailable: real_identity_missing_or_ambiguous')
     assert details['F'].json()['detail']=='Real company inputs are unavailable: inputs_unavailable'
     assert a==dict(listing_id='NSE:A',symbol='A',state='available',reasons=[],sessions=2,last_session='2026-10-23',indicators=['sma20'],
                    refresh=dict(current=False,latest_session='2026-10-24T10:00:00Z',latest_bar='2026-10-23T10:00:00Z',missing_sessions=1))
     assert d['refresh']==dict(current=False,latest_session=None,latest_bar=None,missing_sessions=0)
-    assert b==dict(listing_id='NSE:B',state='denied',reasons=['source_permission_denied','grant_expired'])
+    assert b==dict(listing_id='NSE:B',state='denied',reasons=['source_permission_denied'])
     assert cc['state']=='unavailable' and cc['reasons']==['real_identity_missing_or_ambiguous']
     assert d['state']=='unavailable' and d['reasons']==['batch_identity_missing_or_ambiguous'] and d['sessions']==0
     assert blocked.status_code==503 and blocked.json()['detail'].startswith('Database migration required')

@@ -111,7 +111,7 @@ test('companies are named by symbol and unreadable reasons are explained',async(
   {listing_id:'NSE:UIZ',state:'unavailable',reasons:['unexpected_runtimeerror']}]}}))
  await page.route('**/v1/real-research/companies',r=>r.fulfill({json:{listing_ids:['NSE:INE009A01021','NSE:UIZ']}}))
  await page.route('**/v1/real-research/companies/*',r=>r.request().url().includes('UIZ')
-  ?r.fulfill({status:403,json:{detail:'Source permission denied: real_read_access_denied'}})
+  ?r.fulfill({status:403,json:{detail:'Source permission denied'}})
   :r.fulfill({status:503,json:{detail:'Real company inputs are unavailable: real_identity_missing_or_ambiguous'}}))
  await page.goto('/#real-research')
  const company=page.getByRole('region',{name:'Observed company research'})
@@ -120,7 +120,7 @@ test('companies are named by symbol and unreadable reasons are explained',async(
  await expect(page.getByTestId('company-isin-hint')).toBeVisible()
  await expect(company.getByRole('alert')).toHaveText('Real company inputs are unavailable: No single verified company identity is stored. (real_identity_missing_or_ambiguous)')
  await select.selectOption('NSE:UIZ')
- await expect(company.getByRole('alert')).toHaveText('Source permission denied: The saved grant does not allow this read (expired, revoked, retention or scope). (real_read_access_denied)')
+ await expect(company.getByRole('alert')).toHaveText('Source permission denied')
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true)
 })
 

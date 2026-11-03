@@ -32,8 +32,8 @@ def denied(error=None):
     from fastapi import HTTPException
     if schema_state()['state']=='migration_required':
         return HTTPException(503,MIGRATION_REQUIRED)
-    code=safe_code(error) if error is not None else 'inputs_unavailable'
-    return HTTPException(403,'Source permission denied' if code=='inputs_unavailable' else 'Source permission denied: '+code)
+    # The fenced-read contract keeps denials generic; reasons stay in the private audit.
+    return HTTPException(403,'Source permission denied')
 
 
 @router.get('/status')
@@ -142,9 +142,7 @@ def company_detail(listing:str,response:Response,conn=Depends(db),analysis:Liter
 def coverage_row(conn,config,listing):
     from stock_discovery_analysis.real_views import company
     try:detail=company(conn,config,listing)
-    except PermissionError as error:
-        code=safe_code(error)
-        return dict(listing_id=listing,state='denied',reasons=['source_permission_denied']+([code] if code!='inputs_unavailable' else []))
+    except PermissionError:return dict(listing_id=listing,state='denied',reasons=['source_permission_denied'])
     except (ValueError,OSError,KeyError) as error:
         return dict(listing_id=listing,state='unavailable',reasons=[safe_code(error)])
     except Exception as error:
