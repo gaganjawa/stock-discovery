@@ -98,3 +98,28 @@ test('starting rules show versions, decisions and what each still waits on',asyn
  await expect(page.getByTestId('owner-rule-23')).toContainText('your decision, benchmark data')
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true)
 })
+
+test('companies are named by symbol and unreadable reasons are explained',async({page})=>{
+ await page.setViewportSize({width:390,height:844})
+ await page.route('**/api/v1/session',r=>r.fulfill({json:{authenticated:true}}))
+ await page.route('**/api/v1/dashboard',r=>r.fulfill({json:{datasets:[],jobs:[]}}))
+ await page.route('**/v1/real-research/status',r=>r.fulfill({json:status({state:'current'},{level:'none',today:[],next:[]})}))
+ await page.route('**/v1/real-research/scan',r=>r.fulfill({status:503,json:{detail:'not configured'}}))
+ await page.route('**/v1/real-research/rules',r=>r.fulfill({json:RULES}))
+ await page.route('**/v1/real-research/coverage',r=>r.fulfill({json:{available:0,total:2,rows:[
+  {listing_id:'NSE:INE009A01021',symbol:'INFY',state:'unavailable',reasons:['batch_identity_missing_or_ambiguous'],sessions:0,last_session:null,indicators:[]},
+  {listing_id:'NSE:UIZ',state:'unavailable',reasons:['unexpected_runtimeerror']}]}}))
+ await page.route('**/v1/real-research/companies',r=>r.fulfill({json:{listing_ids:['NSE:INE009A01021','NSE:UIZ']}}))
+ await page.route('**/v1/real-research/companies/*',r=>r.request().url().includes('UIZ')
+  ?r.fulfill({status:403,json:{detail:'Source permission denied: real_read_access_denied'}})
+  :r.fulfill({status:503,json:{detail:'Real company inputs are unavailable: real_identity_missing_or_ambiguous'}}))
+ await page.goto('/#real-research')
+ const company=page.getByRole('region',{name:'Observed company research'})
+ const select=company.locator('select').first()
+ await expect(select.locator('option').first()).toHaveText('INFY · NSE:INE009A01021')
+ await expect(page.getByTestId('company-isin-hint')).toBeVisible()
+ await expect(company.getByRole('alert')).toHaveText('Real company inputs are unavailable: No single verified company identity is stored. (real_identity_missing_or_ambiguous)')
+ await select.selectOption('NSE:UIZ')
+ await expect(company.getByRole('alert')).toHaveText('Source permission denied: real_read_access_denied')
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true)
+})

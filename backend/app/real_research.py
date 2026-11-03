@@ -21,11 +21,19 @@ def schema_state():
     return dict(state='current' if version==REQUIRED_SCHEMA else 'migration_required')
 
 
-def denied():
+def safe_code(error):
+    """STK-079: only internal snake_case reason codes leave the server; anything else is generic."""
+    import re
+    text=str(error)
+    return text if re.fullmatch(r'[a-z][a-z0-9_]{2,80}',text) else 'inputs_unavailable'
+
+
+def denied(error=None):
     from fastapi import HTTPException
     if schema_state()['state']=='migration_required':
         return HTTPException(503,MIGRATION_REQUIRED)
-    return HTTPException(403,'Source permission denied')
+    code=safe_code(error) if error is not None else 'inputs_unavailable'
+    return HTTPException(403,'Source permission denied' if code=='inputs_unavailable' else 'Source permission denied: '+code)
 
 
 @router.get('/status')
@@ -124,17 +132,22 @@ def company_detail(listing:str,response:Response,conn=Depends(db),analysis:Liter
             response.headers['Cache-Control']='no-store'
             return research(conn,config,listing,cutoff_at=cutoff_at)
         return company(conn,config,listing)
-    except PermissionError:raise denied() from None
-    except (ValueError,OSError,KeyError):raise HTTPException(503,'Real company inputs are unavailable or ambiguous') from None
+    except PermissionError as error:raise denied(error) from None
+    except (ValueError,OSError,KeyError) as error:
+        raise HTTPException(503,'Real company inputs are unavailable: '+safe_code(error)) from None
 
 
 def coverage_row(conn,config,listing):
     from stock_discovery_analysis.real_views import company
     try:detail=company(conn,config,listing)
-    except PermissionError:return dict(listing_id=listing,state='denied',reasons=['source_permission_denied'])
+    except PermissionError as error:
+        code=safe_code(error)
+        return dict(listing_id=listing,state='denied',reasons=['source_permission_denied']+([code] if code!='inputs_unavailable' else []))
     except (ValueError,OSError,KeyError) as error:
-        code=str(error) if str(error).replace('_','').isalnum() else 'inputs_unavailable'
-        return dict(listing_id=listing,state='unavailable',reasons=[code])
+        return dict(listing_id=listing,state='unavailable',reasons=[safe_code(error)])
+    except Exception as error:
+        # One unreadable company must not hide the others; only the class name is reported.
+        return dict(listing_id=listing,state='unavailable',reasons=['unexpected_'+type(error).__name__.lower()[:40]])
     research=detail['adjusted_research'];series=detail['price_series'];readiness=detail.get('market_readiness') or {}
     available=research['status']=='AVAILABLE_DESCRIPTIVE_ONLY'
     return dict(listing_id=listing,symbol=detail['symbol'],state='available' if available else 'unavailable',
@@ -175,5 +188,5 @@ def latest_scan(conn=Depends(db)):
     from fastapi import HTTPException
     from stock_discovery_analysis.real_scan_view import scan_view
     try:return scan_view(conn,view_config())
-    except PermissionError:raise denied() from None
-    except (ValueError,OSError,KeyError):raise HTTPException(503,'Real scan inputs are unavailable') from None
+    except PermissionError as error:raise denied(error) from None
+    except (ValueError,OSError,KeyError) as error:raise HTTPException(503,'Real scan inputs are unavailable: '+safe_code(error)) from None

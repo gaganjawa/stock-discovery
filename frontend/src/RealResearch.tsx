@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react'
 type Status = {status:string;providers:{id:string;adapter:string;coverage:string;blockers:string[]}[];blockers:string[];publication_blockers:string[];limitations:string[];models:{note:string};scheduler:{prices:string};forward_paper:{reason:string};database?:{state:string};readiness?:{level:string;today:string[];next:string[]}}
 const horizons=[['swing','Swing · 2–10 trading days'],['short_term','Short-term · 1–3 months'],['long_term','Long-term · 1–5 years']]
 export function RealResearch({onUnauthorized}:{onUnauthorized:()=>void}) {
- const [data,setData]=useState<Status|null>(null),[error,setError]=useState(''),[horizon,setHorizon]=useState('swing'),[selected,setSelected]=useState('')
+ const [data,setData]=useState<Status|null>(null),[error,setError]=useState(''),[horizon,setHorizon]=useState('swing'),[selected,setSelected]=useState(''),[labels,setLabels]=useState<Record<string,string>>({})
  useEffect(()=>{let active=true
   fetch('/v1/real-research/status').then(async response=>{if(response.status===401)onUnauthorized();if(!response.ok)throw new Error('Real research status is unavailable.');return response.json()}).then(result=>{if(active)setData(result)}).catch(e=>{if(active)setError(e.message)})
   return()=>{active=false}
@@ -19,9 +19,9 @@ export function RealResearch({onUnauthorized}:{onUnauthorized:()=>void}) {
    {data.readiness&&<section className="panel" aria-label="What you can do today" data-testid="readiness-banner"><h3>What you can do today · {data.readiness.level==='level_1_descriptive'?'Level 1 descriptive research':'No real-data level reached'}</h3><ul>{data.readiness.today.map(s=><li key={s}>{s}</li>)}</ul><h4>Becomes possible after remaining milestones</h4><ol>{data.readiness.next.map(s=><li key={s}>{s}</li>)}</ol></section>}
   </>}
   <div role="tablist" aria-label="Real investment horizon" className="horizon-tabs">{horizons.map(([id,name])=><button key={id} role="tab" aria-selected={horizon===id} onClick={()=>setHorizon(id)}>{name}</button>)}</div>
-  <PilotCoverage onSelect={setSelected} onUnauthorized={onUnauthorized}/>
+  <PilotCoverage onSelect={setSelected} onUnauthorized={onUnauthorized} onLabels={setLabels}/>
   <RealScan horizon={horizon} onSelect={setSelected} onUnauthorized={onUnauthorized}/>
-  <RealCompany selected={selected} horizon={horizon} onUnauthorized={onUnauthorized}/>
+  <RealCompany selected={selected} labels={labels} horizon={horizon} onUnauthorized={onUnauthorized}/>
   {error&&<p role="alert" className="error">{error}</p>}
   {!data&&!error&&<p role="status">Checking real research availability…</p>}
   {data&&<>

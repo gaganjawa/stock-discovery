@@ -14,6 +14,11 @@ const REASONS:Record<string,string>={
  adjusted_stream_continuity_unverified:'Downloads do not overlap, so continuity cannot be proven.',
  batch_provenance_unverified:'Stored page hashes or provenance do not verify.',
  ambiguous_price_sources:'More than one price source claims the same day.',
+ real_read_access_denied:'The saved grant does not allow this read (expired, revoked, retention or scope).',
+ source_revoked:'The saved grant has been revoked.',
+ ambiguous_source_grant:'More than one saved grant matches this source account.',
+ listing_not_configured:'This company is not in the view configuration.',
+ inputs_unavailable:'Stored inputs could not be read; check the API terminal for request_failed lines.',
 }
 export const explain=(code:string)=>REASONS[code]??code.replaceAll('_',' ')
 
@@ -32,11 +37,11 @@ export function DailyNote({rows}:{rows:Row[]}) {
  </div>
 }
 
-export function PilotCoverage({onSelect,onUnauthorized}:{onSelect:(id:string)=>void;onUnauthorized:()=>void}) {
+export function PilotCoverage({onSelect,onUnauthorized,onLabels}:{onSelect:(id:string)=>void;onUnauthorized:()=>void;onLabels?:(labels:Record<string,string>)=>void}) {
  const [rows,setRows]=useState<Row[]|null>(null),[error,setError]=useState('')
  useEffect(()=>{let active=true
   fetch('/v1/real-research/coverage').then(async r=>{if(r.status===401)onUnauthorized();if(!r.ok){const d=await r.json().catch(()=>({}));throw Error(typeof d.detail==='string'?d.detail:'Pilot coverage is unavailable.')}return r.json()})
-   .then(d=>{if(active)setRows(d.rows)}).catch(e=>{if(active)setError(e.message)})
+   .then(d=>{if(active){setRows(d.rows);onLabels?.(Object.fromEntries(d.rows.filter((r:Row)=>r.symbol).map((r:Row)=>[r.listing_id,r.symbol!])))}}).catch(e=>{if(active)setError(e.message)})
   return()=>{active=false}},[])
  if(error)return <p role="alert" className="error" data-testid="pilot-coverage-error">{error}</p>
  if(!rows)return <p role="status">Checking pilot coverage…</p>
@@ -44,9 +49,9 @@ export function PilotCoverage({onSelect,onUnauthorized}:{onSelect:(id:string)=>v
  return <section className="panel" aria-label="Pilot coverage" data-testid="pilot-coverage">
   <h3>Pilot coverage · {ready} of {rows.length} companies readable (descriptive only)</h3>
   <DailyNote rows={rows}/>
-  <table><thead><tr><th>Company</th><th>State</th><th>Detail</th><th></th></tr></thead><tbody>{rows.map(r=><tr key={r.listing_id} data-testid={`pilot-row-${r.listing_id}`}>
+  <div className="table-wrap"><table><thead><tr><th>Company</th><th>State</th><th>Detail</th><th></th></tr></thead><tbody>{rows.map(r=><tr key={r.listing_id} data-testid={`pilot-row-${r.listing_id}`}>
    <td>{r.symbol??r.listing_id}</td><td>{r.state==='available'?'Chart and indicators':r.state==='denied'?'Permission denied':'Unavailable'}</td>
    <td>{r.state==='available'?`${r.sessions} sessions to ${r.last_session} · ${r.indicators?.join(', ')}`:<ul>{r.reasons.map(c=><li key={c} title={c}>{explain(c)}</li>)}</ul>}</td>
-   <td><button onClick={()=>onSelect(r.listing_id)} data-testid={`pilot-open-${r.listing_id}`}>Open</button></td></tr>)}</tbody></table>
+   <td><button onClick={()=>onSelect(r.listing_id)} data-testid={`pilot-open-${r.listing_id}`}>Open</button></td></tr>)}</tbody></table></div>
  </section>
 }

@@ -1,3 +1,4 @@
+import { explain } from './PilotCoverage'
 import {RealSwing} from './RealSwing'
 import {CombinedResearch} from './CombinedResearch'
 import {FactualResearch,type FactualReport} from './FactualResearch'
@@ -7,6 +8,9 @@ type Citation={evidence_id:string;revision_id:string;source_url:string;locator:s
 type Published={citations?:Citation[];research?:{assessment?:{claims:{text:string;citations:Citation[]}[];missing:string[]}}|null;recommendation:{recommendation_id:string;action:string;decision_available_at:string;information_cutoff_at:string;horizon:{profile:string};rationale:{summary:string};missing_evidence:{requirement:string;reason:string}[]};tracking:{status:string;outcomes:{outcome_id:string;status:string;reason:string;evaluated_at:string}[]}|null}
 type ResearchResult={factual_report?:FactualReport;status:string;action?:string;reason?:string;provider_called?:boolean;validator?:{version?:string;deterministic:string;semantic:string;judge?:string};assessment?:{action:string;claims:{text:string;citations:Citation[]}[];missing:string[]}}
 type ResearchHistory={run_id:string;cutoff_at:string;horizon:string;result:ResearchResult;citations:Citation[]}
+// STK-079: show the server's reason code in plain language so the owner can act on it.
+const unavailable=(detail:unknown)=>{const code=String(detail??'').match(/^Real company inputs are unavailable: ([a-z0-9_]+)$/)?.[1]
+ return code?`Real company inputs are unavailable: ${explain(code)} (${code})`:'Real company inputs are unavailable'}
 type CorporateAction={action_id:string;type:string;effective_at:string;cash_per_share:string|null;observed_at:string}
 // STK-079: ex-dates as observed; split/bonus/rights ratios are labels, never adjustment arithmetic.
 const istDate=(t:string)=>new Date(Date.parse(t)+19800000).toISOString().slice(0,10)
@@ -19,16 +23,16 @@ function CorporateActions({actions}:{actions?:CorporateAction[]}) {
  </section>
 }
 type Company={market_readiness?:{session_freshness?:string;required_sessions:number;observed_bars:number;latest_verified_session:string|null;latest_bar:string|null;missing_sessions:string[];unverified_bar_sessions:string[];warmup_complete:boolean;latest_session_present:boolean;price_age_seconds:number|null;within_proposed_age:boolean;volume_basis:string;corporate_actions:string;historical_pit:string};policy_states?:Record<string,{ref:{id:string;version:string};status:string;approval_ref:string|null}>;price_features?:{metrics:Record<string,string|null>;reason:string};recommendations?:Published[];publication_blockers?:string[];symbol:string;isin:string;cutoff_at:string;price_series:{time:string;open:string;high:string;low:string;close:string;volume:number;adjustment_basis?:string}[];financial_facts:{fact_id:string;metric:string;value:string|null;unit:string;period_start_at?:string;period_end_at:string;period_kind?:string;scope:string;source_locator:string|null}[];documents:{title:string;revision:{data:{url:string};published_at:string}}[];events:{claim_id:string;statement:string;status:string}[];corporate_actions?:CorporateAction[];quantitative:Record<string,{action:string;reasons:string[];metrics:Record<string,string|null>}>;analysis_history:ResearchHistory[];limitations:string[]}
-export function RealCompany({horizon,onUnauthorized,selected}:{horizon:string;onUnauthorized:()=>void;selected?:string}){
+export function RealCompany({horizon,onUnauthorized,selected,labels={}}:{horizon:string;onUnauthorized:()=>void;selected?:string;labels?:Record<string,string>}){
  const [list,setList]=useState<string[]>([]),[listing,setListing]=useState(''),[data,setData]=useState<Company|null>(null),[error,setError]=useState(''),[version,setVersion]=useState(0)
  useEffect(()=>{const c=new AbortController();fetch('/v1/real-research/companies',{signal:c.signal}).then(async r=>{if(r.status===401)onUnauthorized();if(r.status===503)return {listing_ids:[]};if(!r.ok)throw Error('Company configuration is unavailable');return r.json()}).then(d=>{setList(d.listing_ids);setListing(d.listing_ids[0]??'')}).catch(e=>{if(e.name!=='AbortError')setError('Company configuration is unavailable')});return()=>c.abort()},[])
- useEffect(()=>{setData(null);setError('');if(!listing)return;const c=new AbortController();fetch('/v1/real-research/companies/'+encodeURIComponent(listing),{signal:c.signal}).then(async r=>{if(r.status===401)onUnauthorized();if(!r.ok){const d=await r.json().catch(()=>({}));throw Error(r.status===403?'Source permission denied':r.status===503&&String(d.detail??'').startsWith('Database migration required')?d.detail:'Real company inputs are unavailable')}return r.json()}).then(d=>{if(!c.signal.aborted)setData(d)}).catch(e=>{if(e.name!=='AbortError')setError(e.message)});return()=>c.abort()},[listing,version])
+ useEffect(()=>{setData(null);setError('');if(!listing)return;const c=new AbortController();fetch('/v1/real-research/companies/'+encodeURIComponent(listing),{signal:c.signal}).then(async r=>{if(r.status===401)onUnauthorized();if(!r.ok){const d=await r.json().catch(()=>({}));throw Error(r.status===403?String(d.detail??'Source permission denied'):r.status===503&&String(d.detail??'').startsWith('Database migration required')?d.detail:unavailable(d.detail))}return r.json()}).then(d=>{if(!c.signal.aborted)setData(d)}).catch(e=>{if(e.name!=='AbortError')setError(e.message)});return()=>c.abort()},[listing,version])
  useEffect(()=>{if(selected&&list.includes(selected))setListing(selected)},[selected,list])
  if(!list.length&&!error)return null
  const quant=data?.quantitative[horizon]
  const factual=data?.analysis_history.find(r=>r.horizon===horizon&&r.result.factual_report)
  return <section className="panel" aria-label="Observed company research"><h3>Observed company evidence</h3>
- <label>Company <select value={listing} onChange={e=>setListing(e.target.value)}>{list.map(s=><option key={s}>{s}</option>)}</select></label>
+ <label>Company <select value={listing} onChange={e=>setListing(e.target.value)}>{list.map(s=><option key={s} value={s}>{labels[s]?`${labels[s]} · ${s}`:s}</option>)}</select></label>{list.some(s=>!labels[s])&&<small className="hint" data-testid="company-isin-hint">Companies are listed by NSE ISIN until their stored identity is readable (INFY is NSE:INE009A01021).</small>}
  <button onClick={()=>{setData(null);setVersion(version+1)}}>Refresh real evidence</button>
  {error&&<p role="alert">{error}</p>}
  {listing&&horizon==='swing'&&<RealSwing key={listing+':'+version} listing={listing} onUnauthorized={onUnauthorized}/>}
