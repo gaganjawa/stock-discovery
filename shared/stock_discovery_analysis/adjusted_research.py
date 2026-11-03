@@ -161,13 +161,28 @@ def verified_session_boundaries(bars, sessions, cutoff):
             and set(intervals)==set(expected))
 
 
+def boundary_reason(bars, sessions, cutoff):
+    """STK-079: name the failure precisely; both outcomes keep research unavailable."""
+    if len(bars)>=30 and all(r.data.kind=='candle' and r.data.interval=='1d' for r in bars):
+        intervals=[(at(r.data.starts_at),at(r.data.ends_at)) for r in bars]
+        first_close=min(end for _,end in intervals);last_close=max(end for _,end in intervals)
+        expected=[(at(r.data.opens_at),at(r.data.closes_at)) for r in sessions
+                  if r.data.kind=='session' and first_close<=at(r.data.closes_at)<=at(cutoff)]
+        through_last=[e for e in expected if e[1]<=last_close]
+        # Every stored candle matches a verified session; only later sessions lack prices.
+        if (len(intervals)==len(set(intervals))==len(through_last)==len(set(through_last))
+                and set(intervals)==set(through_last) and len(expected)>len(through_last)):
+            return 'recent_sessions_not_ingested'
+    return 'session_boundaries_unverified'
+
+
 def describe(conn, listing, bars, sessions, readiness, cutoff, *, historical_request, provenance, multi_stream=False):
     result=dict(instrument_id=listing,evaluated_at=cutoff,status='UNAVAILABLE',session_coverage={k:tuple(readiness[k]) if k in ('missing_sessions','unverified_bar_sessions') else readiness[k] for k in SessionCoverage.model_fields},
                 calendar_revision_ids=tuple(r.revision_id for r in sessions))
     reasons=[]; batch=None; observations=()
     if historical_request:reasons.append('historical_adjusted_research_not_supported')
     if not verified_session_boundaries(bars,sessions,cutoff):
-        reasons.append('session_boundaries_unverified')
+        reasons.append(boundary_reason(bars,sessions,cutoff))
     if not bars or any(r.source_id!='upstox' or r.data.adjustment_basis!='split_bonus_adjusted' for r in bars):
         reasons.append('adjusted_observations_unavailable')
     if not readiness['warmup_complete'] or readiness['missing_sessions'] or readiness['unverified_bar_sessions'] or readiness['duplicate_bars'] or not readiness['latest_session_present']:

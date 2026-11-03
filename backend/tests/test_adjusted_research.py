@@ -177,3 +177,18 @@ def test_actual_session_boundaries_override_optimistic_readiness(mode):
     result=run(boundaries=change)
     assert result.status=='UNAVAILABLE' and not result.metrics
     assert 'session_boundaries_unverified' in result.unavailable_reasons
+
+
+def test_stale_prices_are_named_precisely_and_still_fail_closed():
+    """STK-079: every stored candle matches a session, but later verified sessions have no price."""
+    def stale(bars,sessions):
+        for i,r in enumerate(bars):
+            data=r.data.model_dump()
+            for field in ('starts_at','ends_at'):data[field]=(at(data[field])-timedelta(days=1)).strftime('%Y-%m-%dT%H:%M:%SZ')
+            bars[i]=Revision.model_validate({**r.model_dump(),'data':data})
+        first=bars[0].data
+        sessions.insert(0,sessions[0].model_copy(update={'revision_id':'session-earlier','data':SessionData(kind='session',calendar_version='invented',opens_at=first.starts_at,closes_at=first.ends_at)}))
+    result=run(boundaries=stale)
+    assert result.status=='UNAVAILABLE' and not result.metrics
+    assert 'recent_sessions_not_ingested' in result.unavailable_reasons
+    assert 'session_boundaries_unverified' not in result.unavailable_reasons
