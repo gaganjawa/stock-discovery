@@ -6,6 +6,7 @@ for(const width of [1280,390])test('combined research separates findings and cle
  await page.route('**/api/v1/dashboard',r=>r.fulfill({json:{datasets:[],jobs:[]}}))
  await page.route('**/v1/real-research/status',r=>r.fulfill({json:{blockers:[],publication_blockers:[],providers:[],models:{note:'Synthetic UI fixture'},scheduler:{prices:'blocked'},forward_paper:{reason:'blocked'},limitations:[]}}))
  await page.route('**/v1/real-research/scan',r=>r.fulfill({status:503,json:{detail:'not configured'}}))
+ await page.route('**/v1/real-research/coverage',r=>r.fulfill({status:503,json:{detail:'not configured'}}))
  await page.route('**/v1/real-research/companies',r=>r.fulfill({json:{listing_ids:['NSE:TEST']}}))
  let denied=false;let calls=0
  await page.route('**/v1/real-research/companies/NSE%3ATEST*',r=>{
