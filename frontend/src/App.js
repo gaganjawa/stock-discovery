@@ -1,6 +1,15 @@
 import "@/App.css";
 import { ASSESSMENT, BLOCKERS, TIMELINE, DECISIONS, NEXT, TODAY, CHANGES, RUNBOOK } from "@/handoff";
 
+const ASSESSMENT_COLS = ["Area", "State", "Basis"];
+const BLOCKER_COLS = ["#", "Blocker", "Fix alone?", "Your action", "Cost / time"];
+const TIMELINE_COLS = ["Milestone", "Target", "Gate"];
+const TODAY_COLS = ["When", "You can"];
+const SHOTS = [
+  ["before_migration.png", "Simulated retained 0013 database: the app now says “Database migration required” instead of “Source permission denied”."],
+  ["chart.png", "Same data after the copy-only rehearsal, with the multi-stream rule approved: chart and descriptive indicators return."],
+];
+
 const Section = ({ id, kicker, title, children }) => (
   <section className="sec" id={id} data-testid={`section-${id}`}>
     <p className="kicker">{kicker}</p>
@@ -29,15 +38,13 @@ const Hero = () => (
 const Table = ({ rows, cols, testid }) => (
   <div className="tablewrap"><table data-testid={testid}>
     <thead><tr>{cols.map(c => <th key={c}>{c}</th>)}</tr></thead>
-    <tbody>{rows.map((r, i) => <tr key={i}>{r.map((c, j) => <td key={j}>{c}</td>)}</tr>)}</tbody>
+    <tbody>{rows.map(r => <tr key={r[0]}>{r.map((c, j) => <td key={cols[j]}>{c}</td>)}</tr>)}</tbody>
   </table></div>
 );
 
 const Shots = () => (
   <div className="shots">
-    {[["before_migration.png", "Simulated retained 0013 database: the app now says “Database migration required” instead of “Source permission denied”."],
-      ["chart.png", "Same data after the copy-only rehearsal, with the multi-stream rule approved: chart and descriptive indicators return."]]
-      .map(([src, cap]) => (
+    {SHOTS.map(([src, cap]) => (
         <figure key={src} data-testid={`shot-${src.split(".")[0]}`}>
           <a href={`/handoff/${src}`} target="_blank" rel="noreferrer"><img src={`/handoff/${src}`} alt={cap} /></a>
           <figcaption>{cap} Invented rows only.</figcaption>
@@ -56,7 +63,7 @@ export default function App() {
     <main className="page">
       <Hero />
       <Section id="assessment" kicker="A" title="Where the project actually stands">
-        <Table testid="assessment-table" cols={["Area", "State", "Basis"]} rows={ASSESSMENT} />
+        <Table testid="assessment-table" cols={ASSESSMENT_COLS} rows={ASSESSMENT} />
       </Section>
       <Section id="changes" kicker="Delivered" title="What this branch adds">
         <List items={CHANGES} testid="changes-list" />
@@ -68,13 +75,13 @@ export default function App() {
         <List items={RUNBOOK} ordered testid="runbook-list" />
       </Section>
       <Section id="blockers" kicker="C" title="Critical blockers">
-        <Table testid="blockers-table" cols={["#", "Blocker", "Fix alone?", "Your action", "Cost / time"]} rows={BLOCKERS} />
+        <Table testid="blockers-table" cols={BLOCKER_COLS} rows={BLOCKERS} />
       </Section>
       <Section id="timeline" kicker="D" title="Realistic timeline">
-        <Table testid="timeline-table" cols={["Milestone", "Target", "Gate"]} rows={TIMELINE} />
+        <Table testid="timeline-table" cols={TIMELINE_COLS} rows={TIMELINE} />
       </Section>
       <Section id="today" kicker="What you can do" title="Today, and after each milestone">
-        <Table testid="today-table" cols={["When", "You can"]} rows={TODAY} />
+        <Table testid="today-table" cols={TODAY_COLS} rows={TODAY} />
       </Section>
       <Section id="decisions" kicker="Approvals" title="Decisions only you can make">
         <List items={DECISIONS} ordered testid="decisions-list" />

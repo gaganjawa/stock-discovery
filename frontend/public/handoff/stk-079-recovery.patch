@@ -1,0 +1,1069 @@
+From f94e885d414598f4fd4a61a4800c7f3792a281f2 Mon Sep 17 00:00:00 2001
+From: E1 takeover <e1@local.invalid>
+Date: Tue, 3 Nov 2026 15:51:42 +0000
+Subject: [PATCH] STK-014 STK-074 STK-079: real-data recovery path for retained
+ 0013 database
+
+- Report 'Database migration required' (503) instead of a source denial when the
+  schema is behind 0015; genuine denials stay 403. Status adds database/readiness.
+- Owner-gated adjusted multi-stream rule approved_v1 (default disabled): each
+  stream verified independently, chained overlaps required, any conflict fails closed.
+- Read-only retained-database audit and copy-only migration rehearsal scripts.
+- Tests: 0013->0015 legacy recovery, multi-stream agree/conflict/gap, API, Playwright.
+- Takeover audit and critical-path plan.
+---
+ backend/app/real_research.py                  |  39 +++-
+ .../test_adjusted_research_storage.py         |  41 +++-
+ .../integration/test_legacy_real_recovery.py  | 113 ++++++++++
+ backend/tests/test_real_research.py           |  16 ++
+ docs/SIMPLE-BOARD.md                          |   9 +
+ docs/STK-079-takeover-audit.md                | 195 ++++++++++++++++++
+ frontend/src/RealCompany.tsx                  |   2 +-
+ frontend/src/RealResearch.tsx                 |   6 +-
+ frontend/tests/real-data-recovery.spec.ts     |  20 ++
+ scripts/audit_retained_database.py            | 164 +++++++++++++++
+ scripts/rehearse_migration.py                 | 111 ++++++++++
+ scripts/test_rehearse_migration.py            |  17 ++
+ .../adjusted_research.py                      |  65 +++++-
+ shared/stock_discovery_analysis/real_views.py |   7 +-
+ 14 files changed, 783 insertions(+), 22 deletions(-)
+ create mode 100644 backend/tests/integration/test_legacy_real_recovery.py
+ create mode 100644 docs/STK-079-takeover-audit.md
+ create mode 100644 frontend/tests/real-data-recovery.spec.ts
+ create mode 100644 scripts/audit_retained_database.py
+ create mode 100644 scripts/rehearse_migration.py
+ create mode 100644 scripts/test_rehearse_migration.py
+
+diff --git a/backend/app/real_research.py b/backend/app/real_research.py
+index 2b99b76..1efcfd2 100644
+--- a/backend/app/real_research.py
++++ b/backend/app/real_research.py
+@@ -5,6 +5,27 @@ from stock_discovery_contracts.v2 import Timestamp
+ from .auth import require_auth
+ 
+ router=APIRouter(prefix='/v1/real-research',dependencies=[Depends(require_auth)])
++REQUIRED_SCHEMA='0015'
++MIGRATION_REQUIRED='Database migration required: the retained schema is older than this application, so permitted reads fail closed. No data was read or changed.'
++
++
++def schema_state():
++    """STK-074/079: distinguish an unmigrated database from a source permission denial."""
++    try:
++        import psycopg
++        from stock_discovery_analysis.runtime import setting
++        with psycopg.connect(setting('DATABASE_URL'),connect_timeout=5) as conn:
++            version=conn.execute('SELECT version_num FROM alembic_version').fetchone()[0]
++    except Exception:
++        return dict(schema_version=None,required=REQUIRED_SCHEMA,state='unavailable')
++    return dict(schema_version=version,required=REQUIRED_SCHEMA,state='current' if version==REQUIRED_SCHEMA else 'migration_required')
++
++
++def denied():
++    from fastapi import HTTPException
++    if schema_state()['state']=='migration_required':
++        return HTTPException(503,MIGRATION_REQUIRED)
++    return HTTPException(403,'Source permission denied')
+ 
+ 
+ @router.get('/status')
+@@ -31,7 +52,12 @@ def status():
+                        research='blocked',events='blocked',outcomes='blocked'),
+         forward_paper=dict(status='blocked',reason='Existing D3-10 admission gates remain in force; research cannot create a position.'),
+         limitations=['No prices or financial values are substituted from synthetic data.',
+-                     'No performance results exist for this feature.'])
++                     'No performance results exist for this feature.'],
++        database=schema_state(),
++        readiness=dict(level='none',today=['Browse the synthetic workflows; no permitted real company inputs are readable yet.'],
++            next=['Level 1: permitted adjusted prices, charts and descriptive indicators for configured companies.',
++                  'Level 2: qualified original prices, filings, approved policies and independent AI review.',
++                  'Level 3: measured forward paper outcomes for each horizon.']))
+ 
+     import os
+     if os.getenv('REAL_RESEARCH_VIEW_CONFIG'):
+@@ -51,9 +77,16 @@ def status():
+                     blockers=['corporate_action_and_volume_basis_unqualified'])
+                 result['blockers'][0]='Observed company inputs are available; full research acceptance remains incomplete.'
+                 result['models']['note']='Actual local research attempts and validation outcomes appear in company history. Model financial qualification remains pending.'
++            if detail['adjusted_research']['status']=='AVAILABLE_DESCRIPTIVE_ONLY':
++                result['readiness'].update(level='level_1_descriptive',today=[
++                    'Inspect permitted split/bonus-adjusted daily charts and descriptive indicators (SMA, EMA, ATR, breakout, support).',
++                    'Review stored financial facts, citations and local research history for configured companies.',
++                    'All three horizons remain research-only: no BUY decision, execution-grade P&L, backtest or paper position.'])
+         except Exception:
+             # Never leak a private configuration path, provider data or secret.
+             result['blockers'][0]='Configured company inputs cannot currently be read with verified permissions.'
++    if result['database']['state']=='migration_required':
++        result['blockers'].insert(0,MIGRATION_REQUIRED)
+     return result
+ 
+ 
+@@ -91,7 +124,7 @@ def company_detail(listing:str,response:Response,conn=Depends(db),analysis:Liter
+             response.headers['Cache-Control']='no-store'
+             return research(conn,config,listing,cutoff_at=cutoff_at)
+         return company(conn,config,listing)
+-    except PermissionError:raise HTTPException(403,'Source permission denied') from None
++    except PermissionError:raise denied() from None
+     except (ValueError,OSError,KeyError):raise HTTPException(503,'Real company inputs are unavailable or ambiguous') from None
+ 
+ 
+@@ -100,5 +133,5 @@ def latest_scan(conn=Depends(db)):
+     from fastapi import HTTPException
+     from stock_discovery_analysis.real_scan_view import scan_view
+     try:return scan_view(conn,view_config())
+-    except PermissionError:raise HTTPException(403,'Source permission denied') from None
++    except PermissionError:raise denied() from None
+     except (ValueError,OSError,KeyError):raise HTTPException(503,'Real scan inputs are unavailable') from None
+diff --git a/backend/tests/integration/test_adjusted_research_storage.py b/backend/tests/integration/test_adjusted_research_storage.py
+index 2a40f23..a081754 100644
+--- a/backend/tests/integration/test_adjusted_research_storage.py
++++ b/backend/tests/integration/test_adjusted_research_storage.py
+@@ -13,12 +13,13 @@ from stock_discovery_analysis.revision_storage import Stream,ingest_next
+ from worker.providers.upstox import observed_revision,RevisionPages
+ from stock_discovery_contracts.rights import UseRequest
+ 
++EARLIER='2026-10-19T11:00:00Z'
+ pytestmark=pytest.mark.skipif(not os.getenv('STK_TEST_DATABASE_URL'),reason='requires disposable PostgreSQL')
+ @pytest.fixture
+ def isolated_url():yield from _isolated_url.__wrapped__()
+ 
+ 
+-def setup(conn,tmp_path,*,mixed=False,missing=False,boundary=None):
++def setup(conn,tmp_path,*,mixed=False,missing=False,boundary=None,rolling=None,approved=False):
+     g=grant();path=tmp_path/'grants.json';path.write_text(json.dumps([g.model_dump(mode='json')]))
+     def save(scope,rows,suffix=''):
+         s=Stream(stream_id='adjusted-test-'+scope+suffix,source_id='upstox',account_ref='test',scope=scope)
+@@ -27,7 +28,7 @@ def setup(conn,tmp_path,*,mixed=False,missing=False,boundary=None):
+         r=ingest_next(conn,s,RevisionPages(tuple(rows)),load_grant=lambda:g,request=req,audit=lambda d:None,clock=lambda:NOW)
+         assert not r['quarantined']
+     listing='NSE:INE009A01021'
+-    identity=observed_revision(InstrumentData(kind='instrument',issuer_id='TEST',symbol='TEST',isin='INE009A01021',series='EQ',status='active',lot_size=1,tick_size='0.05',effective_at='2026-01-01T00:00:00Z'),listing=listing,fetched=NOW)
++    identity=observed_revision(InstrumentData(kind='instrument',issuer_id='TEST',symbol='TEST',isin='INE009A01021',series='EQ',status='active',lot_size=1,tick_size='0.05',effective_at='2026-01-01T00:00:00Z'),listing=listing,fetched=EARLIER if rolling else NOW)
+     save('universe',[identity]);sessions=[];bars=[]
+     for i in range(30):
+         day=datetime(2026,9,20,tzinfo=timezone.utc)+timedelta(days=i)
+@@ -52,10 +53,20 @@ def setup(conn,tmp_path,*,mixed=False,missing=False,boundary=None):
+             sessions.append(observed_revision(SessionData.model_validate(data),listing='NSE',fetched=NOW))
+     save('calendar',sessions)
+     if missing:bars.pop(10)
+-    if mixed:
++    if rolling:
++        # Rolling daily refreshes: an earlier window, then a later overlapping re-fetch.
++        first=[observed_revision(b.data,listing=listing,fetched=EARLIER,parent=identity.revision_id) for b in bars[:20]]
++        save('prices',first,'A');later=[]
++        for i,b in enumerate(bars[10:],10):
++            data=b.data
++            if rolling=='conflict' and i==12:data=data.model_copy(update={'close':'104'})
++            later.append(observed_revision(data,listing=listing,fetched=NOW,parent=identity.revision_id,previous=first[i] if i<20 else None))
++        save('prices',later if rolling!='gap' else later[10:],'B')
++    elif mixed:
+         save('prices',bars[:15],'A');save('prices',bars[15:],'B')
+     else:save('prices',bars)
+-    return ViewConfig(sources=SourceConfig(grant_file=str(path),retention_days=365),listing_ids=(listing,)),listing
++    return ViewConfig(sources=SourceConfig(grant_file=str(path),retention_days=365),listing_ids=(listing,),
++                      adjusted_multi_stream='approved_v1' if approved else 'disabled'),listing
+ 
+ @pytest.mark.parametrize('mode',['valid','mixed','missing','historical','fenced','revoked','missing_grant'])
+ def test_adjusted_company_read_and_denials(isolated_url,tmp_path,mode):
+@@ -98,3 +109,25 @@ def test_company_rejects_invalid_daily_boundaries(isolated_url,tmp_path,boundary
+         assert 'session_boundaries_unverified' in research['unavailable_reasons']
+         assert not research['metrics'] and not result['price_series']
+         assert not research['execution_qualified'] and not research['paper_admission_authorized']
++
++
++@pytest.mark.parametrize('rolling,approved,expected',[
++    ('agree',False,'batch_identity_missing_or_ambiguous'),('agree',True,None),
++    ('conflict',True,'adjusted_stream_conflict'),('gap',True,'adjusted_stream_continuity_unverified')])
++def test_owner_approved_multi_stream_rule(isolated_url,tmp_path,rolling,approved,expected):
++    with psycopg.connect(isolated_url,autocommit=True) as conn:
++        config,listing=setup(conn,tmp_path,rolling=rolling,approved=approved)
++        before=conn.execute('SELECT count(*) FROM discovery.revisions').fetchone()
++        result=company(conn,config,listing,clock=lambda:NOW);research=result['adjusted_research']
++        assert conn.execute('SELECT count(*) FROM discovery.revisions').fetchone()==before
++        assert not research['execution_qualified'] and not research['actionable'] and not research['paper_admission_authorized']
++        if expected:
++            assert research['status']=='UNAVAILABLE' and expected in research['unavailable_reasons']
++            assert not research['metrics'] and not result['price_series']
++            return
++        assert research['status']=='AVAILABLE_DESCRIPTIVE_ONLY'
++        assert research['batch']['identity_basis']=='verified_ingestion_pages_multi_stream_v1'
++        assert len(research['batch']['stream_batches'])==2 and 'owner_approved_multi_stream_rule_v1' in research['limitations']
++        clocks={o['acquired_at'] for o in research['observations']}
++        assert len(research['observations'])==30 and len(clocks)==2 and research['metrics']['sma20']=='105'
++        assert len(result['price_series'])==30
+diff --git a/backend/tests/integration/test_legacy_real_recovery.py b/backend/tests/integration/test_legacy_real_recovery.py
+new file mode 100644
+index 0000000..aadec2c
+--- /dev/null
++++ b/backend/tests/integration/test_legacy_real_recovery.py
+@@ -0,0 +1,113 @@
++"""STK-014/074/079: rehearse the retained REAL 0013 -> 0015 recovery on invented rows only."""
++import json
++import shutil
++from pathlib import Path
++
++import psycopg
++import pytest
++from alembic import command
++from alembic.config import Config
++from psycopg.types.json import Jsonb
++
++from test_migration_reconciliation import migration_database as _migration_database, snapshot, ROOT, URL
++from test_adjusted_research_storage import EARLIER
++from test_real_market import grant, NOW
++from stock_discovery_analysis.real_views import company, ViewConfig
++from stock_discovery_analysis.real_access import SourceConfig
++from stock_discovery_analysis.revisions import InstrumentData, SessionData, CandleData
++from stock_discovery_analysis.revision_storage import wire
++from stock_discovery_contracts.v2 import digest
++from worker.providers.upstox import observed_revision, RevisionPages
++
++pytestmark = pytest.mark.skipif(not URL, reason='requires disposable PostgreSQL')
++LISTING = 'NSE:INE009A01021'
++
++
++@pytest.fixture
++def migration_database(monkeypatch):
++    yield from _migration_database.__wrapped__(monkeypatch)
++
++
++def legacy_0013(tmp_path):
++    legacy = tmp_path / 'legacy'
++    shutil.copytree(ROOT / 'backend/migrations', legacy)
++    for name in ('0012_experiment_governance.py', '0014_reconcile_real_governance.py', '0015_grant_fences.py'):
++        (legacy / 'versions' / name).unlink()
++    for name in ('0012_real_shadow.py', '0013_pilot_maintenance_audit.py'):
++        path = legacy / 'versions' / name
++        path.write_text(path.read_text().replace("'real_0012'", "'0012'"))
++    old = Config(str(ROOT / 'backend/alembic.ini'))
++    old.set_main_option('script_location', str(legacy))
++    command.upgrade(old, 'head')
++
++
++def seed_stream(conn, g, stream_id, scope, records):
++    """Mirror pre-0015 ingestion: pages and revisions exist, no page attribution rows."""
++    conn.execute('INSERT INTO discovery.grants VALUES (%s,%s,%s) ON CONFLICT DO NOTHING', (g.grant_id, g.version, Jsonb(wire(g))))
++    conn.execute('INSERT INTO discovery.streams(stream_id,source_id,account_ref,scope) VALUES (%s,%s,%s,%s)', (stream_id, 'upstox', 'test', scope))
++    adapter, cursor = RevisionPages(tuple(records)), None
++    while True:
++        page = adapter.fetch(cursor, 100)
++        for raw in page.records:
++            r = records[[x.revision_id for x in records].index(raw['revision_id'])]
++            conn.execute('INSERT INTO discovery.revisions VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)',
++                (r.revision_id, stream_id, r.source_id, r.source_revision, r.logical_key, r.sequence, r.data.kind, r.listing_id,
++                 r.available_at, g.grant_id, g.version, r.instrument_revision_id, r.supersedes_id, r.content_hash, Jsonb(wire(r))))
++            conn.execute('INSERT INTO discovery.stream_revisions VALUES (%s,%s)', (stream_id, r.revision_id))
++        conn.execute('INSERT INTO discovery.pages VALUES (%s,%s,%s,%s,%s,%s,%s)',
++            (stream_id, page.cursor or '', digest(wire(page)), page.next_cursor, page.complete, len(page.records), 0))
++        conn.execute('UPDATE discovery.streams SET cursor=%s,complete=%s WHERE stream_id=%s', (page.next_cursor, page.complete, stream_id))
++        if page.complete:
++            return
++        cursor = page.next_cursor
++
++
++def seed_retained(conn, g):
++    identity = observed_revision(InstrumentData(kind='instrument', issuer_id='TEST', symbol='TEST', isin='INE009A01021', series='EQ',
++        status='active', lot_size=1, tick_size='0.05', effective_at='2026-01-01T00:00:00Z'), listing=LISTING, fetched=EARLIER)
++    seed_stream(conn, g, 'legacy-universe', 'universe', [identity])
++    sessions, first, later = [], [], []
++    from datetime import datetime, timedelta, timezone
++    for i in range(30):
++        day = datetime(2026, 9, 20, tzinfo=timezone.utc) + timedelta(days=i)
++        stamp = lambda h: day.replace(hour=h).strftime('%Y-%m-%dT%H:%M:%SZ')
++        sessions.append(observed_revision(SessionData(kind='session', calendar_version='invented', opens_at=stamp(4), closes_at=stamp(10)), listing='NSE', fetched=NOW))
++        data = CandleData(kind='candle', interval='1d', starts_at=stamp(4), ends_at=stamp(10), open='100', high='110', low='90', close='105',
++                          volume=1000, adjustment_basis='split_bonus_adjusted')
++        if i < 20:
++            first.append(observed_revision(data, listing=LISTING, fetched=EARLIER, parent=identity.revision_id))
++        if i >= 10:
++            later.append(observed_revision(data, listing=LISTING, fetched=NOW, parent=identity.revision_id, previous=first[i] if i < 20 else None))
++    seed_stream(conn, g, 'legacy-calendar', 'calendar', sessions)
++    seed_stream(conn, g, 'legacy-prices-A', 'prices', first)
++    seed_stream(conn, g, 'legacy-prices-B', 'prices', later)
++
++
++def test_retained_0013_upgrade_restores_fenced_reads_without_rewriting(migration_database, tmp_path):
++    legacy_0013(tmp_path)
++    g = grant()
++    grants = tmp_path / 'grants.json'
++    grants.write_text(json.dumps([g.model_dump(mode='json')]))
++    def config(rule):
++        return ViewConfig(sources=SourceConfig(grant_file=str(grants), retention_days=365), listing_ids=(LISTING,), adjusted_multi_stream=rule)
++    with psycopg.connect(migration_database, autocommit=True) as conn:
++        assert conn.execute('SELECT version_num FROM alembic_version').fetchone() == ('0013',)
++        seed_retained(conn, g)
++        # Reproduces the reported INFY state: the read fence fails closed without 0015.
++        with pytest.raises(PermissionError):
++            company(conn, config('disabled'), LISTING, clock=lambda: NOW)
++        before = snapshot(conn)
++        command.upgrade(Config(str(ROOT / 'backend/alembic.ini')), 'head')
++        assert conn.execute('SELECT version_num FROM alembic_version').fetchone() == ('0015',)
++        after = snapshot(conn)
++        assert all(after[t] == rows for t, rows in before.items())
++        assert conn.execute('SELECT kind,state,generation FROM discovery.grant_fences ORDER BY kind').fetchall() == [
++            ('account', 'OPEN', 0), ('grant', 'OPEN', 0), ('provider', 'OPEN', 0)]
++        assert conn.execute('SELECT count(*) FROM discovery.ingestion_grants').fetchone() == (0,)
++        strict = company(conn, config('disabled'), LISTING, clock=lambda: NOW)['adjusted_research']
++        assert strict['status'] == 'UNAVAILABLE' and strict['unavailable_reasons'] == ['batch_identity_missing_or_ambiguous']
++        approved = company(conn, config('approved_v1'), LISTING, clock=lambda: NOW)
++        research = approved['adjusted_research']
++        assert research['status'] == 'AVAILABLE_DESCRIPTIVE_ONLY' and len(approved['price_series']) == 30
++        assert not research['execution_qualified'] and not research['historical_pit_qualified']
++        assert snapshot(conn) == after
+diff --git a/backend/tests/test_real_research.py b/backend/tests/test_real_research.py
+index bd19cc0..684222d 100644
+--- a/backend/tests/test_real_research.py
++++ b/backend/tests/test_real_research.py
+@@ -20,3 +20,19 @@ def test_real_research_auth_and_no_synthetic_fallback(monkeypatch):
+     assert body['scheduler']['outcomes']=='blocked'
+     assert 'real_policies_required' in body['publication_blockers']
+     assert 'cash_flow_reconciliation_unresolved' in body['publication_blockers']
++
++
++def test_unmigrated_database_is_not_reported_as_permission_denial(monkeypatch,tmp_path):
++    from app import real_research
++    monkeypatch.setenv('AUTH_TOKEN','x'*40)
++    monkeypatch.setenv('COOKIE_SECURE','false')
++    monkeypatch.delenv('REAL_RESEARCH_VIEW_CONFIG',raising=False)
++    monkeypatch.setattr(real_research,'schema_state',lambda:dict(schema_version='0013',required='0015',state='migration_required'))
++    c=TestClient(app);c.post('/api/v1/session',json={'token':'x'*40})
++    body=c.get('/v1/real-research/status').json()
++    assert body['database']['state']=='migration_required' and body['blockers'][0].startswith('Database migration required')
++    assert body['readiness']['level']=='none' and body['qualified'] is False
++    error=real_research.denied()
++    assert error.status_code==503 and error.detail.startswith('Database migration required')
++    monkeypatch.setattr(real_research,'schema_state',lambda:dict(schema_version='0015',required='0015',state='current'))
++    assert real_research.denied().status_code==403
+diff --git a/docs/SIMPLE-BOARD.md b/docs/SIMPLE-BOARD.md
+index c40a519..0dcaf7a 100644
+--- a/docs/SIMPLE-BOARD.md
++++ b/docs/SIMPLE-BOARD.md
+@@ -264,3 +264,12 @@ Source classified UNQUALIFIED for M1; closing-only remains a provisional researc
+ candidate. Auction/sampling alone is not a proved explanation. No production
+ change or stored source dataset. Exact `26ed321` CI passed all four jobs; PR35
+ stays draft/unmerged, with new documentation CI required separately.
++
++3 November IST — STK-014/074/079 [takeover audit and real-data recovery](STK-079-takeover-audit.md):
++root cause of the INFY 403 reproduced (retained 0013 schema lacks 0015 read fences).
++Unmigrated databases now report "Database migration required" instead of a source denial,
++with a Level 1/2/3 readiness banner. Read-only owner audit and copy-only migration rehearsal
++scripts were added, plus an owner-gated multi-stream rule (`approved_v1`, off by default).
++The rule combines only individually verified rolling streams that overlap and agree, and fails
++closed on any conflict. Validated on invented rows only. The original database is unchanged, no
++provider call was made, and M1 remains BLOCKED pending the owner rehearsal and approvals.
+diff --git a/docs/STK-079-takeover-audit.md b/docs/STK-079-takeover-audit.md
+new file mode 100644
+index 0000000..1b26596
+--- /dev/null
++++ b/docs/STK-079-takeover-audit.md
+@@ -0,0 +1,195 @@
++# STK-014/074/079/080 — Takeover audit, recovery path and critical-path plan
++
++3 November 2026 (IST). Read-only audit of `main` `63e2cfc`, PR #35 head `8611904`.
++This branch is based on PR #35. This document does not replace `SD-ARCH-3.0.md` or
++`SIMPLE-BOARD.md`. It records what was verified, what this branch adds, and what is
++still outside engineering control.
++
++## 1. Verified state, kept separate from earlier reports
++
++| Fact | Status | Evidence |
++|---|---|---|
++| PR #35 is open, not a draft and not merged. Its head is `8611904`. | Verified | `git ls-remote refs/pull/35/head` |
++| All four exact-head checks passed: `unit`, `postgres`, `ui` and `checks`. | Verified | GitHub check-runs API for `8611904` |
++| PR #35 has no submitted reviews. | Verified | PR page |
++| `main` has migrations 0001–0015. Two files are numbered 0012: the D3-11 one and `real_0012`. 0014 is a no-op join, and 0015 adds the grant fences. | Verified | `backend/migrations/versions` |
++| The retained database `stk_real001_private` is at 0013. | Reported, not yet re-checked | REAL-001 reconciliation, owner investigation |
++| INFY has 419 candle revisions across 13 streams, observed about 2 Sep–23 Oct, with prices `split_bonus_adjusted`. | Reported, not yet re-checked | Owner investigation |
++| A saved Upstox grant is active, with 30-day retention in the view configuration. | Reported, not yet re-checked | Owner investigation |
++| Two pending investigation documents exist as untracked files. | Reported, not yet re-checked | Owner investigation |
++
++Re-checking the reported rows needs the Mac. `scripts/audit_retained_database.py` (§4) re-checks
++all of them read-only and prints sanitized JSON.
++
++### Root cause of the INFY HTTP 403, reproduced on invented data
++
++- `guarded_read` calls `discovery.lock_grant_fences`, which only exists after 0015. On a 0013
++  schema every permitted read fails closed, and the API mapped that to "Source permission denied".
++- `test_legacy_real_recovery.py` builds the old 0013 graph and seeds rows the way the old
++  ingestion did, with no page attribution. It then confirms three things:
++  - The read is denied before the upgrade.
++  - `upgrade head` changes no pre-existing row and registers OPEN provider, account and grant fences.
++  - Reads work after the upgrade.
++- Reads do not need page attribution (`discovery.ingestion_grants`). Legacy pages stay
++  unattributed and immutable by design. Only new writes record attribution.
++
++### Second, independent blocker: rolling streams
++
++`describe()` qualifies adjusted prices only when every selected bar comes from one complete
++ingestion stream. Rolling daily refreshes, such as 13 streams, return
++`batch_identity_missing_or_ambiguous`. Fixing the schema alone does not bring the chart back.
++
++## 2. Completion assessment (by evidence; no single percentage)
++
++| Area | Assessment | Basis |
++|---|---|---|
++| Code implementation | **High.** D3-01 to D3-11 are merged. D3-12 (deployment) and D3-13 (release) are missing, apart from the STK-079 slice. | Board, merged PRs #2–#34 |
++| End-to-end integration | **Synthetic: high. Real: one instrument path,** currently broken by the schema gap. | REAL-001 PARTIAL, INFY 403 |
++| Real data readiness | **Low.** There are only adjusted descriptive prices. Original prices, a filing corpus and complete corporate-action evidence are all missing. | PR #35, provider matrix |
++| Research/AI quality | **Not established.** The 50-case holdout is empty and there is no independent reviewer. | STK-052 records |
++| Investment evaluation | **None genuine.** There are synthetic scorecards only. | D3-11, STK-041/042 |
++| UI functionality | **Good.** All workflows exist and the denial states are correct. | 13 browser workflows in CI |
++| Operational readiness | **Low to partial.** Recovery drills were done. There is no unattended schedule, no off-host backup and no approved deployment. | REAL-001 operations |
++
++## 3. What this branch adds (STK-014/074/079)
++
++All four items are limited to fixing the blocker.
++
++1. **Diagnosis instead of a misleading denial.**
++   - When the schema is behind 0015, company and scan reads return
++     `503 Database migration required…`. Status now reports `database` (schema version vs required).
++   - Genuine source denials still return 403.
++   - No data is read and no fence is bypassed.
++2. **Readiness banner, "What you can do today".**
++   - It reads `none` or `level_1_descriptive` from the actual company read.
++   - It lists what each later milestone adds.
++3. **Owner rule for combining verified streams (`adjusted_multi_stream: approved_v1`).**
++   - Off by default. The existing single-batch behaviour stays the default until the owner enables
++     the rule in the private view configuration.
++   - When enabled:
++     - Every contributing stream must pass the existing full page/hash/provenance verification on its own.
++     - Streams are ordered by observation clock.
++     - Each later stream must share at least one candle with an earlier one. A provider
++       re-adjustment between streams with no shared candle would be undetectable, so that case
++       fails closed (`adjusted_stream_continuity_unverified`).
++     - Every shared candle must be identical, otherwise `adjusted_stream_conflict`.
++   - Results:
++     - Batch identity digests every stream batch identity.
++     - Each observation keeps its own stream clock and grant.
++     - Limitations add `owner_approved_multi_stream_rule_v1`.
++     - All five permission flags stay literal false.
++   - Not weakened: session boundaries, coverage, historical-request denial, relative volume (null)
++     and read fences.
++4. **Owner tooling (read-only on the original).**
++   - `scripts/audit_retained_database.py` prints, all sanitized:
++     - schema version and whether the fence tables exist;
++     - per-table row counts and SHA-256 fingerprints;
++     - grant expiry, scopes and uses (identifiers digested);
++     - for each INFY stream: clocks, coverage, quarantine and retention age;
++     - a qualification dry run of the stream rule;
++     - the current file-grant decision for each stream;
++     - hashes of untracked files, which covers the two pending documents.
++   - `scripts/rehearse_migration.py`:
++     - fingerprints the original and takes an `O_EXCL` 0600 dump;
++     - re-checks that the original did not change;
++     - restores the dump into a new `stk_rehearsal_*` database and proves it identical;
++     - upgrades only the copy, twice;
++     - proves every pre-existing table is unchanged and that every grant got OPEN fences with no
++       restrictions;
++     - re-checks the original once more.
++   - `--keep-copy` keeps the upgraded copy for browser acceptance before the original is touched.
++
++Validation in this workspace (disposable PostgreSQL, invented rows only):
++
++- Full unit, integration and migration-lifecycle suites.
++- 4 new multi-stream integration cases: off by default, agree, conflict and gap.
++- The 0013 → 0015 legacy recovery case.
++- 1 new API test.
++- 2 new Playwright viewports (1280 and 390).
++- An end-to-end browser run against a simulated retained 0013 database: migration message first,
++  then a chart and indicators on the rehearsed copy.
++
++No genuine market data, provider call or retained database was used.
++
++## 4. Owner recovery runbook (on the Mac; nothing here calls a provider)
++
++1. Stop the worker and launchd jobs, so there are no writers.
++2. Run `DATABASE_URL_FILE=<private> python scripts/audit_retained_database.py --listing NSE:INE009A01021 --view-config <private view config> > audit-before.json`
++   and share the JSON. It contains no prices, tokens or account IDs.
++3. Run `DATABASE_URL_FILE=<private> python scripts/rehearse_migration.py backups/pre-0015-<date>.dump --keep-copy`.
++   It must print `"pass": true` and `"original_unchanged": true`.
++4. Point a local API at the kept copy. Repeat step 2 against it, then open INFY in the browser.
++   - If the strict default shows `batch_identity_missing_or_ambiguous`, either approve
++     `adjusted_multi_stream: "approved_v1"` in the private view configuration or keep it off.
++   - The dry run in step 2 shows in advance whether the rule would verify.
++5. Only after explicit approval: run the normal `alembic upgrade head` on the original,
++   then repeat step 2 and the browser check.
++6. Keep the dump. Never run `validate_migrations.py`, a downgrade or a reseed against the original.
++
++Retention check: if `beyond_configured_retention` is true for any stream, the stored observations
++are older than the configured 30-day retention. This app does not delete them automatically (the
++grant does not authorize tombstones). The owner has to decide under the Upstox terms whether the
++data can still be used, renewed or must be deleted. This decision may block Level 1 for older
++windows, and no code change can resolve it.
++
++## 5. Critical blockers
++
++| # | Blocker | Fix it alone? | Owner/provider action | Cost/time | Resolution |
++|---|---|---|---|---|---|
++| 1 | Retained database at 0013 | Tooling done; execution is on the Mac | Run §4, approve migrating the original | ₹0, 1–3 days | Rehearse, approve, then upgrade |
++| 2 | 13 rolling streams | Done (rule v1) | Approve or decline rule v1 | ₹0 | Combine only verified, overlapping, agreeing streams |
++| 3 | Retention of older observations | No | Confirm the Upstox retention terms | ₹0; provider-dependent | Audit flags affected streams |
++| 4 | No original (unadjusted) prices | No | Choose a source: NSE licence quote, Kite (₹500/month, basis unverified), or defer | Unknown | Level 1 stays descriptive; no execution-grade backtests |
++| 5 | Filing/news corpus rights and publication times | No | Send the drafted inquiries, or accept structured fundamentals only | ₹0; reply time unknown | Filing RAG after rights are confirmed |
++| 6 | Independent AI evaluation (50 cases) | No | Name a reviewer: about 10–15 hours of owner time, or a paid reviewer | Unknown | AI stays shadow |
++| 7 | Strategy, risk, cost and benchmark policies | Drafts only | Approve the policy sheet | ₹0; 1–2 sessions | Conservative defaults proposed |
++| 8 | Forward evidence takes calendar time | No | Authorize forward paper tracking | ₹0; months | Start as early as possible |
++
++## 6. Timeline (go/no-go gates; no date depends on unconfirmed rights)
++
++- **Level 1, usable real-data app (12-stock pilot, adjusted descriptive data):** late November 2026.
++  - Gate: §4 passes on the copy, INFY is shown in the browser, and the original is migrated.
++- **15 December 2026 release candidate:** achievable only as Level 1 plus shadow research on all
++  three horizons. A Level 2 release by that date is not achievable, because blockers 4–6 are external.
++- **Level 2, full three-horizon private release:** February–March 2027 at the earliest.
++  - Gated on an original-price source, filing rights, the 50-case review, approved policies,
++    operations, backups and D3-13 checks.
++- **Level 3, validated performance:**
++  - Swing: at least 3 months of forward paper after Level 2.
++  - Short-term: 6–12 months.
++  - Long-term: multi-year.
++- **Extensions:** IPO, news-driven discovery, read-only Upstox/Zerodha holdings, optional ML and
++  intraday. Each one is scoped separately after Level 2.
++
++## 7. Cost
++
++| Item | Cost | Status |
++|---|---|---|
++| Current operation | ₹0/month (Upstox Analytics, local Ollama) | In use |
++| Kite data | ₹500/month | Unproven for original prices |
++| Hetzner CX23 + B2 | About €5–7/month | Only if hosting is approved |
++| NSE EOD licence | Quote required | Unknown |
++| Paid reviewer | Optional | Unknown |
++
++## 8. Owner decisions (not already recorded in the repository)
++
++1. Approve migrating the original after the rehearsal passes.
++2. Approve merging PR #35, then this branch, after review.
++3. Accept adjusted descriptive research as the Level 1 basis.
++4. Approve or decline multi-stream rule v1.
++5. Retention: confirm continued use of observations older than 30 days.
++6. Choose the original-price path.
++7. Choose whether to send the rights inquiries.
++8. Name the 50-case reviewer.
++9. Approve the policy sheet.
++10. Choose local-only operation or Hetzner.
++
++## 9. What the owner can do, now and after each milestone
++
++| When | What the owner can do |
++|---|---|
++| **Today** | Synthetic workflows only. Real company reads fail closed. The UI now says why: the database needs migrating. |
++| **After §4 and the migration** | Real INFY adjusted chart and descriptive indicators. Stored financial facts with citations. Local research history. |
++| **After the pilot extension** | The same for the 12 pilot stocks, with discovery ranking marked as descriptive. |
++| **After Level 2** | Qualified shadow BUY/WATCH/AVOID/INSUFFICIENT EVIDENCE decisions, point-in-time replay, and a paper portfolio with measured outcomes. |
++| **After Level 3** | Evidence of whether each horizon and the AI arms actually add value, reported as measured. |
+diff --git a/frontend/src/RealCompany.tsx b/frontend/src/RealCompany.tsx
+index bbeeba2..97fd015 100644
+--- a/frontend/src/RealCompany.tsx
++++ b/frontend/src/RealCompany.tsx
+@@ -11,7 +11,7 @@ type Company={market_readiness?:{session_freshness?:string;required_sessions:num
+ export function RealCompany({horizon,onUnauthorized,selected}:{horizon:string;onUnauthorized:()=>void;selected?:string}){
+  const [list,setList]=useState<string[]>([]),[listing,setListing]=useState(''),[data,setData]=useState<Company|null>(null),[error,setError]=useState(''),[version,setVersion]=useState(0)
+  useEffect(()=>{const c=new AbortController();fetch('/v1/real-research/companies',{signal:c.signal}).then(async r=>{if(r.status===401)onUnauthorized();if(r.status===503)return {listing_ids:[]};if(!r.ok)throw Error('Company configuration is unavailable');return r.json()}).then(d=>{setList(d.listing_ids);setListing(d.listing_ids[0]??'')}).catch(e=>{if(e.name!=='AbortError')setError('Company configuration is unavailable')});return()=>c.abort()},[])
+- useEffect(()=>{setData(null);setError('');if(!listing)return;const c=new AbortController();fetch('/v1/real-research/companies/'+encodeURIComponent(listing),{signal:c.signal}).then(async r=>{if(r.status===401)onUnauthorized();if(!r.ok)throw Error(r.status===403?'Source permission denied':'Real company inputs are unavailable');return r.json()}).then(d=>{if(!c.signal.aborted)setData(d)}).catch(e=>{if(e.name!=='AbortError')setError(e.message)});return()=>c.abort()},[listing,version])
++ useEffect(()=>{setData(null);setError('');if(!listing)return;const c=new AbortController();fetch('/v1/real-research/companies/'+encodeURIComponent(listing),{signal:c.signal}).then(async r=>{if(r.status===401)onUnauthorized();if(!r.ok){const d=await r.json().catch(()=>({}));throw Error(r.status===403?'Source permission denied':r.status===503&&String(d.detail??'').startsWith('Database migration required')?d.detail:'Real company inputs are unavailable')}return r.json()}).then(d=>{if(!c.signal.aborted)setData(d)}).catch(e=>{if(e.name!=='AbortError')setError(e.message)});return()=>c.abort()},[listing,version])
+  useEffect(()=>{if(selected&&list.includes(selected))setListing(selected)},[selected,list])
+  if(!list.length&&!error)return null
+  const quant=data?.quantitative[horizon]
+diff --git a/frontend/src/RealResearch.tsx b/frontend/src/RealResearch.tsx
+index 12a0b92..433dd71 100644
+--- a/frontend/src/RealResearch.tsx
++++ b/frontend/src/RealResearch.tsx
+@@ -2,7 +2,7 @@ import { RealScan } from './RealScan'
+ import { RealCompany } from './RealCompany'
+ import { useEffect, useState } from 'react'
+ 
+-type Status = {status:string;providers:{id:string;adapter:string;coverage:string;blockers:string[]}[];blockers:string[];publication_blockers:string[];limitations:string[];models:{note:string};scheduler:{prices:string};forward_paper:{reason:string}}
++type Status = {status:string;providers:{id:string;adapter:string;coverage:string;blockers:string[]}[];blockers:string[];publication_blockers:string[];limitations:string[];models:{note:string};scheduler:{prices:string};forward_paper:{reason:string};database?:{schema_version:string|null;required:string;state:string};readiness?:{level:string;today:string[];next:string[]}}
+ const horizons=[['swing','Swing · 2–10 trading days'],['short_term','Short-term · 1–3 months'],['long_term','Long-term · 1–5 years']]
+ export function RealResearch({onUnauthorized}:{onUnauthorized:()=>void}) {
+  const [data,setData]=useState<Status|null>(null),[error,setError]=useState(''),[horizon,setHorizon]=useState('swing'),[selected,setSelected]=useState('')
+@@ -12,6 +12,10 @@ export function RealResearch({onUnauthorized}:{onUnauthorized:()=>void}) {
+  },[])
+  return <section className="discovery" aria-label="Real research">
+   <div className="discovery-heading"><div><p className="eyebrow">REAL RESEARCH</p><h2>Indian market research</h2><p>Actual-company research requires connected, permitted sources and verified evidence.</p></div><span className="badge">BLOCKED · NON-ACTIONABLE</span></div>
++  {data&&<>
++   {data.database?.state==='migration_required'&&<p role="alert" className="error" data-testid="database-migration-required">Database schema {data.database.schema_version} must be upgraded to {data.database.required} before permitted real data can be read. Follow the rehearsed recovery runbook; nothing has been changed.</p>}
++   {data.readiness&&<section className="panel" aria-label="What you can do today" data-testid="readiness-banner"><h3>What you can do today · {data.readiness.level==='level_1_descriptive'?'Level 1 descriptive research':'No real-data level reached'}</h3><ul>{data.readiness.today.map(s=><li key={s}>{s}</li>)}</ul><h4>Becomes possible after remaining milestones</h4><ol>{data.readiness.next.map(s=><li key={s}>{s}</li>)}</ol></section>}
++  </>}
+   <div role="tablist" aria-label="Real investment horizon" className="horizon-tabs">{horizons.map(([id,name])=><button key={id} role="tab" aria-selected={horizon===id} onClick={()=>setHorizon(id)}>{name}</button>)}</div>
+   <RealScan horizon={horizon} onSelect={setSelected} onUnauthorized={onUnauthorized}/>
+   <RealCompany selected={selected} horizon={horizon} onUnauthorized={onUnauthorized}/>
+diff --git a/frontend/tests/real-data-recovery.spec.ts b/frontend/tests/real-data-recovery.spec.ts
+new file mode 100644
+index 0000000..40a6d23
+--- /dev/null
++++ b/frontend/tests/real-data-recovery.spec.ts
+@@ -0,0 +1,20 @@
++import {test,expect} from '@playwright/test'
++// STK-074/079 scripted UI fixtures only; no real company, price or provider data.
++const status=(database:object,readiness:object)=>({blockers:['Database migration required: fixture'],publication_blockers:[],providers:[],models:{note:'Synthetic UI fixture'},scheduler:{prices:'blocked'},forward_paper:{reason:'blocked'},limitations:[],database,readiness})
++for(const width of [1280,390])test('unmigrated database is explained instead of a permission denial '+width,async({page})=>{
++ await page.setViewportSize({width,height:900})
++ await page.route('**/api/v1/session',r=>r.fulfill({json:{authenticated:true}}))
++ await page.route('**/api/v1/dashboard',r=>r.fulfill({json:{datasets:[],jobs:[]}}))
++ await page.route('**/v1/real-research/status',r=>r.fulfill({json:status({schema_version:'0013',required:'0015',state:'migration_required'},{level:'none',today:['Browse the synthetic workflows.'],next:['Level 1: permitted adjusted prices.']})}))
++ await page.route('**/v1/real-research/scan',r=>r.fulfill({status:503,json:{detail:'not configured'}}))
++ await page.route('**/v1/real-research/companies',r=>r.fulfill({json:{listing_ids:['NSE:TEST']}}))
++ await page.route('**/v1/real-research/companies/NSE%3ATEST*',r=>r.fulfill({status:503,json:{detail:'Database migration required: the retained schema is older than this application, so permitted reads fail closed. No data was read or changed.'}}))
++ await page.goto('/#real-research')
++ await expect(page.getByTestId('database-migration-required')).toContainText('0013 must be upgraded to 0015')
++ const banner=page.getByTestId('readiness-banner')
++ await expect(banner).toContainText('No real-data level reached')
++ await expect(banner).toContainText('Level 1: permitted adjusted prices.')
++ const company=page.getByRole('region',{name:'Observed company research'})
++ await expect(company.getByRole('alert')).toContainText('Database migration required')
++ await expect(page.getByText('Source permission denied')).toHaveCount(0)
++})
+diff --git a/scripts/audit_retained_database.py b/scripts/audit_retained_database.py
+new file mode 100644
+index 0000000..04f0067
+--- /dev/null
++++ b/scripts/audit_retained_database.py
+@@ -0,0 +1,164 @@
++"""STK-014/074/079: read-only audit of the retained REAL database. Prints sanitized JSON.
++
++Never writes, migrates, deletes or calls a provider. Output contains counts, clocks,
++SHA-256 fingerprints and stable digests only: no prices, payloads, tokens or account IDs.
++Usage (owner, on the Mac):
++  DATABASE_URL_FILE=<private file> python scripts/audit_retained_database.py \
++      --listing NSE:INE009A01021 [--view-config <private view config>] > audit.json
++"""
++import argparse
++import hashlib
++import json
++import os
++import subprocess
++import sys
++from datetime import datetime, timezone
++from pathlib import Path
++
++ROOT = Path(__file__).resolve().parents[1]
++for part in ('backend', 'shared', 'worker'):
++    sys.path.insert(0, str(ROOT / part))
++SCHEMAS = ('research', 'discovery', 'paper')
++FENCE_TABLES = ('discovery.grant_fences', 'discovery.restriction_requests', 'discovery.ingestion_grants')
++
++
++def short(value):
++    return hashlib.sha256(str(value).encode()).hexdigest()[:12]
++
++
++def database_url():
++    path = os.getenv('DATABASE_URL_FILE')
++    return Path(path).read_text().strip() if path else os.environ['DATABASE_URL']
++
++
++def fingerprints(conn):
++    from psycopg import sql
++    tables = conn.execute("SELECT schemaname,tablename FROM pg_tables WHERE schemaname = ANY(%s) ORDER BY 1,2", (list(SCHEMAS),)).fetchall()
++    result = {}
++    for schema, table in tables:
++        digest, rows = hashlib.sha256(), 0
++        query = sql.SQL('SELECT to_jsonb(t)::text FROM {}.{} t ORDER BY 1').format(sql.Identifier(schema), sql.Identifier(table))
++        with conn.cursor(name='fp_' + short(schema + table)) as cursor:
++            cursor.itersize = 2000
++            cursor.execute(query)
++            for (text,) in cursor:
++                digest.update(text.encode() + b'\n')
++                rows += 1
++        result[f'{schema}.{table}'] = dict(rows=rows, sha256=digest.hexdigest())
++    return result
++
++
++def grants(conn, now):
++    result = []
++    for grant_id, version, p in conn.execute('SELECT grant_id,version,payload FROM discovery.grants ORDER BY 1,2'):
++        expires = datetime.fromisoformat(p['expires_at'].replace('Z', '+00:00'))
++        result.append(dict(grant=short([grant_id, version]), source_id=p['source_id'], account=short(p['account_ref']),
++            status=p['status'], synthetic=p['synthetic'], scopes=p['scopes'], allowed_uses=p['allowed_uses'],
++            retention_days=p.get('retention_days'), valid_from_at=p['valid_from_at'], expires_at=p['expires_at'],
++            days_until_expiry=round((expires - now).total_seconds() / 86400, 1)))
++    return result
++
++
++def price_streams(conn, listing, now, retention_days):
++    rows = conn.execute("""SELECT r.stream_id,count(*),count(DISTINCT r.payload->>'fetched_at'),min(r.payload->>'fetched_at'),
++        max(r.payload->>'fetched_at'),min(r.payload->'data'->>'ends_at'),max(r.payload->'data'->>'ends_at'),
++        array_agg(DISTINCT r.payload->'data'->>'adjustment_basis'),s.complete,
++        (SELECT count(*) FROM discovery.pages p WHERE p.stream_id=r.stream_id),
++        (SELECT coalesce(sum(quarantined),0) FROM discovery.pages p WHERE p.stream_id=r.stream_id)
++        FROM discovery.revisions r JOIN discovery.streams s USING(stream_id)
++        WHERE r.listing_id=%s AND r.kind='candle' GROUP BY r.stream_id,s.complete ORDER BY 4,1""", (listing,)).fetchall()
++    result = []
++    for sid, count, clocks, first, last, start, end, basis, complete, pages, quarantined in rows:
++        age = (now - datetime.fromisoformat(first.replace('Z', '+00:00'))).total_seconds() / 86400
++        result.append(dict(stream=short(sid), revisions=count, fetch_clocks=clocks, fetched_from=first, fetched_to=last,
++            first_session_end=start, last_session_end=end, adjustment_basis=sorted(basis), complete=complete, pages=pages,
++            quarantined=int(quarantined), oldest_observation_age_days=round(age, 1),
++            beyond_configured_retention=retention_days is not None and age > retention_days))
++    return result
++
++
++def qualification_dry_run(conn, listing):
++    """Same pure verification the company view uses; reads only, no grant authorization."""
++    from stock_discovery_analysis.adjusted_research import verify_pages, verify_streams, stream_evidence
++    from stock_discovery_analysis.revisions import Revision
++    rows = conn.execute("""SELECT DISTINCT ON (logical_key) payload FROM discovery.revisions
++        WHERE listing_id=%s AND kind='candle' AND payload->>'availability_basis'='observed'
++        ORDER BY logical_key,sequence DESC""", (listing,)).fetchall()
++    bars = sorted((Revision.model_validate(r[0]) for r in rows), key=lambda r: r.data.ends_at)
++    if not bars:
++        return dict(selected_bars=0, result='no_observed_candles')
++    ids = sorted({r[0] for r in conn.execute('SELECT DISTINCT stream_id FROM discovery.revisions WHERE revision_id=ANY(%s)', ([b.revision_id for b in bars],))})
++    per_stream = {}
++    for sid in ids:
++        stream, stored, pages = stream_evidence(conn, sid)
++        try:
++            verify_pages(tuple(Revision.model_validate(r[0]) for r in stored), stored, stream, pages)
++            per_stream[short(sid)] = 'verified'
++        except ValueError as error:
++            per_stream[short(sid)] = str(error)
++    if len(ids) == 1:
++        combined = 'single_stream' if set(per_stream.values()) == {'verified'} else 'single_stream_unverified'
++    else:
++        try:
++            verify_streams(conn, bars, ids)
++            combined = 'multi_stream_rule_v1_would_verify'
++        except ValueError as error:
++            combined = str(error)
++    return dict(selected_bars=len(bars), contributing_streams=len(ids), per_stream=per_stream, combined=combined,
++                note='Session boundaries, coverage and current grants are checked separately by the company view.')
++
++
++def file_grant(view_config, conn, now):
++    from stock_discovery_analysis.real_views import ViewConfig
++    from stock_discovery_analysis.real_access import source_access
++    from stock_discovery_analysis.revision_storage import Stream
++    from stock_discovery_contracts.rights import authorize
++    config = ViewConfig.model_validate_json(Path(view_config).read_text())
++    access = source_access(config.sources, lambda: now.strftime('%Y-%m-%dT%H:%M:%SZ'))
++    result = dict(listings=len(config.listing_ids), retention_days=config.sources.retention_days,
++                  adjusted_multi_stream=config.adjusted_multi_stream, streams=[])
++    for sid, source, account, scope in conn.execute('SELECT stream_id,source_id,account_ref,scope FROM discovery.streams ORDER BY 1'):
++        stream = Stream(stream_id=sid, source_id=source, account_ref=account, scope=scope)
++        current = access.load_grant(stream)
++        decision = authorize(current, access.request_for(stream)).code if current else 'no_grant_in_private_file'
++        result['streams'].append(dict(stream=short(sid), source_id=source, scope=scope, derive_today=decision))
++    return result
++
++
++def pending_documents():
++    out = subprocess.run(['git', 'status', '--porcelain', '--untracked-files=all'], cwd=ROOT, capture_output=True, text=True).stdout
++    result = []
++    for line in out.splitlines():
++        path = ROOT / line[3:]
++        if line.startswith('??') and path.is_file():
++            result.append(dict(path=line[3:], bytes=path.stat().st_size, sha256=hashlib.sha256(path.read_bytes()).hexdigest()))
++    return result
++
++
++def main():
++    import psycopg
++    parser = argparse.ArgumentParser()
++    parser.add_argument('--listing', required=True)
++    parser.add_argument('--view-config')
++    args = parser.parse_args()
++    now = datetime.now(timezone.utc)
++    with psycopg.connect(database_url(), connect_timeout=5) as conn:
++        conn.read_only = True
++        version = conn.execute('SELECT version_num FROM alembic_version').fetchall()
++        present = {t: conn.execute('SELECT to_regclass(%s)', (t,)).fetchone()[0] is not None for t in FENCE_TABLES}
++        retention = None
++        report = dict(audited_at=now.isoformat(), read_only=True, alembic_version=[v[0] for v in version],
++                      required_version='0015', fence_tables=present, grants=grants(conn, now))
++        if args.view_config:
++            report['private_grant_file'] = file_grant(args.view_config, conn, now) if all(present.values()) else 'skipped_until_0015'
++            retention = json.loads(Path(args.view_config).read_text())['sources']['retention_days']
++        report['price_streams'] = price_streams(conn, args.listing, now, retention)
++        report['qualification_dry_run'] = qualification_dry_run(conn, args.listing)
++        report['tables'] = fingerprints(conn)
++        conn.rollback()
++    report['untracked_files'] = pending_documents()
++    print(json.dumps(report, indent=1, default=str))
++
++
++if __name__ == '__main__':
++    main()
+diff --git a/scripts/rehearse_migration.py b/scripts/rehearse_migration.py
+new file mode 100644
+index 0000000..31ab566
+--- /dev/null
++++ b/scripts/rehearse_migration.py
+@@ -0,0 +1,111 @@
++"""STK-014/074/079: rehearse the retained-database upgrade on a restored copy only.
++
++1. Fingerprint the original (read-only), stream a verified custom-format dump.
++2. Restore it into a new database, prove every table fingerprint is identical.
++3. Upgrade only the copy to head twice, prove every pre-existing row is unchanged,
++   and that each stored grant received OPEN provider/account/grant fences.
++The original is never migrated, written or dropped. Prints a sanitized JSON report.
++Usage (owner, on the Mac, writers stopped):
++  DATABASE_URL_FILE=<private file> python scripts/rehearse_migration.py backups/<name>.dump [--keep-copy]
++"""
++import argparse
++import hashlib
++import json
++import os
++import sys
++import uuid
++from pathlib import Path
++
++ROOT = Path(__file__).resolve().parents[1]
++sys.path.insert(0, str(ROOT / 'scripts'))
++from audit_retained_database import database_url, fingerprints  # noqa: E402
++from backup_restore import command  # noqa: E402
++
++
++def compare(before, after):
++    changed = sorted(t for t in before if after.get(t) != before[t])
++    return dict(unchanged=not changed, changed=changed, added=sorted(set(after) - set(before)))
++
++
++def upgrade(url):
++    from alembic import command as alembic
++    from alembic.config import Config
++    from psycopg.conninfo import conninfo_to_dict
++    from sqlalchemy.engine import URL
++    info = conninfo_to_dict(url)
++    os.environ.pop('DATABASE_URL_FILE', None)
++    os.environ['DATABASE_URL'] = URL.create('postgresql+psycopg', username=info.get('user'), password=info.get('password'),
++        host=info.get('host'), port=int(info.get('port', 5432)), database=info['dbname']).render_as_string(hide_password=False)
++    config = Config(str(ROOT / 'backend/alembic.ini'))
++    alembic.upgrade(config, 'head')
++    alembic.upgrade(config, 'head')
++
++
++def fence_check(conn):
++    expected = {(k, s, a, g, v) for s, a, g, v in conn.execute(
++        "SELECT payload->>'source_id',payload->>'account_ref',grant_id,version FROM discovery.grants")
++        for k, a, g, v in (('provider', '', '', ''), ('account', a, '', ''), ('grant', a, g, v))}
++    stored = set(conn.execute("SELECT kind,source_id,account_ref,grant_id,grant_version FROM discovery.grant_fences WHERE state='OPEN' AND generation=0").fetchall())
++    return dict(expected=len(expected), open_registered=len(stored), all_registered=expected <= stored,
++                restriction_requests=conn.execute('SELECT count(*) FROM discovery.restriction_requests').fetchone()[0],
++                legacy_pages_unattributed=conn.execute('SELECT count(*) FROM discovery.pages p WHERE NOT EXISTS (SELECT FROM discovery.ingestion_grants i WHERE (i.stream_id,i.cursor_key)=(p.stream_id,p.cursor_key))').fetchone()[0])
++
++
++def main():
++    import psycopg
++    parser = argparse.ArgumentParser()
++    parser.add_argument('destination', type=Path)
++    parser.add_argument('--keep-copy', action='store_true', help='leave the upgraded copy for browser acceptance')
++    args = parser.parse_args()
++    url = database_url()
++    source = psycopg.conninfo.conninfo_to_dict(url)['dbname']
++    copy = 'stk_rehearsal_' + uuid.uuid4().hex[:12]
++    copy_url = psycopg.conninfo.make_conninfo(url, dbname=copy)
++
++    def snapshot(target):
++        with psycopg.connect(target, connect_timeout=5) as conn:
++            conn.read_only = True
++            version = [v[0] for v in conn.execute('SELECT version_num FROM alembic_version')]
++            return version, fingerprints(conn)
++
++    version, before = snapshot(url)
++    args.destination.parent.mkdir(parents=True, exist_ok=True)
++    fd = os.open(args.destination, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
++    with os.fdopen(fd, 'wb') as out:
++        command('exec pg_dump -U "$POSTGRES_USER" -d "$1" -Fc', source, stdout=out)
++        out.flush()
++        os.fsync(out.fileno())
++    if snapshot(url)[1] != before:
++        raise SystemExit('FAIL: original changed during backup; stop writers and retry')
++    with args.destination.open('rb') as dump:
++        checksum = hashlib.file_digest(dump, 'sha256').hexdigest()
++    report = dict(original=dict(version=version, tables=len(before), rows=sum(t['rows'] for t in before.values())),
++                  dump=dict(path=str(args.destination), sha256=checksum), copy=copy if args.keep_copy else 'dropped')
++    command('createdb -U "$POSTGRES_USER" "$1"', copy)
++    try:
++        with args.destination.open('rb') as dump:
++            command('pg_restore -U "$POSTGRES_USER" -d "$1" --single-transaction --exit-on-error', copy, stdin=dump)
++        restored = snapshot(copy_url)
++        report['restore'] = dict(version=restored[0], **compare(before, restored[1]))
++        if not report['restore']['unchanged'] or restored[1].keys() != before.keys():
++            raise AssertionError('restored copy differs from original')
++        upgrade(copy_url)
++        version_after, after = snapshot(copy_url)
++        report['upgrade'] = dict(version=version_after, **compare(before, after))
++        with psycopg.connect(copy_url, connect_timeout=5) as conn:
++            report['fences'] = fence_check(conn)
++        report['pass'] = (version_after == ['0015'] and report['upgrade']['unchanged']
++                          and report['fences']['all_registered'] and report['fences']['restriction_requests'] == 0)
++        if snapshot(url)[1] != before:
++            raise AssertionError('original changed during rehearsal')
++        report['original_unchanged'] = True
++    finally:
++        if not args.keep_copy:
++            command('dropdb -U "$POSTGRES_USER" "$1"', copy)
++    print(json.dumps(report, indent=1))
++    if not report.get('pass'):
++        raise SystemExit('FAIL: rehearsal did not meet every gate; do not migrate the original')
++
++
++if __name__ == '__main__':
++    main()
+diff --git a/scripts/test_rehearse_migration.py b/scripts/test_rehearse_migration.py
+new file mode 100644
+index 0000000..be0c113
+--- /dev/null
++++ b/scripts/test_rehearse_migration.py
+@@ -0,0 +1,17 @@
++import unittest
++from rehearse_migration import compare
++
++
++class CompareTest(unittest.TestCase):
++    def test_changed_rows_fail_and_added_tables_are_listed(self):
++        before = {'a.x': dict(rows=1, sha256='1'), 'a.y': dict(rows=2, sha256='2')}
++        self.assertEqual(compare(before, {**before, 'a.z': dict(rows=0, sha256='0')}),
++                         dict(unchanged=True, changed=[], added=['a.z']))
++        result = compare(before, {**before, 'a.y': dict(rows=2, sha256='3')})
++        self.assertFalse(result['unchanged'])
++        self.assertEqual(result['changed'], ['a.y'])
++        self.assertFalse(compare(before, {'a.x': before['a.x']})['unchanged'])
++
++
++if __name__ == '__main__':
++    unittest.main()
+diff --git a/shared/stock_discovery_analysis/adjusted_research.py b/shared/stock_discovery_analysis/adjusted_research.py
+index 1a2e9ff..67229a7 100644
+--- a/shared/stock_discovery_analysis/adjusted_research.py
++++ b/shared/stock_discovery_analysis/adjusted_research.py
+@@ -23,8 +23,9 @@ class Observation(Strict):
+ 
+ class Batch(Strict):
+     identity: Text
+-    identity_basis: Literal['verified_ingestion_pages'] = 'verified_ingestion_pages'
++    identity_basis: Literal['verified_ingestion_pages','verified_ingestion_pages_multi_stream_v1'] = 'verified_ingestion_pages'
+     page_hashes: tuple[Text, ...] = Field(min_length=1)
++    stream_batches: tuple[Text, ...] = ()
+     response_hash: Text | None = None
+ 
+ 
+@@ -106,6 +107,45 @@ def verify_pages(bars, rows, stream, pages):
+     return Batch(identity=digest([stream[0],hashes,[r.revision_id for r in records]]),page_hashes=tuple(hashes))
+ 
+ 
++MULTI_STREAM_REASONS={'adjusted_stream_conflict','adjusted_stream_continuity_unverified','batch_stream_limit'}
++
++
++def stream_evidence(conn, stream_id):
++    stream=conn.execute('SELECT stream_id,source_id,scope,complete FROM discovery.streams WHERE stream_id=%s',(stream_id,)).fetchone()
++    stored=conn.execute("SELECT payload,grant_id,grant_version FROM discovery.revisions WHERE stream_id=%s ORDER BY payload->'data'->>'ends_at',revision_id LIMIT 5001",(stream_id,)).fetchall()
++    pages=conn.execute('SELECT cursor_key,content_hash,next_cursor,complete,accepted,quarantined FROM discovery.pages WHERE stream_id=%s LIMIT 5001',(stream_id,)).fetchall()
++    return stream,stored,pages
++
++
++def verify_streams(conn, bars, stream_ids):
++    """Owner rule v1: every contributing stream is fully verified on its own; streams
++    are chained by observation clock, each later stream must overlap earlier ones,
++    and every overlapping candle must be identical. Any conflict fails closed."""
++    check(1<len(stream_ids)<=60, 'batch_stream_limit')
++    verified=[];grants={};by_id={}
++    for sid in stream_ids:
++        stream,stored,pages=stream_evidence(conn,sid)
++        records=tuple(Revision.model_validate(row[0]) for row in stored)
++        verified.append((at(records[0].fetched_at) if records else None,sid,verify_pages(records,stored,stream,pages),records))
++        grants.update({r.revision_id:(row[1],row[2]) for r,row in zip(records,stored)})
++        by_id.update({r.revision_id:r for r in records})
++    check(all(r.revision_id in by_id and by_id[r.revision_id].model_dump()==r.model_dump() for r in bars), 'batch_revision_set_mismatch')
++    verified.sort(key=lambda v:(v[0],v[1]))
++    seen={}
++    for position,(_,_,_,records) in enumerate(verified):
++        overlap=0
++        for r in records:
++            if r.logical_key in seen:
++                check(seen[r.logical_key]==r.data.model_dump(), 'adjusted_stream_conflict');overlap+=1
++            else:seen[r.logical_key]=r.data.model_dump()
++        # Without a shared candle, a provider re-adjustment between streams is undetectable.
++        check(position==0 or overlap>0, 'adjusted_stream_continuity_unverified')
++    return Batch(identity=digest(['multi_stream_v1',[[sid,batch.identity] for _,sid,batch,_ in verified],[r.revision_id for r in bars]]),
++                 identity_basis='verified_ingestion_pages_multi_stream_v1',
++                 page_hashes=tuple(h for _,_,batch,_ in verified for h in batch.page_hashes),
++                 stream_batches=tuple(batch.identity for _,_,batch,_ in verified)),grants
++
++
+ def verified_session_boundaries(bars, sessions, cutoff):
+     """Match actual daily candles one-to-one to known closed session intervals."""
+     if len(bars)<30 or any(r.data.kind!='candle' or r.data.interval!='1d' for r in bars):
+@@ -121,7 +161,7 @@ def verified_session_boundaries(bars, sessions, cutoff):
+             and set(intervals)==set(expected))
+ 
+ 
+-def describe(conn, listing, bars, sessions, readiness, cutoff, *, historical_request, provenance):
++def describe(conn, listing, bars, sessions, readiness, cutoff, *, historical_request, provenance, multi_stream=False):
+     result=dict(instrument_id=listing,evaluated_at=cutoff,status='UNAVAILABLE',session_coverage={k:tuple(readiness[k]) if k in ('missing_sessions','unverified_bar_sessions') else readiness[k] for k in SessionCoverage.model_fields},
+                 calendar_revision_ids=tuple(r.revision_id for r in sessions))
+     reasons=[]; batch=None; observations=()
+@@ -134,20 +174,21 @@ def describe(conn, listing, bars, sessions, readiness, cutoff, *, historical_req
+         reasons.append('session_coverage_unavailable')
+     if not reasons:
+         rows=conn.execute('SELECT DISTINCT stream_id FROM discovery.revisions WHERE revision_id=ANY(%s)',([r.revision_id for r in bars],)).fetchall()
+-        if len(rows)!=1:reasons.append('batch_identity_missing_or_ambiguous')
++        if len(rows)!=1 and not (multi_stream and len(rows)>1):reasons.append('batch_identity_missing_or_ambiguous')
+         else:
+-            sid=rows[0][0]
+-            stream=conn.execute('SELECT stream_id,source_id,scope,complete FROM discovery.streams WHERE stream_id=%s',(sid,)).fetchone()
+-            stored=conn.execute("SELECT payload,grant_id,grant_version FROM discovery.revisions WHERE stream_id=%s ORDER BY payload->'data'->>'ends_at',revision_id LIMIT 5001",(sid,)).fetchall()
+-            pages=conn.execute('SELECT cursor_key,content_hash,next_cursor,complete,accepted,quarantined FROM discovery.pages WHERE stream_id=%s LIMIT 5001',(sid,)).fetchall()
+             try:
+-                batch=verify_pages(bars,stored,stream,pages)
++                if len(rows)==1:
++                    stream,stored,pages=stream_evidence(conn,rows[0][0])
++                    batch=verify_pages(bars,stored,stream,pages)
++                    grants={r.revision_id:(row[1],row[2]) for r,row in zip(bars,stored)}
++                else:
++                    batch,grants=verify_streams(conn,bars,sorted(r[0] for r in rows))
+                 observations=tuple(Observation(revision_id=r.revision_id,source_version=r.source_revision,
+                     instrument_revision_id=r.instrument_revision_id,published_at=r.published_at,available_at=r.available_at,
+-                    acquired_at=r.fetched_at,observed_at=r.fetched_at,grant_id=row[1],grant_version=row[2]) for r,row in zip(bars,stored))
++                    acquired_at=r.fetched_at,observed_at=r.fetched_at,grant_id=grants[r.revision_id][0],grant_version=grants[r.revision_id][1]) for r in bars)
+                 check(all(at(r.available_at)<=at(r.fetched_at)<=at(cutoff) for r in bars), 'future_adjusted_observation')
+-            except ValueError:
+-                reasons.append('batch_provenance_unverified');batch=None;observations=()
++            except (ValueError,KeyError) as error:
++                reasons.append(str(error) if str(error) in MULTI_STREAM_REASONS else 'batch_provenance_unverified');batch=None;observations=()
+     metrics={}
+     if not reasons:
+         from .data import Candle
+@@ -159,4 +200,6 @@ def describe(conn, listing, bars, sessions, readiness, cutoff, *, historical_req
+         metrics={k:format(v,'f') if v is not None else None for k,v in features(series).items()}
+         metrics['relative_volume20']=None
+         result['status']='AVAILABLE_DESCRIPTIVE_ONLY'
++    if batch is not None and batch.stream_batches:
++        result['limitations']=AdjustedResearch.model_fields['limitations'].default+('owner_approved_multi_stream_rule_v1',)
+     return AdjustedResearch(**result,batch=batch,observations=observations,metrics=metrics,unavailable_reasons=tuple(sorted(set(reasons))))
+diff --git a/shared/stock_discovery_analysis/real_views.py b/shared/stock_discovery_analysis/real_views.py
+index 41b4d3b..a945dc3 100644
+--- a/shared/stock_discovery_analysis/real_views.py
++++ b/shared/stock_discovery_analysis/real_views.py
+@@ -3,7 +3,7 @@ import json
+ from datetime import timezone
+ from decimal import Decimal
+ from pathlib import Path
+-from typing import Annotated
++from typing import Annotated, Literal
+ from pydantic import Field
+ from stock_discovery_contracts.v2 import Strict, Text, Ref, Policy, Evidence, check, digest, at
+ from .real_access import SourceConfig, source_access
+@@ -25,6 +25,8 @@ class ViewConfig(Strict):
+     pilot_scope_id: Text | None = None
+     pilot_health_file: Text | None = None
+     swing: SwingConfig | None = None
++    # STK-014/079: owner-approved combination of separately verified price streams.
++    adjusted_multi_stream: Literal['disabled','approved_v1'] = 'disabled'
+ 
+ 
+ def eligible_revisions(conn,listing,cutoff,access):
+@@ -119,7 +121,8 @@ def _company(conn,config,listing,*,clock,publication_inputs,cutoff_at,access):
+     readiness=market_readiness(bars,sessions,cutoff)
+     from .adjusted_research import describe
+     adjusted_result=describe(conn,listing,bars,sessions,readiness,cutoff,
+-        historical_request=cutoff_at is not None,provenance=provenance)
++        historical_request=cutoff_at is not None,provenance=provenance,
++        multi_stream=config.adjusted_multi_stream=='approved_v1')
+     display_bars=[r for r in bars if r.source_id!='upstox' or adjusted_result.status=='AVAILABLE_DESCRIPTIVE_ONLY']
+     observed_features=adjusted_result.metrics
+     feature_reason=','.join(adjusted_result.unavailable_reasons) or 'descriptive_only_action_coverage_and_volume_basis_unqualified'
+-- 
+2.39.5
+
