@@ -70,3 +70,11 @@ No genuine NSE input is qualified by these tests. Original execution prices,
 complete actions/filings/events/settings, historical source availability, and
 unresolved backup/revocation/deletion/correction obligations remain separate gates.
 The two pending source-investigation documents are preserved outside this commit.
+
+Available results independently validate session counts and coverage flags on
+deserialization, and require all seven indicator keys (nullable values remain
+supported). Calendar completeness is still not inferred from session rows.
+
+Operational limitation: rolling daily updates in separate streams cannot satisfy
+the full-window single-batch proof and remain unavailable. Multi-batch merging is
+not supported; batch identity is not relaxed.

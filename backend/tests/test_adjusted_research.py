@@ -1,6 +1,7 @@
 """Invented observed-mode records only; no market/provider acceptance."""
 from datetime import datetime,timedelta,timezone
 from decimal import Decimal
+import json
 import pytest
 from stock_discovery_analysis.adjusted_research import verify_pages,describe,AdjustedResearch
 from stock_discovery_analysis.revision_fixtures import fixture_records
@@ -105,3 +106,43 @@ def test_future_observation_with_valid_receipt_still_fails():
 def test_adjusted_result_is_not_a_recommendation():
     from stock_discovery_contracts.v2 import Recommendation
     with pytest.raises(ValueError):Recommendation.model_validate_json(run().model_dump_json())
+
+@pytest.mark.parametrize('section,field,value',[
+ ('session_coverage','missing_sessions',[NOW]),
+ ('session_coverage','unverified_bar_sessions',[NOW]),
+ ('session_coverage','duplicate_bars',True),
+ ('session_coverage','warmup_complete',False),
+ ('session_coverage','latest_session_present',False),
+ ('session_coverage','observed_bars',29),
+ ('session_coverage','required_sessions',29),
+ ('session_coverage','required_sessions',31),
+ ('metrics','relative_volume20','2'),
+])
+def test_deserialization_rejects_contradictory_available_coverage(section,field,value):
+    raw=run().model_dump(mode='json');raw[section][field]=value
+    with pytest.raises(ValueError):AdjustedResearch.model_validate_json(json.dumps(raw))
+
+@pytest.mark.parametrize('key',['sma20','ema10','ema30','atr14','relative_volume20','breakout20','support20',None])
+def test_deserialization_requires_complete_metric_keys(key):
+    raw=run().model_dump(mode='json')
+    if key is None:raw['metrics']={}
+    else:del raw['metrics'][key]
+    with pytest.raises(ValueError):AdjustedResearch.model_validate_json(json.dumps(raw))
+
+def test_deserialization_rejects_insufficient_observations():
+    raw=run().model_dump(mode='json');raw['observations'].pop();raw['session_coverage']['observed_bars']=29
+    with pytest.raises(ValueError):AdjustedResearch.model_validate_json(json.dumps(raw))
+
+@pytest.mark.parametrize('with_metrics',[True,False])
+def test_unavailable_state_requires_reasons_and_empty_metrics(with_metrics):
+    raw=run().model_dump(mode='json');raw['status']='UNAVAILABLE'
+    if with_metrics:raw['unavailable_reasons']=['session_coverage_unavailable']
+    else:raw['metrics']={}
+    with pytest.raises(ValueError):AdjustedResearch.model_validate_json(json.dumps(raw))
+
+def test_nullable_indicators_and_unavailable_result_round_trip():
+    raw=run().model_dump(mode='json');raw['metrics']={key:None for key in raw['metrics']}
+    result=AdjustedResearch.model_validate_json(json.dumps(raw))
+    assert result==AdjustedResearch.model_validate_json(result.model_dump_json())
+    result=run(historical=True)
+    assert result==AdjustedResearch.model_validate_json(result.model_dump_json())

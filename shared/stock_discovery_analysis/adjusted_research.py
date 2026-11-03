@@ -70,7 +70,12 @@ class AdjustedResearch(Strict):
         check(self.metrics.get('relative_volume20') is None, 'adjusted_relative_volume_unavailable')
         check(self.status != 'UNAVAILABLE' or not self.metrics, 'unavailable_metrics')
         if self.status == 'AVAILABLE_DESCRIPTIVE_ONLY':
-            check(self.batch is not None and len(self.observations)>=30 and not self.unavailable_reasons, 'unverified_adjusted_result')
+            coverage=self.session_coverage
+            check(self.batch is not None and len(self.observations)>=coverage.required_sessions>=30
+                  and coverage.observed_bars==len(self.observations) and not self.unavailable_reasons, 'unverified_adjusted_result')
+            check(coverage.warmup_complete and coverage.latest_session_present and not coverage.duplicate_bars
+                  and not coverage.missing_sessions and not coverage.unverified_bar_sessions, 'incomplete_session_coverage')
+            check(set(self.metrics)=={'sma20','ema10','ema30','atr14','relative_volume20','breakout20','support20'}, 'incomplete_indicator_keys')
         return self
 
 
