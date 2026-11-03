@@ -15,7 +15,7 @@ body { background:var(--paper); color:var(--ink); font-family:'Public Sans',sans
 .sec { padding:56px 0 8px; animation:rise .6s ease both; }
 .sec h2 { font-family:'Newsreader',serif; font-size:1.125rem; font-weight:700; margin-bottom:20px; }
 @media (min-width:768px){ .sec h2{font-size:1.5rem;} }
-.tablewrap { overflow-x:auto; border:1px solid var(--line); background:var(--card); }
+.tablewrap { overflow-x:auto; border:1px solid var(--line); background:linear-gradient(to right,var(--card) 30%,rgba(251,249,244,0)) left/40px 100% no-repeat local, linear-gradient(to left,var(--card) 30%,rgba(251,249,244,0)) right/40px 100% no-repeat local, radial-gradient(farthest-side at 100% 50%,rgba(21,33,58,.18),transparent) right/12px 100% no-repeat scroll, var(--card); }
 table { width:100%; border-collapse:collapse; font-size:.9rem; }
 th { text-align:left; font-family:'JetBrains Mono',monospace; font-size:.7rem; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); padding:12px 14px; border-bottom:1px solid var(--line); }
 td { padding:12px 14px; border-bottom:1px solid var(--line); vertical-align:top; line-height:1.45; }
