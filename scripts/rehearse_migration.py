@@ -80,7 +80,7 @@ def main():
     with args.destination.open('rb') as dump:
         checksum = hashlib.file_digest(dump, 'sha256').hexdigest()
     report = dict(original=dict(version=version, tables=len(before), rows=sum(t['rows'] for t in before.values())),
-                  dump=dict(path=str(args.destination), sha256=checksum), copy=copy if args.keep_copy else 'dropped')
+                  dump=dict(file=args.destination.name, sha256=checksum), copy=copy if args.keep_copy else 'dropped')
     command('createdb -U "$POSTGRES_USER" "$1"', copy)
     try:
         with args.destination.open('rb') as dump:

@@ -7,6 +7,7 @@ for(const viewport of [{width:1280,height:800},{width:390,height:844}])test('sto
  await page.route('**/v1/real-research/status',r=>r.fulfill({json:{blockers:[],publication_blockers:[],providers:[],models:{note:'Synthetic browser fixture'},scheduler:{prices:'blocked'},forward_paper:{reason:'blocked'},limitations:[]}}))
  await page.route('**/v1/real-research/scan',r=>r.fulfill({status:503,json:{detail:'not configured'}}))
  await page.route('**/v1/real-research/coverage',r=>r.fulfill({status:503,json:{detail:'not configured'}}))
+ await page.route('**/v1/real-research/rules',r=>r.fulfill({status:503,json:{detail:'not configured'}}))
  await page.route('**/v1/real-research/companies',r=>r.fulfill({json:{listing_ids:['NSE:UI-TEST']}}))
  let denied=false,forbidden=false
  const requested:string[]=[]

@@ -284,3 +284,9 @@ version. One-page [owner approval sheet](STK-079-owner-approval-sheet.md), PROPO
 - `scripts/activate_pilot_launchd.py` activates the reviewed LaunchAgent only with the owner approval phrase and only at schema 0015.
 - Default settings keep existing schedule hashes.
 - Tested on fabricated payloads only. No provider call was made.
+
+3 November IST — STK-079 owner usability:
+- `scripts/owner_rehearsal.sh` and [Mac steps](STK-079-mac-steps.md) give a copy-paste rehearsal: one command produces three sanitized files. It was tested on a simulated 0013 database.
+- Charts mark dividend and bonus/split ex-dates. These are labels only and never adjust prices.
+- The pilot coverage panel adds a daily note covering refreshed, behind and not-readable stocks.
+- The approval sheet is now versioned rules (`/v1/real-research/rules`). Private decisions and gate evidence are kept outside Git; approved rules stay inactive until every gate passes.

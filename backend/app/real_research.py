@@ -135,11 +135,13 @@ def coverage_row(conn,config,listing):
     except (ValueError,OSError,KeyError) as error:
         code=str(error) if str(error).replace('_','').isalnum() else 'inputs_unavailable'
         return dict(listing_id=listing,state='unavailable',reasons=[code])
-    research=detail['adjusted_research'];series=detail['price_series']
+    research=detail['adjusted_research'];series=detail['price_series'];readiness=detail.get('market_readiness') or {}
     available=research['status']=='AVAILABLE_DESCRIPTIVE_ONLY'
     return dict(listing_id=listing,symbol=detail['symbol'],state='available' if available else 'unavailable',
         reasons=list(research['unavailable_reasons']),sessions=len(series),last_session=series[-1]['time'] if series else None,
-        indicators=sorted(k for k,v in (research['metrics'] or {}).items() if v is not None))
+        indicators=sorted(k for k,v in (research['metrics'] or {}).items() if v is not None),
+        refresh=dict(current=bool(readiness.get('latest_session_present')),latest_session=readiness.get('latest_verified_session'),
+            latest_bar=readiness.get('latest_bar'),missing_sessions=len(readiness.get('missing_sessions') or ())))
 
 
 @router.get('/coverage')
@@ -152,6 +154,20 @@ def pilot_coverage(response:Response,conn=Depends(db)):
     rows=[coverage_row(conn,config,listing) for listing in config.listing_ids]
     return dict(rows=rows,available=sum(r['state']=='available' for r in rows),total=len(rows),
                 actionable=False,qualified=False,execution_qualified=False)
+
+
+@router.get('/rules')
+def owner_rules(response:Response):
+    """STK-079: versioned starting rules and their gates; nothing here activates a rule."""
+    import os
+    from pathlib import Path
+    from stock_discovery_analysis.owner_rules import Decisions, evaluate, load_ruleset, private_gates
+    decisions_file=os.environ.get('REAL_RESEARCH_RULE_DECISIONS')
+    decisions=Decisions.model_validate_json(Path(decisions_file).read_text()) if decisions_file else None
+    gates=private_gates(os.environ.get('REAL_RESEARCH_RULE_GATES'))
+    gates['database_current']=schema_state()['state']=='current'
+    response.headers['Cache-Control']='no-store'
+    return evaluate(load_ruleset(),decisions,gates)
 
 
 @router.get('/scan')

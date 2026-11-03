@@ -70,3 +70,11 @@ Mark each row **A** (approve), **C** (change, with a new value) or **D** (defer)
 Signature: ____________________ Date: __________
 
 Rows marked D stay unconfigured, and the dependent features stay INSUFFICIENT EVIDENCE.
+
+## How your decisions are saved (STK-079)
+
+- The rules above are versioned in `shared/stock_discovery_analysis/owner_starting_rules_1_0_0.json` (v1.0.0). Each rule lists the gates it waits on.
+- Record your choices in a **private** decisions file outside Git. Set `REAL_RESEARCH_RULE_DECISIONS` to its path. The file contains `ruleset_id`, the exact `ruleset_hash` (shown by `GET /v1/real-research/rules`), `signed_by`, and one entry per row: `approve`, `change` with a new value, or `defer`.
+- A decision file written for a different version is ignored. It is never merged.
+- An approved rule stays **inactive** until every gate has recorded passing evidence. Evidence lives in a private gates file (`REAL_RESEARCH_RULE_GATES`). `database_current` is always checked live, and a recorded value cannot override that check.
+- "Ready to activate" still activates nothing. Registering a policy is a separate, explicit step.

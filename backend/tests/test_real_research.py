@@ -52,6 +52,7 @@ def test_pilot_coverage_reports_each_company_without_inventing_prices(monkeypatc
         if listing=='NSE:C':raise ValueError('real_identity_missing_or_ambiguous')
         if listing=='NSE:D':return dict(symbol='D',price_series=[],adjusted_research=dict(status='UNAVAILABLE',unavailable_reasons=['batch_identity_missing_or_ambiguous'],metrics={}))
         return dict(symbol='A',price_series=[{'time':'2026-10-22'},{'time':'2026-10-23'}],
+                    market_readiness=dict(latest_session_present=False,latest_verified_session='2026-10-24T10:00:00Z',latest_bar='2026-10-23T10:00:00Z',missing_sessions=['2026-10-24T10:00:00Z']),
                     adjusted_research=dict(status='AVAILABLE_DESCRIPTIVE_ONLY',unavailable_reasons=[],metrics={'sma20':'1','relative_volume':None}))
     monkeypatch.setattr(real_views,'company',company)
     app.dependency_overrides[research.db]=lambda:None
@@ -64,7 +65,9 @@ def test_pilot_coverage_reports_each_company_without_inventing_prices(monkeypatc
     assert response.headers['cache-control']=='no-store'
     assert body['available']==1 and body['total']==4 and body['actionable'] is False and body['execution_qualified'] is False
     a,b,cc,d=body['rows']
-    assert a==dict(listing_id='NSE:A',symbol='A',state='available',reasons=[],sessions=2,last_session='2026-10-23',indicators=['sma20'])
+    assert a==dict(listing_id='NSE:A',symbol='A',state='available',reasons=[],sessions=2,last_session='2026-10-23',indicators=['sma20'],
+                   refresh=dict(current=False,latest_session='2026-10-24T10:00:00Z',latest_bar='2026-10-23T10:00:00Z',missing_sessions=1))
+    assert d['refresh']==dict(current=False,latest_session=None,latest_bar=None,missing_sessions=0)
     assert b==dict(listing_id='NSE:B',state='denied',reasons=['source_permission_denied'])
     assert cc['state']=='unavailable' and cc['reasons']==['real_identity_missing_or_ambiguous']
     assert d['state']=='unavailable' and d['reasons']==['batch_identity_missing_or_ambiguous'] and d['sessions']==0

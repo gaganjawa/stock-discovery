@@ -1,0 +1,298 @@
+{
+ "schema_version": "1.0.0",
+ "ruleset_id": "STK-079-owner-starting-rules",
+ "version": "1.0.0",
+ "status": "proposed",
+ "source": "docs/STK-079-owner-approval-sheet.md",
+ "rules": [
+  {
+   "id": 1,
+   "section": "Scope and capital",
+   "rule": "Universe",
+   "proposed": "Only the existing 12-stock NSE pilot, EQ series, active listings",
+   "gates": [
+    "owner_approval"
+   ]
+  },
+  {
+   "id": 2,
+   "section": "Scope and capital",
+   "rule": "Liquidity floor",
+   "proposed": "20-session median traded value ≥ ₹50 crore. Unknown means excluded.",
+   "gates": [
+    "owner_approval"
+   ]
+  },
+  {
+   "id": 3,
+   "section": "Scope and capital",
+   "rule": "Real money",
+   "proposed": "None. Forward paper only, and no broker orders.",
+   "gates": [
+    "owner_approval"
+   ]
+  },
+  {
+   "id": 4,
+   "section": "Scope and capital",
+   "rule": "Paper starting capital",
+   "proposed": "₹1,50,000 virtual (about three months at ₹50,000). Skipped months post nothing.",
+   "gates": [
+    "forward_paper_authorized",
+    "owner_approval"
+   ]
+  },
+  {
+   "id": 5,
+   "section": "Scope and capital",
+   "rule": "Buckets",
+   "proposed": "Long-term 60%, short-term 25%, swing 15%. Each bucket has its own ceiling.",
+   "gates": [
+    "forward_paper_authorized",
+    "owner_approval"
+   ]
+  },
+  {
+   "id": 6,
+   "section": "Scope and capital",
+   "rule": "Cash reserve",
+   "proposed": "10% of each bucket is never sized",
+   "gates": [
+    "forward_paper_authorized",
+    "owner_approval"
+   ]
+  },
+  {
+   "id": 7,
+   "section": "Risk limits",
+   "rule": "Planned loss per trade (swing, short-term)",
+   "proposed": "0.25% of the bucket sizing base",
+   "gates": [
+    "forward_paper_authorized",
+    "original_prices_qualified",
+    "owner_approval"
+   ]
+  },
+  {
+   "id": 8,
+   "section": "Risk limits",
+   "rule": "Combined open planned loss",
+   "proposed": "0.50% of the bucket sizing base",
+   "gates": [
+    "forward_paper_authorized",
+    "original_prices_qualified",
+    "owner_approval"
+   ]
+  },
+  {
+   "id": 9,
+   "section": "Risk limits",
+   "rule": "Single-company exposure",
+   "proposed": "≤ 10% of total paper equity",
+   "gates": [
+    "forward_paper_authorized",
+    "owner_approval"
+   ]
+  },
+  {
+   "id": 10,
+   "section": "Risk limits",
+   "rule": "Sector exposure",
+   "proposed": "≤ 25% of total paper equity. A missing sector blocks sizing.",
+   "gates": [
+    "forward_paper_authorized",
+    "owner_approval"
+   ]
+  },
+  {
+   "id": 11,
+   "section": "Risk limits",
+   "rule": "Gross exposure",
+   "proposed": "≤ 90% of total paper equity",
+   "gates": [
+    "forward_paper_authorized",
+    "owner_approval"
+   ]
+  },
+  {
+   "id": 12,
+   "section": "Risk limits",
+   "rule": "Pause on loss",
+   "proposed": "Daily loss ≥ 1% or monthly loss ≥ 3% pauses new admissions. Resuming needs your explicit approval.",
+   "gates": [
+    "forward_paper_authorized",
+    "owner_approval"
+   ]
+  },
+  {
+   "id": 13,
+   "section": "Risk limits",
+   "rule": "Drawdown gate",
+   "proposed": "Flow-neutral maximum drawdown ≤ 10% (EP-1)",
+   "gates": [
+    "forward_paper_authorized",
+    "original_prices_qualified",
+    "owner_approval"
+   ]
+  },
+  {
+   "id": 14,
+   "section": "Risk limits",
+   "rule": "Long-term positions",
+   "proposed": "No price stop. A thesis review every quarter and after every results filing. Exit only on a recorded thesis break.",
+   "gates": [
+    "forward_paper_authorized",
+    "owner_approval"
+   ]
+  },
+  {
+   "id": 15,
+   "section": "Horizon rules",
+   "rule": "Swing (2–10 sessions)",
+   "proposed": "Swing 2.0.0 as written: EMA10 > EMA30 and close > the prior 20-session high; hold 3 sessions; entry window 1 session; stop 2×ATR14; target 2R; real tick size required",
+   "gates": [
+    "original_prices_qualified",
+    "owner_approval"
+   ]
+  },
+  {
+   "id": 16,
+   "section": "Horizon rules",
+   "rule": "Short-term (1–3 months)",
+   "proposed": "Year-over-year revenue and EPS growth > 0 from registered filings; close > SMA20; margin of safety ≥ 15% against the bear-case annual-EPS scenario; hold ≤ 63 sessions",
+   "gates": [
+    "filing_rights_and_timestamps",
+    "owner_approval"
+   ]
+  },
+  {
+   "id": 17,
+   "section": "Horizon rules",
+   "rule": "Long-term (1–5 years)",
+   "proposed": "Positive operating cash-flow margin in at least 4 of 5 years; net debt / operating cash flow ≤ 2; positive free cash flow; business and governance coverage required; bear/base/bull PE scenarios are display only",
+   "gates": [
+    "filing_rights_and_timestamps",
+    "owner_approval"
+   ]
+  },
+  {
+   "id": 18,
+   "section": "Horizon rules",
+   "rule": "Missing evidence",
+   "proposed": "Always INSUFFICIENT EVIDENCE before any directional decision. Verified adverse evidence leads to AVOID.",
+   "gates": [
+    "owner_approval"
+   ]
+  },
+  {
+   "id": 19,
+   "section": "Costs and slippage",
+   "rule": "Statutory and exchange charges",
+   "proposed": "STT 0.1% on buy and sell. NSE transaction about 0.003%. SEBI ₹10 per crore. Stamp duty 0.015% on buys. GST 18% on brokerage plus transaction charges.",
+   "gates": [
+    "original_prices_qualified",
+    "owner_approval"
+   ]
+  },
+  {
+   "id": 20,
+   "section": "Costs and slippage",
+   "rule": "Brokerage and DP",
+   "proposed": "₹20 fixed per executed order. ₹20 DP charge per sell. This deliberately assumes the higher of the two brokers.",
+   "gates": [
+    "original_prices_qualified",
+    "owner_approval"
+   ]
+  },
+  {
+   "id": 21,
+   "section": "Costs and slippage",
+   "rule": "Slippage",
+   "proposed": "10 bps adverse on each fill (large caps). Gaps fill at the open, never at the stop price.",
+   "gates": [
+    "original_prices_qualified",
+    "owner_approval"
+   ]
+  },
+  {
+   "id": 22,
+   "section": "Costs and slippage",
+   "rule": "Stress test",
+   "proposed": "Results must stay positive at 2× fees and 2× slippage (EP-1)",
+   "gates": [
+    "original_prices_qualified",
+    "owner_approval"
+   ]
+  },
+  {
+   "id": 23,
+   "section": "Benchmarks and promotion",
+   "rule": "Market benchmark",
+   "proposed": "NIFTY 500 total-return index. Also report an exposure-matched reference and a cash reference. The index needs a permitted data source; until then the comparison is null.",
+   "gates": [
+    "benchmark_source_permitted",
+    "owner_approval"
+   ]
+  },
+  {
+   "id": 24,
+   "section": "Benchmarks and promotion",
+   "rule": "Pilot-matched benchmark",
+   "proposed": "NIFTY 50 total-return index, because the 12-stock pilot is large-cap",
+   "gates": [
+    "benchmark_source_permitted",
+    "owner_approval"
+   ]
+  },
+  {
+   "id": 25,
+   "section": "Benchmarks and promotion",
+   "rule": "Promotion",
+   "proposed": "EP-1 unchanged: deterministic gates, then coverage ≥ 95%, then positive net expectancy and return ≥ the references on validation and the untouched test, then your review. Never automatic.",
+   "gates": [
+    "benchmark_source_permitted",
+    "independent_ai_review",
+    "original_prices_qualified",
+    "owner_approval"
+   ]
+  },
+  {
+   "id": 26,
+   "section": "Benchmarks and promotion",
+   "rule": "AI arms",
+   "proposed": "Q, Q+RAG and Q+agent stay in shadow until the 50-case independent review passes",
+   "gates": [
+    "independent_ai_review",
+    "owner_approval"
+   ]
+  },
+  {
+   "id": 27,
+   "section": "Operations",
+   "rule": "Schedule",
+   "proposed": "Daily after the NSE close (18:30 IST, trading days only), weekly on Saturday, monthly on the first Saturday",
+   "gates": [
+    "database_current",
+    "owner_approval"
+   ]
+  },
+  {
+   "id": 28,
+   "section": "Operations",
+   "rule": "AI budget",
+   "proposed": "Local Ollama only, ₹0. At most 40 model calls per day. No paid model calls.",
+   "gates": [
+    "owner_approval"
+   ]
+  },
+  {
+   "id": 29,
+   "section": "Operations",
+   "rule": "Deployment",
+   "proposed": "Local only on the Mac until Level 2. Hetzner is decided separately.",
+   "gates": [
+    "owner_approval"
+   ]
+  }
+ ]
+}

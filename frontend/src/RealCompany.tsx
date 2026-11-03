@@ -2,7 +2,7 @@ import {RealSwing} from './RealSwing'
 import {CombinedResearch} from './CombinedResearch'
 import {FactualResearch,type FactualReport} from './FactualResearch'
 import {useEffect,useState} from 'react'
-import {Chart} from './PriceChart'
+import {Chart,type ChartEvent} from './PriceChart'
 type Citation={evidence_id:string;revision_id:string;source_url:string;locator:string;attribution:string}
 type Published={citations?:Citation[];research?:{assessment?:{claims:{text:string;citations:Citation[]}[];missing:string[]}}|null;recommendation:{recommendation_id:string;action:string;decision_available_at:string;information_cutoff_at:string;horizon:{profile:string};rationale:{summary:string};missing_evidence:{requirement:string;reason:string}[]};tracking:{status:string;outcomes:{outcome_id:string;status:string;reason:string;evaluated_at:string}[]}|null}
 type ResearchResult={factual_report?:FactualReport;status:string;action?:string;reason?:string;provider_called?:boolean;validator?:{version?:string;deterministic:string;semantic:string;judge?:string};assessment?:{action:string;claims:{text:string;citations:Citation[]}[];missing:string[]}}
@@ -11,6 +11,7 @@ type CorporateAction={action_id:string;type:string;effective_at:string;cash_per_
 // STK-079: ex-dates as observed; split/bonus/rights ratios are labels, never adjustment arithmetic.
 const istDate=(t:string)=>new Date(Date.parse(t)+19800000).toISOString().slice(0,10)
 const actionLabel=(a:CorporateAction)=>{const [,kind,,...rest]=a.action_id.split(':'),detail=rest.join(':');return a.type==='dividend'?`Dividend ₹${a.cash_per_share} per share (${detail})`:`${kind[0].toUpperCase()+kind.slice(1)}${detail==='no-ratio'?'':' '+detail} · ratio not used for adjustment`}
+const chartEvents=(actions?:CorporateAction[]):ChartEvent[]=>(actions??[]).map(a=>({date:istDate(a.effective_at),kind:a.type==='dividend'?'dividend':'share',text:actionLabel(a)}))
 function CorporateActions({actions}:{actions?:CorporateAction[]}) {
  return <section aria-label="Corporate actions" data-testid="corporate-actions"><h4>Corporate actions</h4>
   {actions?.length?<ul>{actions.slice(0,20).map(a=><li key={a.action_id}>{istDate(a.effective_at)} · {actionLabel(a)} · observed {a.observed_at.slice(0,10)}</li>)}</ul>
@@ -33,7 +34,7 @@ export function RealCompany({horizon,onUnauthorized,selected}:{horizon:string;on
  {listing&&horizon==='swing'&&<RealSwing key={listing+':'+version} listing={listing} onUnauthorized={onUnauthorized}/>}
  {listing&&horizon==='swing'&&<CombinedResearch key={'combined:'+listing+':'+version} listing={listing} onUnauthorized={onUnauthorized}/>}
  {data&&<><h3>{data.symbol} · {data.isin}</h3><p>Inputs known at {data.cutoff_at}. REAL RESEARCH / SHADOW / NON-ACTIONABLE.</p>
- {data.price_series.length?<Chart real bars={data.price_series.map(b=>({time:b.time,open:Number(b.open),high:Number(b.high),low:Number(b.low),close:Number(b.close)}))}/>:<p>Permitted price history is unavailable.</p>}
+ {data.price_series.length?<Chart real events={chartEvents(data.corporate_actions)} bars={data.price_series.map(b=>({time:b.time,open:Number(b.open),high:Number(b.high),low:Number(b.low),close:Number(b.close)}))}/>:<p>Permitted price history is unavailable.</p>}
  <p>Price adjustment basis: {[...new Set(data.price_series.map(b=>b.adjustment_basis??'unverified'))].join(', ')}. Provider split/bonus adjustments are not dividend total returns; volume adjustment is unverified.</p>
  <h4>Financial facts</h4>{data.financial_facts.length?<table><thead><tr><th>Metric</th><th>Value / unit</th><th>Reporting period / scope</th><th>Source location</th></tr></thead><tbody>{[...data.financial_facts].sort((a,b)=>b.period_end_at.localeCompare(a.period_end_at)||a.metric.localeCompare(b.metric)).map(f=><tr key={f.fact_id}><td>{f.metric.replaceAll('_',' ')}</td><td>{f.value===null?'Not reported':Number(f.value).toLocaleString('en-IN',{maximumFractionDigits:4})} {f.unit}</td><td>{f.period_start_at?.slice(0,10)??'Start unknown'} – {f.period_end_at.slice(0,10)} · {f.period_kind??'period unknown'} · {f.scope}</td><td>{f.source_locator??'Derived calculation'}</td></tr>)}</tbody></table>:<p>No financial facts ingested.</p>}
  <h4>Source documents</h4><ul>{data.documents.map(d=><li key={d.revision.data.url}><a href={d.revision.data.url} target="_blank" rel="noreferrer">{d.title}</a> · First observed {d.revision.published_at} (original publication time unverified)</li>)}</ul>

@@ -1,6 +1,7 @@
 import { RealScan } from './RealScan'
 import { RealCompany } from './RealCompany'
 import { PilotCoverage } from './PilotCoverage'
+import { OwnerRules } from './OwnerRules'
 import { useEffect, useState } from 'react'
 
 type Status = {status:string;providers:{id:string;adapter:string;coverage:string;blockers:string[]}[];blockers:string[];publication_blockers:string[];limitations:string[];models:{note:string};scheduler:{prices:string};forward_paper:{reason:string};database?:{state:string};readiness?:{level:string;today:string[];next:string[]}}
@@ -19,6 +20,7 @@ export function RealResearch({onUnauthorized}:{onUnauthorized:()=>void}) {
   </>}
   <div role="tablist" aria-label="Real investment horizon" className="horizon-tabs">{horizons.map(([id,name])=><button key={id} role="tab" aria-selected={horizon===id} onClick={()=>setHorizon(id)}>{name}</button>)}</div>
   <PilotCoverage onSelect={setSelected} onUnauthorized={onUnauthorized}/>
+  <OwnerRules onUnauthorized={onUnauthorized}/>
   <RealScan horizon={horizon} onSelect={setSelected} onUnauthorized={onUnauthorized}/>
   <RealCompany selected={selected} horizon={horizon} onUnauthorized={onUnauthorized}/>
   {error&&<p role="alert" className="error">{error}</p>}
