@@ -29,9 +29,9 @@ async def safe_request_log(request, call_next):
     started = time.monotonic()
     try:
         response = await call_next(request)
-    except Exception:
+    except Exception as exc:
         # Do not pass exception strings/tracebacks to the server logger.
-        logging.getLogger("uvicorn.error").error(event("request_failed", status=500))
+        logging.getLogger("uvicorn.error").error(event("request_failed", status=500, error_type=type(exc).__name__))
         return JSONResponse({"detail": "Internal request failure"}, status_code=500)
     if response.status_code >= 400:
         logging.getLogger("uvicorn.error").warning(event(

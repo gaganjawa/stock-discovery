@@ -14,10 +14,13 @@ from stock_discovery_analysis.strategy import STRATEGY_VERSION
 from stock_discovery_analysis.combined_research import replay_context
 
 router=APIRouter(prefix='/api/v1')
+DATABASE_FILE_UNREADABLE='Database connection file not found: check DATABASE_URL_FILE points to an existing file.'
 
 
 def db():
-    url=setting('DATABASE_URL')
+    # STK-079: a wrong DATABASE_URL_FILE path is a configuration problem, not a server crash.
+    try:url=setting('DATABASE_URL')
+    except OSError:raise HTTPException(503,DATABASE_FILE_UNREADABLE) from None
     if not url: raise HTTPException(503,'Database is not configured')
     try:
         with psycopg.connect(url,autocommit=True,connect_timeout=3) as conn: yield conn

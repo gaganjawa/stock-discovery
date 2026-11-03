@@ -8,6 +8,10 @@ def event(name, **fields):
     allowed = {key: value for key, value in fields.items()
                if key in {"status", "duration_ms", "failed_jobs", "stale_jobs"}
                and isinstance(value, (int, float, bool))}
+    # STK-079: an exception class name is diagnostic without carrying message data.
+    kind = fields.get("error_type")
+    if isinstance(kind, str) and kind.isidentifier() and len(kind) <= 64:
+        allowed["error_type"] = kind
     return json.dumps({"event": name, **allowed}, sort_keys=True)
 
 

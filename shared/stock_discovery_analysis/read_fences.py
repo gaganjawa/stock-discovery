@@ -118,6 +118,24 @@ class ReadGuard:
         # restrictions are serialized above; file rights are reloaded at this gate.
 
 
+def authorize_revision_dependencies(conn, revision_ids, cutoff):
+    """Authorize full verification inputs, including parents, before using them.
+
+    The enclosing guarded transaction retains all acquired locks through return.
+    This is not an independent reader or an authorization fallback.
+    """
+    from .revisions import eligible
+    guard=_active.get()
+    if guard is None or guard.conn is not conn:raise PermissionError(DENIED)
+    for rid in revision_ids:guard.add(rid)
+    dependencies=guard.dependencies()
+    for rid in dependencies:
+        row=conn.execute('SELECT payload FROM discovery.revisions WHERE revision_id=%s',(rid,)).fetchone()
+        if not row or not eligible(Revision.model_validate(row[0]),cutoff,'live_paper'):
+            raise PermissionError(DENIED)
+    guard.authorize()
+
+
 @contextmanager
 def guarded_read(conn,access,*,_lock_conn=None):
     existing=_active.get()

@@ -42,7 +42,7 @@ Purchases, paid APIs, deployment and broker orders are outside current authoriza
 
 D3-02 validation: the isolated delivery snapshot passes 193 application/worker tests (52 new rights cases) and 7 script tests; 11 database cases skip locally without a test database. Schema consistency, whitespace and documentation-link checks pass. All real-source grants remain absent; no paid call or provider activation occurred. Existing app WIP is preserved. This delivery does not claim STK-004–007 real-use approvals are complete.
 
-D3-03 validation: 243 tests passed in the isolated delivery snapshot, including 39 new cases and 32 total database integration cases; 7 script tests passed. Migration upgrade, repeat upgrade, downgrade, re-upgrade and atomic failure rollback passed on 16 October 2026. PostgreSQL validation uses a disposable container, not the application database. No API key or paid service is used.
+D3-03 validation: 243 tests passed in the isolated delivery snapshot, including 40 new cases and 32 total database integration cases; 7 script tests passed. Migration upgrade, repeat upgrade, downgrade, re-upgrade and atomic failure rollback passed on 16 October 2026. PostgreSQL validation uses a disposable container, not the application database. No API key or paid service is used.
 
 D3-04 validation: the isolated delivery snapshot passes **279 application/worker tests**, including **36 new scheduler cases**, plus **7 script tests** and the frontend build. All **48 database integration tests** and migration upgrade/repeat/downgrade/re-upgrade/failure rollback pass; generated-schema consistency, legacy contract examples and whitespace checks pass. Runtime database grants are unchanged: automatic approval review blocked the proposed permission expansion. See the [scheduler handoff](D3-04-scheduling.md) before activating the restricted runtime worker. No key, paid API or deployment is used.
 
@@ -210,3 +210,83 @@ references. Unrelated fixture identities and missing histories remain distinct;
 reads never create inference, outcomes or admissions. Review/CI delivery state and
 fresh acceptance counts are in the checkpoint. M1/M2, genuine forward/benchmark,
 policy, operational, publication and trading approvals remain blocked.
+
+2 November — PR34 merged (`63e2cfcc`) after exact `27b0ffc` protected checks and
+independent review: 794 unit, 516 PostgreSQL/zero skips, lifecycle, 14 browsers.
+The [final synthetic workflow audit and M1 handoff](PRODUCT-ACCEPTANCE-HANDOFF.md)
+found no demonstrated new software gap. Primary focus: STK-004/005/007/014 INFY
+source qualification. Saved private grant metadata was found; action/news scopes,
+raw-price semantics, original filings/clocks and retention remain unresolved.
+No provider activated, private payload copied, model run, holdout consumed or real
+recommendation approved. M1/M2, genuine evaluation and operational gates remain blocked.
+
+2 November — STK-004/014 M1 provider decision handoff prepared, documentation only.
+[Comparison, owner sequence and three unsent inquiries](PRODUCT-ACCEPTANCE-HANDOFF.md#owner-decision-table--cost-and-proposed-combination)
+separate NSE free access/full-product tariffs from TrueData's unquoted API and
+simulation restrictions. Saved Upstox scope is preserved; `historical_replay` is
+not locally authorized. No new source/grant, dataset change or synthetic feature.
+Next action is owner/provider clarification; M1 remains BLOCKED.
+
+2 November — STK-004/014 [bounded official-source probes](PRODUCT-ACCEPTANCE-HANDOFF.md#actual-official-source-probes--2-november-2026):
+NSE initializes but session continuity fails; no market-tool result. Upstox live
+descriptive samples pass and stay adjusted. SEC reuse permission is published,
+but direct API/original requests return 403. Fresh 173 focused fixture tests pass.
+No production change justified; datasets/grants/fences/gates unchanged. Resolve
+technical access and missing qualifying inputs, not blanket permission letters.
+
+2 November — STK-004/014 [Breeze read-only feasibility](STK-004-014-breeze-evaluation.md):
+published free backtesting, official public master INFTEC/INFY/ISIN mapping and
+40 offline contract cases verified (246 focused regressions passed). No configured
+account/session or actual daily sample; no SDK/MCP install, source activation,
+dataset mutation or trading capability. M1 remains BLOCKED.
+
+3 November IST — STK-004/014 [authenticated Breeze follow-up](STK-004-014-breeze-evaluation.md#authenticated-sdk-follow-up--3-november-2026-ist):
+official SDK authentication and 41 actual INFY daily candles succeeded with three
+bounded GETs; no duplicate labels/basic OHLCV failures, values discarded. Fresh
+300 focused fixture tests passed separately. Private manual-session preflight,
+GET-only transport, isolated SDK logging and durable local request budget added.
+No source/grant activation or database access; raw/volume/action/calendar,
+disclosure/time and retention requirements still block M1. M2/strategy/
+operational/publication/admission/trading gates unchanged. PR35 remains draft.
+
+3 November IST — STK-004/014 official-source qualification: `bda66eb` passed all
+four exact CI jobs. Actual labels match all 41 regular NSE calendar sessions;
+official SDK documents unadjusted history. Against actual NSE MCP EOD data,
+closes match 41/41, but open 6/41, high 8/41, low 12/41 and volume 0/41.
+[Full criterion matrix and source receipts](STK-004-014-breeze-evaluation.md#official-source-qualification-follow-up--3-november-2026-ist)
+keep M1 BLOCKED on these discrepancies, rights/retention, complete disclosures,
+settings and original clocks. No production behavior, grants or datasets changed.
+
+3 November IST — STK-004/014 [three-source triangulation](STK-004-014-breeze-evaluation.md#original-eod--mcp--breeze-triangulation--3-november-2026-ist):
+three original NSE Final INFY/EQ rows match MCP on all 15 OHLCV fields; Breeze
+matches closes only (12 other mismatches), with nonconstant volume ratios.
+Source classified UNQUALIFIED for M1; closing-only remains a provisional research
+candidate. Auction/sampling alone is not a proved explanation. No production
+change or stored source dataset. Exact `26ed321` CI passed all four jobs; PR35
+stays draft/unmerged, with new documentation CI required separately.
+
+3 November IST — STK-014/074/079 [takeover audit and real-data recovery](STK-079-takeover-audit.md):
+root cause of the INFY 403 reproduced (retained 0013 schema lacks 0015 read fences).
+Unmigrated databases now report "Database migration required" instead of a source denial,
+with a Level 1/2/3 readiness banner. Read-only owner audit and copy-only migration rehearsal
+scripts were added, plus an owner-gated multi-stream rule (`approved_v1`, off by default).
+The rule combines only individually verified rolling streams that overlap and agree, and fails
+closed on any conflict. Validated on invented rows only. The original database is unchanged, no
+provider call was made, and M1 remains BLOCKED pending the owner rehearsal and approvals.
+
+3 November IST — STK-079 pilot coverage: `/v1/real-research/coverage` and a panel show each
+configured pilot company as readable, unavailable or denied, with plain reasons. These are
+descriptive only and never actionable. The migration state no longer discloses the schema
+version. One-page [owner approval sheet](STK-079-owner-approval-sheet.md), PROPOSED and not approved.
+
+3 November IST — STK-079 corporate actions and unattended refresh tooling:
+- Optional `corporate_actions` ingestion from the documented Upstox endpoint (append-only, grant-scoped, weekly per pilot stock). Only dividend cash is stored as arithmetic; split, bonus and rights ratios fail closed as `unsupported`. The company page lists observed ex-dates.
+- `scripts/activate_pilot_launchd.py` activates the reviewed LaunchAgent only with the owner approval phrase and only at schema 0015.
+- Default settings keep existing schedule hashes.
+- Tested on fabricated payloads only. No provider call was made.
+
+3 November IST — STK-079 owner usability:
+- `scripts/owner_rehearsal.sh` and [Mac steps](STK-079-mac-steps.md) give a copy-paste rehearsal: one command produces three sanitized files. It was tested on a simulated 0013 database.
+- Charts mark dividend and bonus/split ex-dates. These are labels only and never adjust prices.
+- The pilot coverage panel adds a daily note covering refreshed, behind and not-readable stocks.
+- The approval sheet is now versioned rules (`/v1/real-research/rules`). Private decisions and gate evidence are kept outside Git; approved rules stay inactive until every gate passes.

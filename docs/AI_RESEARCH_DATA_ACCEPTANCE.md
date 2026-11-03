@@ -34,9 +34,84 @@ Only public documentation was read. No authenticated market-data request, financ
 
 ## Current result
 
+[Breeze follow-up](STK-004-014-breeze-evaluation.md) verifies published free
+historical backtesting and official master identity (`INFTEC`, ISIN
+`INE009A01021`). The **3 November IST** follow-up successfully authenticated the
+official SDK and transiently retrieved 41 daily candles (1 September–30 October
+2026), with no duplicate labels or basic OHLCV failures. Raw basis, volume/action
+semantics, complete closed sessions and retention compliance remain unverified.
+No accepted STK-014 input or source/grant activation resulted; only sanitized
+metadata was retained. This supersedes the initial missing-session observation.
+
+Further official-source qualification on 3 November IST verified **exact**
+membership of all 41 regular NSE sessions, using the official 2026 calendar and
+one necessary fresh sample whose body hash matches the original sample. The
+official SDK documents unadjusted history, but comparison with actual official
+NSE MCP EOD rows found matches of **open 6/41, high 8/41, low 12/41, close 41/41,
+volume 0/41**. This is a demonstrated data-qualification blocker, not grounds to
+adjust either source. Breeze share-volume semantics remain unverified. Original
+quarterly statements were retrieved transiently; specific dividend/record-date
+evidence is not complete event coverage or a publication timestamp. See the
+[per-criterion disposition](STK-004-014-breeze-evaluation.md#existing-stk-014-criteria--precise-disposition).
+Persistence and all recommendation/trading gates remain disabled.
+
+The [three-original-report triangulation](STK-004-014-breeze-evaluation.md#original-eod--mcp--breeze-triangulation--3-november-2026-ist)
+now confirms MCP against original NSE CM-UDiFF Final INFY/EQ rows for 1 September,
+23 October and 30 October: all 15 OHLCV fields match. Breeze matches the three
+closes only; its other 12 fields differ and its volume ratios are not constant.
+On two dates its high exceeds the original final high, so simply omitting auction
+trades is not a sufficient explanation. The exact construction/correction cause
+is unresolved. **Formal M1 source classification: UNQUALIFIED**; closing-only
+research remains a provisional candidate, not source admission. Source datasets
+and numerical comparison tables were not committed or permanently ingested.
+
+2 November follow-up: see the [source reconciliation and minimal owner handoff](PRODUCT-ACCEPTANCE-HANDOFF.md#m1--ownerprovider-handoff-one-infy-instrument).
+The saved scoped Upstox grant was located and inspected without credentials or
+provider values. Local configuration allows universe/calendar/prices/numerical
+facts and numerical-snapshot filings, not actions/news. This is not verification
+of database fences, current data or external contractual authority. New official
+NSE bhavcopy/MCP and vendor documentation are assessed there without activation;
+raw-price, coverage, original-document and retention gates are unchanged.
+
 M1 real-data acceptance: BLOCKED by the specific missing inputs above. Software integration already exists for prices, filings, numerical facts and local factual research; rebuilding it would not resolve these external requirements. No new active grant or qualified real instrument was created.
 
-Independent work can continue on M2 verified-claim coverage, M4 deterministic synthesis, M5 replay integration and M6 UI using clearly labelled synthetic fixtures. Human reference labels and thresholds must be fixed before held-out research-quality evaluation. No synthetic score establishes predictive accuracy or AI superiority.
+The bounded synthetic MVP has now completed its current software scope through
+merged PR34 (`63e2cfcc`). Earlier independent M2/M4/M5/M6 development remains valid
+history; it is not a request for more synthetic features or repeated experiments.
+Human reference labels and thresholds must be fixed before held-out research-quality
+evaluation. No synthetic score establishes predictive accuracy or AI superiority.
+
+### Provider decision boundary — 2 November 2026
+
+The [owner decision table](PRODUCT-ACCEPTANCE-HANDOFF.md#owner-decision-table--cost-and-proposed-combination)
+compares existing Upstox inputs, NSE MCP/bhavcopy, TrueData and a secondary vendor.
+The [three unsent inquiries](PRODUCT-ACCEPTANCE-HANDOFF.md#provider-inquiry-drafts--ready-to-send-not-sent)
+request product-specific rights, raw-price/volume semantics, complete action/event
+coverage, original clocks, retention/backups/deletion and an applicable personal quote.
+Public prices and API access are not grants; the local Upstox use list also lacks
+`historical_replay`. No permission was extended or authenticated provider called.
+Do not choose a paid plan, register a new grant or change an adapter until an
+applicable permitted source and a demonstrated technical gap are established.
+
+### Subsequent owner-authorized official-source validation
+
+The [actual probe record](PRODUCT-ACCEPTANCE-HANDOFF.md#actual-official-source-probes--2-november-2026)
+supersedes any implication that all reads require an individual provider reply.
+Published terms cover informational NSE MCP access, existing permitted private
+Upstox checks and public SEC filing reuse. Code/SDK licences do not license data.
+NSE storage/simulation restrictions remain relevant to persistent ingestion/replay.
+
+Observed: NSE initialize HTTP200 followed by unstable sessions/404 and one SSE
+tool-list response; no market-tool result. Existing Upstox diagnostic HTTP200,
+11 historical rows plus one later typed, closed-session-aligned adjusted candle.
+Local rate limiting denied the rapid third request; normal request spacing worked
+without changing the cap. SEC submissions and the known original archive URL both
+returned 403 to the identified direct client; its reuse permission is established,
+while original bytes, API accession metadata and truthful availability remain missing.
+No dataset/grant/database mutation or source activation. Fresh fixture regressions:
+173 passed, zero failures/skips; live observations and test evidence remain separate.
+M1 remains BLOCKED on actual raw/complete evidence and applicable storage/retention,
+not a universal requirement for written permission to perform already covered reads.
 
 ## Explicit one-instrument release checklist — 1 November 2026
 
