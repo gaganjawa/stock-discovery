@@ -26,7 +26,7 @@ from stock_discovery_analysis.factual_research import candidates
 from stock_discovery_analysis import factual_research, rag_research
 from stock_discovery_analysis.schedule_runner import JobFailure
 from stock_discovery_analysis.schedule_store import fenced_row, StaleLease, unresolved_upstream_rejection
-from .real_market import MarketConfig, access_for, ingest_prices, ingest_configured_financials
+from .real_market import MarketConfig, access_for, ingest_prices, ingest_configured_financials, ingest_configured_actions
 from .real_evidence import EvidenceConfig, run as research
 from .providers.upstox import Upstox, MASTER, UpstreamAccessRejected
 from .providers.ollama import Ollama
@@ -89,7 +89,7 @@ def safe_error(exc):
         field=str(exc.args[0])
         return 'missing_provider_field:'+field if re.fullmatch(r'[A-Za-z_]{1,50}',field) else 'missing_provider_field'
     value=str(exc)
-    for prefix in ('upstox_','source_rate_','instrument_','financial_','required_statement_','unsupported_','revenue_reconciliation','tax_reconciliation','asset_reconciliation','liability_reconciliation','real_identity_','unverified_market_session','frozen_identity_changed'):
+    for prefix in ('upstox_','source_rate_','instrument_','financial_','required_statement_','unsupported_','revenue_reconciliation','tax_reconciliation','asset_reconciliation','liability_reconciliation','real_identity_','unverified_market_session','frozen_identity_changed','corporate_action','invalid_dividend_amount','ambiguous_corporate_action','provider_status_failed'):
         if value.startswith(prefix):return value.split(':')[0][:100]
     return 'provider_or_validation_failure'
 
@@ -144,6 +144,9 @@ def receipt(conn,job,kind,key,payload,clock):
 def pilot_hash(config):
     wire=config.model_dump(mode='json')
     if wire['view'].get('pilot_health_file') is None:wire['view'].pop('pilot_health_file',None)
+    # STK-079: new opt-in settings keep existing schedule hashes when left at their defaults.
+    if wire['view'].get('adjusted_multi_stream')=='disabled':wire['view'].pop('adjusted_multi_stream',None)
+    if wire['market'].get('corporate_actions') is False:wire['market'].pop('corporate_actions',None)
     return digest(wire)
 
 
@@ -282,6 +285,12 @@ def handlers(schedule,config):
                             finally:client.close()
                         except (StaleLease,UpstreamAccessRejected):raise
                         except Exception as exc:row['errors'].append('financial:'+safe_error(exc))
+                    # STK-079: corporate actions refresh weekly; denial or failure never blocks price research.
+                    seen=[a['observed_at'] for a in old.get('corporate_actions',())]
+                    if one.corporate_actions and (not seen or (datetime.fromisoformat(clock().replace('Z','+00:00'))-datetime.fromisoformat(max(seen).replace('Z','+00:00'))).days>=7):
+                        try:row['corporate_actions']=ingest_configured_actions(store,one,result,clock=clock,client_factory=Client,pause=0)['listings'][0]
+                        except (StaleLease,UpstreamAccessRejected):raise
+                        except Exception as exc:row['errors'].append('corporate_actions:'+safe_error(exc))
                     detail=company(store,config.view,member['listing_id'],clock=clock)
                     bundle=retrieve(store,query_for(config,member,'long_term',clock()),config.evidence.retrieval,access=source_access(config.view.sources,clock),persist=False)
                     findings=candidates(bundle)

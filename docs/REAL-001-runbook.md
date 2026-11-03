@@ -122,6 +122,19 @@ database. Never point migration lifecycle tests at that database. Set
   `refresh_calendar: true` and `financial_statements: true` enable these operations
   in its ingestion stage. Recompute its configuration hash explicitly. This does
   not activate unqualified downstream research/publication stages.
+- STK-079: `corporate_actions: true` adds one Upstox corporate-actions request per
+  listing to the same ingestion stage (weekly per stock in the pilot worker). It needs
+  a grant scope `corporate_actions` with acquire/store/derive. Without it, prices still
+  ingest and the result reports `corporate_actions: denied`. Only dividend cash is stored
+  as arithmetic. Split, bonus and rights ratios are stored as `unsupported` labels,
+  because the provider ratio orientation is undocumented. Adjustment across them fails
+  closed. Leaving this setting, or `adjusted_multi_stream`, at its default keeps existing
+  schedule hashes. Enabling either one changes the hash, so recompute it explicitly.
+  NSE holidays already come from the dated calendar refresh (`refresh_calendar: true`).
+- STK-079 unattended refresh, only after the database is at 0015 and with owner approval:
+  `python scripts/activate_pilot_launchd.py activate --reviewed-plist <inactive preview from prepare_pilot_launchd.py> --approval "I approve unattended local research refresh"`.
+  It refuses to run on a schema other than 0015, installs with mode 0600, and never changes power settings.
+  Check it with `... status` and stop it with `... deactivate`. The Mac must be awake and logged in.
 - `scripts/run_real_evidence.py --config /private/path/research.json` may use
   `filings: []` to research already stored numerical evidence. Queries must be
   `live_paper`; configure permitted annual periods/metrics, installed local models,

@@ -42,3 +42,21 @@ for(const width of [1280,390])test('pilot coverage explains each company and ope
  await expect.poll(()=>opened).toBe('NSE:UIB')
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true)
 })
+
+test('corporate actions show ex-dates and never imply ratio arithmetic',async({page})=>{
+ await page.setViewportSize({width:390,height:844})
+ await page.route('**/api/v1/session',r=>r.fulfill({json:{authenticated:true}}))
+ await page.route('**/api/v1/dashboard',r=>r.fulfill({json:{datasets:[],jobs:[]}}))
+ await page.route('**/v1/real-research/status',r=>r.fulfill({json:status({state:'current'},{level:'none',today:[],next:[]})}))
+ await page.route('**/v1/real-research/scan',r=>r.fulfill({status:503,json:{detail:'not configured'}}))
+ await page.route('**/v1/real-research/coverage',r=>r.fulfill({status:503,json:{detail:'not configured'}}))
+ await page.route('**/v1/real-research/companies',r=>r.fulfill({json:{listing_ids:['NSE:UIA']}}))
+ await page.route('**/v1/real-research/companies/*',r=>r.fulfill({json:{symbol:'UIA',isin:'TEST',cutoff_at:'2026-10-31T10:00:00Z',price_series:[],financial_facts:[],documents:[],events:[],quantitative:{},limitations:[],analysis_history:[],
+  corporate_actions:[{action_id:'upstox:dividend:2026-08-14:final',type:'dividend',effective_at:'2026-08-13T18:30:00Z',cash_per_share:'6',currency:'INR',observed_at:'2026-10-21T12:00:00Z'},
+   {action_id:'upstox:bonus:2018-07-02:1:1',type:'unsupported',effective_at:'2018-07-01T18:30:00Z',cash_per_share:null,currency:'INR',observed_at:'2026-10-21T12:00:00Z'}]}}))
+ await page.goto('/#real-research')
+ const actions=page.getByTestId('corporate-actions')
+ await expect(actions).toContainText('2026-08-14 · Dividend ₹6 per share (final) · observed 2026-10-21')
+ await expect(actions).toContainText('2018-07-02 · Bonus 1:1 · ratio not used for adjustment')
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true)
+})

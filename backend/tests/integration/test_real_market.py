@@ -61,7 +61,11 @@ def test_scheduler_rejects_mode_and_configuration_drift(tmp_path):
     config=MarketConfig(account_ref='test',grant_file='/missing',token_file='/missing',retention_days=1)
     with pytest.raises(ValueError,match='live_paper'):handlers(SimpleNamespace(mode='synthetic'),config)
     with pytest.raises(ValueError,match='hash_mismatch'):handlers(SimpleNamespace(mode='live_paper',input_hash='x'),config)
-    installed=handlers(SimpleNamespace(mode='live_paper',input_hash=digest(config.model_dump(mode='json'))),config)
+    # STK-079: schedules hashed before the opt-in corporate_actions setting existed still match.
+    legacy={k:v for k,v in config.model_dump(mode='json').items() if k!='corporate_actions'}
+    installed=handlers(SimpleNamespace(mode='live_paper',input_hash=digest(legacy)),config)
+    with pytest.raises(ValueError,match='hash_mismatch'):
+        handlers(SimpleNamespace(mode='live_paper',input_hash=digest(legacy)),config.model_copy(update={'corporate_actions':True}))
     from stock_discovery_analysis.schedule_runner import JobFailure
     with pytest.raises(JobFailure):installed['snapshot'](None,None,None)
 

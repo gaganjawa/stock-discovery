@@ -226,3 +226,18 @@ def test_legacy_completed_scan_with_failed_initialization_is_not_reused(pilot_ca
     result,_=handler(c.conn,job,lambda:c.current[0])
     assert result['status']=='completed' and 'reused_scan' not in result and len(c.model_calls)==1
     assert c.conn.execute("SELECT payload FROM discovery.schedule_outbox WHERE kind='pilot_scan' ORDER BY created_at,event_key").fetchall().count((legacy,))==1
+
+
+def test_stk079_opt_in_defaults_keep_existing_pilot_schedule_hash(tmp_path):
+    sources=SourceConfig(grant_file=str(tmp_path/'g.json'),retention_days=365)
+    members=[dict(symbol=f'T{i:02}',isin=f'INE{i:09}',listing_id=f'NSE:INE{i:09}') for i in range(10)]
+    universe={'members':members};universe['version']=digest(universe)
+    config=pilot.PilotConfig(market=pilot.MarketConfig(account_ref='test',grant_file=str(tmp_path/'g.json'),token_file='t',retention_days=365,symbols=tuple(m['symbol'] for m in members)),
+        view=ViewConfig(sources=sources,listing_ids=tuple(m['listing_id'] for m in members)),
+        evidence=pilot.EvidenceConfig(sources=sources,filings=(),queries=(pilot.query_for(None,members[0],'long_term',NOW),),budget=Budget(account='fixture'),factual_report=True),
+        universe=universe,max_research=1)
+    legacy=config.model_dump(mode='json');legacy['view'].pop('pilot_health_file');legacy['view'].pop('adjusted_multi_stream');legacy['market'].pop('corporate_actions')
+    assert pilot.pilot_hash(config)==digest(legacy)
+    for changed in (config.model_copy(update={'market':config.market.model_copy(update={'corporate_actions':True})}),
+                    config.model_copy(update={'view':config.view.model_copy(update={'adjusted_multi_stream':'approved_v1'})})):
+        assert pilot.pilot_hash(changed)!=digest(legacy)

@@ -278,3 +278,9 @@ provider call was made, and M1 remains BLOCKED pending the owner rehearsal and a
 configured pilot company as readable, unavailable or denied, with plain reasons. These are
 descriptive only and never actionable. The migration state no longer discloses the schema
 version. One-page [owner approval sheet](STK-079-owner-approval-sheet.md), PROPOSED and not approved.
+
+3 November IST — STK-079 corporate actions and unattended refresh tooling:
+- Optional `corporate_actions` ingestion from the documented Upstox endpoint (append-only, grant-scoped, weekly per pilot stock). Only dividend cash is stored as arithmetic; split, bonus and rights ratios fail closed as `unsupported`. The company page lists observed ex-dates.
+- `scripts/activate_pilot_launchd.py` activates the reviewed LaunchAgent only with the owner approval phrase and only at schema 0015.
+- Default settings keep existing schedule hashes.
+- Tested on fabricated payloads only. No provider call was made.
