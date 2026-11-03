@@ -16,7 +16,7 @@ export function OwnerRules({onUnauthorized}:{onUnauthorized:()=>void}) {
  if(error)return <p role="alert" className="error" data-testid="owner-rules-error">{error}</p>
  if(!data)return null
  const approved=data.rules.filter(r=>r.decision==='approve'||r.decision==='change').length
- return <details className="panel" data-testid="owner-rules"><summary>Starting rules v{data.version} · {approved} of {data.rules.length} approved · {data.active} active</summary>
+ return <details className="panel discovery" aria-label="Owner starting rules" data-testid="owner-rules"><summary>Starting rules v{data.version} · {approved} of {data.rules.length} approved · {data.active} active</summary>
   {data.decision_file==='mismatched_version_ignored'&&<p role="alert" className="error" data-testid="owner-rules-mismatch">Your decision file is for a different rules version and was ignored.</p>}
   <div className="table-wrap"><table><thead><tr><th>#</th><th>Rule</th><th>Value</th><th>State</th><th>Waiting on</th></tr></thead><tbody>
    {data.rules.map(r=><tr key={r.id} data-testid={`owner-rule-${r.id}`}><td>{r.id}</td><td>{r.rule}</td><td>{r.value}</td><td>{STATE[r.state]??r.state}</td><td>{r.waiting_on.map(g=>GATE[g]??g).join(', ')||'nothing'}</td></tr>)}

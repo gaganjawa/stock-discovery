@@ -12,7 +12,7 @@ export function RealResearch({onUnauthorized}:{onUnauthorized:()=>void}) {
   fetch('/v1/real-research/status').then(async response=>{if(response.status===401)onUnauthorized();if(!response.ok)throw new Error('Real research status is unavailable.');return response.json()}).then(result=>{if(active)setData(result)}).catch(e=>{if(active)setError(e.message)})
   return()=>{active=false}
  },[])
- return <section className="discovery" aria-label="Real research">
+ return <><section className="discovery" aria-label="Real research">
   <div className="discovery-heading"><div><p className="eyebrow">REAL RESEARCH</p><h2>Indian market research</h2><p>Actual-company research requires connected, permitted sources and verified evidence.</p></div><span className="badge">BLOCKED · NON-ACTIONABLE</span></div>
   {data&&<>
    {data.database?.state==='migration_required'&&<p role="alert" className="error" data-testid="database-migration-required">The database schema must be upgraded before permitted real data can be read. Follow the rehearsed recovery runbook; nothing has been changed.</p>}
@@ -20,7 +20,6 @@ export function RealResearch({onUnauthorized}:{onUnauthorized:()=>void}) {
   </>}
   <div role="tablist" aria-label="Real investment horizon" className="horizon-tabs">{horizons.map(([id,name])=><button key={id} role="tab" aria-selected={horizon===id} onClick={()=>setHorizon(id)}>{name}</button>)}</div>
   <PilotCoverage onSelect={setSelected} onUnauthorized={onUnauthorized}/>
-  <OwnerRules onUnauthorized={onUnauthorized}/>
   <RealScan horizon={horizon} onSelect={setSelected} onUnauthorized={onUnauthorized}/>
   <RealCompany selected={selected} horizon={horizon} onUnauthorized={onUnauthorized}/>
   {error&&<p role="alert" className="error">{error}</p>}
@@ -33,4 +32,5 @@ export function RealResearch({onUnauthorized}:{onUnauthorized:()=>void}) {
    <ul>{data.limitations.map(s=><li key={s}>{s}</li>)}</ul>
   </>}
  </section>
+ <OwnerRules onUnauthorized={onUnauthorized}/></>
 }
