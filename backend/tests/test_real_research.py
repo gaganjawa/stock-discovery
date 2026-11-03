@@ -81,3 +81,18 @@ def test_pilot_coverage_reports_each_company_without_inventing_prices(monkeypatc
     assert cc['state']=='unavailable' and cc['reasons']==['real_identity_missing_or_ambiguous']
     assert d['state']=='unavailable' and d['reasons']==['batch_identity_missing_or_ambiguous'] and d['sessions']==0
     assert blocked.status_code==503 and blocked.json()['detail'].startswith('Database migration required')
+
+
+def test_missing_database_file_is_a_clear_503_not_a_crash(monkeypatch,tmp_path):
+    import json
+    config=tmp_path/'view.json'
+    config.write_text(json.dumps({'sources':{'grant_file':str(tmp_path/'g.json'),'retention_days':30},'listing_ids':['NSE:A']}))
+    monkeypatch.setenv('AUTH_TOKEN','x'*40);monkeypatch.setenv('COOKIE_SECURE','false')
+    monkeypatch.setenv('REAL_RESEARCH_VIEW_CONFIG',str(config))
+    monkeypatch.setenv('DATABASE_URL_FILE',str(tmp_path/'stock-discovery-rehearsal-<timestamp>'/'copy-database.url'))
+    c=TestClient(app);c.post('/api/v1/session',json={'token':'x'*40})
+    for path in ('/v1/real-research/coverage','/v1/real-research/scan','/v1/real-research/companies/NSE%3AA','/api/v1/dashboard'):
+        r=c.get(path)
+        assert r.status_code==503 and r.json()['detail'].startswith('Database connection file not found'),path
+    status=c.get('/v1/real-research/status').json()
+    assert status['database']=={'state':'unavailable'} and status['blockers'][0].startswith('Database is not reachable')

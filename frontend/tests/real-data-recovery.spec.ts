@@ -123,3 +123,20 @@ test('companies are named by symbol and unreadable reasons are explained',async(
  await expect(company.getByRole('alert')).toHaveText('Source permission denied: The saved grant does not allow this read (expired, revoked, retention or scope). (real_read_access_denied)')
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true)
 })
+
+test('a missing database file is explained instead of an internal failure',async({page})=>{
+ await page.setViewportSize({width:390,height:844})
+ const detail='Database connection file not found: check DATABASE_URL_FILE points to an existing file.'
+ await page.route('**/api/v1/session',r=>r.fulfill({json:{authenticated:true}}))
+ await page.route('**/api/v1/dashboard',r=>r.fulfill({status:503,json:{detail}}))
+ await page.route('**/v1/real-research/status',r=>r.fulfill({json:status({state:'unavailable'},{level:'none',today:[],next:[]})}))
+ await page.route('**/v1/real-research/scan',r=>r.fulfill({status:503,json:{detail}}))
+ await page.route('**/v1/real-research/rules',r=>r.fulfill({json:RULES}))
+ await page.route('**/v1/real-research/coverage',r=>r.fulfill({status:503,json:{detail}}))
+ await page.route('**/v1/real-research/companies',r=>r.fulfill({json:{listing_ids:['NSE:INE009A01021']}}))
+ await page.route('**/v1/real-research/companies/*',r=>r.fulfill({status:503,json:{detail}}))
+ await page.goto('/#real-research')
+ await expect(page.getByTestId('database-unreachable')).toContainText('DATABASE_URL_FILE')
+ await expect(page.getByRole('region',{name:'Observed company research'}).getByRole('alert').first()).toHaveText(detail)
+ await expect(page.getByText('Internal request failure')).toHaveCount(0)
+})

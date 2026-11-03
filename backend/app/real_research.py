@@ -95,6 +95,8 @@ def status():
             result['blockers'][0]='Configured company inputs cannot currently be read with verified permissions.'
     if result['database']['state']=='migration_required':
         result['blockers'].insert(0,MIGRATION_REQUIRED)
+    if result['database']['state']=='unavailable':
+        result['blockers'].insert(0,'Database is not reachable: check that DATABASE_URL_FILE points to an existing file and the database container is running.')
     return result
 
 
