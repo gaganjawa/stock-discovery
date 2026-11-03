@@ -27,12 +27,12 @@ const day=(t?:string|null)=>t?t.slice(0,10):'unknown'
 export function DailyNote({rows}:{rows:Row[]}) {
  const name=(r:Row)=>r.symbol??r.listing_id
  const latest=rows.map(r=>r.refresh?.latest_session).filter(Boolean).sort().pop()
- const current=rows.filter(r=>r.refresh?.current),blocked=rows.filter(r=>!r.refresh)
- const stale=rows.filter(r=>r.refresh&&!r.refresh.current)
+ const current=rows.filter(r=>r.refresh?.current),blocked=rows.filter(r=>r.state!=='available')
+ const stale=rows.filter(r=>r.refresh&&!r.refresh.current),ready=rows.length-blocked.length
  return <div className="daily-note" data-testid="daily-coverage-note">
-  <p><strong>Daily note · latest verified session {day(latest)}</strong> · {current.length} of {rows.length} refreshed.</p>
-  {stale.length>0&&<p data-testid="daily-note-stale">Behind: {stale.map(r=>`${name(r)} (last price ${day(r.refresh!.latest_bar)}${r.refresh!.missing_sessions?`, ${r.refresh!.missing_sessions} sessions missing`:''})`).join('; ')}.</p>}
-  {blocked.length>0&&<p data-testid="daily-note-blocked">Not readable: {blocked.map(r=>`${name(r)} (${explain(r.reasons[0]??'inputs_unavailable')})`).join('; ')}</p>}
+  <p><strong>Daily note · latest verified session {day(latest)}</strong> · prices current for {current.length} of {rows.length} · charts readable for {ready} of {rows.length}.</p>
+  {stale.length>0&&<p data-testid="daily-note-stale">Prices behind: {stale.map(r=>`${name(r)} (last price ${day(r.refresh!.latest_bar)}${r.refresh!.missing_sessions?`, ${r.refresh!.missing_sessions} sessions missing`:''})`).join('; ')}.</p>}
+  {blocked.length>0&&<p data-testid="daily-note-blocked">Chart not readable: {blocked.map(r=>`${name(r)} (${explain(r.reasons[0]??'inputs_unavailable')})`).join('; ')}</p>}
   {!stale.length&&!blocked.length&&<p>Nothing missing.</p>}
  </div>
 }
