@@ -286,9 +286,8 @@ def handlers(schedule,config):
                         except (StaleLease,UpstreamAccessRejected):raise
                         except Exception as exc:row['errors'].append('financial:'+safe_error(exc))
                     # STK-079: corporate actions refresh weekly; denial or failure never blocks price research.
-                    seen=[a['observed_at'] for a in old.get('corporate_actions',())]
-                    if one.corporate_actions and (not seen or (datetime.fromisoformat(clock().replace('Z','+00:00'))-datetime.fromisoformat(max(seen).replace('Z','+00:00'))).days>=7):
-                        try:row['corporate_actions']=ingest_configured_actions(store,one,result,clock=clock,client_factory=Client,pause=0)['listings'][0]
+                    if one.corporate_actions:
+                        try:row['corporate_actions']=ingest_configured_actions(store,one,result,clock=clock,client_factory=Client,pause=0,refresh_after_days=7)['listings'][0]
                         except (StaleLease,UpstreamAccessRejected):raise
                         except Exception as exc:row['errors'].append('corporate_actions:'+safe_error(exc))
                     detail=company(store,config.view,member['listing_id'],clock=clock)

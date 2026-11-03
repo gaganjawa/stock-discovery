@@ -63,23 +63,13 @@ All four items are limited to fixing the blocker.
 2. **Readiness banner, "What you can do today".**
    - It reads `none` or `level_1_descriptive` from the actual company read.
    - It lists what each later milestone adds.
-3. **Owner rule for combining verified streams (`adjusted_multi_stream: approved_v1`).**
-   - Off by default. The existing single-batch behaviour stays the default until the owner enables
-     the rule in the private view configuration.
-   - When enabled:
-     - Every contributing stream must pass the existing full page/hash/provenance verification on its own.
-     - Streams are ordered by observation clock.
-     - Each later stream must share at least one candle with an earlier one. A provider
-       re-adjustment between streams with no shared candle would be undetectable, so that case
-       fails closed (`adjusted_stream_continuity_unverified`).
-     - Every shared candle must be identical, otherwise `adjusted_stream_conflict`.
-   - Results:
-     - Batch identity digests every stream batch identity.
-     - Each observation keeps its own stream clock and grant.
-     - Limitations add `owner_approved_multi_stream_rule_v1`.
-     - All five permission flags stay literal false.
-   - Not weakened: session boundaries, coverage, historical-request denial, relative volume (null)
-     and read fences.
+3. **Multi-stream recovery remains unavailable after security review.**
+   - `approved_v1` alone is not adjustment-vintage evidence. Matching recent overlap
+     cannot establish whether an older, non-overlapping segment was subsequently adjusted.
+   - All full-stream revisions (including superseded overlaps), parents and original grants
+     are now temporally checked and fenced before page verification. Unauthorized dependencies deny access.
+   - Even authorized, matching streams return `adjusted_vintage_unverified`; charts and
+     metrics are withheld. Single verified observation batches retain their existing contract.
 4. **Owner tooling (read-only on the original).**
    - `scripts/audit_retained_database.py` prints, all sanitized:
      - schema version and whether the fence tables exist;
@@ -119,9 +109,9 @@ No genuine market data, provider call or retained database was used.
 3. Run `DATABASE_URL_FILE=<private> python scripts/rehearse_migration.py backups/pre-0015-<date>.dump --keep-copy`.
    It must print `"pass": true` and `"original_unchanged": true`.
 4. Point a local API at the kept copy. Repeat step 2 against it, then open INFY in the browser.
-   - If the strict default shows `batch_identity_missing_or_ambiguous`, either approve
-     `adjusted_multi_stream: "approved_v1"` in the private view configuration or keep it off.
-   - The dry run in step 2 shows in advance whether the rule would verify.
+   - `batch_identity_missing_or_ambiguous` or `adjusted_vintage_unverified` remains blocked.
+     Owner approval alone cannot establish adjustment consistency across downloads.
+   - The dry run checks structural integrity only, not authorization or qualification.
 5. Only after explicit approval: run the normal `alembic upgrade head` on the original,
    then repeat step 2 and the browser check.
 6. Keep the dump. Never run `validate_migrations.py`, a downgrade or a reseed against the original.
@@ -137,7 +127,7 @@ windows, and no code change can resolve it.
 | # | Blocker | Fix it alone? | Owner/provider action | Cost/time | Resolution |
 |---|---|---|---|---|---|
 | 1 | Retained database at 0013 | Tooling done; execution is on the Mac | Run §4, approve migrating the original | ₹0, 1–3 days | Rehearse, approve, then upgrade |
-| 2 | 13 rolling streams | Done (rule v1) | Approve or decline rule v1 | ₹0 | Combine only verified, overlapping, agreeing streams |
+| 2 | 13 rolling streams | BLOCKED | Establish permitted coherent observation-batch evidence | Unverified | Matching overlap is insufficient; no combined chart |
 | 3 | Retention of older observations | No | Confirm the Upstox retention terms | ₹0; provider-dependent | Audit flags affected streams |
 | 4 | No original (unadjusted) prices | No | Choose a source: NSE licence quote, Kite (₹500/month, basis unverified), or defer | Unknown | Level 1 stays descriptive; no execution-grade backtests |
 | 5 | Filing/news corpus rights and publication times | No | Send the drafted inquiries, or accept structured fundamentals only | ₹0; reply time unknown | Filing RAG after rights are confirmed |
@@ -176,7 +166,7 @@ windows, and no code change can resolve it.
 1. Approve migrating the original after the rehearsal passes.
 2. Approve merging PR #35, then this branch, after review.
 3. Accept adjusted descriptive research as the Level 1 basis.
-4. Approve or decline multi-stream rule v1.
+4. Resolve coherent adjusted-batch evidence; multi-stream approval alone is insufficient.
 5. Retention: confirm continued use of observations older than 30 days.
 6. Choose the original-price path.
 7. Choose whether to send the rights inquiries.
@@ -189,7 +179,18 @@ windows, and no code change can resolve it.
 | When | What the owner can do |
 |---|---|
 | **Today** | Synthetic workflows only. Real company reads fail closed. The UI now says why: the database needs migrating. |
-| **After §4 and the migration** | Real INFY adjusted chart and descriptive indicators. Stored financial facts with citations. Local research history. |
+| **After §4 and the migration** | Authorized reads can proceed; adjusted charts still require a coherent, qualified batch. Migration alone does not qualify the retained rolling streams. |
 | **After the pilot extension** | The same for the 12 pilot stocks, with discovery ranking marked as descriptive. |
 | **After Level 2** | Qualified shadow BUY/WATCH/AVOID/INSUFFICIENT EVIDENCE decisions, point-in-time replay, and a paper portfolio with measured outcomes. |
 | **After Level 3** | Evidence of whether each horizon and the AI arms actually add value, reported as measured. |
+
+## PR #36 review corrections
+
+Successful corporate-action fetches now append grant-attributed empty ingestion-page receipts,
+including empty and unchanged responses. Weekly scheduling uses the receipt clock; it does
+not rewrite original evidence observations. These receipts survive worker restart.
+
+Rehearsal first proves that the configured URL and Compose psql share the same database
+using a random, database-scoped advisory-lock challenge, before any dump or copy creation.
+Shutdown retains the plist on bootout failure or when service absence cannot be verified.
+These checks do not authorize source activation or migration of the retained original.

@@ -41,14 +41,32 @@ class ActivateTests(unittest.TestCase):
         self.assertFalse(agent_path(self.home).exists())
         activate(self.reviewed, APPROVAL, home=self.home, run=Runner(), schema=lambda f: '0015', uid=501)
         run = Runner()
-        self.assertEqual(deactivate(home=self.home, run=run, uid=501)['status'], 'inactive')
-        self.assertEqual(run.calls, [['launchctl', 'bootout', 'gui/501/local.stock-discovery.research']])
+        def stopped(args,**kw):
+            run.calls.append(args)
+            return SimpleNamespace(returncode=113 if args[1]=='print' else 0)
+        self.assertEqual(deactivate(home=self.home, run=stopped, uid=501)['status'], 'inactive')
+        self.assertEqual(run.calls, [['launchctl', 'bootout', 'gui/501/local.stock-discovery.research'],['launchctl', 'print', 'gui/501/local.stock-discovery.research']])
         self.assertFalse(agent_path(self.home).exists())
 
     def test_status_reports_only_safe_fields(self):
         out = 'state = running\nruns = 3\nlast exit code = 0\nenvironment = {\n DATABASE_URL_FILE = /private\n}'
         self.assertEqual(status(run=Runner(stdout=out), uid=501), dict(status='active', label='local.stock-discovery.research', state='running', runs='3', last_exit='0'))
         self.assertEqual(status(run=Runner(code=113), uid=501)['status'], 'inactive')
+        with self.assertRaisesRegex(RuntimeError,'status_unverified'):status(run=Runner(code=5),uid=501)
+
+
+
+class ShutdownFailureTests(unittest.TestCase):
+    def test_bootout_failure_preserves_plist(self):
+        with tempfile.TemporaryDirectory() as home:
+            target=agent_path(home);target.parent.mkdir(parents=True);target.write_text('reviewed')
+            with self.assertRaisesRegex(RuntimeError,'shutdown'):
+                deactivate(home=home,run=Runner(code=5),uid=501)
+            self.assertTrue(target.exists())
+
+    def test_successful_bootout_but_still_loaded_is_failure(self):
+        with self.assertRaisesRegex(RuntimeError,'shutdown'):
+            deactivate(run=Runner(),uid=501)
 
 
 if __name__ == '__main__':unittest.main()

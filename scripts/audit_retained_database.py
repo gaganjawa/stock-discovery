@@ -79,7 +79,7 @@ def price_streams(conn, listing, now, retention_days):
 
 def qualification_dry_run(conn, listing):
     """Same pure verification the company view uses; reads only, no grant authorization."""
-    from stock_discovery_analysis.adjusted_research import verify_pages, verify_streams, stream_evidence
+    from stock_discovery_analysis.adjusted_research import verify_pages, stream_evidence
     from stock_discovery_analysis.revisions import Revision
     rows = conn.execute("""SELECT DISTINCT ON (logical_key) payload FROM discovery.revisions
         WHERE listing_id=%s AND kind='candle' AND payload->>'availability_basis'='observed'
@@ -99,11 +99,7 @@ def qualification_dry_run(conn, listing):
     if len(ids) == 1:
         combined = 'single_stream' if set(per_stream.values()) == {'verified'} else 'single_stream_unverified'
     else:
-        try:
-            verify_streams(conn, bars, ids)
-            combined = 'multi_stream_rule_v1_would_verify'
-        except ValueError as error:
-            combined = str(error)
+        combined = 'adjusted_vintage_unverified'
     return dict(selected_bars=len(bars), contributing_streams=len(ids), per_stream=per_stream, combined=combined,
                 note='Session boundaries, coverage and current grants are checked separately by the company view.')
 

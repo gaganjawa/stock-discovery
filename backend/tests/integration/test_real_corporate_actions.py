@@ -2,7 +2,7 @@
 import json
 import psycopg
 import pytest
-from test_rag_research import isolated_url
+from test_rag_research import isolated_url as _isolated_url
 from test_real_market import grant, NOW
 from worker.real_market import MarketConfig, ingest_configured_actions
 from worker.providers.upstox import observed_revision, RevisionPages
@@ -11,6 +11,10 @@ from stock_discovery_analysis.real_access import SourceConfig
 from stock_discovery_analysis.revisions import InstrumentData
 from stock_discovery_analysis.revision_storage import Stream, ingest_next
 from stock_discovery_contracts.rights import UseRequest
+
+@pytest.fixture
+def isolated_url():yield from _isolated_url.__wrapped__()
+
 
 LISTING = 'NSE:INE009A01021'
 
@@ -75,3 +79,22 @@ def test_missing_corporate_action_scope_denies_before_any_request(isolated_url, 
         with pytest.raises(PermissionError):
             ingest_configured_actions(conn, config, {'instruments': [{'listing_id': LISTING}]}, clock=lambda: NOW, client_factory=Provider, pause=0)
         assert Provider.calls == [] and conn.execute("SELECT count(*) FROM discovery.revisions WHERE kind='action'").fetchone()[0] == before
+
+
+@pytest.mark.parametrize('empty',[False,True])
+def test_successful_fetch_receipts_survive_restart_and_unchanged_response(isolated_url,tmp_path,empty):
+    Provider.calls.clear(); response={'status':'success','data':[]} if empty else payload()
+    Provider.responses[:]=[response,response]
+    market={'instruments':[{'listing_id':LISTING}]}
+    with psycopg.connect(isolated_url,autocommit=True) as conn:
+        config,_=setup(conn,tmp_path,('prices','universe','calendar','corporate_actions'))
+        ingest_configured_actions(conn,config,market,clock=lambda:NOW,client_factory=Provider,pause=0,refresh_after_days=7)
+        before=conn.execute("SELECT payload FROM discovery.revisions WHERE kind='action' ORDER BY revision_id").fetchall()
+    # New connection models a restarted worker; no process-local throttle survives.
+    with psycopg.connect(isolated_url,autocommit=True) as conn:
+        for stamp,count in [('2026-10-20T12:00:00Z',1),('2026-10-26T12:00:00Z',2),('2026-10-27T12:00:00Z',2)]:
+            ingest_configured_actions(conn,config,market,clock=lambda:stamp,client_factory=Provider,pause=0,refresh_after_days=7)
+            assert len(Provider.calls)==count
+        assert conn.execute("SELECT payload FROM discovery.revisions WHERE kind='action' ORDER BY revision_id").fetchall()==before
+        assert conn.execute("SELECT count(*) FROM discovery.streams WHERE stream_id LIKE 'REAL-ACTIONS-SUCCESS-v1:%' AND complete").fetchone()==(2,)
+        assert conn.execute('SELECT count(*) FROM discovery.recommendations').fetchone()==(0,)

@@ -107,7 +107,7 @@ def verify_pages(bars, rows, stream, pages):
     return Batch(identity=digest([stream[0],hashes,[r.revision_id for r in records]]),page_hashes=tuple(hashes))
 
 
-MULTI_STREAM_REASONS={'adjusted_stream_conflict','adjusted_stream_continuity_unverified','batch_stream_limit'}
+MULTI_STREAM_REASONS={'adjusted_stream_conflict','adjusted_stream_continuity_unverified','batch_stream_limit','adjusted_vintage_unverified'}
 
 
 def stream_evidence(conn, stream_id):
@@ -117,15 +117,21 @@ def stream_evidence(conn, stream_id):
     return stream,stored,pages
 
 
-def verify_streams(conn, bars, stream_ids):
-    """Owner rule v1: every contributing stream is fully verified on its own; streams
-    are chained by observation clock, each later stream must overlap earlier ones,
-    and every overlapping candle must be identical. Any conflict fails closed."""
+def verify_streams(conn, bars, stream_ids, *, cutoff):
+    """Authorize and verify full streams; overlap cannot certify adjustment vintage.
+
+    Until a coherent vintage is independently established, even matching streams
+    remain unavailable. This diagnostic path never grants qualification.
+    """
     check(1<len(stream_ids)<=60, 'batch_stream_limit')
-    verified=[];grants={};by_id={}
+    verified=[];grants={};by_id={};inputs=[]
     for sid in stream_ids:
         stream,stored,pages=stream_evidence(conn,sid)
         records=tuple(Revision.model_validate(row[0]) for row in stored)
+        inputs.append((sid,stream,stored,pages,records))
+    from .read_fences import authorize_revision_dependencies
+    authorize_revision_dependencies(conn,[r.revision_id for _,_,_,_,records in inputs for r in records],cutoff)
+    for sid,stream,stored,pages,records in inputs:
         verified.append((at(records[0].fetched_at) if records else None,sid,verify_pages(records,stored,stream,pages),records))
         grants.update({r.revision_id:(row[1],row[2]) for r,row in zip(records,stored)})
         by_id.update({r.revision_id:r for r in records})
@@ -140,10 +146,9 @@ def verify_streams(conn, bars, stream_ids):
             else:seen[r.logical_key]=r.data.model_dump()
         # Without a shared candle, a provider re-adjustment between streams is undetectable.
         check(position==0 or overlap>0, 'adjusted_stream_continuity_unverified')
-    return Batch(identity=digest(['multi_stream_v1',[[sid,batch.identity] for _,sid,batch,_ in verified],[r.revision_id for r in bars]]),
-                 identity_basis='verified_ingestion_pages_multi_stream_v1',
-                 page_hashes=tuple(h for _,_,batch,_ in verified for h in batch.page_hashes),
-                 stream_batches=tuple(batch.identity for _,_,batch,_ in verified)),grants
+    # Matching overlap does not prove the unrefetched dates share an adjustment vintage.
+    # No provider adjustment ledger/version is stored; owner approval cannot supply it.
+    raise ValueError('adjusted_vintage_unverified')
 
 
 def verified_session_boundaries(bars, sessions, cutoff):
@@ -198,7 +203,7 @@ def describe(conn, listing, bars, sessions, readiness, cutoff, *, historical_req
                     batch=verify_pages(bars,stored,stream,pages)
                     grants={r.revision_id:(row[1],row[2]) for r,row in zip(bars,stored)}
                 else:
-                    batch,grants=verify_streams(conn,bars,sorted(r[0] for r in rows))
+                    batch,grants=verify_streams(conn,bars,sorted(r[0] for r in rows),cutoff=cutoff)
                 observations=tuple(Observation(revision_id=r.revision_id,source_version=r.source_revision,
                     instrument_revision_id=r.instrument_revision_id,published_at=r.published_at,available_at=r.available_at,
                     acquired_at=r.fetched_at,observed_at=r.fetched_at,grant_id=grants[r.revision_id][0],grant_version=grants[r.revision_id][1]) for r in bars)

@@ -219,7 +219,29 @@ def ingest_configured_financials(conn,config,market_result,*,clock=now):
         conn.execute('SELECT pg_advisory_unlock(hashtextextended(%s,0))',(lock,))
 
 
-def ingest_configured_actions(conn,config,market_result,*,clock=now,client_factory=Upstox,pause=.6):
+def action_receipt_prefix(config, listing):
+    return 'REAL-ACTIONS-SUCCESS-v1:'+digest(['upstox',config.account_ref,listing])+':'
+
+
+def actions_refresh_due(conn,config,listing,clock,days,access):
+    prefix=action_receipt_prefix(config,listing)
+    row=conn.execute("""SELECT s.stream_id FROM discovery.streams s JOIN discovery.pages p USING(stream_id)
+        WHERE s.source_id='upstox' AND s.account_ref=%s AND s.scope='corporate_actions'
+          AND left(s.stream_id,%s)=%s AND s.complete AND p.complete AND p.cursor_key=''
+          AND p.accepted=0 AND p.quarantined=0 ORDER BY s.stream_id DESC LIMIT 1""",
+        (config.account_ref,len(prefix),prefix)).fetchone()
+    if not row:return True
+    from stock_discovery_contracts.v2 import at
+    stamp=at(row[0][len(prefix):]);now_at=at(clock())
+    check(stamp<=now_at,'corporate_action_receipt_clock_invalid')
+    stream=Stream(stream_id=row[0],source_id='upstox',account_ref=config.account_ref,scope='corporate_actions')
+    access.require(stream,('acquire','store','derive'))
+    # Receipt reuse remains subject to its original grant and current fences.
+    conn.execute('SELECT discovery.check_ingestion_page(%s,%s)',(row[0],''))
+    return (now_at-stamp).total_seconds()>=days*86400
+
+
+def ingest_configured_actions(conn,config,market_result,*,clock=now,client_factory=Upstox,pause=.6,refresh_after_days=0):
     """STK-079: one corporate-action observation per configured listing; append-only."""
     import time
     from collections import Counter
@@ -232,6 +254,8 @@ def ingest_configured_actions(conn,config,market_result,*,clock=now,client_facto
     try:
         results=[]
         for item in market_result['instruments']:
+            if refresh_after_days and not actions_refresh_due(conn,config,item['listing_id'],clock,refresh_after_days,access):
+                results.append(dict(listing_id=item['listing_id'],status='reused_successful_fetch'));continue
             row=conn.execute("SELECT payload FROM discovery.revisions WHERE source_id='upstox' AND listing_id=%s AND kind='instrument' ORDER BY sequence DESC LIMIT 1",(item['listing_id'],)).fetchone()
             check(row is not None,'observed_instrument_required')
             identity=Revision.model_validate(row[0])
@@ -253,6 +277,13 @@ def ingest_configured_actions(conn,config,market_result,*,clock=now,client_facto
                 stored=ingest_next(conn,stream,pages,load_grant=lambda:access.load_grant(stream),request=request,audit=access.audit,clock=clock)
                 check(not stored.get('quarantined'),'corporate_actions_quarantined')
                 if conn.execute('SELECT complete FROM discovery.streams WHERE stream_id=%s',(stream.stream_id,)).fetchone()[0]:break
+            # Empty successful pages are immutable, grant-attributed fetch receipts.
+            # Record only after every changed revision has committed successfully.
+            receipt_stream=Stream(stream_id=action_receipt_prefix(config,identity.listing_id)+fetched,
+                source_id='upstox',account_ref=config.account_ref,scope='corporate_actions')
+            _,request=access.require(receipt_stream,('acquire','store','derive'))
+            ingest_next(conn,receipt_stream,RevisionPages(()),load_grant=lambda:access.load_grant(receipt_stream),
+                request=request,audit=access.audit,clock=clock)
             results.append(dict(listing_id=identity.listing_id,observed=len(actions),stored=len(changed),
                                 types=dict(Counter(a.action_type for a in actions)),arithmetic='dividend_cash_only'))
             if pause:time.sleep(pause)

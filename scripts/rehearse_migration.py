@@ -22,6 +22,25 @@ from audit_retained_database import database_url, fingerprints  # noqa: E402
 from backup_restore import command  # noqa: E402
 
 
+def verify_target(url, *, run=command, connect=None):
+    """Prove URL and Compose reach the same database/lock manager, before any copy.
+
+    A random session advisory lock also distinguishes byte-identical cloned
+    clusters. No row/schema writes, credentials, or provider calls are involved.
+    """
+    import psycopg
+    connect=connect or psycopg.connect
+    source=psycopg.conninfo.conninfo_to_dict(url)['dbname']
+    challenge=uuid.uuid4().int & ((1<<63)-1)
+    with connect(url,autocommit=True,connect_timeout=5,options='-c default_transaction_read_only=on') as conn:
+        conn.execute('SELECT pg_advisory_lock(%s)',(challenge,))
+        try:
+            result=run('psql -X -U "$POSTGRES_USER" -d "$1" -At -v ON_ERROR_STOP=1 -c "SELECT NOT pg_try_advisory_lock($2::bigint)"',source,str(challenge))
+            if result.strip()!=b't':raise ValueError('database_target_mismatch')
+        finally:
+            conn.execute('SELECT pg_advisory_unlock(%s)',(challenge,))
+
+
 def compare(before, after):
     changed = sorted(t for t in before if after.get(t) != before[t])
     return dict(unchanged=not changed, changed=changed, added=sorted(set(after) - set(before)))
@@ -68,6 +87,7 @@ def main():
             version = [v[0] for v in conn.execute('SELECT version_num FROM alembic_version')]
             return version, fingerprints(conn)
 
+    verify_target(url)
     version, before = snapshot(url)
     args.destination.parent.mkdir(parents=True, exist_ok=True)
     fd = os.open(args.destination, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)

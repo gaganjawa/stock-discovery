@@ -108,6 +108,7 @@ def test_retained_0013_upgrade_restores_fenced_reads_without_rewriting(migration
         assert strict['status'] == 'UNAVAILABLE' and strict['unavailable_reasons'] == ['batch_identity_missing_or_ambiguous']
         approved = company(conn, config('approved_v1'), LISTING, clock=lambda: NOW)
         research = approved['adjusted_research']
-        assert research['status'] == 'AVAILABLE_DESCRIPTIVE_ONLY' and len(approved['price_series']) == 30
+        assert research['status'] == 'UNAVAILABLE' and not approved['price_series']
+        assert 'adjusted_vintage_unverified' in research['unavailable_reasons']
         assert not research['execution_qualified'] and not research['historical_pit_qualified']
         assert snapshot(conn) == after

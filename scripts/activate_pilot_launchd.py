@@ -62,6 +62,10 @@ def activate(reviewed, approval, *, home=None, run=subprocess.run, schema=schema
 def deactivate(*, home=None, run=subprocess.run, uid=None):
     domain = f'gui/{uid if uid is not None else os.getuid()}'
     result = run(['launchctl', 'bootout', f'{domain}/{LABEL}'], capture_output=True, text=True)
+    # ESRCH (3) means no service; other errors do not establish shutdown.
+    if result.returncode not in (0,3):raise RuntimeError('launchctl_shutdown_failed')
+    stopped = run(['launchctl', 'print', f'{domain}/{LABEL}'], capture_output=True, text=True)
+    if stopped.returncode != 113:raise RuntimeError('launchctl_shutdown_unverified')
     target = agent_path(home)
     if target.exists():target.unlink()
     return dict(status='inactive', label=LABEL, was_loaded=result.returncode == 0)
@@ -70,7 +74,8 @@ def deactivate(*, home=None, run=subprocess.run, uid=None):
 def status(*, run=subprocess.run, uid=None):
     domain = f'gui/{uid if uid is not None else os.getuid()}'
     result = run(['launchctl', 'print', f'{domain}/{LABEL}'], capture_output=True, text=True)
-    if result.returncode != 0:return dict(status='inactive', label=LABEL)
+    if result.returncode == 113:return dict(status='inactive', label=LABEL)
+    if result.returncode != 0:raise RuntimeError('launchctl_status_unverified')
     fields = dict(line.strip().split(' = ', 1) for line in result.stdout.splitlines() if ' = ' in line)
     return dict(status='active', label=LABEL, state=fields.get('state'), runs=fields.get('runs'),
                 last_exit=fields.get('last exit code'))

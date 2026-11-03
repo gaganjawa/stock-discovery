@@ -73,9 +73,9 @@ cd frontend && node node_modules/vite/bin/vite.js --host 127.0.0.1 --port 5173 -
 Open http://127.0.0.1:5173/#real-research, sign in with your owner key, and open INFY.
 
 - If the chart shows, Level 1 works on the copy.
-- If it says *"Prices come from several downloads; the multi-stream rule is not approved"*, the
-  13-download rule is still off. To try it on the copy only, add `"adjusted_multi_stream": "approved_v1"`
-  to a **copy** of your view config, point `REAL_RESEARCH_VIEW_CONFIG` at that copy, and restart terminal 1.
+- Separate downloads remain unavailable even with `approved_v1`: matching overlaps do not
+  establish a coherent adjustment vintage. Do not enable that setting to claim qualification.
+  A permitted, verified single observation batch is still required for descriptive charts.
 
 Send me a screenshot of the INFY page. After that, I will ask for your approval before anything
 touches the original.
