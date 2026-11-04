@@ -12,7 +12,7 @@ for(const width of [1280,390])test('delayed chart is labelled and cleared on den
  await page.route('**/v1/real-research/companies/NSE%3ATEST',r=>r.fulfill({json:data}))
  await page.goto('/#real-research')
  const section=page.getByRole('region',{name:'Observed company research'}),notice=page.getByTestId('descriptive-delay-notice')
- await expect(notice).toContainText('INFY prices through 3 November 2026. Latest completed session: 4 November 2026. Data delayed by 1 trading session.')
+ await expect(notice).toContainText('INFY prices through 3 November 2026. Latest verified closed session in stored calendar: 4 November 2026. Data delayed by 1 trading session.')
  await expect(notice).toContainText('Current-day intraday candles are not included')
  await expect(section.getByLabel('Daily candlestick chart, 43 observed candles')).toBeVisible()
  await expect(section).toContainText('sma20')

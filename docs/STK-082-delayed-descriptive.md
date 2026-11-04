@@ -91,3 +91,32 @@ rights, financial reconciliation/valuation fields and instrument eligibility/ris
 Research policy and semantic financial qualification remain unapproved. See
 [the M1 acceptance checkpoint](AI_RESEARCH_DATA_ACCEPTANCE.md). This descriptive
 exception closes none of those source or investment-qualification gates.
+
+## Final review — response compatibility and calendar wording
+
+The notice says “Latest verified closed session in stored calendar” because the
+stored session list does not attest authoritative exchange-calendar completeness.
+Date formatting, the one-session warning and descriptive restrictions are unchanged.
+
+Repository call-site inspection found no application deserialization of persisted
+`AdjustedResearch` payloads. The only production constructor is `describe()` in
+`shared/stock_discovery_analysis/adjusted_research.py`, which supplies `freshness`
+for every newly generated result. `real_views._company()` calls it on each read
+and serializes the result with `model_dump(mode="json")`. The API status/coverage
+readers in `backend/app/real_research.py` consume those newly generated dictionaries.
+All `AdjustedResearch.model_validate` / `model_validate_json` calls occur in
+`backend/tests/test_adjusted_research.py` and `test_descriptive_freshness.py`,
+where they validate new responses or intentionally contradictory test payloads.
+
+Persistence consumers were also inspected: `worker/worker/real_pilot.py` saves
+selected readiness/indicator fields in scan receipts, not an `AdjustedResearch`
+object; publication code in `real_publication.py` rebuilds company inputs and
+persists recommendation artifacts under separate contracts. Neither path reads
+old adjusted response dictionaries through this model. Repository searches for
+`AdjustedResearch`, `adjusted_research` and `adjusted-research-v1` found no other
+persisted model consumer. This conclusion is scoped to current repository code,
+not hypothetical external clients.
+
+The model is therefore generated-response-only in current application use. Keep
+`adjusted-research-v1`, required `freshness`, and every invariant unchanged; no
+compatibility default, new version or database migration is needed.
