@@ -290,3 +290,12 @@ version. One-page [owner approval sheet](STK-079-owner-approval-sheet.md), PROPO
 - Charts mark dividend and bonus/split ex-dates. These are labels only and never adjust prices.
 - The pilot coverage panel adds a daily note covering refreshed, behind and not-readable stocks.
 - The approval sheet is now versioned rules (`/v1/real-research/rules`). Private decisions and gate evidence are kept outside Git; approved rules stay inactive until every gate passes.
+
+4 November — **STK-082 / D3-13 scoped descriptive release**: opt-in
+`one_trailing_session_v1` permits one missing trailing verified session only after
+single-batch provenance, authorization and boundary checks. Strict remains default;
+readiness stays delayed, never current. Read-only INFY verification returns 43
+historical chart points through November 3 against the November 4 closed session;
+original evidence is unchanged. No provider/AI calls, policy activation, grant
+changes, trading or admission. [Behavior, validation and remaining blockers](STK-082-delayed-descriptive.md).
+M1 and full D3-13 acceptance remain blocked; owner PR review required.

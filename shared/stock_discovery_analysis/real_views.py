@@ -25,6 +25,8 @@ class ViewConfig(Strict):
     pilot_scope_id: Text | None = None
     pilot_health_file: Text | None = None
     swing: SwingConfig | None = None
+    # STK-082: opt-in descriptive delay; never changes execution freshness.
+    descriptive_freshness_policy: Literal['strict','one_trailing_session_v1'] = 'strict'
     # STK-014/079: owner-approved combination of separately verified price streams.
     adjusted_multi_stream: Literal['disabled','approved_v1'] = 'disabled'
 
@@ -122,7 +124,8 @@ def _company(conn,config,listing,*,clock,publication_inputs,cutoff_at,access):
     from .adjusted_research import describe
     adjusted_result=describe(conn,listing,bars,sessions,readiness,cutoff,
         historical_request=cutoff_at is not None,provenance=provenance,
-        multi_stream=config.adjusted_multi_stream=='approved_v1')
+        multi_stream=config.adjusted_multi_stream=='approved_v1',freshness_policy=config.descriptive_freshness_policy)
+    readiness['descriptive_freshness']=adjusted_result.freshness.model_dump(mode='json')
     display_bars=[r for r in bars if r.source_id!='upstox' or adjusted_result.status=='AVAILABLE_DESCRIPTIVE_ONLY']
     observed_features=adjusted_result.metrics
     feature_reason=','.join(adjusted_result.unavailable_reasons) or 'descriptive_only_action_coverage_and_volume_basis_unqualified'

@@ -74,7 +74,7 @@ def test_pilot_coverage_reports_each_company_without_inventing_prices(monkeypatc
     assert (details['B'].status_code,details['B'].json()['detail'])==(403,'Source permission denied')
     assert (details['C'].status_code,details['C'].json()['detail'])==(503,'Real company inputs are unavailable: real_identity_missing_or_ambiguous')
     assert details['F'].json()['detail']=='Real company inputs are unavailable: inputs_unavailable'
-    assert a==dict(listing_id='NSE:A',symbol='A',state='available',reasons=[],sessions=2,last_session='2026-10-23',indicators=['sma20'],
+    assert a==dict(descriptive_freshness=None,listing_id='NSE:A',symbol='A',state='available',reasons=[],sessions=2,last_session='2026-10-23',indicators=['sma20'],
                    refresh=dict(current=False,latest_session='2026-10-24T10:00:00Z',latest_bar='2026-10-23T10:00:00Z',missing_sessions=1))
     assert d['refresh']==dict(current=False,latest_session=None,latest_bar=None,missing_sessions=0)
     assert b==dict(listing_id='NSE:B',state='denied',reasons=['source_permission_denied'])
