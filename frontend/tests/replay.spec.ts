@@ -1,5 +1,12 @@
 import { test, expect } from '@playwright/test'
 import { readFileSync, existsSync } from 'node:fs'
+import { createHash } from 'node:crypto'
+const canonical=(value:any):string=>JSON.stringify(value===null||typeof value!=='object'?value:
+ Array.isArray(value)?value.map(v=>JSON.parse(canonical(v))):Object.fromEntries(Object.keys(value).sort().map(k=>[k,JSON.parse(canonical(value[k]))])))
+function verifySplitHash(report:any){
+ const {audit_id,...inputs}=report
+ expect(audit_id).toBe('SYN-SPLIT-'+createHash('sha256').update(canonical(inputs)).digest('hex'))
+}
 const token=process.env.AUTH_TOKEN??(existsSync('../.env')?readFileSync('../.env','utf8').split('\n').find(x=>x.startsWith('AUTH_TOKEN='))?.slice(11):undefined)
 test('authenticated synthetic freeze, reveal, scorecard and future placeholders',async({page})=>{
  if(!token)throw new Error('Set the local test access key; never use a broker credential')
@@ -86,24 +93,45 @@ test('authenticated synthetic freeze, reveal, scorecard and future placeholders'
  await groups.selectOption(chosenGroup!)
  const selectedScores=await (await groupResponse).json()
  expect(selectedScores.selected_cohort).toBe(chosenGroup)
+ verifySplitHash(selectedScores.chronological_validation)
+ const chronology=page.getByRole('region',{name:'Chronological split audit',exact:true})
+ await expect(chronology).toContainText(selectedScores.chronological_validation.audit_id)
+ // A real synthetic worker may append decisions between requests. Force that
+ // interleaving with an authorized fictional freeze, without timing sleeps or
+ // mutating any original decision, so this regression cannot pass by luck.
+ const initialIds=new Set(selectedScores.eligibility.map((e:any)=>e.id))
+ let addedId:string|undefined
+ for(const candidate of dates){
+  const extra=await page.request.post('/api/v1/analysis',{headers:{Origin:new URL(page.url()).origin},data:{
+   dataset_version:frozen.recommendation.versions.dataset,instrument_id:'SYN-GAMMA',date:candidate}})
+  expect(extra.ok()).toBeTruthy()
+  const id=(await extra.json()).recommendation.recommendation_id
+  if(!initialIds.has(id)){addedId=id;break}
+ }
+ expect(addedId,'a new fictional decision must separate the two snapshots').toBeTruthy()
  const performance=page.getByRole('region',{name:'Strategy performance evaluation',exact:true})
  await expect(performance).toContainText('TECHNICAL ONLY')
  await expect(performance).toContainText('eligible pairs 0')
  await expect(performance).toContainText('Registered walk-forward: unavailable')
  const benchmarkResponse=page.waitForResponse(r=>r.url().includes('benchmark_instrument=SYN-BETA'))
  await performance.getByLabel('Fictional benchmark').selectOption('SYN-BETA')
- const benchmarkReport=(await (await benchmarkResponse).json()).performance
+ const benchmarkScores=await (await benchmarkResponse).json()
+ const benchmarkReport=benchmarkScores.performance
+ expect(benchmarkScores.selected_cohort).toBe(chosenGroup)
+ expect(benchmarkScores.eligibility.map((e:any)=>e.id)).toContain(addedId)
+ expect(benchmarkScores.chronological_validation.audit_id).not.toBe(selectedScores.chronological_validation.audit_id)
+ verifySplitHash(benchmarkScores.chronological_validation)
+ expect(benchmarkReport.split_audit_id).toBe(benchmarkScores.chronological_validation.audit_id)
  await expect(performance).toContainText(benchmarkReport.report_id)
  const reference=performance.getByRole('region',{name:'Benchmark comparison',exact:true})
  await expect(reference).toContainText(benchmarkReport.benchmark.status)
  if(benchmarkReport.benchmark.reason)await expect(reference).toContainText(benchmarkReport.benchmark.reason.replaceAll('_',' '))
- const chronology=page.getByRole('region',{name:'Chronological split audit',exact:true})
  await expect(chronology).toContainText('never realized profits')
- await expect(chronology).toContainText(selectedScores.chronological_validation.audit_id)
- await expect(chronology).toContainText(selectedScores.chronological_validation.limitation)
- const assigned=Object.values(selectedScores.chronological_validation.windows).flatMap((w:any)=>w.recommendation_ids)
- expect(new Set([...assigned,...selectedScores.chronological_validation.exclusions.map((e:any)=>e.id)]).size).toBe(selectedScores.eligibility.length)
- for(const [name,window] of Object.entries(selectedScores.chronological_validation.windows) as [string,any][]){
+ await expect(chronology).toContainText(benchmarkScores.chronological_validation.audit_id)
+ await expect(chronology).toContainText(benchmarkScores.chronological_validation.limitation)
+ const assigned=Object.values(benchmarkScores.chronological_validation.windows).flatMap((w:any)=>w.recommendation_ids)
+ expect(new Set([...assigned,...benchmarkScores.chronological_validation.exclusions.map((e:any)=>e.id)]).size).toBe(benchmarkScores.eligibility.length)
+ for(const [name,window] of Object.entries(benchmarkScores.chronological_validation.windows) as [string,any][]){
   const row=chronology.getByRole('row').filter({has:page.getByRole('rowheader',{name,exact:true})})
   await expect(row.getByRole('cell').nth(0)).toHaveText(window.start_at)
   await expect(row.getByRole('cell').nth(1)).toHaveText(window.end_at)
@@ -112,8 +140,8 @@ test('authenticated synthetic freeze, reveal, scorecard and future placeholders'
  const validation=page.getByRole('region',{name:'Validation report',exact:true})
  await expect(validation).toContainText('not the probability of a future recommendation succeeding')
  await expect(validation).toContainText('do not add their sample counts together')
- for(const limitation of selectedScores.validation_report.limitations)await expect(validation).toContainText(limitation)
- for(const [name,group] of Object.entries(selectedScores.validation_report.groups) as [string,any][]){
+ for(const limitation of benchmarkScores.validation_report.limitations)await expect(validation).toContainText(limitation)
+ for(const [name,group] of Object.entries(benchmarkScores.validation_report.groups) as [string,any][]){
   const row=validation.getByRole('row').filter({has:page.getByRole('rowheader',{name:name.replaceAll('_',' '),exact:true})})
   await expect(row.getByRole('cell').nth(0)).toHaveText(String(group.sample_count))
   await expect(row.getByRole('cell').nth(1)).toHaveText(String(group.metrics.direction.denominator))
@@ -124,10 +152,10 @@ test('authenticated synthetic freeze, reveal, scorecard and future placeholders'
    await expect(row.getByRole('cell').nth(3)).toContainText(interval.method)
   }
  }
- for(const [label,counts] of [['Recommendation counts',selectedScores.action_counts],['Trade outcome counts',selectedScores.trade_status_counts]] as const){
+ for(const [label,counts] of [['Recommendation counts',benchmarkScores.action_counts],['Trade outcome counts',benchmarkScores.trade_status_counts]] as const){
   const section=page.getByRole('region',{name:label,exact:true})
   await expect(section).toBeVisible()
-  expect(Object.values(counts).reduce((sum:any,value:any)=>sum+value,0)).toBe(selectedScores.eligibility.length)
+  expect(Object.values(counts).reduce((sum:any,value:any)=>sum+value,0)).toBe(benchmarkScores.eligibility.length)
   for(const [name,count] of Object.entries(counts)){
    const row=section.locator('dl > div').filter({has:page.getByText(name.replaceAll('_',' '),{exact:true})})
    await expect(row.locator('dd')).toHaveText(String(count))
@@ -136,11 +164,11 @@ test('authenticated synthetic freeze, reveal, scorecard and future placeholders'
  const activity=page.getByRole('region',{name:'Portfolio activity',exact:true})
  await expect(activity).toContainText('not a turnover percentage')
  for(const [label,key] of [['Traded notional ₹','turnover_notional_inr'],['Closing-mark exposure fraction','exposure_mark_fraction']]){
-  const value=selectedScores.portfolio[key]
+  const value=benchmarkScores.portfolio[key]
   const expected=value===undefined?'Not available':Number(value).toLocaleString('en-IN',{maximumFractionDigits:4})
   await expect(activity.locator('dl > div').filter({has:page.getByText(label,{exact:true})}).locator('dd')).toHaveText(expected)
  }
- if(selectedScores.portfolio.exposure_definition)await expect(activity).toContainText(selectedScores.portfolio.exposure_definition)
+ if(benchmarkScores.portfolio.exposure_definition)await expect(activity).toContainText(benchmarkScores.portfolio.exposure_definition)
  await expect(groups).toHaveValue(chosenGroup!)
  await page.getByRole('button',{name:'Refresh scorecard',exact:true}).click()
  await expect(groups).toHaveValue(chosenGroup!)

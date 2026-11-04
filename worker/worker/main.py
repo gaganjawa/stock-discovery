@@ -40,6 +40,11 @@ def main() -> None:
     args = parser.parse_args()
     if args.stored_research_view and (args.real_pilot_config or args.real_market_config or args.synthetic_schedule or args.synthetic_evidence or args.pilot_operations_directory):
         parser.error('stored research cannot mix adapter modes')
+    stored_deployment = os.getenv('STK_STORED_DEPLOYMENT_FILE')
+    if stored_deployment and not args.stored_research_view:
+        parser.error('stored deployment requires stored research mode')
+    if args.stored_research_view and not args.once and not stored_deployment:
+        parser.error('recurring stored research requires reviewed deployment manifest')
     if args.real_pilot_config and (args.real_market_config or args.synthetic_schedule or args.synthetic_evidence):
         parser.error('real pilot cannot mix adapter modes')
     if args.real_market_config and (args.synthetic_schedule or args.synthetic_evidence):
@@ -86,6 +91,14 @@ def main() -> None:
         schedule_handlers=handlers(config,view)
         pilot_lock=singleton('STK-083-INFY-stored-research')
     while True:
+        if stored_deployment:
+            from .stored_operations import cycle
+            result = cycle(stored_deployment, config, view, args.schedule_config, args.stored_research_view,
+                           setting('DATABASE_URL'), schedule_handlers)
+            print(json.dumps(result, sort_keys=True), flush=True)
+            if args.once: return
+            time.sleep(max(30, args.interval_seconds))
+            continue
         if ops:
             try:
                 with psycopg.connect(setting('DATABASE_URL'),autocommit=True,connect_timeout=5) as conn:

@@ -32,7 +32,7 @@ def schema_version(database_url_file):
         return conn.execute('SELECT version_num FROM alembic_version').fetchone()[0]
 
 
-def preflight(reviewed, *, schema=schema_version):
+def preflight(reviewed, *, schema=schema_version, stored_check=None):
     data = plistlib.loads(Path(reviewed).read_bytes())
     label=data.get('Label')
     if label not in (LABEL,STORED_LABEL):raise ValueError('unexpected_launch_label')
@@ -46,12 +46,25 @@ def preflight(reviewed, *, schema=schema_version):
     if 'DATABASE_URL' in data['EnvironmentVariables']:raise ValueError('inline_database_secret_forbidden')
     version = schema(data['EnvironmentVariables']['DATABASE_URL_FILE'])
     if version != REQUIRED_SCHEMA:raise ValueError('database_migration_required')
+    if label==STORED_LABEL:
+        from worker.stored_operations import check_deployment
+        manifest=data['EnvironmentVariables'].get('STK_STORED_DEPLOYMENT_FILE')
+        if not manifest:raise ValueError('stored_deployment_manifest_required')
+        readiness=(stored_check or check_deployment)(manifest)
+        if readiness['status']=='BLOCKED':raise ValueError('stored_deployment_not_ready:'+','.join(readiness['reasons']))
+        # Manifest paths must describe exactly the reviewed launch program.
+        bound=json.loads(Path(manifest).read_text())
+        if (bound['repo']!=data['WorkingDirectory'] or bound['python']!=args[0]
+            or bound['database_file']!=paths[2] or bound['schedule_file']!=paths[3] or bound['view_file']!=paths[4]):
+            raise ValueError('launch_deployment_mismatch')
+        expected=':'.join(str(Path(bound['repo'])/x) for x in ('backend','shared','worker'))
+        if data['EnvironmentVariables'].get('PYTHONPATH')!=expected:raise ValueError('launch_deployment_mismatch')
     return data
 
 
-def activate(reviewed, approval, *, home=None, run=subprocess.run, schema=schema_version, uid=None):
+def activate(reviewed, approval, *, home=None, run=subprocess.run, schema=schema_version, uid=None, stored_check=None):
     if approval != APPROVAL:raise PermissionError('owner_approval_phrase_required')
-    data=preflight(reviewed, schema=schema);label=data['Label']
+    data=preflight(reviewed, schema=schema,stored_check=stored_check);label=data['Label']
     target = agent_path(home,label=label)
     target.parent.mkdir(parents=True, exist_ok=True)
     with open(target, 'xb') as out, open(reviewed, 'rb') as source:

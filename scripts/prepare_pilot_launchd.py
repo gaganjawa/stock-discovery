@@ -11,11 +11,16 @@ def definition(python,repo,pilot,schedule,database,operations,*,stored_research=
     for path in paths:
         if not path.exists():raise ValueError('launch_path_missing')
     args=[python,'-m','worker.main','--schedule-config',schedule]+(['--stored-research-view',pilot] if stored_research else ['--real-pilot-config',pilot,'--pilot-operations-directory',operations])+['--interval-seconds','30']
-    return {'Label':'local.stock-discovery.infy-stored-research' if stored_research else 'local.stock-discovery.research','ProgramArguments':args,
+    result = {'Label':'local.stock-discovery.infy-stored-research' if stored_research else 'local.stock-discovery.research','ProgramArguments':args,
         'WorkingDirectory':repo,'EnvironmentVariables':{'PYTHONPATH':':'.join(str(Path(repo)/x) for x in ('backend','shared','worker')),'DATABASE_URL_FILE':database,'PYTHONUNBUFFERED':'1'},
         'RunAtLoad':True,'KeepAlive':True,'ThrottleInterval':60,'ProcessType':'Background','Nice':10,'ExitTimeOut':30,'Umask':63,
         # Worker writes a bounded private diagnostic ring. No unbounded launchd stdout files.
         'StandardOutPath':'/dev/null','StandardErrorPath':'/dev/null'}
+    if stored_research:
+        manifest=Path(operations)/'deployment.json'
+        if not manifest.is_file():raise ValueError('stored_deployment_manifest_required')
+        result['EnvironmentVariables']['STK_STORED_DEPLOYMENT_FILE']=str(manifest)
+    return result
 
 
 def main():
