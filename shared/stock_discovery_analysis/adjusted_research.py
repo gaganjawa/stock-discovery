@@ -40,6 +40,18 @@ class SessionCoverage(Strict):
     calendar_completeness: Literal['not_attested_by_session_list']
 
 
+FreshnessPolicy = Literal['strict', 'one_trailing_session_v1']
+
+
+class DescriptiveFreshness(Strict):
+    policy: FreshnessPolicy = 'strict'
+    latest_available_price_session: Timestamp | None = None
+    latest_verified_closed_session: Timestamp | None = None
+    trailing_missing_sessions: int = Field(default=0, ge=0)
+    status: Literal['current', 'delayed_one_session', 'unavailable'] = 'unavailable'
+    reason: Text
+
+
 class AdjustedResearch(Strict):
     contract_version: Literal['adjusted-research-v1'] = 'adjusted-research-v1'
     instrument_id: Text
@@ -53,6 +65,7 @@ class AdjustedResearch(Strict):
     adjustment_methodology: Literal['provider_statement_only_factors_and_rounding_unverified'] = 'provider_statement_only_factors_and_rounding_unverified'
     calendar_revision_ids: tuple[Text, ...] = ()
     session_coverage: SessionCoverage
+    freshness: DescriptiveFreshness
     metrics: dict[Literal['sma20','ema10','ema30','atr14','relative_volume20','breakout20','support20'], str | None] = Field(default_factory=dict)
     unavailable_reasons: tuple[Text, ...] = ()
     limitations: tuple[Text, ...] = ('volume_basis_unverified', 'action_coverage_unverified', 'not_historical_decision_evidence')
@@ -70,12 +83,28 @@ class AdjustedResearch(Strict):
         check(self.status != 'UNAVAILABLE' or bool(self.unavailable_reasons), 'unavailable_reason_required')
         check(self.metrics.get('relative_volume20') is None, 'adjusted_relative_volume_unavailable')
         check(self.status != 'UNAVAILABLE' or not self.metrics, 'unavailable_metrics')
+        check(self.status != 'UNAVAILABLE' or self.freshness.status=='unavailable', 'unavailable_freshness')
+        check(all(t is None or at(t)<=at(self.evaluated_at) for t in (
+            self.freshness.latest_available_price_session,self.freshness.latest_verified_closed_session)), 'future_freshness_session')
         if self.status == 'AVAILABLE_DESCRIPTIVE_ONLY':
             coverage=self.session_coverage
             check(self.batch is not None and len(self.observations)>=coverage.required_sessions>=30
                   and coverage.observed_bars==len(self.observations) and not self.unavailable_reasons, 'unverified_adjusted_result')
-            check(coverage.warmup_complete and coverage.latest_session_present and not coverage.duplicate_bars
-                  and not coverage.missing_sessions and not coverage.unverified_bar_sessions, 'incomplete_session_coverage')
+            fresh=self.freshness
+            current=(fresh.status=='current' and coverage.latest_session_present and not coverage.missing_sessions
+                     and fresh.trailing_missing_sessions==0
+                     and fresh.latest_available_price_session==fresh.latest_verified_closed_session
+                     and fresh.latest_available_price_session is not None
+                     and fresh.reason=='matches_latest_verified_closed_session')
+            delayed=(fresh.status=='delayed_one_session' and fresh.policy=='one_trailing_session_v1'
+                     and not coverage.latest_session_present and fresh.trailing_missing_sessions==1
+                     and coverage.missing_sessions==(fresh.latest_verified_closed_session,)
+                     and fresh.latest_available_price_session is not None
+                     and at(fresh.latest_available_price_session)<at(fresh.latest_verified_closed_session)
+                     and self.batch.identity_basis=='verified_ingestion_pages'
+                     and fresh.reason=='historical_prices_one_completed_session_behind')
+            check(coverage.warmup_complete and (current or delayed) and not coverage.duplicate_bars
+                  and not coverage.unverified_bar_sessions, 'incomplete_session_coverage')
             check(set(self.metrics)=={'sma20','ema10','ema30','atr14','relative_volume20','breakout20','support20'}, 'incomplete_indicator_keys')
         return self
 
@@ -182,20 +211,33 @@ def boundary_reason(bars, sessions, cutoff):
     return 'session_boundaries_unverified'
 
 
-def describe(conn, listing, bars, sessions, readiness, cutoff, *, historical_request, provenance, multi_stream=False):
+def describe(conn, listing, bars, sessions, readiness, cutoff, *, historical_request, provenance, multi_stream=False, freshness_policy: FreshnessPolicy='strict'):
+    check(freshness_policy in ('strict','one_trailing_session_v1'), 'invalid_descriptive_freshness_policy')
+    latest_bar=max((r.data.ends_at for r in bars),default=None)
+    closed=[r.data.closes_at for r in sessions if at(r.data.closes_at)<=at(cutoff)]
+    latest_session=max(closed,default=None)
+    trailing=sorted(t for t in closed if latest_bar is not None and at(t)>at(latest_bar))
+    boundaries=verified_session_boundaries(bars,sessions,cutoff)
+    delayed=(freshness_policy=='one_trailing_session_v1' and len(trailing)==1
+             and boundary_reason(bars,sessions,cutoff)=='recent_sessions_not_ingested'
+             and tuple(readiness['missing_sessions'])==tuple(trailing)
+             and not readiness['latest_session_present'])
+    freshness=dict(policy=freshness_policy,latest_available_price_session=latest_bar,
+        latest_verified_closed_session=latest_session,trailing_missing_sessions=len(trailing),
+        status='unavailable',reason='descriptive_validation_failed')
     result=dict(instrument_id=listing,evaluated_at=cutoff,status='UNAVAILABLE',session_coverage={k:tuple(readiness[k]) if k in ('missing_sessions','unverified_bar_sessions') else readiness[k] for k in SessionCoverage.model_fields},
                 calendar_revision_ids=tuple(r.revision_id for r in sessions))
     reasons=[]; batch=None; observations=()
     if historical_request:reasons.append('historical_adjusted_research_not_supported')
-    if not verified_session_boundaries(bars,sessions,cutoff):
+    if not boundaries and not delayed:
         reasons.append(boundary_reason(bars,sessions,cutoff))
     if not bars or any(r.source_id!='upstox' or r.data.adjustment_basis!='split_bonus_adjusted' for r in bars):
         reasons.append('adjusted_observations_unavailable')
-    if not readiness['warmup_complete'] or readiness['missing_sessions'] or readiness['unverified_bar_sessions'] or readiness['duplicate_bars'] or not readiness['latest_session_present']:
+    if not readiness['warmup_complete'] or (readiness['missing_sessions'] and not delayed) or readiness['unverified_bar_sessions'] or readiness['duplicate_bars'] or (not readiness['latest_session_present'] and not delayed):
         reasons.append('session_coverage_unavailable')
     if not reasons:
         rows=conn.execute('SELECT DISTINCT stream_id FROM discovery.revisions WHERE revision_id=ANY(%s)',([r.revision_id for r in bars],)).fetchall()
-        if len(rows)!=1 and not (multi_stream and len(rows)>1):reasons.append('batch_identity_missing_or_ambiguous')
+        if len(rows)!=1 and not (multi_stream and len(rows)>1 and not delayed):reasons.append('batch_identity_missing_or_ambiguous')
         else:
             try:
                 if len(rows)==1:
@@ -221,6 +263,8 @@ def describe(conn, listing, bars, sessions, readiness, cutoff, *, historical_req
         metrics={k:format(v,'f') if v is not None else None for k,v in features(series).items()}
         metrics['relative_volume20']=None
         result['status']='AVAILABLE_DESCRIPTIVE_ONLY'
+        freshness.update(status='delayed_one_session' if delayed else 'current',
+            reason='historical_prices_one_completed_session_behind' if delayed else 'matches_latest_verified_closed_session')
     if batch is not None and batch.stream_batches:
         result['limitations']=AdjustedResearch.model_fields['limitations'].default+('owner_approved_multi_stream_rule_v1',)
-    return AdjustedResearch(**result,batch=batch,observations=observations,metrics=metrics,unavailable_reasons=tuple(sorted(set(reasons))))
+    return AdjustedResearch(**result,freshness=freshness,batch=batch,observations=observations,metrics=metrics,unavailable_reasons=tuple(sorted(set(reasons))))

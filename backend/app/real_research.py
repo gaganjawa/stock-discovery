@@ -153,6 +153,7 @@ def coverage_row(conn,config,listing):
     return dict(listing_id=listing,symbol=detail['symbol'],state='available' if available else 'unavailable',
         reasons=list(research['unavailable_reasons']),sessions=len(series),last_session=series[-1]['time'] if series else None,
         indicators=sorted(k for k,v in (research['metrics'] or {}).items() if v is not None),
+        descriptive_freshness=readiness.get('descriptive_freshness'),
         refresh=dict(current=bool(readiness.get('latest_session_present')),latest_session=readiness.get('latest_verified_session'),
             latest_bar=readiness.get('latest_bar'),missing_sessions=len(readiness.get('missing_sessions') or ())))
 

@@ -19,7 +19,7 @@ pytestmark=pytest.mark.skipif(not os.getenv('STK_TEST_DATABASE_URL'),reason='req
 def isolated_url():yield from _isolated_url.__wrapped__()
 
 
-def setup(conn,tmp_path,*,mixed=False,missing=False,boundary=None,rolling=None,approved=False, hidden=False, parent_only=False):
+def setup(conn,tmp_path,*,mixed=False,missing=False,boundary=None,rolling=None,approved=False, hidden=False, parent_only=False, lag=0):
     g=grant();path=tmp_path/'grants.json';path.write_text(json.dumps([g.model_dump(mode='json')]))
     def save(scope,rows,suffix=''):
         s=Stream(stream_id='adjusted-test-'+scope+suffix,source_id='upstox',account_ref='test',scope=scope)
@@ -61,6 +61,15 @@ def setup(conn,tmp_path,*,mixed=False,missing=False,boundary=None,rolling=None,a
             data=sessions[0].data.model_dump();data['calendar_version']='competing-calendar'
             if boundary=='ambiguous':data['opens_at']='2026-09-20T05:00:00Z'
             sessions.append(observed_revision(SessionData.model_validate(data),listing='NSE',fetched=NOW))
+    if lag:
+        # Shift the complete 30-bar batch back; retain verified trailing sessions.
+        for i,b in enumerate(bars):
+            data=b.data.model_dump()
+            for key in ('starts_at','ends_at'):
+                data[key]=(datetime.fromisoformat(data[key].replace('Z','+00:00'))-timedelta(days=lag)).strftime('%Y-%m-%dT%H:%M:%SZ')
+            bars[i]=observed_revision(CandleData.model_validate(data),listing=listing,fetched=NOW,parent=identity.revision_id)
+        for b in bars[:lag]:
+            sessions.append(observed_revision(SessionData(kind='session',calendar_version='invented',opens_at=b.data.starts_at,closes_at=b.data.ends_at),listing='NSE',fetched=NOW))
     save('calendar',sessions)
     if missing:bars.pop(10)
     if rolling:
