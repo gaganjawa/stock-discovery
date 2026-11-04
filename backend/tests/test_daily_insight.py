@@ -48,6 +48,22 @@ def test_price_above_and_below_actual_indicators():
  r=interpret('99',m);assert len(r['bearish'])==3
 
 
+@pytest.mark.parametrize('price,direction,percentage',[
+ ('105','above','9.52'),
+ ('90','below','5.56'),
+ ('95','at','0.00'),
+ ('95.001','above','0.00'),
+ ('94.999','below','0.00'),
+])
+def test_support_distance_direction_and_percentage(price,direction,percentage):
+ m=dict(sma20='100',ema10='104',ema30='103',atr14='2',breakout20='110',support20='95')
+ with localcontext() as ctx:
+  ctx.prec=5
+  r=interpret(price,m)
+ support=next(item for item in r['neutral'] if item['code']=='support_distance')
+ assert support['text']==f'Close is {direction} the 20-session support 95 (distance: {percentage}% of close).'
+
+
 @pytest.mark.parametrize('price',['0','NaN','Infinity'])
 def test_invalid_price_rejected(price):
  with pytest.raises((ValueError,ArithmeticError)):interpret(price,{})

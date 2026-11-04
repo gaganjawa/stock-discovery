@@ -27,7 +27,7 @@ def interpret(close, metrics):
             dict(code='ema_alignment',text=f"EMA10 {m['ema10']:.2f} is "+('above' if m['ema10']>m['ema30'] else 'below' if m['ema10']<m['ema30'] else 'equal to')+f" EMA30 {m['ema30']:.2f}."))
         neutral.extend([
             dict(code='volatility',text=f"ATR14 is {m['atr14']:.2f} ({m['atr14']/price*100:.2f}% of the latest close); it measures recent range, not predicted return."),
-            dict(code='support_distance',text=f"Close is {(price-m['support20'])/price*100:.2f}% of close above the 20-session support {m['support20']}."),
+            dict(code='support_distance',text='Close is '+('above' if price>m['support20'] else 'below' if price<m['support20'] else 'at')+f" the 20-session support {m['support20']} (distance: {abs(price-m['support20'])/price*100:.2f}% of close)."),
             dict(code='breakout_condition',text=f"A close above the existing 20-session high {m['breakout20']} would exceed that descriptive level. Current close {price}; distance {(m['breakout20']-price)/price*100:.2f}% of close. No trading signal is authorized.")])
         return dict(bullish=bullish,bearish=bearish,neutral=neutral)
 
