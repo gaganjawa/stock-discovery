@@ -16,7 +16,7 @@ from worker import stored_operations as ops
 @pytest.mark.parametrize('now,end,state,reason',[
     ('2026-10-15T09:00:00Z','2026-10-31','valid',None),
     ('2026-10-15T09:00:00Z','2026-10-19','expiring_soon',None),
-    ('2026-10-19T02:00:00Z','2026-10-31','blocked','next_execution_opening_unverified'),
+    ('2026-10-19T03:00:00Z','2026-10-31','blocked','next_execution_opening_unverified'),
     ('2026-10-19T11:00:00Z','2026-10-31','blocked','next_execution_unverified'),
     ('2026-11-01T00:00:00Z','2026-10-31','expired','calendar_expired'),
 ])
@@ -29,6 +29,16 @@ def test_calendar_lifecycle_never_extends_or_infers(now,end,state,reason):
     assert result['renewal']['status']=='RENEWAL_BLOCKED'
     assert result['renewal']['provider_requests']==0
     assert schedule.model_dump()==before
+
+
+@pytest.mark.parametrize('clock',['2026-10-16T10:30:00Z','2026-10-16T10:30:01Z'])
+def test_due_supported_window_is_not_replaced_by_unsupported_next_session(clock):
+    schedule=fixture_config()
+    ready=lifecycle(schedule,clock)
+    assert not ready['reasons']
+    assert ready['next_scheduled_execution']=='2026-10-16T10:30:00Z'
+    done=lifecycle(schedule,clock,settled_cutoffs=('2026-10-16T10:00:00Z',))
+    assert done['reasons']==['next_execution_opening_unverified']
 
 
 def files(tmp_path,monkeypatch):

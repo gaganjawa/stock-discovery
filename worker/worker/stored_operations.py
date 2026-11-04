@@ -205,6 +205,13 @@ def inspect(conn, schedule, view, *, clock=now, include_analysis=False):
     if result['schema'] != '0015':
         reasons.append('database_schema_incompatible')
     else:
+        settled = [r[0] for r in conn.execute('''SELECT payload->>'information_cutoff_at'
+            FROM discovery.schedule_jobs WHERE stage='ingest' AND payload->>'schedule_hash'=%s
+            AND status IN ('completed','partial','failed','blocked','missed')''',
+            (digest(schedule.model_dump(mode='json')),))]
+        calendar.update(lifecycle(schedule, observed, settled_cutoffs=settled))
+        reasons[:] = calendar['reasons']
+        warnings[:] = calendar['warnings']
         from stock_discovery_contracts.rights import Grant
         try:
             configured_grants = [Grant.model_validate_json(json.dumps(g)) for g in json.loads(Path(view.sources.grant_file).read_text())]

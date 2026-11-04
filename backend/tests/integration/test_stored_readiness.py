@@ -44,6 +44,17 @@ def setup_readiness(conn,tmp_path,*,incomplete=False,conflict=False):
     return ScheduleConfig.model_validate_json(json.dumps(raw)),view
 
 
+def complete_current(conn,schedule,view,clock):
+    from stock_discovery_analysis.schedule_runner import tick
+    from worker.stored_research import handlers
+    for _ in range(4):
+        result=tick(conn,schedule,handlers=handlers(schedule,view),clock=clock)
+        if result.get('stage')=='ingest':
+            assert result['status'] in ('completed','partial')
+            return
+    pytest.fail('existing scheduler did not execute the due stored-only job')
+
+
 def test_permitted_sessions_corroborate_but_do_not_invent_closed_day_coverage(isolated_url,tmp_path,monkeypatch):
     import httpx
     from worker.providers.ollama import Ollama
@@ -55,7 +66,7 @@ def test_permitted_sessions_corroborate_but_do_not_invent_closed_day_coverage(is
         report=inspect(conn,s,v,clock=lambda:NOW,include_analysis=True)
         assert report['status']=='READY_WITH_LIMITATIONS'
         assert report['calendar']['next_verified_opening']=='2026-10-20T04:00:00Z'
-        assert report['calendar']['next_scheduled_execution']=='2026-10-20T10:30:00Z'
+        assert report['calendar']['next_scheduled_execution']=='2026-10-19T10:30:00Z'
         assert report['calendar']['renewal']['stored_sessions_available']
         assert report['calendar']['renewal']['status']=='RENEWAL_BLOCKED'
         assert 'closed_date_coverage_not_in_session_revisions' in report['calendar']['renewal']['reasons']
@@ -99,12 +110,13 @@ def test_expiring_grant_and_last_session_cannot_claim_readiness(isolated_url,tmp
     monkeypatch.setattr(read_fences,'database_request',lambda conn,request,uses:request.model_copy(update={'uses':tuple(uses)}))
     with psycopg.connect(isolated_url,autocommit=True) as conn:
         s,v=setup_readiness(conn,tmp_path)
+        complete_current(conn,s,v,lambda:NOW)
         p=Path(v.sources.grant_file);gs=json.loads(p.read_text());gs[0]['expires_at']='2026-10-20T09:00:00Z';p.write_text(json.dumps(gs))
         result=inspect(conn,s,v,clock=lambda:NOW)
         assert 'source_grant_expiring_soon' in result['warnings']
         assert 'source_grant_expires_before_next_execution' in result['reasons']
         p.write_text(json.dumps([grant().model_dump(mode='json')]))
-        result=inspect(conn,s,v,clock=lambda:'2026-10-22T02:00:00Z')
+        result=inspect(conn,s,v,clock=lambda:'2026-10-22T03:30:00Z')
         assert result['status']=='BLOCKED'
         assert 'next_execution_opening_unverified' in result['reasons']
         result=inspect(conn,s,v,clock=lambda:'2026-10-25T02:00:00Z')
@@ -168,6 +180,7 @@ def test_current_file_cannot_extend_original_grant_past_next_execution(isolated_
         raw['calendar']['sessions'] += [dict(opens_at=r.data.opens_at,closes_at=r.data.closes_at) for r in records]
         raw['calendar']['ref']['content_hash']=digest(raw['calendar']['sessions'])
         s=ScheduleConfig.model_validate_json(json.dumps(raw))
+        complete_current(conn,s,v,lambda:'2026-12-31T12:00:00Z')
         # Only this disposable current config claims a later expiry. The immutable
         # original revision grant still expires at midnight before the next run.
         extended=grant().model_copy(update={'expires_at':'2028-01-01T00:00:00Z'})
@@ -176,3 +189,27 @@ def test_current_file_cannot_extend_original_grant_past_next_execution(isolated_
         assert result['status']=='BLOCKED'
         assert 'source_grant_expires_before_next_execution' in result['reasons']
         assert result['grants'][0]['expires_at']=='2027-01-01T00:00:00Z'
+
+
+def test_due_job_executes_before_later_unsupported_session_blocks_readiness(isolated_url,tmp_path):
+    from stock_discovery_analysis.schedule_runner import tick
+    from worker.stored_research import handlers
+    with psycopg.connect(isolated_url,autocommit=True) as conn:
+        s,v=setup_readiness(conn,tmp_path)
+        s=s.model_copy(update={'starts_on':'2026-10-21'})
+        clock=lambda:'2026-10-21T10:30:01Z'
+        before=conn.execute('SELECT count(*) FROM discovery.schedule_jobs').fetchone()
+        ready=inspect(conn,s,v,clock=clock)
+        assert ready['status']=='READY_WITH_LIMITATIONS'
+        assert ready['calendar']['next_scheduled_execution']=='2026-10-21T10:30:00Z'
+        assert conn.execute('SELECT count(*) FROM discovery.schedule_jobs').fetchone()==before
+        # Event polling shares the existing queue; at most one job per tick.
+        for _ in range(4):
+            if inspect(conn,s,v,clock=clock)['status']=='BLOCKED':break
+            tick(conn,s,handlers=handlers(s,v),clock=clock)
+        rows=conn.execute("SELECT status,result FROM discovery.schedule_jobs WHERE stage='ingest'").fetchall()
+        assert len(rows)==1 and rows[0][0]=='partial'
+        assert rows[0][1]['report_state']=='unavailable_data'
+        after=inspect(conn,s,v,clock=clock)
+        assert after['status']=='BLOCKED'
+        assert after['reasons']==['next_execution_opening_unverified']

@@ -125,3 +125,45 @@ without overwrites. It correctly reports `deployment_runtime_preflight_missing`:
 that code predates this correction. Review/merge and new pinned preparation are
 required before enabling the improved worker. Calendar renewal and recurring
 acquisition still need separate verified coverage and owner authorization.
+
+## PR #41 correction and regression review
+
+The failed UI run `41902027220` compared two different scorecard snapshots. The
+cohort response contained two replay decisions (SYN-ALPHA at 1 May and 25 June
+2025, 10:01 UTC). Before the benchmark response, the synthetic worker committed
+two more decisions (SYN-ALPHA and SYN-BETA at 17 September 2025, 10:01 UTC).
+Recomputing the full split reports from the fixed demo dataset and that run's
+code version reproduced both complete CI hashes exactly: `12039e67…b9a8f` for
+two decisions and `44b5e2fa…cf77c` for four. Both retain the same two development
+assignments; the added decisions are excluded because their label horizon ends
+outside the calendar. No split boundary, configuration or dataset changed.
+
+The benchmark GET supplies a complete fresh scorecard, which React renders as
+one `scores` value. The test incorrectly continued to assert against the earlier
+cohort response. These application/test paths already existed on merged main.
+Split hashes use sorted assignments/exclusions and canonical report fields, not
+request-time timestamps. No hash or evaluation logic was changed.
+
+The browser regression now checks the first audit before refreshing, inserts a
+new authorized fictional decision between requests, and checks every subsequent
+scorecard assertion against the benchmark response. Both audit hashes are
+independently recomputed and the performance report must reference the same
+audit. The forced interleaving reproduced the old assertion failure and passes
+with the correction; no assertion, timeout or test was removed or relaxed.
+
+Full-diff review also found a P2 lifecycle boundary error: at/after a supported
+job's due time, readiness skipped it and evaluated a later unsupported session.
+Readiness now reuses D3-04 resolved occurrence expiry windows and checks terminal
+ingest receipts for the exact schedule hash. An unfinished job remains eligible
+through its existing window; after its terminal receipt, the unsupported next
+execution blocks readiness. Tests cover the exact due time, one second later,
+read-only preflight, one partial stale-data completion and the subsequent block.
+Occurrence identities, catch-up computation, authorization and evidence writes
+remain owned by the existing contracts. No new scheduler or source access path
+was introduced.
+
+No P1 issue was found. The two P2 issues above are corrected. The unrelated
+untracked `ImportPreview.tsx` has a working-tree typecheck syntax error; it is
+excluded from this PR and left untouched. Clean tracked-source builds are used
+to distinguish that WIP from this delivery. Private market evidence and the
+existing services are not used by the correction's tests.

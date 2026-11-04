@@ -5,10 +5,10 @@ dates or extend its explicit coverage. Provider renewal remains a separate,
 owner-authorized operation in pilot_operations.renew_calendar.
 """
 from datetime import date, timedelta
-from .scheduling import IST, utc, stamp, calendar_issues
+from .scheduling import IST, utc, stamp, calendar_issues, resolve_occurrences
 
 
-def lifecycle(schedule, now, *, warning_days=4):
+def lifecycle(schedule, now, *, warning_days=4, settled_cutoffs=()):
     calendar = schedule.calendar
     today = utc(now).astimezone(IST).date()
     reasons = list(calendar_issues(schedule, now))
@@ -16,6 +16,15 @@ def lifecycle(schedule, now, *, warning_days=4):
     pending = [(i, s) for i, s in enumerate(calendar.sessions)
                if utc(s.closes_at).astimezone(IST).date().isoformat() >= schedule.starts_on
                and utc(s.closes_at) + timedelta(minutes=schedule.policy.ready_delay_minutes) > utc(now)]
+    # A due, unfinished execution still has a valid window. Do not skip it in
+    # favour of an unsupported later session exactly when the worker should run.
+    # Reuse D3-04's expiry calculation; completed/terminal work is not readiness.
+    if 'calendar_not_available' not in reasons:
+        active = {o.information_cutoff_at for o in resolve_occurrences(schedule, now)
+                  if o.horizon == 'swing' and utc(o.expires_at) > utc(now)
+                  and o.information_cutoff_at not in settled_cutoffs}
+        pending += [(i, s) for i, s in enumerate(calendar.sessions) if s.closes_at in active]
+        pending.sort(key=lambda pair: pair[1].closes_at)
     next_due = None
     if pending:
         index, session = pending[0]
