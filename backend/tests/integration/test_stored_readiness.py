@@ -141,3 +141,38 @@ def test_supervised_cycle_reuses_tick_and_catchup_without_duplicate_completion(i
         health=json.loads((directory/'health.json').read_text())
         assert health['latest_failed_or_partial']['status']=='partial'
         assert health['provider_requests']==health['model_requests']==0
+
+
+def test_unrelated_private_grant_does_not_change_infy_scope(isolated_url,tmp_path):
+    with psycopg.connect(isolated_url,autocommit=True) as conn:
+        s,v=setup_readiness(conn,tmp_path)
+        unrelated=grant().model_copy(update={'grant_id':'unrelated-provider-grant','source_id':'unrelated-provider',
+            'status':'revoked','revoked_at':'2026-10-18T00:00:00Z'})
+        Path(v.sources.grant_file).write_text(json.dumps([grant().model_dump(mode='json'),unrelated.model_dump(mode='json')]))
+        result=inspect(conn,s,v,clock=lambda:NOW)
+        assert result['status']=='READY_WITH_LIMITATIONS'
+        assert {g['source_id'] for g in result['configured_grants']}=={'upstox'}
+
+
+def test_current_file_cannot_extend_original_grant_past_next_execution(isolated_url,tmp_path):
+    with psycopg.connect(isolated_url,autocommit=True) as conn:
+        s,v=setup_readiness(conn,tmp_path)
+        records=[observed_revision(SessionData(kind='session',calendar_version='invented',
+            opens_at=day+'T04:00:00Z',closes_at=day+'T10:00:00Z'),listing='NSE',fetched=NOW)
+            for day in ('2026-12-31','2027-01-01','2027-01-02')]
+        stream=Stream(stream_id='test-year-end-calendar',source_id='upstox',account_ref='test',scope='calendar')
+        request=UseRequest(source_id='upstox',account_ref='test',scope='calendar',uses=('acquire','store'),region='IN',
+            destination_region=None,processor_ref=None,requested_at=NOW,synthetic=False,units=100,retention_days=365,attribution_present=True)
+        ingest_next(conn,stream,RevisionPages(tuple(records)),load_grant=grant,request=request,audit=lambda d:None,clock=lambda:NOW)
+        raw=s.model_dump(mode='json');raw['calendar']['ends_on']='2027-01-03';raw['starts_on']='2026-12-31'
+        raw['calendar']['sessions'] += [dict(opens_at=r.data.opens_at,closes_at=r.data.closes_at) for r in records]
+        raw['calendar']['ref']['content_hash']=digest(raw['calendar']['sessions'])
+        s=ScheduleConfig.model_validate_json(json.dumps(raw))
+        # Only this disposable current config claims a later expiry. The immutable
+        # original revision grant still expires at midnight before the next run.
+        extended=grant().model_copy(update={'expires_at':'2028-01-01T00:00:00Z'})
+        Path(v.sources.grant_file).write_text(json.dumps([extended.model_dump(mode='json')]))
+        result=inspect(conn,s,v,clock=lambda:'2026-12-31T12:00:00Z')
+        assert result['status']=='BLOCKED'
+        assert 'source_grant_expires_before_next_execution' in result['reasons']
+        assert result['grants'][0]['expires_at']=='2027-01-01T00:00:00Z'

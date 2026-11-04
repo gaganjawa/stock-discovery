@@ -156,9 +156,14 @@ def calendar_evidence(conn, schedule, view, clock):
             current = access.load_grant(stream)
             for g in (grant, current):
                 evidence_check(g is not None, 'source_authorization_missing')
-                grants[(g.grant_id, g.version)] = dict(grant_id=g.grant_id, version=g.version,
+                key=(g.grant_id, g.version)
+                prior=grants.get(key)
+                grants[key] = dict(grant_id=g.grant_id, version=g.version,
                     source_id=g.source_id, status=g.status, expires_at=g.expires_at,
                     retention_days=g.retention_days)
+                if prior:
+                    # A later date in the current file never extends original rights.
+                    grants[key]['expires_at']=min(prior['expires_at'],g.expires_at)
             # Retention covers original fetch dates, not the latest run time.
         retention_until = []
         for rid in guard.dependencies():
@@ -203,6 +208,12 @@ def inspect(conn, schedule, view, *, clock=now, include_analysis=False):
         from stock_discovery_contracts.rights import Grant
         try:
             configured_grants = [Grant.model_validate_json(json.dumps(g)) for g in json.loads(Path(view.sources.grant_file).read_text())]
+            identities=set(conn.execute('''SELECT DISTINCT s.source_id,s.account_ref
+                FROM discovery.revisions r JOIN discovery.streams s USING(stream_id)
+                WHERE (r.listing_id=%s OR (r.kind='session' AND r.listing_id='NSE'))
+                AND r.available_at<=%s AND r.payload->>'availability_basis'='observed'
+                AND (r.payload->>'fetched_at')::timestamptz<=%s''',(LISTING,observed,observed)).fetchall())
+            configured_grants=[g for g in configured_grants if (g.source_id,g.account_ref) in identities]
             if not configured_grants: reasons.append('source_authorization_missing')
             result['configured_grants'] = [dict(source_id=g.source_id, status=g.status, expires_at=g.expires_at) for g in configured_grants]
             for g in configured_grants:
