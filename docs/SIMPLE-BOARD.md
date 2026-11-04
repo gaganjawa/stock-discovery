@@ -307,3 +307,13 @@ qualification remains unavailable. New stored-only mode reuses D3-04 jobs and
 launchd with a separate INFY label; tested offline, not activated. Provider/model
 requests: zero; original evidence and 12-stock config preserved. M1/M2, ranking,
 real OOS and trading/admission remain blocked. [Reuse, operation and acceptance](STK-083-automated-infy-research.md).
+
+5 November — **STK-086 / D3-04 + D3-09**: stored-only INFY lifecycle/readiness
+gate reuses original grants, revision provenance and scheduler fences; private
+deployment manifests bind merged code and configuration. Finite calendar and
+grant/retention expiry fail closed, with private health and existing receipts.
+Read-only real preflight retains 43 delayed bars and unchanged evidence; inactive
+current-main configuration awaits this correction's review/merge. Session rows
+cannot establish new closed-date coverage: renewal remains explicitly blocked.
+No provider/model calls, real database mutations or launchd activation.
+[Operating notes and limits](STK-086-calendar-lifecycle.md).

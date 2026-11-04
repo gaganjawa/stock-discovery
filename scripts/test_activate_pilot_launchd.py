@@ -1,4 +1,5 @@
 import plistlib
+import json
 import tempfile
 import unittest
 from pathlib import Path
@@ -63,7 +64,21 @@ class ActivateTests(unittest.TestCase):
         args=data['ProgramArguments'];i=args.index('--real-pilot-config');args[i]='--stored-research-view'
         j=args.index('--pilot-operations-directory');del args[j:j+2]
         self.reviewed.write_bytes(plistlib.dumps(data))
-        result=activate(self.reviewed,APPROVAL,home=self.home,run=Runner(),schema=lambda f:'0015',uid=501)
+        with self.assertRaisesRegex(ValueError,'manifest_required'):
+            preflight(self.reviewed,schema=lambda f:'0015')
+        manifest=self.reviewed.parent/'deployment.json'
+        manifest.write_text(json.dumps(dict(repo=data['WorkingDirectory'],python=args[0],
+            database_file=data['EnvironmentVariables']['DATABASE_URL_FILE'],
+            schedule_file=args[args.index('--schedule-config')+1],view_file=args[args.index('--stored-research-view')+1])))
+        data['EnvironmentVariables']['STK_STORED_DEPLOYMENT_FILE']=str(manifest)
+        self.reviewed.write_bytes(plistlib.dumps(data))
+        run=Runner()
+        with self.assertRaisesRegex(ValueError,'stored_deployment_not_ready:calendar_expired'):
+            activate(self.reviewed,APPROVAL,home=self.home,run=run,schema=lambda f:'0015',uid=501,
+                stored_check=lambda f:dict(status='BLOCKED',reasons=['calendar_expired']))
+        self.assertEqual(run.calls,[])
+        result=activate(self.reviewed,APPROVAL,home=self.home,run=run,schema=lambda f:'0015',uid=501,
+            stored_check=lambda f:dict(status='READY_WITH_LIMITATIONS'))
         self.assertEqual(result['label'],STORED_LABEL)
         self.assertTrue(agent_path(self.home,label=STORED_LABEL).exists())
         self.assertFalse(agent_path(self.home).exists())

@@ -1,5 +1,7 @@
 import unittest
-from prepare_stored_research import prepare
+import tempfile
+from pathlib import Path
+from prepare_stored_research import prepare,write_prepared
 from stock_discovery_analysis.real_views import ViewConfig
 from stock_discovery_analysis.real_access import SourceConfig
 from stock_discovery_analysis.schedule_fixtures import fixture_config
@@ -22,3 +24,14 @@ class PrepareStoredTests(unittest.TestCase):
     def test_synthetic_calendar_mode_cannot_be_used(self):
         view=ViewConfig(sources=SourceConfig(grant_file='/test',retention_days=30),listing_ids=(LISTING,))
         with self.assertRaises(ValueError):prepare(view,fixture_config(),code_version='test',starts_on='2026-10-16')
+
+    def test_repeated_preparation_preserves_first_valid_files(self):
+        view=ViewConfig(sources=SourceConfig(grant_file='/test',retention_days=30),listing_ids=(LISTING,))
+        with tempfile.TemporaryDirectory() as tmp:
+            out=Path(tmp)/'deployment'
+            write_prepared(out,view,fixture_config())
+            before={p.name:p.read_bytes() for p in out.iterdir()}
+            with self.assertRaises(FileExistsError):write_prepared(out,view,fixture_config())
+            self.assertEqual(before,{p.name:p.read_bytes() for p in out.iterdir()})
+            self.assertEqual(out.stat().st_mode&0o777,0o700)
+            self.assertTrue(all(p.stat().st_mode&0o777==0o600 for p in out.iterdir()))

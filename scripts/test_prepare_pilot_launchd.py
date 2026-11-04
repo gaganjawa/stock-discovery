@@ -18,8 +18,12 @@ class LaunchdTests(unittest.TestCase):
     def test_stored_research_uses_distinct_label_and_no_acquisition_flags(self):
         with tempfile.TemporaryDirectory() as tmp:
             root=Path(tmp);f=root/'config';f.touch()
+            with self.assertRaisesRegex(ValueError,'manifest_required'):
+                definition(f,root,f,f,f,root,stored_research=True)
+            (root/'deployment.json').write_text('{}')
             result=definition(f,root,f,f,f,root,stored_research=True)
             self.assertEqual(result['Label'],'local.stock-discovery.infy-stored-research')
             self.assertIn('--stored-research-view',result['ProgramArguments'])
             self.assertNotIn('--real-pilot-config',result['ProgramArguments'])
             self.assertNotIn('--pilot-operations-directory',result['ProgramArguments'])
+            self.assertEqual(result['EnvironmentVariables']['STK_STORED_DEPLOYMENT_FILE'],str(root/'deployment.json'))
