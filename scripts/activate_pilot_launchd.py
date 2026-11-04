@@ -14,12 +14,14 @@ import sys
 from pathlib import Path
 
 LABEL = 'local.stock-discovery.research'
+STORED_LABEL = 'local.stock-discovery.infy-stored-research'
 APPROVAL = 'I approve unattended local research refresh'
 REQUIRED_SCHEMA = '0015'
 
 
-def agent_path(home=None):
-    return Path(home or Path.home()) / 'Library/LaunchAgents' / (LABEL + '.plist')
+def agent_path(home=None, *, label=LABEL):
+    if label not in (LABEL,STORED_LABEL):raise ValueError('unexpected_launch_label')
+    return Path(home or Path.home()) / 'Library/LaunchAgents' / (label + '.plist')
 
 
 def schema_version(database_url_file):
@@ -32,11 +34,14 @@ def schema_version(database_url_file):
 
 def preflight(reviewed, *, schema=schema_version):
     data = plistlib.loads(Path(reviewed).read_bytes())
-    if data.get('Label') != LABEL:raise ValueError('unexpected_launch_label')
+    label=data.get('Label')
+    if label not in (LABEL,STORED_LABEL):raise ValueError('unexpected_launch_label')
+    flag='--stored-research-view' if label==STORED_LABEL else '--real-pilot-config'
     args = data['ProgramArguments']
-    if args[1:3] != ['-m', 'worker.main'] or '--real-pilot-config' not in args:raise ValueError('unexpected_launch_program')
+    if args[1:3] != ['-m', 'worker.main'] or flag not in args:raise ValueError('unexpected_launch_program')
+    if label==STORED_LABEL and any(x in args for x in ('--real-pilot-config','--real-market-config','--synthetic-schedule','--pilot-operations-directory')):raise ValueError('mixed_stored_research_mode')
     paths = [args[0], data['WorkingDirectory'], data['EnvironmentVariables']['DATABASE_URL_FILE'],
-             args[args.index('--schedule-config') + 1], args[args.index('--real-pilot-config') + 1]]
+             args[args.index('--schedule-config') + 1], args[args.index(flag) + 1]]
     if not all(Path(p).exists() for p in paths):raise ValueError('launch_path_missing')
     if 'DATABASE_URL' in data['EnvironmentVariables']:raise ValueError('inline_database_secret_forbidden')
     version = schema(data['EnvironmentVariables']['DATABASE_URL_FILE'])
@@ -46,8 +51,8 @@ def preflight(reviewed, *, schema=schema_version):
 
 def activate(reviewed, approval, *, home=None, run=subprocess.run, schema=schema_version, uid=None):
     if approval != APPROVAL:raise PermissionError('owner_approval_phrase_required')
-    preflight(reviewed, schema=schema)
-    target = agent_path(home)
+    data=preflight(reviewed, schema=schema);label=data['Label']
+    target = agent_path(home,label=label)
     target.parent.mkdir(parents=True, exist_ok=True)
     with open(target, 'xb') as out, open(reviewed, 'rb') as source:
         os.chmod(target, 0o600);shutil.copyfileobj(source, out)
@@ -56,28 +61,29 @@ def activate(reviewed, approval, *, home=None, run=subprocess.run, schema=schema
     if result.returncode != 0:
         target.unlink()
         raise RuntimeError('launchctl_bootstrap_failed')
-    return dict(status='active', label=LABEL, plist=str(target))
+    return dict(status='active', label=label, plist=str(target))
 
 
-def deactivate(*, home=None, run=subprocess.run, uid=None):
+def deactivate(*, home=None, run=subprocess.run, uid=None, label=LABEL):
+    target=agent_path(home,label=label)
     domain = f'gui/{uid if uid is not None else os.getuid()}'
-    result = run(['launchctl', 'bootout', f'{domain}/{LABEL}'], capture_output=True, text=True)
+    result = run(['launchctl', 'bootout', f'{domain}/{label}'], capture_output=True, text=True)
     # ESRCH (3) means no service; other errors do not establish shutdown.
     if result.returncode not in (0,3):raise RuntimeError('launchctl_shutdown_failed')
-    stopped = run(['launchctl', 'print', f'{domain}/{LABEL}'], capture_output=True, text=True)
+    stopped = run(['launchctl', 'print', f'{domain}/{label}'], capture_output=True, text=True)
     if stopped.returncode != 113:raise RuntimeError('launchctl_shutdown_unverified')
-    target = agent_path(home)
     if target.exists():target.unlink()
-    return dict(status='inactive', label=LABEL, was_loaded=result.returncode == 0)
+    return dict(status='inactive', label=label, was_loaded=result.returncode == 0)
 
 
-def status(*, run=subprocess.run, uid=None):
+def status(*, run=subprocess.run, uid=None, label=LABEL):
+    agent_path(label=label)
     domain = f'gui/{uid if uid is not None else os.getuid()}'
-    result = run(['launchctl', 'print', f'{domain}/{LABEL}'], capture_output=True, text=True)
-    if result.returncode == 113:return dict(status='inactive', label=LABEL)
+    result = run(['launchctl', 'print', f'{domain}/{label}'], capture_output=True, text=True)
+    if result.returncode == 113:return dict(status='inactive', label=label)
     if result.returncode != 0:raise RuntimeError('launchctl_status_unverified')
     fields = dict(line.strip().split(' = ', 1) for line in result.stdout.splitlines() if ' = ' in line)
-    return dict(status='active', label=LABEL, state=fields.get('state'), runs=fields.get('runs'),
+    return dict(status='active', label=label, state=fields.get('state'), runs=fields.get('runs'),
                 last_exit=fields.get('last exit code'))
 
 
@@ -85,10 +91,10 @@ def main():
     p = argparse.ArgumentParser(description=__doc__)
     sub = p.add_subparsers(dest='action', required=True)
     a = sub.add_parser('activate');a.add_argument('--reviewed-plist', type=Path, required=True);a.add_argument('--approval', required=True)
-    sub.add_parser('deactivate');sub.add_parser('status')
+    sub.add_parser('deactivate').add_argument('--stored-research',action='store_true');sub.add_parser('status').add_argument('--stored-research',action='store_true')
     args = p.parse_args()
     if sys.platform != 'darwin':raise SystemExit('macOS launchd only')
-    result = activate(args.reviewed_plist, args.approval) if args.action == 'activate' else deactivate() if args.action == 'deactivate' else status()
+    result = activate(args.reviewed_plist, args.approval) if args.action == 'activate' else deactivate(label=STORED_LABEL if args.stored_research else LABEL) if args.action == 'deactivate' else status(label=STORED_LABEL if args.stored_research else LABEL)
     print(json.dumps(result, indent=2))
 
 

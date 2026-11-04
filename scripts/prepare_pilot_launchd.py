@@ -5,12 +5,13 @@ import plistlib
 from pathlib import Path
 
 
-def definition(python,repo,pilot,schedule,database,operations):
+def definition(python,repo,pilot,schedule,database,operations,*,stored_research=False):
     paths=[Path(p).absolute() for p in (python,repo,pilot,schedule,database,operations)]
     python,repo,pilot,schedule,database,operations=map(str,paths)
     for path in paths:
         if not path.exists():raise ValueError('launch_path_missing')
-    return {'Label':'local.stock-discovery.research','ProgramArguments':[python,'-m','worker.main','--schedule-config',schedule,'--real-pilot-config',pilot,'--pilot-operations-directory',operations,'--interval-seconds','30'],
+    args=[python,'-m','worker.main','--schedule-config',schedule]+(['--stored-research-view',pilot] if stored_research else ['--real-pilot-config',pilot,'--pilot-operations-directory',operations])+['--interval-seconds','30']
+    return {'Label':'local.stock-discovery.infy-stored-research' if stored_research else 'local.stock-discovery.research','ProgramArguments':args,
         'WorkingDirectory':repo,'EnvironmentVariables':{'PYTHONPATH':':'.join(str(Path(repo)/x) for x in ('backend','shared','worker')),'DATABASE_URL_FILE':database,'PYTHONUNBUFFERED':'1'},
         'RunAtLoad':True,'KeepAlive':True,'ThrottleInterval':60,'ProcessType':'Background','Nice':10,'ExitTimeOut':30,'Umask':63,
         # Worker writes a bounded private diagnostic ring. No unbounded launchd stdout files.
@@ -20,9 +21,10 @@ def definition(python,repo,pilot,schedule,database,operations):
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     for key in ('python','repo','pilot','schedule','database','operations','output'):p.add_argument('--'+key,type=Path,required=True)
+    p.add_argument('--stored-research',action='store_true',help='Use --pilot as the isolated INFY ViewConfig; no acquisition or model execution')
     a=p.parse_args();out=a.output.expanduser().resolve()
     if out.exists() or 'LaunchAgents' in out.parts:raise ValueError('output_must_be_new_inactive_review_file')
-    data=definition(a.python,a.repo,a.pilot,a.schedule,a.database,a.operations)
+    data=definition(a.python,a.repo,a.pilot,a.schedule,a.database,a.operations,stored_research=a.stored_research)
     with open(out,'xb') as f:os.chmod(out,0o600);plistlib.dump(data,f)
     print('Prepared inactive LaunchAgent; explicit owner authorization required before install/bootstrap.')
 

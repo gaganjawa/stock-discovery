@@ -299,3 +299,11 @@ historical chart points through November 3 against the November 4 closed session
 original evidence is unchanged. No provider/AI calls, policy activation, grant
 changes, trading or admission. [Behavior, validation and remaining blockers](STK-082-delayed-descriptive.md).
 M1 and full D3-13 acceptance remain blocked; owner PR review required.
+
+4 November — **STK-083 / D3-04 + D3-09**: unified guarded INFY daily insight reuses
+existing prices, indicators, facts and factual verifier; the actual stored batch
+renders 43 bars, six descriptive indicators and 24 reported facts. AI/levels/news
+qualification remains unavailable. New stored-only mode reuses D3-04 jobs and
+launchd with a separate INFY label; tested offline, not activated. Provider/model
+requests: zero; original evidence and 12-stock config preserved. M1/M2, ranking,
+real OOS and trading/admission remain blocked. [Reuse, operation and acceptance](STK-083-automated-infy-research.md).

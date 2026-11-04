@@ -14,3 +14,12 @@ class LaunchdTests(unittest.TestCase):
             self.assertEqual(result['ThrottleInterval'],60)
             self.assertNotIn('DATABASE_URL',result['EnvironmentVariables'])
             self.assertEqual(result['StandardOutPath'],'/dev/null')
+
+    def test_stored_research_uses_distinct_label_and_no_acquisition_flags(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);f=root/'config';f.touch()
+            result=definition(f,root,f,f,f,root,stored_research=True)
+            self.assertEqual(result['Label'],'local.stock-discovery.infy-stored-research')
+            self.assertIn('--stored-research-view',result['ProgramArguments'])
+            self.assertNotIn('--real-pilot-config',result['ProgramArguments'])
+            self.assertNotIn('--pilot-operations-directory',result['ProgramArguments'])

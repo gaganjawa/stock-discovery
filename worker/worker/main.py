@@ -36,7 +36,10 @@ def main() -> None:
     parser.add_argument('--real-market-config', type=Path, help='opt-in REAL-001 price adapter config; downstream research stays blocked')
     parser.add_argument('--pilot-operations-directory',type=Path,help='private local health, automatic calendar and resource controls')
     parser.add_argument('--real-pilot-config',type=Path,help='bounded factual research using existing durable schedule')
+    parser.add_argument('--stored-research-view',type=Path,help='INFY stored-evidence research only; no provider or model calls')
     args = parser.parse_args()
+    if args.stored_research_view and (args.real_pilot_config or args.real_market_config or args.synthetic_schedule or args.synthetic_evidence or args.pilot_operations_directory):
+        parser.error('stored research cannot mix adapter modes')
     if args.real_pilot_config and (args.real_market_config or args.synthetic_schedule or args.synthetic_evidence):
         parser.error('real pilot cannot mix adapter modes')
     if args.real_market_config and (args.synthetic_schedule or args.synthetic_evidence):
@@ -74,6 +77,14 @@ def main() -> None:
         pilot_lock=singleton(pilot.market.account_ref)
         if args.pilot_operations_directory:ops=Operations(args.pilot_operations_directory,config,pilot)
         schedule_handlers=handlers(config,pilot)
+    if args.stored_research_view:
+        if config is None:parser.error('stored research requires --schedule-config')
+        from .stored_research import handlers
+        from .pilot_operations import singleton
+        from stock_discovery_analysis.real_views import ViewConfig
+        view=ViewConfig.model_validate_json(args.stored_research_view.read_text())
+        schedule_handlers=handlers(config,view)
+        pilot_lock=singleton('STK-083-INFY-stored-research')
     while True:
         if ops:
             try:
