@@ -56,6 +56,21 @@ class ActivateTests(unittest.TestCase):
 
 
 
+    def test_stored_mode_has_separate_activation_target_and_blocks_mixed_modes(self):
+        from activate_pilot_launchd import STORED_LABEL,preflight
+        data=plistlib.loads(self.reviewed.read_bytes())
+        data['Label']=STORED_LABEL
+        args=data['ProgramArguments'];i=args.index('--real-pilot-config');args[i]='--stored-research-view'
+        j=args.index('--pilot-operations-directory');del args[j:j+2]
+        self.reviewed.write_bytes(plistlib.dumps(data))
+        result=activate(self.reviewed,APPROVAL,home=self.home,run=Runner(),schema=lambda f:'0015',uid=501)
+        self.assertEqual(result['label'],STORED_LABEL)
+        self.assertTrue(agent_path(self.home,label=STORED_LABEL).exists())
+        self.assertFalse(agent_path(self.home).exists())
+        args.extend(['--real-market-config','unsafe.json']);self.reviewed.write_bytes(plistlib.dumps(data))
+        with self.assertRaisesRegex(ValueError,'mixed_stored_research_mode'):preflight(self.reviewed,schema=lambda f:'0015')
+
+
 class ShutdownFailureTests(unittest.TestCase):
     def test_bootout_failure_preserves_plist(self):
         with tempfile.TemporaryDirectory() as home:
@@ -67,6 +82,9 @@ class ShutdownFailureTests(unittest.TestCase):
     def test_successful_bootout_but_still_loaded_is_failure(self):
         with self.assertRaisesRegex(RuntimeError,'shutdown'):
             deactivate(run=Runner(),uid=501)
+
+
+
 
 
 if __name__ == '__main__':unittest.main()

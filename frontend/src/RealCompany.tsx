@@ -1,3 +1,4 @@
+import { DailyInsight } from './DailyInsight'
 import { explain } from './PilotCoverage'
 import {RealSwing} from './RealSwing'
 import {CombinedResearch} from './CombinedResearch'
@@ -37,6 +38,7 @@ export function RealCompany({horizon,onUnauthorized,selected,labels={}}:{horizon
  <label>Company <select value={listing} onChange={e=>setListing(e.target.value)}>{list.map(s=><option key={s} value={s}>{labels[s]?`${labels[s]} · ${s}`:s}</option>)}</select></label>{list.some(s=>!labels[s])&&<small className="hint" data-testid="company-isin-hint">Companies are listed by NSE ISIN until their stored identity is readable (INFY is NSE:INE009A01021).</small>}
  <button onClick={()=>{setData(null);setVersion(version+1)}}>Refresh real evidence</button>
  {error&&<p role="alert">{error}</p>}
+ {data&&listing==='NSE:INE009A01021'&&<DailyInsight key={'insight:'+listing+':'+version} listing={listing} onUnauthorized={onUnauthorized} onRefresh={()=>{setData(null);setVersion(version+1)}}/>}
  {listing&&horizon==='swing'&&<RealSwing key={listing+':'+version} listing={listing} onUnauthorized={onUnauthorized}/>}
  {listing&&horizon==='swing'&&<CombinedResearch key={'combined:'+listing+':'+version} listing={listing} onUnauthorized={onUnauthorized}/>}
  {data&&<><h3>{data.symbol} · {data.isin}</h3><p>Inputs known at {data.cutoff_at}. REAL RESEARCH / SHADOW / NON-ACTIONABLE.</p>

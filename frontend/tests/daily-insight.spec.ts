@@ -1,0 +1,32 @@
+import {test,expect} from '@playwright/test'
+// Fabricated rendering responses; no investment performance assertion.
+for(const width of [390,1280])test('daily insight, stale clearing and denied refresh '+width,async({page})=>{
+ await page.setViewportSize({width,height:1000})
+ const calls:string[]=[]
+ page.on('request',r=>{if(r.url().includes('/v1/real-research')){calls.push(r.url());expect(r.method()).toBe('GET')}})
+ await page.route('**/api/v1/session',r=>r.fulfill({json:{authenticated:true}}))
+ await page.route('**/api/v1/dashboard',r=>r.fulfill({json:{datasets:[],jobs:[]}}))
+ await page.route('**/v1/real-research/**',r=>r.fulfill({status:503,json:{detail:'not configured'}}))
+ await page.route('**/v1/real-research/companies',r=>r.fulfill({json:{listing_ids:['NSE:INE009A01021']}}))
+ await page.route('**/v1/real-research/companies/NSE%3AINE009A01021',r=>r.fulfill({json:{symbol:'TEST',isin:'TEST',price_series:[],financial_facts:[],documents:[],events:[],quantitative:{},analysis_history:[],limitations:[]}}))
+ const report={version:'infy-daily-insight-1',state:'delayed_descriptive',evaluated_at:'2026-11-04T12:00:00Z',research_only:true,changes_since_scheduled_run:'evidence_unchanged',market:{chart_points:43,freshness:{latest_available_price_session:'2026-11-03',latest_verified_closed_session:'2026-11-04',status:'delayed_one_session'},coverage:{missing_sessions:['2026-11-04']},limitations:[]},technical:{interpretation:{bullish:[{code:'price_above_sma20',text:'Close is above SMA20; fabricated UI assertion.'}],bearish:[],neutral:[]}},fundamentals:{status:'unavailable',facts:[],conflict_validation:'unavailable',conflicts:[],missing:[],limitations:[]},ai:{status:'AI_RESEARCH_UNAVAILABLE',reason:'qualified_evidence_missing',new_model_calls:0,research:null},conclusion:{summary:'Descriptive only; unqualified for investment decisions.',uncertainties:[],missing_qualification:['original_raw_prices']},hypothetical_levels:{status:'unavailable',reason:'qualified_policy_required'},automation:{automation:'configured_not_proof_of_running',latest_successful_analysis_at:'2026-11-03T12:00:00Z',latest_run:{status:'failed',error:'permanent',at:'2026-11-04T12:00:00Z',catch_up:false}},acquisition:{status:'disabled',reason:'owner_activation_not_established',last_attempt_at:null}}
+ await page.route('**/v1/real-research/companies/NSE%3AINE009A01021/insight',r=>r.fulfill({json:report}))
+ await page.goto('/#real-research')
+ const panel=page.getByRole('region',{name:'Daily INFY insight'})
+ await expect(panel).toContainText('Close is above SMA20')
+ await expect(panel).toContainText('AI_RESEARCH_UNAVAILABLE')
+ await expect(panel).toContainText('Last run: failed')
+ await expect(panel).toContainText('Acquisition: disabled')
+ await expect(panel).toContainText('No BUY/SELL signal')
+ await page.route('**/v1/real-research/companies/NSE%3AINE009A01021/insight',r=>r.fulfill({json:{...report,state:'unavailable_data',technical:{interpretation:{bullish:[],bearish:[],neutral:[]}},market:{...report.market,chart_points:0,freshness:{...report.market.freshness,status:'unavailable'}}}}))
+ await panel.getByRole('button',{name:'Review latest stored evidence'}).click()
+ await expect(panel).toContainText('unavailable data')
+ await expect(panel).not.toContainText('Close is above SMA20')
+ await page.route('**/v1/real-research/companies/NSE%3AINE009A01021/insight',r=>r.fulfill({status:403,json:{detail:'denied'}}))
+ await panel.getByRole('button',{name:'Review latest stored evidence'}).click()
+ await expect(panel.getByRole('alert')).toContainText('Denied: current source permissions')
+ await expect(panel).not.toContainText('43 qualified')
+ expect(calls.some(c=>c.endsWith('/insight'))).toBe(true)
+ expect(calls.every(c=>!c.includes('/run')&&!c.includes('/ingest'))).toBe(true)
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true)
+})

@@ -191,3 +191,15 @@ def latest_scan(conn=Depends(db)):
     try:return scan_view(conn,view_config())
     except PermissionError as error:raise denied(error) from None
     except (ValueError,OSError,KeyError) as error:raise HTTPException(503,'Real scan inputs are unavailable: '+safe_code(error)) from None
+
+
+@router.get('/companies/{listing}/insight')
+def daily_insight(listing:str,response:Response,conn=Depends(db)):
+    from fastapi import HTTPException
+    from stock_discovery_analysis.daily_insight import research,LISTING
+    config=view_config()
+    if listing!=LISTING or listing not in config.listing_ids:raise HTTPException(404,'INFY research is not configured')
+    response.headers['Cache-Control']='no-store'
+    try:return research(conn,config,listing)
+    except PermissionError as error:raise denied(error) from None
+    except (ValueError,OSError,KeyError):raise HTTPException(503,'Analysis unavailable: verified inputs are incomplete') from None
