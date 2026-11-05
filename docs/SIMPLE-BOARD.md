@@ -326,3 +326,16 @@ navigation works. Saved scan names/ranks remain unavailable under existing linea
 gates. No source calls or market-evidence changes; STK-092 remains deferred.
 [Delivery, private persistence and acceptance](STK-093-research-workbench.md).
 Pending owner PR review; no current-market or actionable release claim.
+
+6 November — **STK-094 / D3-03 + D3-04 + D3-09**: disabled-by-default Chartink
+receiver, PostgreSQL candidate inbox/replay/recovery, existing stored-only research
+integration and Candidates workbench implemented. Actual CSVs verified/imported:
+3,094 matches / 457 stocks / 160 represented sessions; 5 November 35 candidates,
+28 new versus previous results and seven continuing. All 35 lack usable stored
+identity evidence; simulated INFY intake reuses verified identity and existing
+44-bar descriptive analysis. Browser candidate/watchlist/legacy INFY acceptance
+passed. Premium is not purchased; public deployment and real delivery validation
+belong to a later activation milestone, not this ticket's corrected local DoD.
+No provider/model calls, original-data mutation, trading or percentage revision;
+overall planning baseline stays 46%. [Implementation, evidence and activation steps](STK-094-chartink-candidates.md).
+Pending owner PR review; do not merge or start the next milestone.

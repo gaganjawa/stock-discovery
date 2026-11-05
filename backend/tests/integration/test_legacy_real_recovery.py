@@ -31,7 +31,7 @@ def migration_database(monkeypatch):
 def legacy_0013(tmp_path):
     legacy = tmp_path / 'legacy'
     shutil.copytree(ROOT / 'backend/migrations', legacy)
-    for name in ('0012_experiment_governance.py', '0014_reconcile_real_governance.py', '0015_grant_fences.py'):
+    for name in ('0012_experiment_governance.py', '0014_reconcile_real_governance.py', '0015_grant_fences.py', '0016_candidates.py'):
         (legacy / 'versions' / name).unlink()
     for name in ('0012_real_shadow.py', '0013_pilot_maintenance_audit.py'):
         path = legacy / 'versions' / name
@@ -98,7 +98,7 @@ def test_retained_0013_upgrade_restores_fenced_reads_without_rewriting(migration
             company(conn, config('disabled'), LISTING, clock=lambda: NOW)
         before = snapshot(conn)
         command.upgrade(Config(str(ROOT / 'backend/alembic.ini')), 'head')
-        assert conn.execute('SELECT version_num FROM alembic_version').fetchone() == ('0015',)
+        assert conn.execute('SELECT version_num FROM alembic_version').fetchone() == ('0016',)
         after = snapshot(conn)
         assert all(after[t] == rows for t, rows in before.items())
         assert conn.execute('SELECT kind,state,generation FROM discovery.grant_fences ORDER BY kind').fetchall() == [

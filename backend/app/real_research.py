@@ -18,7 +18,7 @@ def schema_state():
             version=conn.execute('SELECT version_num FROM alembic_version').fetchone()[0]
     except Exception:
         return dict(state='unavailable')
-    return dict(state='current' if version==REQUIRED_SCHEMA else 'migration_required')
+    return dict(state='current' if version in (REQUIRED_SCHEMA,'0016') else 'migration_required')
 
 
 def safe_code(error):
@@ -111,6 +111,14 @@ def view_config():
     except (OSError,ValueError):raise HTTPException(503,'Real source configuration is unavailable') from None
 
 
+def candidate_config(conn,config,listing):
+    if listing in config.listing_ids:return config
+    if conn is not None and conn.execute("SELECT 1 FROM discovery.candidates WHERE listing_id=%s LIMIT 1",(listing,)).fetchone():
+        return config.model_copy(update={'listing_ids':(listing,)})
+    from fastapi import HTTPException
+    raise HTTPException(404,'Company is not configured or resolved from candidates')
+
+
 @router.get('/companies')
 def companies():
     config=view_config()
@@ -124,7 +132,7 @@ def company_detail(listing:str,response:Response,conn=Depends(db),analysis:Liter
     from stock_discovery_analysis.real_views import company
     config=view_config()
     response.headers['Cache-Control']='no-store'
-    if listing not in config.listing_ids:raise HTTPException(404,'Company is not configured')
+    config=candidate_config(conn,config,listing)
     try:
         if analysis=='combined':
             from stock_discovery_analysis.combined_research import research
@@ -215,10 +223,14 @@ def get_watchlist(response:Response):
     return store()
 
 @router.put('/watchlist/{listing}')
-def save_watchlist(listing:str, entry:Entry, response:Response):
+def save_watchlist(listing:str, entry:Entry, response:Response,conn=Depends(db)):
     from fastapi import HTTPException
     from .watchlist import store
-    if listing not in view_config().listing_ids:raise HTTPException(404,'Company is not configured')
+    if listing.startswith('CHARTINK:'):
+        parts=listing.split(':')
+        if len(parts)!=3 or conn is None or not conn.execute('SELECT 1 FROM discovery.candidates WHERE scanner_key=%s AND symbol=%s LIMIT 1',tuple(parts[1:])).fetchone():
+            raise HTTPException(404,'Candidate is not known')
+    else:candidate_config(conn,view_config(),listing)
     response.headers['Cache-Control']='no-store'
     return store(listing,entry)
 
@@ -232,17 +244,31 @@ def remove_watchlist(listing:str,response:Response):
 def workbench(response:Response,conn=Depends(db)):
     from stock_discovery_analysis.real_views import company
     from stock_discovery_analysis.real_scan_view import scan_view
-    config=view_config()
+    from fastapi import HTTPException
+    try:config=view_config()
+    except HTTPException:config=None
     response.headers['Cache-Control']='no-store'
     try:scan=scan_view(conn,config).get('scan') or {}
     except Exception:scan={}
     saved={r['listing_id']:r for r in scan.get('rows',[])}
     rows=[]
-    for listing in config.listing_ids:
+    from .watchlist import store
+    listings=list(config.listing_ids) if config else []
+    if conn is not None:
+        for listing in list(store()['entries'])[:500]:
+            if listing.startswith('CHARTINK:'):
+                parts=listing.split(':')
+                if len(parts)==3 and conn.execute('SELECT 1 FROM discovery.candidates WHERE scanner_key=%s AND symbol=%s LIMIT 1',tuple(parts[1:])).fetchone():
+                    rows.append(dict(listing_id=listing,symbol=parts[2],name='Chartink candidate; company identity unverified',state='unresolved',reasons=['nse_identity_missing_or_ambiguous'],screening={},unresolved_candidate=True))
+                continue
+            if config and listing not in listings and conn.execute('SELECT 1 FROM discovery.candidates WHERE listing_id=%s LIMIT 1',(listing,)).fetchone():
+                listings.append(listing)
+    for listing in listings:
+        scoped=config if listing in config.listing_ids else config.model_copy(update={'listing_ids':(listing,)})
         prior=saved.get(listing,{})
         row=dict(listing_id=listing,symbol=prior.get('symbol',listing),name=prior.get('name','Name unavailable'),state='unavailable',reasons=[],screening=prior.get('screening',{}),assessment_at=scan.get('completed_at'))
         try:
-            detail=company(conn,config,listing)
+            detail=company(conn,scoped,listing)
             research=detail['adjusted_research']
             row.update(symbol=detail['symbol'],state='readable' if detail['price_series'] else 'unavailable',detail=detail,reasons=research['unavailable_reasons'])
         except PermissionError:
@@ -259,7 +285,7 @@ def review_watchlist(listing:str,response:Response,conn=Depends(db)):
     from fastapi import HTTPException
     config=view_config()
     response.headers['Cache-Control']='no-store'
-    if listing not in config.listing_ids:raise HTTPException(404,'Company is not configured')
+    config=candidate_config(conn,config,listing)
     try:detail=company(conn,config,listing)
     except PermissionError as error:raise denied(error) from None
     except Exception:raise HTTPException(503,'Verified observations unavailable') from None

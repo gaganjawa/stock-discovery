@@ -65,3 +65,6 @@ app.include_router(real_research_router)
 
 from .governance import router as governance_router
 app.include_router(governance_router)
+
+from .candidates import router as candidates_router
+app.include_router(candidates_router)
