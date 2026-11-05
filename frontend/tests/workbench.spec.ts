@@ -5,6 +5,7 @@ test('search, stale and technical filters retain eligibility and never rank raw 
  const rows=[row('A',1,false),row('B',2,true),{...row('C',3,false),state:'denied',detail:undefined}]
  expect(filterRows(rows,'Alpha','all','all','symbol','swing').map(r=>r.symbol)).toEqual(['A'])
  expect(filterRows(rows,'','stale','ema_above','priority','swing').map(r=>r.symbol)).toEqual(['B','A'])
+ expect(filterRows([{...row('D',4,false),state:'unavailable',detail:{...row('D',4,false).detail!,price_series:[]}}],'','stale','all','symbol','swing')).toHaveLength(0)
  expect(filterRows(rows,'','unavailable','all','symbol','swing').map(r=>r.symbol)).toEqual(['C'])
  expect(filterRows(rows,'','all','sma_above','symbol','swing')).toHaveLength(2)
 })

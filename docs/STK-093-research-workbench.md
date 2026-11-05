@@ -67,3 +67,12 @@ remain missing; reported facts retain reporting periods and source locators.
 STK-092 CAS/calendar work remains deferred. This workbench is a descriptive
 workflow, not full D3-13 release, market coverage certification or investment
 readiness. No launchd activation, broker order, paid service or deployment occurs.
+
+Validation: 1,016 backend/worker regression tests passed, followed by all four
+focused watchlist tests including durable review-marker preservation and denial.
+41 disposable PostgreSQL read-fence/freshness cases passed with zero skips.
+The isolated production build and 21 browser regressions passed. The unrelated
+untracked ImportPreview syntax error was excluded via an isolated tracked-source
+copy; it was not modified. Real browser acceptance also passed against a fresh
+API process reading the same private watchlist directory. Stale counts require a
+readable dated price series; missing observations are counted separately.
