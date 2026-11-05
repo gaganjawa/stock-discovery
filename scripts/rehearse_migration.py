@@ -114,7 +114,7 @@ def main():
         report['upgrade'] = dict(version=version_after, **compare(before, after))
         with psycopg.connect(copy_url, connect_timeout=5) as conn:
             report['fences'] = fence_check(conn)
-        report['pass'] = (version_after == ['0015'] and report['upgrade']['unchanged']
+        report['pass'] = (version_after in (['0015'],['0016']) and report['upgrade']['unchanged']
                           and report['fences']['all_registered'] and report['fences']['restriction_requests'] == 0)
         if snapshot(url)[1] != before:
             raise AssertionError('original changed during rehearsal')

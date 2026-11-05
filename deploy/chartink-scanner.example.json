@@ -1,0 +1,10 @@
+{
+  "scan_name": "Stock Discovery - EOD Swing Candidates v1",
+  "scan_url": "stock-discovery-eod-swing-candidates-v1",
+  "alert_name": "REPLACE_WITH_EXACT_FUTURE_ALERT_NAME",
+  "version": "1",
+  "rules": "Owner-supplied: Nifty 500; Close > 100; Close > SMA50; EMA10 > EMA30; RSI14 between 50 and 70; Volume > 1.2 * 20-day average; Close between 97% and 103% of previous 20-day high. Independently confirm the live scanner before activation.",
+  "rights_reference": "UNAPPROVED: replace with owner-approved account-specific private discovery storage/use evidence",
+  "enabled_until": "2000-01-01T00:00:00Z",
+  "mode": "provider_alert"
+}

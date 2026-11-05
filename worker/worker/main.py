@@ -37,7 +37,10 @@ def main() -> None:
     parser.add_argument('--pilot-operations-directory',type=Path,help='private local health, automatic calendar and resource controls')
     parser.add_argument('--real-pilot-config',type=Path,help='bounded factual research using existing durable schedule')
     parser.add_argument('--stored-research-view',type=Path,help='INFY stored-evidence research only; no provider or model calls')
+    parser.add_argument('--candidate-intake', action='store_true', help='STK-094 durable candidates; stored-only research, optional outbound receiver pull')
     args = parser.parse_args()
+    if args.candidate_intake and (args.schedule_config or args.real_market_config or args.real_pilot_config or args.stored_research_view or args.synthetic_schedule or args.synthetic_evidence or args.pilot_operations_directory):
+        parser.error('candidate intake uses its own bounded stored-only cycle')
     if args.stored_research_view and (args.real_pilot_config or args.real_market_config or args.synthetic_schedule or args.synthetic_evidence or args.pilot_operations_directory):
         parser.error('stored research cannot mix adapter modes')
     stored_deployment = os.getenv('STK_STORED_DEPLOYMENT_FILE')
@@ -91,6 +94,19 @@ def main() -> None:
         schedule_handlers=handlers(config,view)
         pilot_lock=singleton('STK-083-INFY-stored-research')
     while True:
+        if args.candidate_intake:
+            from .candidates import cycle
+            try:
+                with psycopg.connect(setting('DATABASE_URL'),autocommit=True,connect_timeout=5,
+                                      options='-c statement_timeout=15000 -c lock_timeout=2000') as conn:
+                    result=cycle(conn)
+                print(json.dumps(result,sort_keys=True),flush=True)
+            except Exception as exc:
+                print(event('candidate_cycle_failed',status=0,error_type=type(exc).__name__),flush=True)
+                if args.once:raise SystemExit(1) from None
+            if args.once:return
+            time.sleep(max(5,args.interval_seconds))
+            continue
         if stored_deployment:
             from .stored_operations import cycle
             result = cycle(stored_deployment, config, view, args.schedule_config, args.stored_research_view,
