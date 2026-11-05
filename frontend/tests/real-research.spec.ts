@@ -69,6 +69,7 @@ test('real homepage shows scan failures separately and clears cached scan on per
  await page.route('**/v1/real-research/scan',route=>route.fulfill({json:{operations:{status:'stale_or_stopped',calendar_through:'2026-11-07',next_occurrence_at:'2026-10-26T10:30:00Z'},status:'observed',queue_depth:1,jobs:[],scan:{universe:{label:'LIMITED RESEARCH WATCHLIST',selection:'Fabricated UI fixture only',version:'test',members:[{symbol:row.symbol}]},completed_at:'2026-10-23T10:40:00Z',started_at:'2026-10-23T10:39:00Z',attempt:1,duration_seconds:60,api_requests:0,counts:{total:1,observed:0,stale:1,failed:0},rows:[row],publication:'blocked'}}}))
  await page.setExtraHTTPHeaders({Authorization:'Bearer '+process.env.AUTH_TOKEN!})
  await page.goto('/')
+ await page.getByText('Saved scan and operations',{exact:true}).click()
  const scan=page.getByRole('region',{name:'Automated real stock discovery'})
  await expect(scan).toContainText('LIMITED RESEARCH WATCHLIST')
  await expect(scan).toContainText('Not rankable')

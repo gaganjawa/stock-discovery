@@ -317,3 +317,12 @@ current-main configuration awaits this correction's review/merge. Session rows
 cannot establish new closed-date coverage: renewal remains explicitly blocked.
 No provider/model calls, real database mutations or launchd activation.
 [Operating notes and limits](STK-086-calendar-lifecycle.md).
+
+5 November — **STK-093 / D3-09 real research workbench**: discovery/search/filters,
+2–4 company comparison and authenticated private watchlist with notes/review dates
+implemented. Real local browser acceptance: 12 configured, INFY 44 bars through
+4 November, other 11 explicitly unavailable; note survives reload and company
+navigation works. Saved scan names/ranks remain unavailable under existing lineage
+gates. No source calls or market-evidence changes; STK-092 remains deferred.
+[Delivery, private persistence and acceptance](STK-093-research-workbench.md).
+Pending owner PR review; no current-market or actionable release claim.

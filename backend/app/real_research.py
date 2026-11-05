@@ -123,6 +123,7 @@ def company_detail(listing:str,response:Response,conn=Depends(db),analysis:Liter
     from fastapi import HTTPException
     from stock_discovery_analysis.real_views import company
     config=view_config()
+    response.headers['Cache-Control']='no-store'
     if listing not in config.listing_ids:raise HTTPException(404,'Company is not configured')
     try:
         if analysis=='combined':
@@ -203,3 +204,66 @@ def daily_insight(listing:str,response:Response,conn=Depends(db)):
     try:return research(conn,config,listing)
     except PermissionError as error:raise denied(error) from None
     except (ValueError,OSError,KeyError):raise HTTPException(503,'Analysis unavailable: verified inputs are incomplete') from None
+
+
+from .watchlist import Entry
+
+@router.get('/watchlist')
+def get_watchlist(response:Response):
+    from .watchlist import store
+    response.headers['Cache-Control']='no-store'
+    return store()
+
+@router.put('/watchlist/{listing}')
+def save_watchlist(listing:str, entry:Entry, response:Response):
+    from fastapi import HTTPException
+    from .watchlist import store
+    if listing not in view_config().listing_ids:raise HTTPException(404,'Company is not configured')
+    response.headers['Cache-Control']='no-store'
+    return store(listing,entry)
+
+@router.delete('/watchlist/{listing}')
+def remove_watchlist(listing:str,response:Response):
+    from .watchlist import store
+    response.headers['Cache-Control']='no-store'
+    return store(listing,remove=True)
+
+@router.get('/workbench')
+def workbench(response:Response,conn=Depends(db)):
+    from stock_discovery_analysis.real_views import company
+    from stock_discovery_analysis.real_scan_view import scan_view
+    config=view_config()
+    response.headers['Cache-Control']='no-store'
+    try:scan=scan_view(conn,config).get('scan') or {}
+    except Exception:scan={}
+    saved={r['listing_id']:r for r in scan.get('rows',[])}
+    rows=[]
+    for listing in config.listing_ids:
+        prior=saved.get(listing,{})
+        row=dict(listing_id=listing,symbol=prior.get('symbol',listing),name=prior.get('name','Name unavailable'),state='unavailable',reasons=[],screening=prior.get('screening',{}),assessment_at=scan.get('completed_at'))
+        try:
+            detail=company(conn,config,listing)
+            research=detail['adjusted_research']
+            row.update(symbol=detail['symbol'],state='readable' if detail['price_series'] else 'unavailable',detail=detail,reasons=research['unavailable_reasons'])
+        except PermissionError:
+            row.update(state='denied',reasons=['source_permission_denied'],screening={})
+        except Exception as error:row['reasons']=[safe_code(error)]
+        rows.append(row)
+    return dict(rows=rows,actionable=False,qualified=False)
+
+
+@router.post('/watchlist/{listing}/review')
+def review_watchlist(listing:str,response:Response,conn=Depends(db)):
+    from stock_discovery_analysis.real_views import company
+    from .watchlist import store
+    from fastapi import HTTPException
+    config=view_config()
+    response.headers['Cache-Control']='no-store'
+    if listing not in config.listing_ids:raise HTTPException(404,'Company is not configured')
+    try:detail=company(conn,config,listing)
+    except PermissionError as error:raise denied(error) from None
+    except Exception:raise HTTPException(503,'Verified observations unavailable') from None
+    observed=max((b['fetched_at'] for b in detail['price_series']),default=None)
+    if not observed:raise HTTPException(409,'No readable price observation to mark reviewed')
+    response.headers['Cache-Control']='no-store'
+    return store(listing,reviewed_observation=observed)
