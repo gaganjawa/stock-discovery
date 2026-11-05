@@ -484,3 +484,18 @@ dl {
 .replay-evidence-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px}.replay-evidence-grid>div,.replay-evidence-grid>section{min-width:0;overflow-wrap:anywhere}@media(max-width:1000px){.replay-evidence-grid{grid-template-columns:minmax(0,1fr)}}
 .chart-events{list-style:none;padding:0;margin:8px 0 0;display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12px;color:#aec1cf;overflow-wrap:anywhere}
 .daily-note{padding:12px 16px;border-left:3px solid #91dfbf;background:#0f1a22;margin:8px 0 16px;font-size:13px;overflow-wrap:anywhere}.daily-note p{margin:4px 0}
+
+.workbench-controls { display:flex; flex-wrap:wrap; gap:12px; align-items:end; margin:16px 0; }
+.workbench-controls label, .workbench td label { display:flex; flex-direction:column; gap:6px; }
+.workbench td { vertical-align:top; min-width:125px; }
+.workbench td p { max-width:36ch; }
+.workbench textarea { min-height:90px; max-width:100%; }
+.research-comparison { display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:16px; }
+.research-comparison article { border:1px solid #64748b; border-radius:8px; padding:12px; overflow-wrap:anywhere; }
+.research-comparison dl { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.workbench { margin-top:12px; padding:16px; }
+.workbench h3 { margin:8px 0; }
+.workbench > p { margin:8px 0; }
+.workbench table { font-size:12px; }
+.workbench td { padding:10px 8px; }
+.workbench-controls { margin:10px 0; }

@@ -1,4 +1,8 @@
 import {test,expect} from '@playwright/test'
+test.beforeEach(async({page})=>{
+ await page.route('**/v1/real-research/workbench',r=>r.fulfill({status:503,json:{detail:'Fixture has no workbench data'}}))
+ await page.route('**/v1/real-research/watchlist',r=>r.fulfill({json:{entries:{}}}))
+})
 // UI-only synthetic responses; this does not establish real-data acceptance.
 for(const viewport of [{width:1280,height:800},{width:390,height:844}])test('stored swing analysis clears obsolete evidence '+viewport.width,async({page})=>{
  await page.setViewportSize(viewport)

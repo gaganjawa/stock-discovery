@@ -1,4 +1,8 @@
 import {test,expect} from '@playwright/test'
+test.beforeEach(async({page})=>{
+ await page.route('**/v1/real-research/workbench',r=>r.fulfill({status:503,json:{detail:'Fixture has no workbench data'}}))
+ await page.route('**/v1/real-research/watchlist',r=>r.fulfill({json:{entries:{}}}))
+})
 // Scripted UI fixtures only; no real company or financial-quality evidence.
 for(const width of [1280,390])test('combined research separates findings and clears restricted evidence '+width,async({page})=>{
  await page.setViewportSize({width,height:900})

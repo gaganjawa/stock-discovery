@@ -1,4 +1,8 @@
 import {test,expect} from '@playwright/test'
+test.beforeEach(async({page})=>{
+ await page.route('**/v1/real-research/workbench',r=>r.fulfill({status:503,json:{detail:'Fixture has no workbench data'}}))
+ await page.route('**/v1/real-research/watchlist',r=>r.fulfill({json:{entries:{}}}))
+})
 // STK-074/079 scripted UI fixtures only; no real company, price or provider data.
 const RULES={version:'1.0.0',decision_file:'absent',active:0,rules:[
  {id:3,section:'Scope',rule:'Real money',value:'None. Forward paper only, and no broker orders.',decision:'approve',state:'approved_inactive',waiting_on:[]},
@@ -48,6 +52,7 @@ for(const width of [1280,390])test('pilot coverage explains each company and ope
  await expect(page.getByTestId('daily-note-blocked')).toContainText('Chart not readable: UIB (Prices come from separate downloads without a verified common observation batch.); NSE:UIC (No current permitted grant covers this read.)')
  await expect(page.getByTestId('pilot-row-NSE:UIA')).toContainText('37 sessions to 2026-10-23 · atr14, ema10, sma20')
  await expect(page.getByTestId('pilot-row-NSE:UIB')).toContainText('without a verified common observation batch')
+ await page.getByText('Saved scan and operations',{exact:true}).click()
  await page.getByTestId('pilot-open-NSE:UIB').click()
  await expect.poll(()=>opened).toBe('NSE:UIB')
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true)
