@@ -141,7 +141,8 @@ def rows(conn, *, session=None, scanner_key=None, limit=100, offset=0):
     result=[]
     for cid,key,day,symbol,first,last,status,research,error,complete,continuing,previous,envelope in records:
         label=conn.execute('''SELECT e.envelope->'labels'->>%s FROM discovery.candidate_matches m JOIN discovery.candidate_events e USING(event_id) WHERE m.candidate_id=%s AND e.envelope->'labels' ? %s ORDER BY e.sequence DESC LIMIT 1''',(symbol,cid,symbol)).fetchone()
-        result.append(dict(watchlist_key='CHARTINK:'+key+':'+symbol,source_label=label[0] if label else None,candidate_id=cid,scanner_key=key,session_date=day.isoformat(),symbol=symbol,
+        snapshot=conn.execute('''SELECT e.envelope FROM discovery.candidate_matches m JOIN discovery.candidate_events e USING(event_id) WHERE m.candidate_id=%s ORDER BY e.received_at DESC,e.event_id DESC LIMIT 1''',(cid,)).fetchone()[0]
+        result.append(dict(chartink_snapshot=snapshot.get('enrichment',{}).get(symbol),watchlist_key='CHARTINK:'+key+':'+symbol,source_label=label[0] if label else None,candidate_id=cid,scanner_key=key,session_date=day.isoformat(),symbol=symbol,
           first_observed_at=first.isoformat(),last_observed_at=last.isoformat(),research_status=status,
           research=research,error_code=error,completeness=complete,
           match_status='continuing_observed' if continuing else 'new_vs_previous_snapshot' if previous in ('verified_fixture_snapshot','verified_complete_snapshot') else 'new_observed_vs_previous_results' if previous else 'first_observed_unverified',

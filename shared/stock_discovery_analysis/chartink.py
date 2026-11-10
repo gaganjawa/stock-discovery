@@ -51,6 +51,11 @@ def normalize(payload, scanner, received_at):
         raise ValueError('timezone_required')
     if received_at >= scanner.enabled_until:
         raise ValueError('scanner_authorization_expired')
+    enrichment = None
+    if isinstance(payload, dict) and 'synthetic_enrichment_v1' in payload:
+        if scanner.mode != 'synthetic_fixture': raise ValueError('synthetic_scanner_required')
+        payload = dict(payload)
+        enrichment = payload.pop('synthetic_enrichment_v1')
     required = {'stocks','trigger_prices','triggered_at','scan_name','scan_url','alert_name'}
     if not isinstance(payload, dict) or not required <= payload.keys() or payload.keys() - required - {'webhook_url'}:
         raise ValueError('invalid_payload_fields')
@@ -79,6 +84,14 @@ def normalize(payload, scanner, received_at):
         payload_hash=digest(safe),payload=safe,symbols=sorted(symbols),
         completeness='partial_unverified',mode=scanner.mode,
         historical_pit_qualified=False,evaluation_eligible=False)
+    if enrichment is not None:
+        from .chartink_enrichment import normalize_fields
+        if not isinstance(enrichment, dict) or set(enrichment) - set(symbols):
+            raise ValueError('invalid_enrichment_symbols')
+        envelope['enrichment'] = {symbol: normalize_fields(row) for symbol,row in enrichment.items()}
+        safe['synthetic_enrichment_v1'] = enrichment
+        envelope['payload_hash'] = digest(safe)
+        envelope['version'] = 'chartink-event-synthetic-enriched-v1'
     envelope['event_id'] = digest([scanner.key,session,safe])
     return envelope
 

@@ -339,3 +339,12 @@ belong to a later activation milestone, not this ticket's corrected local DoD.
 No provider/model calls, original-data mutation, trading or percentage revision;
 overall planning baseline stays 46%. [Implementation, evidence and activation steps](STK-094-chartink-candidates.md).
 Pending owner PR review; do not merge or start the next milestone.
+
+11 November — **STK-095 / D3-03 + D3-04 + D3-09**: enriched CSV recovery and
+synthetic-only versioned webhook enrichment implemented; real enriched webhook
+shape remains unverified. Local acceptance: 1,047 unit / 26 script / 589 PostgreSQL
+checks, migration lifecycle and real browser 35/28/7, watchlist, enrichment and
+historical-clock INFY passed. Current-date INFY correctly blocks stale data,
+identically to STK-094. PR/exact-head CI pending; hosting and webhook activation
+remain disabled. Accepted overall baseline **49%**, no new percentage asserted.
+[Evidence and deployment proposal](STK-095-chartink-integration.md).

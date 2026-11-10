@@ -8,6 +8,8 @@ import hashlib
 import io
 from datetime import date, datetime
 from .chartink import normalize, normalize_symbol, digest
+from .chartink_enrichment import ALIASES, normalize_fields
+import re
 
 
 def events(raw,scanner,received_at,*,symbol_column='Symbol',date_column='Date',session=None,date_format='%Y-%m-%d'):
@@ -15,13 +17,22 @@ def events(raw,scanner,received_at,*,symbol_column='Symbol',date_column='Date',s
     reader=csv.DictReader(io.StringIO(raw.decode('utf-8-sig')))
     if not reader.fieldnames or symbol_column not in reader.fieldnames or (session is None and date_column not in reader.fieldnames):
         raise ValueError('csv_column_mapping_required')
-    grouped={};labels={};count=0
+    grouped={};labels={};enriched={};count=0
+    if len(reader.fieldnames)!=len(set(reader.fieldnames)):raise ValueError('duplicate_csv_headers')
     for row in reader:
         count+=1
         if count>50000:raise ValueError('csv_row_limit')
         day=(date.fromisoformat(session) if session else datetime.strptime(row[date_column].strip(),date_format).date()).isoformat()
         if day>received_at.date().isoformat():raise ValueError('future_csv_session')
         symbol=normalize_symbol(row[symbol_column])
+        for alias in reader.fieldnames:
+            if alias != symbol_column and alias.lower()=='symbol' and row.get(alias):
+                if normalize_symbol(row[alias])!=symbol:raise ValueError('ambiguous_csv_symbol')
+        fields={k:v for k,v in row.items() if k is not None and re.sub('[^a-z0-9]','',k.lower()) in ALIASES}
+        snapshot=normalize_fields(fields)
+        previous=enriched.get((day,symbol))
+        if previous is not None and previous!=snapshot:raise ValueError('conflicting_csv_duplicate')
+        enriched[day,symbol]=snapshot
         grouped.setdefault(day,set()).add(symbol)
         if row.get('Stock Name'):
             label=row['Stock Name'].strip()
@@ -40,8 +51,9 @@ def events(raw,scanner,received_at,*,symbol_column='Symbol',date_column='Date',s
             e['payload'].pop('trigger_prices');e['payload'].pop('triggered_at')
             e.update(session_date=day,timestamp_basis='csv_session_unverified',
                 mode='synthetic_fixture' if scanner.mode=='synthetic_fixture' else 'csv_recovery',
-                csv_provenance=dict(file_sha256=file_hash,adapter_version='csv-recovery-v1',
+                csv_provenance=dict(file_sha256=file_hash,adapter_version='csv-recovery-enriched-v2',
                     symbol_column=symbol_column,date_column=date_column if session is None else None,date_format=date_format))
+            e['enrichment']={symbol:enriched[day,symbol] for symbol in part}
             e['labels']={symbol:labels[symbol] for symbol in part if symbol in labels}
             e['payload_hash']=digest(e['payload'])
             e['event_id']=digest([scanner.key,day,file_hash,part])
