@@ -29,6 +29,20 @@ def verify_integration_report(path):
 def main():
     total_started = perf_counter()
     timings = {}
+    try:
+        run_validation(timings)
+    finally:
+        timings['Total execution'] = perf_counter() - total_started
+        print_timing_summary(timings)
+
+
+def print_timing_summary(timings):
+    print('Timing summary:')
+    for phase, elapsed in timings.items():
+        print(f'  {phase}: {elapsed:.2f}s')
+
+
+def run_validation(timings):
     url = os.environ['STK_TEST_DATABASE_URL']
     if psycopg.conninfo.conninfo_to_dict(url).get('dbname') != 'stk013_test':
         raise ValueError('Only the disposable stk013_test database is allowed')
@@ -83,10 +97,6 @@ def downgrade():
         db.execute('DROP TABLE public.migration_test_sentinel')
     timings['Migration rollback verification'] = perf_counter() - started
     print('PASS: upgrade, repeat upgrade, constraints, downgrade, re-upgrade and atomic failure rollback')
-    timings['Total execution'] = perf_counter() - total_started
-    print('Timing summary:')
-    for phase, elapsed in timings.items():
-        print(f'  {phase}: {elapsed:.2f}s')
 
 
 if __name__ == '__main__':
