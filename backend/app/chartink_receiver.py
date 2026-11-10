@@ -54,6 +54,12 @@ def ingest(conn, body):
         raise HTTPException(422,code) from None
     try:return store.accept(conn,envelope)
     except OverflowError:raise HTTPException(503,'Candidate inbox capacity reached; operator action required') from None
+    except ValueError as exc:
+        if str(exc)=='event_too_large':
+            raise HTTPException(413,'Normalized candidate event exceeds storage limit') from None
+        if str(exc) in {'scanner_version_content_conflict','event_identity_conflict'}:
+            raise HTTPException(409,'Candidate event conflicts with stored identity') from None
+        raise
 
 
 def webhook_auth(capability:str,request:Request):

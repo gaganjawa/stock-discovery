@@ -217,3 +217,29 @@ def test_failed_event_is_retained_and_replayable(isolated_url):
         assert store.retry_event(conn,e['event_id'])
         drain(conn)
         assert store.rows(conn)['total']==1
+
+
+def test_enriched_csv_restart_api_and_replay(isolated_url,monkeypatch):
+    from stock_discovery_analysis.candidate_csv import events
+    from app.main import app
+    from app.research import db
+    monkeypatch.setenv('AUTH_TOKEN','o'*40)
+    raw=b'Symbol,symbol,close,volume,AVG_VOLUME20,EMA10,ema30\nINFY,infy,100,200,100,99,98\n'
+    e=events(raw,scanner(),NOW,session='2026-11-05')[0][0]
+    with psycopg.connect(isolated_url,autocommit=True) as conn:
+        store.accept(conn,e)
+    with psycopg.connect(isolated_url,autocommit=True) as conn:
+        drain(conn)
+        assert store.accept(conn,e)['duplicate']
+        assert store.rows(conn)['total']==1
+        assert store.rows(conn)['rows'][0]['chartink_snapshot']['metrics']['relative_volume']=='2'
+    def connection():
+        with psycopg.connect(isolated_url,autocommit=True) as conn:yield conn
+    app.dependency_overrides[db]=connection
+    try:
+        response=TestClient(app).get('/v1/real-research/candidates',headers={'Authorization':'Bearer '+'o'*40})
+        assert response.status_code==200
+        row=response.json()['rows'][0]
+        assert row['chartink_snapshot']==e['enrichment']['INFY']
+        assert row['completeness']=='partial_unverified'
+    finally:app.dependency_overrides.clear()
