@@ -348,3 +348,7 @@ historical-clock INFY passed. Current-date INFY correctly blocks stale data,
 identically to STK-094. PR/exact-head CI pending; hosting and webhook activation
 remain disabled. Accepted overall baseline **49%**, no new percentage asserted.
 [Evidence and deployment proposal](STK-095-chartink-integration.md).
+
+11 November — **STK-096 / D3-03 standalone maintenance**: add slow-test and
+per-phase timing diagnostics to disposable PostgreSQL migration validation; not
+a new product milestone, with no test, migration, isolation, production-code or CI changes.
