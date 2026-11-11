@@ -5,6 +5,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+from time import perf_counter
 import xml.etree.ElementTree as ET
 
 import psycopg
@@ -26,6 +27,22 @@ def verify_integration_report(path):
 
 
 def main():
+    total_started = perf_counter()
+    timings = {}
+    try:
+        run_validation(timings)
+    finally:
+        timings['Total execution'] = perf_counter() - total_started
+        print_timing_summary(timings)
+
+
+def print_timing_summary(timings):
+    print('Timing summary:')
+    for phase, elapsed in timings.items():
+        print(f'  {phase}: {elapsed:.2f}s')
+
+
+def run_validation(timings):
     url = os.environ['STK_TEST_DATABASE_URL']
     if psycopg.conninfo.conninfo_to_dict(url).get('dbname') != 'stk013_test':
         raise ValueError('Only the disposable stk013_test database is allowed')
@@ -33,12 +50,17 @@ def main():
     os.environ['DATABASE_URL'] = url
     os.environ['PYTHONPATH'] = os.pathsep.join(str(ROOT / part) for part in ('backend','shared','worker'))
     config = Config(str(ROOT / 'backend/alembic.ini'))
+    started = perf_counter()
     command.upgrade(config, 'head')
     command.upgrade(config, 'head')
+    timings['Initial database migrations'] = perf_counter() - started
     with tempfile.TemporaryDirectory() as reports:
         report = Path(reports) / 'integration.xml'
-        subprocess.run([sys.executable, '-m', 'pytest', str(ROOT / 'backend/tests/integration'), '-q', '-p', 'no:cacheprovider', f'--junitxml={report}'], check=True)
+        started = perf_counter()
+        subprocess.run([sys.executable, '-m', 'pytest', str(ROOT / 'backend/tests/integration'), '-q', '-p', 'no:cacheprovider', '--durations=25', f'--junitxml={report}'], check=True)
         verify_integration_report(report)
+        timings['PostgreSQL integration tests'] = perf_counter() - started
+    started = perf_counter()
     with psycopg.connect(url, autocommit=True) as db:
         db.execute('CREATE TABLE public.migration_test_sentinel (id integer)')
     command.downgrade(config, 'base')
@@ -46,6 +68,8 @@ def main():
         assert db.execute("SELECT count(*) FROM pg_namespace WHERE nspname IN ('research','discovery','paper')").fetchone()[0] == 0
         assert db.execute("SELECT to_regclass('public.migration_test_sentinel')").fetchone()[0] is not None
     command.upgrade(config, 'head')
+    timings['Downgrade and re-upgrade validation'] = perf_counter() - started
+    started = perf_counter()
     with tempfile.TemporaryDirectory() as temp:
         migrations = Path(temp) / 'migrations'
         shutil.copytree(ROOT / 'backend/migrations', migrations)
@@ -71,6 +95,7 @@ def downgrade():
         assert db.execute("SELECT to_regclass('research.should_rollback')").fetchone()[0] is None
         assert db.execute('SELECT version_num FROM alembic_version').fetchone()[0] == '0016'
         db.execute('DROP TABLE public.migration_test_sentinel')
+    timings['Migration rollback verification'] = perf_counter() - started
     print('PASS: upgrade, repeat upgrade, constraints, downgrade, re-upgrade and atomic failure rollback')
 
 
