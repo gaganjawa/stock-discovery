@@ -352,3 +352,11 @@ remain disabled. Accepted overall baseline **49%**, no new percentage asserted.
 11 November — **STK-096 / D3-03 standalone maintenance**: add slow-test and
 per-phase timing diagnostics to disposable PostgreSQL migration validation; not
 a new product milestone, with no test, migration, isolation, production-code or CI changes.
+
+11 November — **STK-097 / D3-03 + D3-04 + D3-09**: separate disabled-by-default
+receiver Compose stack, HTTPS route isolation, durable inbox, restricted role
+grants, internal DB health and authenticated cursor-lag monitoring prepared.
+Synthetic real HTTPS receiver → worker → separate PostgreSQL → browser/watchlist
+acceptance passed locally; real enriched provider JSON and public activation remain
+unverified. Full exact-head CI/owner review pending. No paid deployment or original
+data mutation. [Operations and acceptance](STK-097-webhook-readiness.md).

@@ -1,0 +1,20 @@
+{
+    admin off
+    log default {
+        output discard
+    }
+}
+{$RECEIVER_DOMAIN} {
+    @receiver {
+        path /hooks/chartink/* /candidate-feed /candidate-health
+    }
+    handle @receiver {
+        request_body {
+            max_size 64KB
+        }
+        reverse_proxy receiver:8098
+    }
+    handle {
+        respond 404
+    }
+}
