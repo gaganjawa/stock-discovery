@@ -96,3 +96,23 @@ def feed_auth(request:Request):
 def retrieve(request:Request,after:int=Query(0,ge=0),limit:int=Query(25,ge=1,le=25),conn=Depends(db)):
     if not store.rate_allowed(conn):raise HTTPException(429,'Receiver rate limit',headers={'Retry-After':'60'})
     return store.feed(conn,after,limit)
+
+
+@app.get('/healthz')
+def health(conn=Depends(db)):
+    # Internal container check only; reverse proxy does not publish this route.
+    conn.execute('SELECT 1 FROM discovery.candidate_events LIMIT 1')
+    return {'database':'available','receiver_enabled':os.environ.get('CHARTINK_RECEIVER_ENABLED')=='true'}
+
+
+@app.get('/candidate-health',dependencies=[Depends(feed_auth)])
+def operational_health(after:int=Query(0,ge=0),conn=Depends(db)):
+    if not store.rate_allowed(conn):raise HTTPException(429,'Receiver rate limit')
+    count,high,last,lag,oldest=conn.execute('''SELECT count(*),coalesce(max(sequence),0),
+      max(received_at),count(*) FILTER (WHERE sequence>%s),
+      min(received_at) FILTER (WHERE sequence>%s) FROM discovery.candidate_events''',(after,after)).fetchone()
+    rejected=conn.execute('SELECT count(*) FROM discovery.candidate_rejections').fetchone()[0]
+    return dict(database='available',stored_events=count,capacity=store.MAX_EVENTS,
+        high_water=high,events_after_cursor=lag,oldest_unpulled_at=oldest,
+        last_receipt_at=last,rejection_records=rejected,
+        coverage='unknown_partial_alerts',cursor_ahead=after>high)
