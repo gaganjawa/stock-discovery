@@ -414,6 +414,14 @@ Monitor calendar/source lag, universe coverage, queue age, lease failures, resea
 
 ₹3,000/month is a planning target covering hosting, data, AI/embeddings/judges, backups, taxes/FX and other necessary services. The former ₹900 AI allowance and historical hosting estimates are not current quotations. Before activation, record approved invoices/limits and reserve worst-case usage atomically per request/run/day/month. Hard-cap rejection blocks research; do not overspend to complete a scan. Cache only when rights and exact inputs/versions permit. Meter failed/retried/ambiguous calls and show reserved versus settled spend. No paid call is needed to validate the software with deterministic mocks.
 
+**STK-099 owner-directed deployment amendment (11 November 2026):** the already
+purchased BookMyHost VPS is the target for this stored-only application increment.
+The [STK-099 runbook](STK-099-bookmyhost.md) retains the existing receiver endpoint,
+separate inbox/private databases in one PostgreSQL cluster, authenticated HTTPS,
+and durable database work with notification wake-ups. This does not authorize
+provider/model activation or relax source, recovery, resource or release gates.
+Production cutover requires the reviewed host rehearsal and owner approval.
+
 ## 15. Acceptance and test matrix
 
 These are required future tests, not results claimed by this document.

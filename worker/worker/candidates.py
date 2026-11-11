@@ -34,27 +34,32 @@ def pull(conn, url):
         if len(raw)>2*1024*1024:raise ValueError('receiver_response_too_large')
         page=json.loads(raw)
         if not isinstance(page['events'],list) or len(page['events'])>25:raise ValueError('invalid_receiver_page')
-        expected=cursor
-        # Pin local scanner approval: the remote receiver cannot grant itself rights.
-        scanner=Scanner.model_validate_json(Path(os.environ['CHARTINK_SCANNER_CONFIG']).read_text())
-        for item in page['events']:
-            e=item['envelope'];sequence=item['sequence']
-            if type(sequence) is not int or sequence<=expected:raise ValueError('invalid_receiver_sequence')
-            remote_scanner=Scanner.model_validate(e['scanner'])
-            if remote_scanner.key!=scanner.key:raise ValueError('receiver_scanner_not_approved')
-            validated=normalize(e['payload'],remote_scanner,datetime.fromisoformat(e['received_at']))
-            if validated!=e:raise ValueError('receiver_envelope_mismatch')
-            store.accept(conn,validated)
-            expected=sequence
-        if page['next_cursor']!=expected:raise ValueError('invalid_receiver_cursor')
+        expected=validate_page(conn,page,cursor)
         conn.execute('UPDATE discovery.candidate_receivers SET cursor=%s WHERE receiver_id=%s',(expected,receiver_id))
         return len(page['events'])
 
 
-def cycle(conn, *, config=None):
+def validate_page(conn,page,cursor):
+    expected=cursor
+    # Pin local scanner approval: the remote receiver cannot grant itself rights.
+    scanner=Scanner.model_validate_json(Path(os.environ['CHARTINK_SCANNER_CONFIG']).read_text())
+    for item in page['events']:
+        e=item['envelope'];sequence=item['sequence']
+        if type(sequence) is not int or sequence<=expected:raise ValueError('invalid_receiver_sequence')
+        remote_scanner=Scanner.model_validate(e['scanner'])
+        if remote_scanner.key!=scanner.key:raise ValueError('receiver_scanner_not_approved')
+        validated=normalize(e['payload'],remote_scanner,datetime.fromisoformat(e['received_at']))
+        if validated!=e:raise ValueError('receiver_envelope_mismatch')
+        store.accept(conn,validated)
+        expected=sequence
+    if page['next_cursor']!=expected:raise ValueError('invalid_receiver_cursor')
+    return expected
+
+
+def cycle(conn, *, config=None, remote_pull=True):
     # Five events / five companies per tick; independent of research UI requests.
     receiver=os.environ.get('CHARTINK_RECEIVER_URL')
-    if receiver:pull(conn,receiver)
+    if receiver and remote_pull:pull(conn,receiver)
     events=research=0
     for _ in range(5):
         if store.materialize_one(conn) is None:break

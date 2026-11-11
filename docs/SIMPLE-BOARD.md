@@ -360,3 +360,14 @@ Synthetic real HTTPS receiver → worker → separate PostgreSQL → browser/wat
 acceptance passed locally; real enriched provider JSON and public activation remain
 unverified. Full exact-head CI/owner review pending. No paid deployment or original
 data mutation. [Operations and acceptance](STK-097-webhook-readiness.md).
+
+
+11 November — **STK-099 / D3-03 + D3-04 + D3-09 + D3-12**: BookMyHost full-app
+Compose overlay, private HTTPS, restricted same-host PostgreSQL notification bridge,
+durable cursor recovery and verified non-overwriting migration tooling implemented.
+595 PostgreSQL checks/zero skips and isolated full-stack/browser acceptance passed;
+Mac schema-0016 restore preserved all 6,728 current rows, 70 tables and three sequences.
+Read-only VPS preflight passes static budget; x86_64 representative load, encrypted
+off-server recovery/alerts, owner review/cutover and genuine Mac-off delivery remain
+gates. Production unchanged; no readiness percentage or real-research activation.
+[Architecture, measurements and exact cutover/rollback](STK-099-bookmyhost.md).

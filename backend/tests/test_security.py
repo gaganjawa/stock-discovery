@@ -76,3 +76,17 @@ def test_successful_logins_share_peer_budget_but_bearer_reads_do_not(monkeypatch
     assert client.get("/api/v1/session").status_code == 200
     now[0] = 61
     assert fresh.post("/api/v1/session", json={"token": "x" * 40}).status_code == 200
+
+
+def test_authenticated_proxy_private_mode_is_explicit(monkeypatch,tmp_path):
+    monkeypatch.setenv('DEPLOYMENT_MODE','private')
+    monkeypatch.setenv('APP_ORIGIN','https://160-22-109-189.sslip.io')
+    monkeypatch.setenv('COOKIE_SECURE','true')
+    monkeypatch.setenv('CODE_VERSION','stk099-test')
+    path=tmp_path/'db';path.write_text('postgresql://stk_candidate_worker:'+'x'*40+'@database/stk_real001_private')
+    monkeypatch.setenv('DATABASE_URL_FILE',str(path))
+    with pytest.raises(ValueError):validate_private()
+    monkeypatch.setenv('PRIVATE_ACCESS_MODE','authenticated_proxy')
+    validate_private()
+    monkeypatch.setenv('APP_ORIGIN','http://160-22-109-189.sslip.io')
+    with pytest.raises(ValueError):validate_private()

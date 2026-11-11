@@ -1,0 +1,36 @@
+{
+    admin off
+    log default {
+        output discard
+    }
+}
+{$RECEIVER_DOMAIN} {
+    @receiver path /hooks/chartink/* /candidate-feed /candidate-health
+    handle @receiver {
+        request_body {
+            max_size 64KB
+        }
+        reverse_proxy receiver:8098
+    }
+    @internal path /healthz /docs /redoc /openapi.json /internal/*
+    handle @internal {
+        respond 404
+    }
+    handle {
+        # File contains only: owner <bcrypt hash>. Empty file cannot disable auth.
+        basic_auth {
+            import /run/secrets/ui_auth
+        }
+        header Cache-Control no-store
+        header Referrer-Policy no-referrer
+        header X-Content-Type-Options nosniff
+        header X-Frame-Options DENY
+        request_body {
+            max_size 32KB
+        }
+        reverse_proxy web:8080 {
+            # Edge credentials never reach the application; owner cookies still do.
+            header_up -Authorization
+        }
+    }
+}

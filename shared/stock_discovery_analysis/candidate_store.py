@@ -33,6 +33,8 @@ def accept(conn, envelope):
         conn.execute('INSERT INTO discovery.candidate_events(event_id,received_at,envelope) VALUES (%s,%s,%s)',
                      (envelope['event_id'],envelope['received_at'],Jsonb(envelope)))
         conn.execute('INSERT INTO discovery.candidate_event_state(event_id) VALUES (%s)',(envelope['event_id'],))
+        # Commit-coupled wake-up only; rows remain the durable source of truth.
+        conn.execute("SELECT pg_notify('stk_candidates', '')")
     return dict(event_id=envelope['event_id'],duplicate=False)
 
 

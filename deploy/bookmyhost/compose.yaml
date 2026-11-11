@@ -1,0 +1,114 @@
+# STK-099 / D3-03/04/09/12. Overlay the EXISTING receiver project; never rename it.
+# All paths explicit: docker compose -f deploy/chartink/compose.yaml -f this-file ...
+x-logs: &logs
+  driver: local
+  options: {max-size: 5m, max-file: '2'}
+x-private: &private
+  DEPLOYMENT_MODE: private
+  PRIVATE_ACCESS_MODE: authenticated_proxy
+  APP_ORIGIN: https://${RECEIVER_DOMAIN:?Set existing hostname}
+  COOKIE_SECURE: 'true'
+  CODE_VERSION: ${CODE_VERSION:?Set tested commit}
+  LLM_ENABLED: 'false'
+  REAL_RESEARCH_VIEW_CONFIG: /run/private/view.json
+services:
+  database:
+    # Existing volume and database stay untouched. Apply tuning only at cutover.
+    command: [postgres, -c, shared_buffers=128MB, -c, work_mem=4MB, -c, max_connections=40]
+    mem_limit: 512m
+    pids_limit: 128
+    logging: *logs
+  migrate:
+    image: ${API_IMAGE}
+  receiver:
+    image: ${API_IMAGE:?Set tested immutable API image}
+    mem_limit: 192m
+    pids_limit: 64
+  proxy:
+    mem_limit: 96m
+    pids_limit: 64
+    volumes:
+      - ${STK099_CONFIG_DIR:?Absolute deployed bookmyhost config directory}/Caddyfile:/etc/caddy/Caddyfile:ro
+    secrets: [ui_auth]
+    depends_on:
+      receiver: {condition: service_healthy}
+      web: {condition: service_healthy}
+  api:
+    image: ${API_IMAGE}
+    command: [uvicorn, app.main:app, --host, 0.0.0.0, --port, '8000', --no-access-log, --no-proxy-headers, --limit-concurrency, '8']
+    environment:
+      <<: *private
+      DATABASE_URL_FILE: /run/secrets/app_url
+      AUTH_TOKEN_FILE: /run/secrets/owner_access
+      REAL_WATCHLIST_DIR: /data/watchlist
+    secrets: [app_url, owner_access]
+    volumes:
+      - ${STK099_PRIVATE_DIR:?Prepared private config directory}:/run/private:ro
+      - ${STK099_WATCHLIST_DIR:?Restored watchlist directory}:/data/watchlist
+    networks: [private]
+    read_only: true
+    tmpfs: ["/tmp:size=16m,mode=1777"]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    mem_limit: 256m
+    pids_limit: 64
+    restart: unless-stopped
+    logging: *logs
+    depends_on: {database: {condition: service_healthy}}
+    healthcheck:
+      test: [CMD, python, -c, "import urllib.request; from stock_discovery_analysis.runtime import setting; import psycopg; c=psycopg.connect(setting('DATABASE_URL'),connect_timeout=3); assert c.execute('SELECT version_num FROM alembic_version').fetchall()==[('0016',)]; urllib.request.urlopen('http://127.0.0.1:8000/healthz',timeout=3)"]
+      interval: 30s
+      timeout: 8s
+      retries: 3
+  worker:
+    image: ${WORKER_IMAGE:?Set tested immutable worker image}
+    command: [python, -m, worker.main, --candidate-intake]
+    environment:
+      <<: *private
+      DATABASE_URL_FILE: /run/secrets/worker_url
+      CANDIDATE_SOURCE_DATABASE_URL_FILE: /run/secrets/source_url
+      # Exact previous Mac URL (including any trailing slash) preserves cursor identity.
+      CHARTINK_RECEIVER_URL: ${CHARTINK_RECEIVER_URL:?Set previous Mac receiver URL}
+      CHARTINK_SCANNER_CONFIG: /run/secrets/scanner
+      CANDIDATE_HEALTH_FILE: /tmp/candidate-health.json
+    secrets: [worker_url, source_url, scanner]
+    volumes: ['${STK099_PRIVATE_DIR}:/run/private:ro']
+    networks: [private]
+    read_only: true
+    tmpfs: ["/tmp:size=16m,mode=1777"]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    mem_limit: 256m
+    pids_limit: 64
+    restart: unless-stopped
+    logging: *logs
+    depends_on: {api: {condition: service_healthy}, receiver: {condition: service_healthy}}
+    healthcheck:
+      test: [CMD, python, -c, "import json,time; h=json.load(open('/tmp/candidate-health.json')); assert h['status']=='healthy' and time.time()-h['at']<90"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
+  web:
+    image: ${WEB_IMAGE:?Set tested immutable web image}
+    networks: [private]
+    read_only: true
+    tmpfs: ["/tmp:size=16m,mode=1777"]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    mem_limit: 64m
+    pids_limit: 32
+    restart: unless-stopped
+    logging: *logs
+    depends_on: {api: {condition: service_healthy}}
+    healthcheck:
+      test: [CMD, wget, -q, --spider, http://127.0.0.1:8080/]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+secrets:
+  app_url: {file: '${STK099_SECRETS_DIR:?Prepared secrets directory}/app_url'}
+  worker_url: {file: '${STK099_SECRETS_DIR}/worker_url'}
+  source_url: {file: '${STK099_SECRETS_DIR}/source_url'}
+  owner_access: {file: '${STK099_SECRETS_DIR}/owner_access'}
+  ui_auth: {file: '${STK099_SECRETS_DIR}/ui_auth'}
