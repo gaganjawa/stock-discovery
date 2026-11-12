@@ -192,7 +192,7 @@ def test_hosted_authenticated_paper_writes_and_permission_boundaries(isolated_ur
             assert response.status_code==202,response.text
             assert client.post(base+'/observations',json=observation,headers=headers).json()==response.json()
             assert client.get(base,headers=headers).status_code==200
-            assert client.post('/v1/discovery-runs',json={'horizon':'swing'},headers=headers).status_code==202
+            assert client.post('/v1/discovery-runs',json={'horizon':'swing'},headers={**headers,'Idempotency-Key':'hosted-new-run'}).status_code==202
             for statement in ["UPDATE discovery.publication_source_controls SET source_id=source_id",
                 "UPDATE discovery.publication_source_controls SET revoked=false",
                 "UPDATE discovery.grant_fences SET state=state",'DELETE FROM paper.ledger',

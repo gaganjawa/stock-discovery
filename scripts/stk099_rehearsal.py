@@ -44,7 +44,7 @@ def run(directory,context):
                     rules='Isolated STK-099 fixture only',rights_reference='SYNTHETIC',enabled_until='2028-01-01T00:00:00Z',mode='synthetic_fixture')
     (secrets/'scanner.json').write_text(scanner.model_dump_json())
     # Minimal stored-only view: no grants, policy or provider credentials.
-    view=ViewConfig(sources=dict(grant_file='/run/private/grants.json',retention_days=30),listing_ids=['NSE:SYN097'])
+    view=ViewConfig(sources=dict(grant_file='/run/private/grants.json',retention_days=30),listing_ids=('NSE:SYN097',))
     (directory/'private/view.json').write_text(view.model_dump_json())
     (directory/'private/grants.json').write_text('[]')
     docker=['docker']+(['--context',context] if context else [])
