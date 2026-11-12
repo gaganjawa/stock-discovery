@@ -21,6 +21,7 @@ from uuid import uuid4
 
 ROOT=Path(__file__).resolve().parents[1]
 sys.path[:0]=[str(ROOT/'shared'),str(ROOT/'backend'),str(ROOT/'worker')]
+from stock_discovery_analysis.real_views import ViewConfig
 from stock_discovery_analysis.chartink import Scanner
 from stk099_transfer import Database, backup, restore
 
@@ -43,13 +44,16 @@ def run(directory,context):
                     rules='Isolated STK-099 fixture only',rights_reference='SYNTHETIC',enabled_until='2028-01-01T00:00:00Z',mode='synthetic_fixture')
     (secrets/'scanner.json').write_text(scanner.model_dump_json())
     # Minimal stored-only view: no grants, policy or provider credentials.
-    (directory/'private/view.json').write_text('{}')
+    view=ViewConfig(sources=dict(grant_file='/run/private/grants.json',retention_days=30),listing_ids=['NSE:SYN097'])
+    (directory/'private/view.json').write_text(view.model_dump_json())
+    (directory/'private/grants.json').write_text('[]')
     docker=['docker']+(['--context',context] if context else [])
     hashed=subprocess.check_output(docker+['run','--rm','caddy:2.10.2-alpine','caddy','hash-password','--plaintext',password],text=True).strip()
     (secrets/'ui_auth').write_text('owner '+hashed+'\n')
     for p in secrets.iterdir():p.chmod(0o644) # synthetic only; parent stays private
     # Container UID owns its synthetic metadata path; no production path is used.
     subprocess.run(docker+['run','--rm','--user','0:0','-v',str(directory/'watchlist')+':/data','--entrypoint','sh','stk099-api:acceptance','-c','chown 10001:10001 /data && chmod 700 /data'],check=True)
+    subprocess.run(docker+['run','--rm','--user','0:0','-v',str(directory/'private')+':/data','--entrypoint','sh','stk099-api:acceptance','-c','chown -R 10001:10001 /data && chmod 700 /data && chmod 600 /data/*'],check=True)
     with socket.socket() as sock:sock.bind(('127.0.0.1',0));port=sock.getsockname()[1]
     host='https://localhost:'+str(port)
     caddy=(ROOT/'deploy/bookmyhost/Caddyfile').read_text().replace('{$RECEIVER_DOMAIN} {','localhost {\n    tls internal')
@@ -126,6 +130,7 @@ def run(directory,context):
             assert request('/hooks/chartink/'+'w'*40,data,{'Content-Type':'application/json'})[0]==202
             samples.append(subprocess.check_output(docker+['stats','--no-stream','--format','{{json .}}',*ids],text=True))
         wait_rows(101)
+        assert appdb.sql("SELECT count(*) FROM discovery.candidate_research_runs WHERE result->'reasons' = '[\"nse_identity_missing_or_ambiguous\"]'::jsonb")=='101'
         dc('restart','worker');wait_rows(101)
         assert appdb.sql('SELECT count(*) FROM discovery.candidate_research_runs')=='101'
         inspect=json.loads(subprocess.check_output(docker+['inspect',*ids]))
@@ -139,12 +144,21 @@ def run(directory,context):
                 for network in item['NetworkSettings']['Networks']:
                     assert json.loads(subprocess.check_output(docker+['network','inspect',network]))[0]['Internal']
         dc('stop','worker')
+        probe=json.loads(dc('run','--rm','--no-deps',
+            '-v',str(secrets/'owner_url')+':/tmp/probe_owner_url:ro',
+            '-v',str(ROOT/'backend/tests/integration')+':/probe/tests:ro',
+            '-v',str(ROOT/'worker/worker')+':/probe/worker:ro',
+            '-v',str(ROOT/'scripts/stk099_research_probe.py')+':/probe/run.py:ro',
+            '-e','DATABASE_URL_FILE=/tmp/probe_owner_url',
+            '-e','PYTHONPATH=/app:/app/shared:/probe:/probe/tests',
+            'api','python','/probe/run.py'))
+        assert probe['stored_research_bars']==30 and probe['permission_denial_verified']
         dump=directory/'synthetic.dump';manifest=backup(appdb,dump,db.sql('SELECT system_identifier FROM pg_control_system()'))
         restored=Database(container,'chartink_owner','stk099_restore_check',context)
         restore(restored,dump,manifest,'stk_app_owner')
         assert db.sql('SELECT count(*) FROM discovery.candidate_events')=='11'
         result=dict(synthetic_only=True,project=project,startup_seconds=round(startup_seconds,2),
-                    candidates=101,events=11,duplicate_deduplicated=True,worker_restart=True,
+                    research_probe=probe,research_path='stored_identity_lookup_no_evidence',candidates=101,events=11,duplicate_deduplicated=True,worker_restart=True,
                     authenticated_https=True,network_isolation=True,restore_all_tables_and_sequences=True,
                     browser_verified=os.getenv('STK099_STACK_BROWSER')=='1',
                     resource_samples=[json.loads(line) for sample in samples for line in sample.splitlines()],

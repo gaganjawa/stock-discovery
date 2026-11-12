@@ -382,3 +382,45 @@ off-server backup with tested restore/key custody and external alert; final froz
 Mac export and watchlist verification; owner-authorized maintenance cutover; then
 an observed genuine Chartink delivery with the Mac powered off. No production
 service, database, receiver credential or URL was changed by implementation.
+
+## PR #48 P2 corrections — 12 November 2026
+
+Watchlist export now requires an existing directory and `watchlist.json`. Only
+`--allow-empty-watchlist` permits an absent file in an existing directory, with an
+explicit `watchlist-export.json` audit record. Existing bytes are copied unchanged;
+change/deletion/creation during copying fails before the completion hash manifest.
+An empty JSON file is invalid; a valid empty JSON object is preserved verbatim.
+
+The isolated rehearsal supplies a validated ViewConfig and empty grant list,
+owned by container UID 10001 (directory 0700, files 0600). Hosted worker view or
+grant-file read errors stop consumption with `hosted_research_configuration_invalid`.
+The 101 intake cases must reach the actual stored-identity lookup. A separate
+transactional container probe uses fabricated historical evidence to verify a
+30-bar descriptive result and permission denial under both hosted roles. Its
+fixture rows roll back; no external provider/model calls occur. These checks
+remain synthetic software acceptance, not representative restored-market load.
+
+API write-path audit:
+
+| Existing routes | Hosted permission / boundary |
+|---|---|
+| Paper create, admission/batch, observation/fictional-session | INSERT on portfolios, ledger, observations; column UPDATE on portfolio_id only for row locks, existing immutable trigger rejects mutations; no paper sequence exists |
+| Paper source recheck | Column UPDATE on source_id permits FOR SHARE; hosted role guard rejects actual source-control changes, including renames; revoked column remains denied |
+| Discovery-run enqueue | INSERT on publication_runs; no publication or evidence writes granted |
+| Governance registration/trials/evaluation/controls | INSERT on the four explicit experiment tables; USAGE on experiment_events_sequence_seq; immutable histories retained |
+| Legacy initialize/analysis/reveal/explanation/scan/replay/experiments | Existing research INSERT/sequence grants and jobs UPDATE retained |
+| Candidate retries | Existing UPDATE on candidates and candidate_event_state retained |
+| Watchlist/session | Private filesystem and cookie operations; no database grants needed |
+| Receiver ingestion | Separate receiver role/database; unchanged |
+
+The candidate worker cannot write research evidence or paper tables. API cannot
+write processed paper receipts, shadow references/outcomes, revisions, grants or
+restriction fences. The dedicated hosted worker still runs candidate intake only;
+queued paper observations and synthetic publication jobs require the existing
+separately operated execution worker. This correction grants no worker activation.
+
+Local validation: 1,053 application/worker unit tests passed, plus script tests.
+PR CI supplies disposable PostgreSQL role/route regressions, migrations, Linux
+hosted research probe and browser acceptance. Exact-head CI evidence is recorded
+in PR #48. No production services, volumes, credentials or webhook URL changed;
+all previously listed owner/recovery/rights/cutover/genuine-delivery gates remain.

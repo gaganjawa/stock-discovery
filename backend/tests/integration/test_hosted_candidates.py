@@ -128,9 +128,9 @@ def test_hosted_grants_deny_evidence_writes_and_allow_candidate_pipeline(isolate
                 if not conn.execute('SELECT 1 FROM pg_roles WHERE rolname=%s',(role,)).fetchone():
                     conn.execute(sql.SQL('CREATE ROLE {}').format(sql.Identifier(role)))
             script='\n'.join(line for line in (root/'deploy/bookmyhost/grants.sql').read_text().splitlines() if not line.startswith('--'))
-            for line in script.split('BEGIN;')[1].split('COMMIT;')[0].split(';'):
-                if 'ON DATABASE' in line or not line.strip():continue
-                conn.execute(line)
+            body=script.split('BEGIN;')[1].rsplit('COMMIT;',1)[0]
+            body='\n'.join(line for line in body.splitlines() if 'ON DATABASE' not in line)
+            conn.execute(body)
             conn.execute('SET LOCAL ROLE stk_candidate_worker')
             store.accept(conn,envelope());assert store.materialize_one(conn)
             from worker.candidates import cycle
@@ -147,3 +147,88 @@ def test_hosted_grants_deny_evidence_writes_and_allow_candidate_pipeline(isolate
             with pytest.raises(psycopg.errors.InsufficientPrivilege),conn.transaction():
                 conn.execute('SELECT * FROM discovery.revisions')
             conn.execute('RESET ROLE');conn.execute('ROLLBACK')
+
+
+def apply_hosted_grants(conn):
+    root=Path(__file__).resolve().parents[3]
+    for role in ('stk_runtime','stk_candidate_worker'):
+        if not conn.execute('SELECT 1 FROM pg_roles WHERE rolname=%s',(role,)).fetchone():
+            conn.execute(sql.SQL('CREATE ROLE {}').format(sql.Identifier(role)))
+    body=(root/'deploy/bookmyhost/grants.sql').read_text().split('BEGIN;')[1].rsplit('COMMIT;',1)[0]
+    conn.execute('\n'.join(line for line in body.splitlines() if 'ON DATABASE' not in line))
+
+
+def test_hosted_authenticated_paper_writes_and_permission_boundaries(isolated_url,monkeypatch):
+    from app.main import app
+    from app.research import db
+    from stock_discovery_analysis.publication_store import enqueue,run_next,RunRequest
+    from test_paper import cfg,rec
+    monkeypatch.setenv('AUTH_TOKEN','o'*40)
+    with psycopg.connect(isolated_url,autocommit=True) as conn,conn.transaction():
+        enqueue(conn,RunRequest(horizon='swing'),'hosted-paper','test')
+        assert run_next(conn,'test')['status']=='completed'
+        rid=rec((conn,isolated_url))
+        apply_hosted_grants(conn)
+        conn.execute('SET LOCAL ROLE stk_runtime')
+        def restricted():yield conn
+        app.dependency_overrides[db]=restricted
+        try:
+            client=TestClient(app)
+            headers={'Authorization':'Bearer '+'o'*40,'Idempotency-Key':'hosted-paper'}
+            body=cfg().model_dump(mode='json')
+            assert client.post('/v1/paper-portfolio',json=body).status_code==401
+            response=client.post('/v1/paper-portfolio',json=body,headers=headers)
+            assert response.status_code==201,response.text
+            pid=response.json()['portfolio_id'];base='/v1/paper-portfolio/'+pid
+            admitted=client.post(base+'/admissions',json={'recommendation_id':rid},headers=headers)
+            assert admitted.status_code==200,admitted.text
+            assert admitted.json()['status']=='admitted'
+            from stock_discovery_analysis.paper_contracts import FICTIONAL
+            from stock_discovery_analysis import paper_store
+            _,last=paper_store.config_state(conn,pid)
+            session=paper_store.next_session(conn,last[1]['orders'][rid])
+            observation=dict(contract_version=FICTIONAL,session_close_at=session['closes_at'],observed_at=session['closes_at'],bars=[])
+            response=client.post(base+'/observations',json=observation,headers=headers)
+            assert response.status_code==202,response.text
+            assert client.post(base+'/observations',json=observation,headers=headers).json()==response.json()
+            assert client.get(base,headers=headers).status_code==200
+            assert client.post('/v1/discovery-runs',json={'horizon':'swing'},headers=headers).status_code==202
+            for statement in ["UPDATE discovery.publication_source_controls SET source_id=source_id",
+                "UPDATE discovery.publication_source_controls SET revoked=false",
+                "UPDATE discovery.grant_fences SET state=state",'DELETE FROM paper.ledger',
+                'INSERT INTO paper.processed DEFAULT VALUES','UPDATE discovery.revisions SET payload=payload',
+                'CREATE TABLE public.hosted_forbidden(id int)']:
+                with pytest.raises(psycopg.errors.InsufficientPrivilege),conn.transaction():conn.execute(statement)
+            with pytest.raises(psycopg.Error),conn.transaction():
+                conn.execute('UPDATE paper.portfolios SET portfolio_id=portfolio_id')
+            assert conn.execute("SELECT has_sequence_privilege(current_user,'discovery.candidate_events_sequence_seq','USAGE')").fetchone()==(False,)
+        finally:
+            app.dependency_overrides.clear()
+            conn.execute('RESET ROLE')
+            conn.execute('ROLLBACK')
+
+
+def test_hosted_research_executes_evidence_and_permission_paths(isolated_url,tmp_path,monkeypatch):
+    from test_adjusted_research_storage import setup
+    from test_real_market import NOW
+    from stock_discovery_analysis.candidate_research import analyze
+    from worker.candidates import cycle
+    monkeypatch.setenv('PRIVATE_ACCESS_MODE','authenticated_proxy')
+    with psycopg.connect(isolated_url,autocommit=True) as conn,conn.transaction():
+        config,listing=setup(conn,tmp_path)
+        view=tmp_path/'view.json';view.write_text(config.model_dump_json())
+        monkeypatch.setenv('REAL_RESEARCH_VIEW_CONFIG',str(view))
+        apply_hosted_grants(conn)
+        conn.execute('SET LOCAL ROLE stk_candidate_worker')
+        store.accept(conn,envelope('TEST'))
+        # Use a pinned historical fixture clock; never current-market acceptance.
+        monkeypatch.setattr('worker.candidates.analyze',lambda c,v,s,d:analyze(c,v,s,d,clock=lambda:NOW))
+        assert cycle(conn,remote_pull=False)['research']==1
+        result=store.rows(conn)['rows'][0]['research']
+        assert result['status']=='completed' and result['market_data']['bars']==30
+        assert result['technical']['metrics']['sma20']=='105'
+        Path(config.sources.grant_file).write_text('[]')
+        assert analyze(conn,config,'TEST','2026-11-12',clock=lambda:NOW)['reasons']==['source_permission_denied']
+        assert analyze(conn,config,'ABSENT','2026-11-12',clock=lambda:NOW)['reasons']==['nse_identity_missing_or_ambiguous']
+        assert result['acquisition']['provider_requests']==result['acquisition']['model_requests']==0
+        conn.execute('RESET ROLE');conn.execute('ROLLBACK')

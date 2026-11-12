@@ -57,6 +57,17 @@ def validate_page(conn,page,cursor):
 
 
 def cycle(conn, *, config=None, remote_pull=True):
+    if config is None:
+        filename=os.environ.get('REAL_RESEARCH_VIEW_CONFIG')
+        required=os.environ.get('PRIVATE_ACCESS_MODE')=='authenticated_proxy'
+        try:
+            if not filename:raise ValueError('missing_view')
+            config=ViewConfig.model_validate_json(Path(filename).read_text())
+            # Required private dependencies must be readable before consuming work.
+            if required:json.loads(Path(config.sources.grant_file).read_text())
+        except (OSError,ValueError):
+            if required:raise ValueError('hosted_research_configuration_invalid') from None
+            config=None
     # Five events / five companies per tick; independent of research UI requests.
     receiver=os.environ.get('CHARTINK_RECEIVER_URL')
     if receiver and remote_pull:pull(conn,receiver)
@@ -64,9 +75,6 @@ def cycle(conn, *, config=None, remote_pull=True):
     for _ in range(5):
         if store.materialize_one(conn) is None:break
         events+=1
-    if config is None and os.environ.get('REAL_RESEARCH_VIEW_CONFIG'):
-        try:config=ViewConfig.model_validate_json(Path(os.environ['REAL_RESEARCH_VIEW_CONFIG']).read_text())
-        except (OSError,ValueError):config=None
     for _ in range(5):
         if store.research_one(conn,lambda c,s,d:analyze(c,config,s,d)) is None:break
         research+=1

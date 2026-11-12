@@ -371,3 +371,10 @@ Read-only VPS preflight passes static budget; x86_64 representative load, encryp
 off-server recovery/alerts, owner review/cutover and genuine Mac-off delivery remain
 gates. Production unchanged; no readiness percentage or real-research activation.
 [Architecture, measurements and exact cutover/rollback](STK-099-bookmyhost.md).
+
+12 November — **STK-099 / D3-03 + D3-04 + D3-09 + D3-12**, PR #48 review fixes:
+watchlist export fails closed with audited empty opt-in; hosted rehearsal checks
+readable configuration and actual evidence/permission paths; API paper operations
+and audited queue/governance writes receive specific grants with mutation guards.
+1,053 local unit checks pass; exact-head PostgreSQL/hosted/browser CI evidence is
+recorded in PR #48. Production remains unchanged; release gates remain open.

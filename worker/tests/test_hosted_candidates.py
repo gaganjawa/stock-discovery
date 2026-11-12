@@ -15,3 +15,18 @@ def test_private_bridge_requires_separate_roles_and_same_host(monkeypatch,tmp_pa
                   good.replace('chartink_inbox','stk_real001_private'),good.replace('x'*40,'weak')]:
         source.write_text(value)
         with pytest.raises(ValueError):validate_hosted()
+
+
+@pytest.mark.parametrize('mode',['missing','invalid','unreadable','missing_grants'])
+def test_hosted_view_fails_before_consuming_work(monkeypatch,tmp_path,mode):
+    from worker.candidates import cycle
+    monkeypatch.setenv('PRIVATE_ACCESS_MODE','authenticated_proxy')
+    monkeypatch.delenv('REAL_RESEARCH_VIEW_CONFIG',raising=False)
+    path=tmp_path/'view.json'
+    if mode!='missing':monkeypatch.setenv('REAL_RESEARCH_VIEW_CONFIG',str(path))
+    if mode=='invalid':path.write_text('{}')
+    if mode=='missing_grants':
+        import json
+        path.write_text(json.dumps(dict(sources=dict(grant_file=str(tmp_path/'absent'),retention_days=30),listing_ids=['NSE:SYN'])))
+    with pytest.raises(ValueError,match='^hosted_research_configuration_invalid$'):
+        cycle(None,remote_pull=False)
