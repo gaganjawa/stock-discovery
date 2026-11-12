@@ -12,6 +12,10 @@ from stock_discovery_analysis.runtime import setting
 from datetime import datetime
 
 
+class HostedResearchConfigurationError(ValueError):
+    """Sanitized error type also exposed by hosted worker health."""
+
+
 class NoRedirect(HTTPRedirectHandler):
     def redirect_request(self,*args,**kwargs):return None
 
@@ -66,7 +70,7 @@ def cycle(conn, *, config=None, remote_pull=True):
             # Required private dependencies must be readable before consuming work.
             if required:json.loads(Path(config.sources.grant_file).read_text())
         except (OSError,ValueError):
-            if required:raise ValueError('hosted_research_configuration_invalid') from None
+            if required:raise HostedResearchConfigurationError('hosted_research_configuration_invalid') from None
             config=None
     # Five events / five companies per tick; independent of research UI requests.
     receiver=os.environ.get('CHARTINK_RECEIVER_URL')

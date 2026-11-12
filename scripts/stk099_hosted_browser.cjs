@@ -6,8 +6,10 @@ const {chromium, expect} = require(process.env.STK_PLAYWRIGHT);
   const browser = await chromium.launch();
   try {
     const context = await browser.newContext({ignoreHTTPSErrors: true,
-      httpCredentials: {username: 'owner', password: process.env.STK_EDGE_PASSWORD}});
+      httpCredentials: {username: 'owner', password: process.env.STK_EDGE_PASSWORD},
+      extraHTTPHeaders: {Authorization: 'Basic ' + Buffer.from('owner:' + process.env.STK_EDGE_PASSWORD).toString('base64')}});
     const page = await context.newPage();
+    page.on('requestfailed', request => console.error('Hosted browser request failed:', new URL(request.url()).pathname, request.failure()?.errorText));
     await page.goto(target.origin + '/#real-research');
     await page.getByLabel('Owner access key').fill('o'.repeat(40));
     await page.getByRole('button', {name: 'Sign in', exact: true}).click();

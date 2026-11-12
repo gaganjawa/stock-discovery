@@ -193,6 +193,15 @@ def test_hosted_authenticated_paper_writes_and_permission_boundaries(isolated_ur
             assert client.post(base+'/observations',json=observation,headers=headers).json()==response.json()
             assert client.get(base,headers=headers).status_code==200
             assert client.post('/v1/discovery-runs',json={'horizon':'swing'},headers={**headers,'Idempotency-Key':'hosted-new-run'}).status_code==202
+            from test_governance import manifest,parse
+            from test_governance_store import trial
+            experiment=manifest('HOSTED-EXP');exp_headers={**headers,'Idempotency-Key':'HOSTED-EXP'}
+            assert client.post('/v1/experiments',json=experiment,headers=exp_headers).status_code==200
+            request=trial(parse(experiment));trial_headers={**headers,'Idempotency-Key':request.trial_id}
+            assert client.post('/v1/experiments/HOSTED-EXP/trials',json=request.model_dump(mode='json'),headers=trial_headers).status_code==200
+            evaluated=client.post('/v1/experiments/HOSTED-EXP/trials/'+request.trial_id+'/evaluate',headers=trial_headers)
+            assert evaluated.status_code==200,evaluated.text
+            assert client.post('/v1/experiments/HOSTED-EXP/controls',json={'action':'pause','reason':'synthetic permission test'},headers=headers).status_code==200
             for statement in ["UPDATE discovery.publication_source_controls SET source_id=source_id",
                 "UPDATE discovery.publication_source_controls SET revoked=false",
                 "UPDATE discovery.grant_fences SET state=state",'DELETE FROM paper.ledger',

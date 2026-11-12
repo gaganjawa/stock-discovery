@@ -413,13 +413,20 @@ API write-path audit:
 | Watchlist/session | Private filesystem and cookie operations; no database grants needed |
 | Receiver ingestion | Separate receiver role/database; unchanged |
 
+Audit limitation: optional legacy `analysis(include_financial=true)` still invokes
+synthetic evidence seeding and therefore cannot run under the hosted API role;
+its evidence/grant write privileges deliberately remain denied. Ordinary legacy
+analysis and restored descriptive research retain their existing access. This
+fixture-seeding mode is not enabled by hosting and needs a separate scoped design
+if required there; it is not repaired by granting the API ingestion privileges.
+
 The candidate worker cannot write research evidence or paper tables. API cannot
 write processed paper receipts, shadow references/outcomes, revisions, grants or
 restriction fences. The dedicated hosted worker still runs candidate intake only;
 queued paper observations and synthetic publication jobs require the existing
 separately operated execution worker. This correction grants no worker activation.
 
-Local validation: 1,053 application/worker unit tests passed, plus script tests.
+Local validation: 1,053 application/worker unit tests and 34 script tests passed.
 PR CI supplies disposable PostgreSQL role/route regressions, migrations, Linux
 hosted research probe and browser acceptance. Exact-head CI evidence is recorded
 in PR #48. No production services, volumes, credentials or webhook URL changed;
