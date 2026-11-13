@@ -11,8 +11,7 @@ Retain the existing Compose project `stock-discovery-chartink`, inbox database,
 volume, TLS state, hostname, webhook capability and authenticated feed. Add a
 separate `stk_real001_private` database in the existing PostgreSQL 16 cluster,
 owned by a non-login `stk_app_owner`. Do not combine research tables with the inbox
-or run a second PostgreSQL server on this small host. No schema migration beyond
-0016 is needed. Existing API, frontend and worker images supply the application.
+or run a second PostgreSQL server on this small host. The coordinated release requires reviewed STK-095 code and schema 0017 on both databases. Existing API, frontend and worker images supply the application.
 
 The receiver commits immutable event rows and an empty `stk_candidates` notification
 in the same transaction. One existing worker process LISTENs on the source database
@@ -99,230 +98,53 @@ data: copying an IN grant to an unapproved host territory does not grant rights.
 Old pilot-health receipts are historical, not evidence that a Mac refresh job still
 runs. No Mac scheduler/provider credential is needed by the stored-only worker.
 
-## Exact operator sequence (after review/approval)
+## Authoritative release sequence (explicit owner authorization required)
 
-Do not execute production-mutating steps until the owner approves host staging,
-resource/load results, encrypted off-server recovery and the cutover window.
-Use the reviewed commit, not a moving branch. Values below use observed paths;
-`RELEASE` and image digests must be the exact reviewed build. No command removes
-volumes or changes the existing webhook URL.
+Use the reviewed integration handoff at
+[4d7dbad](https://github.com/gaganjawa/stock-discovery/blob/4d7dbadbcd5194dc1201cb11039261d2e4df6a11/docs/STK-095-STK-099-integration.md).
+This PR alone does not contain schema 0017 or authorize migration.
 
-### 1. Read-only preflight and immutable image preparation
+1. Verify source database names and source cluster identifiers independently of
+   the backup manifests. Verify destination identities, owners and existing volumes.
+2. Freeze application writes and consumer activity in the approved window; obtain
+   complete consistent backups of BOTH databases, configuration and watchlist.
+   Verify hashes and encrypted off-server recovery with separately held keys.
+3. Restore each backup into a new isolated target. Supply independently recorded
+   `--expected-source-database` and `--expected-source-cluster` to
+   `scripts/stk099_transfer.py restore`, alongside the existing container, owner,
+   database, dump and restore-owner arguments. Source cluster expectations bind
+   the manifest, not the destination cluster: Mac-to-VPS restoration is supported.
+   Missing/mismatched expectations fail before CREATE DATABASE. Existing targets
+   cannot be overwritten. Verify all table fingerprints and sequence state.
+4. Rehearse 0016→0017 on BOTH isolated copies using reviewed STK-095 migration code.
+   Verify immutable records, references, grants, candidate state and cursors.
+5. Require reviewed compatible STK-095/API/worker/receiver images, schema-0017
+   healthchecks and green integration CI before requesting production migration.
+6. Only after explicit owner authorization, quiesce writes and migrate BOTH
+   `chartink_inbox` and `stk_real001_private` with their owner migration identities.
+   Preserve volumes, credentials and database names. No runtime DDL grants.
+7. Verify schema 0017, the validated envelope constraint, permissions, fingerprints,
+   sequence state and cursor identity. Preserve the exact previous receiver URL
+   including trailing slash; use the existing candidate_store.digest identity.
+8. Keep the existing receiver image available and healthy after schema verification.
+   Activate compatible API and worker first with explicit service-only operations;
+   do not run an all-services Compose up. The worker depends on receiver health:
+   retain its running old image, and use reviewed `--no-deps` service updates where
+   needed to prevent Compose from upgrading dependencies. Verify dependencies
+   beforehand. Do not recreate/tune the database as part of image activation.
+9. Confirm exactly one consumer across Mac and hosted execution; verify old-v1
+   replay, durable cursor advance and authenticated UI before receiver upgrade.
+10. Upgrade the receiver image last with a receiver-only `--no-deps` operation.
+    Preserve the webhook URL and credentials. Verify provider-test isolation.
+11. With owner approval, verify genuine delivery with the Mac powered off: durable
+    inbox, one candidate/research result, cursor advance and private UI display.
+    Delivery gaps have no assumed retry guarantee; retain and reconcile backlog.
 
-From the Mac repository:
-
-```sh
-SSH_KEY="$HOME/.ssh/stock-discovery-vps"
-ssh -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
-  -i "$SSH_KEY" root@160.22.109.189 python3 - < scripts/stk099_preflight.py
-```
-
-Build/test linux/amd64 images on a capable builder/CI, using existing Dockerfiles,
-then deliver reviewed image archives or immutable registry digests to the VPS.
-For a native Linux x86_64 builder, after checking out the reviewed commit in a clean
-checkout (never the Mac WIP tree):
-
-```sh
-RELEASE=REVIEWED_COMMIT_SHA
-test "$(git rev-parse HEAD)" = "$RELEASE"
-docker build --platform linux/amd64 -t stock-discovery-api:$RELEASE -f backend/Dockerfile .
-docker build --platform linux/amd64 -t stock-discovery-worker:$RELEASE -f worker/Dockerfile .
-docker build --platform linux/amd64 -t stock-discovery-web:$RELEASE frontend
-docker tag stock-discovery-api:$RELEASE stk099-api:acceptance
-docker tag stock-discovery-worker:$RELEASE stk099-worker:acceptance
-docker tag stock-discovery-web:$RELEASE stk099-web:acceptance
-STK099_STACK_BROWSER=1 PYTHONPATH=backend:shared:worker \
-  python3 scripts/stk099_rehearsal.py /tmp/stk099-release-test --context ''
-docker save stock-discovery-api:$RELEASE stock-discovery-worker:$RELEASE \
-  stock-discovery-web:$RELEASE | gzip > stk099-images.tar.gz
-sha256sum stk099-images.tar.gz > stk099-images.tar.gz.sha256
-git archive --format=tar.gz -o stk099-source.tar.gz "$RELEASE"
-```
-
-Transfer the archives/checksum by SCP. On the VPS verify `sha256sum -c`, load via
-`docker load -i stk099-images.tar.gz`, extract source to the new release path, and
-record each `docker image inspect --format '{{.Id}} {{.Architecture}}'` result.
-Compose also accepts immutable local `sha256:<image-id>` references when no image
-registry is used. Do not silently use an ARM build on this x86_64 host.
-Do not build the frontend on the running 2 GiB VPS. The local rehearsal uses
-`stk099-api:acceptance`, `stk099-worker:acceptance`, `stk099-web:acceptance`; those
-ARM development tags are not production artifacts. CI's Linux image build and
-rehearsal must pass on the PR commit before a release is selected.
-
-### 2. Freeze Mac writes and export database plus private files
-
-Stop the actual Mac candidate process and private UI writes using their recorded
-launcher/PID; do not stop the database or kill unrelated Python processes. Stop
-any configured stored-only scheduler that writes to this DB. Keep the receiver
-running: its inbox safely accumulates real deliveries. Confirm pg_stat_activity
-has no other writers and retain the unchanged Mac DB for rollback.
-
-```sh
-umask 077
-python3 scripts/stk099_transfer.py backup --context colima \
-  --container stock-discovery-database-1 --owner stock_discovery \
-  --database stk_real001_private --expected-cluster 7695120939741798433 \
-  --dump backups/stk099-cutover.dump
-# VIEW is the exact existing REAL_RESEARCH_VIEW_CONFIG path, not an example.
-.venv/bin/python scripts/stk099_bundle.py --view "$VIEW" \
-  --watchlist "$WATCHLIST" --destination backups/stk099-private-bundle
-```
-
-Use the configured watchlist directory (default `backups/private-watchlist`).
-Inspect the bundle's file-hash manifest, listing_ids, policy flags and original
-file provenance privately. No provider keys belong in the bundle. Create a fresh
-backup filename for each attempt; scripts deliberately refuse overwrites.
-Transfer over SSH/SCP into a **new** root-only release directory:
-
-```sh
-RELEASE=REVIEWED_COMMIT_SHA
-ssh -i "$SSH_KEY" root@160.22.109.189 "install -d -m 700 /var/lib/stock-discovery/releases/$RELEASE"
-scp -i "$SSH_KEY" backups/stk099-cutover.dump backups/stk099-cutover.manifest.json \
-  root@160.22.109.189:/var/lib/stock-discovery/releases/$RELEASE/
-scp -i "$SSH_KEY" -r backups/stk099-private-bundle \
-  root@160.22.109.189:/var/lib/stock-discovery/releases/$RELEASE/
-```
-
-Deliver reviewed source separately under `/opt/stock-discovery/releases/$RELEASE`
-without replacing the running receiver checkout. Verify Git SHA and image digests.
-Verify every bundled SHA-256 on the VPS before ownership changes.
-
-### 3. New credentials, rehearsal restore and recovery
-
-On the VPS, using the reviewed source directory:
-
-```sh
-cd /opt/stock-discovery/releases/$RELEASE
-python3 scripts/stk099_prepare.py /etc/stock-discovery/stk099
-# Review this private SQL locally; it creates NEW roles, never alters existing ones.
-docker exec -i stock-discovery-chartink-database-1 \
-  psql -X -U chartink_owner -d postgres -v ON_ERROR_STOP=1 \
-  < /etc/stock-discovery/stk099/bootstrap.sql
-python3 scripts/stk099_transfer.py restore \
-  --container stock-discovery-chartink-database-1 --owner chartink_owner \
-  --database stk099_rehearsal --restore-owner stk_app_owner \
-  --dump /var/lib/stock-discovery/releases/$RELEASE/stk099-cutover.dump
-```
-
-The restore tool verifies all tables/sequences, and cannot overwrite chartink_inbox
-or an existing target. This adds a database to the existing volume; it does not
-recreate that volume. Do not run migrations against either production database.
-Keep credentials in root-only parent directories. For container readability,
-`chown 10001:10001` only the new app_url/worker_url/source_url/owner_access files
-and the new private/watchlist directories; files 0600, directories 0700. The root
-proxy can read root-owned `ui_auth` 0600. Existing receiver secret ownership stays
-unchanged. Do not recursively chmod `/etc/stock-discovery`.
-
-Generate an edge password interactively with the pinned Caddy image:
-
-```sh
-docker run --rm -it caddy:2.10.2-alpine@sha256:4c6e91c6ed0e2fa03efd5b44747b625fec79bc9cd06ac5235a779726618e530d \
-  caddy hash-password
-```
-
-Store only the line `owner <generated-bcrypt-hash>` in `/etc/stock-discovery/stk099/ui_auth`; keep the password and generated
-owner_access in the owner's password manager. Never paste plaintext into commands,
-Git, PRs or logs. `bootstrap.sql` contains credentials and remains private.
-
-Before final cutover, back up both the receiver and new app snapshot plus watchlist
-and config with the existing encrypted off-server backup design. No paid account
-or key custody is selected by this change. If no approved encrypted repository/key
-and external alert destination exist, **cutover stays blocked**. Verify a restore
-from that off-server copy, not merely the local dump; record the manifest hash,
-recovery duration, backup age and location of the separately held decryption key.
-
-### 4. Host staging/load gate and final restore
-
-First run the synthetic rehearsal on an approved staging machine/VPS window with
-its own project/volumes and loopback port, using linux/amd64 images. Never send its
-payload to the production capability. On a 2 GiB VPS do not run a second complete
-stack concurrently unless measured headroom supports it. Prefer same-sized
-isolated staging or a reviewed maintenance window; static idle memory alone is
-not permission to overload the receiver. Use SSH forwarding for private staging.
-The reusable command is:
-
-```sh
-STK099_STACK_BROWSER=1 PYTHONPATH=backend:shared:worker \
-  python3 scripts/stk099_rehearsal.py /private/stk099-new-rehearsal --context ''
-```
-
-Python dependencies and Playwright must be installed on that test runner. It leaves
-stopped volumes and sanitized results. Require no OOM/restarts under representative
-load, <75% of each container limit, >384 MiB host available RAM, stable swap, no
-missed/duplicate events, verified TLS/private auth and restore. Repeat with the
-real restored copy for read-only history/UI plus stored-only analysis, not invented
-market rows; confirm source permissions and mapped file paths. No LLM test here.
-
-When approved, refresh final Mac snapshot and bundle under the same frozen-write
-procedure if anything changed since rehearsal. Restore to the **new final** DB:
-
-```sh
-python3 scripts/stk099_transfer.py restore \
-  --container stock-discovery-chartink-database-1 --owner chartink_owner \
-  --database stk_real001_private --restore-owner stk_app_owner \
-  --dump /var/lib/stock-discovery/releases/$RELEASE/stk099-cutover.dump
-docker exec -i stock-discovery-chartink-database-1 psql -X -U chartink_owner \
-  -d stk_real001_private -v ON_ERROR_STOP=1 < deploy/bookmyhost/grants.sql
-docker exec -i stock-discovery-chartink-database-1 psql -X -U chartink_owner \
-  -d chartink_inbox -v ON_ERROR_STOP=1 < deploy/bookmyhost/source-grants.sql
-python3 scripts/stk099_transfer.py verify \
-  --container stock-discovery-chartink-database-1 --owner chartink_owner \
-  --database stk_real001_private \
-  --dump /var/lib/stock-discovery/releases/$RELEASE/stk099-cutover.dump
-```
-
-### 5. Reviewed Compose environment and cutover
-
-Create a private `/etc/stock-discovery/stk099/compose.env` with these non-secret
-values (replace image references with tested immutable digests):
-
-```dotenv
-RECEIVER_DOMAIN=160-22-109-189.sslip.io
-CHARTINK_RECEIVER_ENABLED=true
-CHARTINK_SECRETS_DIR=/etc/stock-discovery/chartink
-STK099_SECRETS_DIR=/etc/stock-discovery/stk099
-STK099_CONFIG_DIR=/opt/stock-discovery/releases/REVIEWED_COMMIT_SHA/deploy/bookmyhost
-STK099_PRIVATE_DIR=/var/lib/stock-discovery/releases/REVIEWED_COMMIT_SHA/stk099-private-bundle/private
-STK099_WATCHLIST_DIR=/var/lib/stock-discovery/releases/REVIEWED_COMMIT_SHA/stk099-private-bundle/watchlist
-CHARTINK_RECEIVER_URL=https://160-22-109-189.sslip.io
-CODE_VERSION=REVIEWED_COMMIT_SHA
-API_IMAGE=reviewed-api@sha256:REVIEWED_DIGEST
-WORKER_IMAGE=reviewed-worker@sha256:REVIEWED_DIGEST
-WEB_IMAGE=reviewed-web@sha256:REVIEWED_DIGEST
-```
-
-The receiver URL must match the Mac's exact string (including a trailing slash if
-present); verify the restored candidate_receivers receiver_id equals its SHA-256
-via the existing `candidate_store.digest`, not a new ad-hoc hash format.
-Use the **existing base Compose path** to preserve volume identity; the overlay
-only adds services/config and resource tuning. Confirm rendered volumes equal the
-observed three production names before applying anything.
-
-```sh
-dc() {
-  docker compose --env-file /etc/stock-discovery/stk099/compose.env \
-    -p stock-discovery-chartink \
-    -f /opt/stock-discovery/deploy/chartink/compose.yaml \
-    -f /opt/stock-discovery/releases/$RELEASE/deploy/bookmyhost/compose.yaml \
-    --profile receiver "$@"
-}
-dc config --quiet
-# Save the old receiver image ID, Compose/config hashes and container inspect
-# privately for rollback before the following maintenance-window step.
-dc up -d --no-build --wait database receiver api worker web proxy
-```
-
-This briefly restarts PostgreSQL for tuning and the receiver/proxy for new code;
-Chartink delivery during downtime has no guaranteed retry. Choose a quiet window,
-record the gap, and inspect alert history. Do not change the alert URL/email.
-No command above invokes the setup/migrate profile or drops a volume.
-
-From another device verify TLS, edge login, owner login, historical research,
-watchlist, candidates, blocked reasons and no public health/docs/API/DB access.
-Stop the Mac completely. Observe a **genuine** Chartink delivery, durable inbox
-commit, application cursor advance, one candidate/research result and UI display.
-If no genuine delivery arrives, report this gate pending; never substitute a
-synthetic delivery. Test worker restart using the same committed genuine rows.
+On receiver rollback retain schema 0017 and compatible API/worker consumers when
+expanded envelopes exist. Never delete events or reset cursors to force downgrade.
+A schema downgrade must fail atomically if retained rows exceed the old bound.
+For application recovery restore verified current backups into new isolated targets
+first; never resume a stale Mac copy. Keep the established volume and cursor history.
 
 ## Monitoring and rollback
 

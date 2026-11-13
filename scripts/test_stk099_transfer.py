@@ -25,3 +25,30 @@ class TransferGuards(unittest.TestCase):
             dump=Path(tmp)/'dump';dump.write_bytes(b'corrupt')
             with self.assertRaisesRegex(ValueError,'checksum'):
                 restore(DB(),dump,{'sha256':'wrong'},'owner')
+
+    def test_restore_identity_and_cross_cluster_guards(self):
+        from stk099_transfer import checksum
+        class DB:
+            name='isolated';owner='owner'
+            def __init__(self):self.calls=[];self.exists=False
+            def sql(self,*args):
+                self.calls.append(args)
+                if self.exists:raise RuntimeError('exists')
+            def run(self,*args,**kwargs):self.calls.append('restore')
+            def snapshot(self):return {'revision':'0016'}
+        with tempfile.TemporaryDirectory() as tmp:
+            dump=Path(tmp)/'dump';dump.write_bytes(b'dump')
+            manifest=dict(source='source_db',cluster='source_cluster',sha256=checksum(dump),snapshot={'revision':'0016'})
+            for source,cluster in [(None,None),('source_db',None),(None,'source_cluster'),('wrong','source_cluster'),('source_db','wrong')]:
+                db=DB()
+                with self.assertRaises(ValueError):restore(db,dump,manifest,'owner',expected_source=source,expected_source_cluster=cluster)
+                self.assertEqual(db.calls,[])
+            args=dict(expected_source='source_db',expected_source_cluster='source_cluster')
+            db=DB();self.assertEqual(restore(db,dump,manifest,'owner',**args),manifest['snapshot'])
+            self.assertEqual(len(db.calls),2) # No destination-cluster equality query.
+            db=DB();db.name='chartink_inbox'
+            with self.assertRaisesRegex(ValueError,'protected'):restore(db,dump,manifest,'owner',**args)
+            self.assertEqual(db.calls,[])
+            db=DB();db.exists=True
+            with self.assertRaisesRegex(RuntimeError,'exists'):restore(db,dump,manifest,'owner',**args)
+            self.assertEqual(len(db.calls),1)

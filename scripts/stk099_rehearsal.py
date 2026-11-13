@@ -155,7 +155,8 @@ def run(directory,context):
         assert probe['stored_research_bars']==30 and probe['permission_denial_verified']
         dump=directory/'synthetic.dump';manifest=backup(appdb,dump,db.sql('SELECT system_identifier FROM pg_control_system()'))
         restored=Database(container,'chartink_owner','stk099_restore_check',context)
-        restore(restored,dump,manifest,'stk_app_owner')
+        restore(restored,dump,manifest,'stk_app_owner', expected_source=appdb.name,
+                expected_source_cluster=db.sql('SELECT system_identifier FROM pg_control_system()'))
         assert db.sql('SELECT count(*) FROM discovery.candidate_events')=='11'
         result=dict(synthetic_only=True,project=project,startup_seconds=round(startup_seconds,2),
                     research_probe=probe,research_path='stored_identity_lookup_no_evidence',candidates=101,events=11,duplicate_deduplicated=True,worker_restart=True,

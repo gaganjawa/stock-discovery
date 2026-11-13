@@ -76,9 +76,15 @@ def backup(db, destination, expected_cluster):
     return manifest
 
 
-def restore(db, dump, manifest, owner):
+def restore(db, dump, manifest, owner, *, expected_source=None, expected_source_cluster=None):
     if checksum(dump) != manifest['sha256']:
         raise ValueError('backup_checksum_mismatch')
+    if not expected_source or not expected_source_cluster:
+        raise ValueError('expected_source_identity_required')
+    if manifest.get('source') != expected_source:
+        raise ValueError('source_database_mismatch')
+    if manifest.get('cluster') != expected_source_cluster:
+        raise ValueError('source_cluster_mismatch')
     if db.name in ('postgres', 'template0', 'template1', 'chartink_inbox', 'stock_discovery'):
         raise ValueError('protected_destination')
     # CREATE DATABASE fails if present; no overwrite path exists.
@@ -102,6 +108,8 @@ def main():
     p.add_argument('--dump', type=Path, required=True)
     p.add_argument('--expected-cluster')
     p.add_argument('--restore-owner')
+    p.add_argument('--expected-source-database')
+    p.add_argument('--expected-source-cluster')
     args = p.parse_args()
     os.umask(0o077)
     db = Database(args.container, args.owner, args.database, args.context)
@@ -112,7 +120,10 @@ def main():
         manifest = json.loads(args.dump.with_suffix('.manifest.json').read_text())
         if args.action == 'restore':
             if not args.restore_owner: p.error('--restore-owner required')
-            restore(db, args.dump, manifest, args.restore_owner)
+            if not args.expected_source_database or not args.expected_source_cluster:
+                p.error('--expected-source-database and --expected-source-cluster required')
+            restore(db, args.dump, manifest, args.restore_owner,
+                    expected_source=args.expected_source_database, expected_source_cluster=args.expected_source_cluster)
         elif db.snapshot() != manifest['snapshot']:
             raise ValueError('verification_mismatch')
     print(json.dumps(dict(action=args.action, database=args.database, verified=True)))
