@@ -439,3 +439,12 @@ PostgreSQL/API and two browser checks plus frontend build pass. Production read-
 check: three provider Tests, cursor/high-water 3, no genuine alert yet. STK-095 Test
 acceptance remains passed; no production changes. Owner review/CI pending.
 [Slice, limits and next price-refresh integration](STK-094-candidate-swing-review.md).
+
+13 November — **STK-014 / D3-03 + D3-04**, after owner merged STK-094 PR #52:
+bounded candidate price refresh reuses Upstox mapping/acquisition, grants, request
+ledger and dated calendars. Durable jobs coalesce duplicate symbols, recover after
+interruptions and atomically queue stored re-analysis after complete ingestion.
+1,177 unit, 47 affected PostgreSQL/API tests and a real refresh-to-ranked-UI browser
+flow pass using invented provider responses. No production activation or migration;
+ordinary genuine-alert acceptance remains pending. Owner-review PR follows.
+[Implementation, operation and recovery evidence](STK-014-candidate-price-refresh.md).
