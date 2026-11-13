@@ -1,0 +1,14 @@
+{
+  "stocks": "SYMBOL 1, SYMBOL 2, SYMBOL 3",
+  "trigger_prices": "2500.00,600.00,3400.00",
+  "triggered_at": "11:45 am",
+  "scan_name": "EOD Swing Candidates",
+  "scan_url": "eod-swing-candidates",
+  "alert_name": "Swing",
+  "webhook_url": "https://receiver.invalid/hooks/chartink/REDACTED",
+  "columns": [
+    {"symbol":100.4,"close":100.1,"%_change":100.2,"volume":100.3,"marketcapname":100.5,"sector":100.6,"industry":100.7,"EMA10":100.8,"ema30":100.9,"sma50":101,"rsi14":101.1,"AVG_VOLUME20":101.2,"avg_true_range":101.3,"PREV20_HIGH":101.4},
+    {"symbol":200.4,"close":200.1,"%_change":200.2,"volume":200.3,"marketcapname":200.5,"sector":200.6,"industry":200.7,"EMA10":200.8,"ema30":200.9,"sma50":201,"rsi14":201.1,"AVG_VOLUME20":201.2,"avg_true_range":201.3,"PREV20_HIGH":201.4},
+    {"symbol":300.4,"close":300.1,"%_change":300.2,"volume":300.3,"marketcapname":300.5,"sector":300.6,"industry":300.7,"EMA10":300.8,"ema30":300.9,"sma50":301,"rsi14":301.1,"AVG_VOLUME20":301.2,"avg_true_range":301.3,"PREV20_HIGH":301.4}
+  ]
+}

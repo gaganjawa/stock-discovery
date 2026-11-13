@@ -1,3 +1,4 @@
+import pytest
 from fastapi.testclient import TestClient
 from app.main import app
 
@@ -96,3 +97,19 @@ def test_missing_database_file_is_a_clear_503_not_a_crash(monkeypatch,tmp_path):
         assert r.status_code==503 and r.json()['detail'].startswith('Database connection file not found'),path
     status=c.get('/v1/real-research/status').json()
     assert status['database']=={'state':'unavailable'} and status['blockers'][0].startswith('Database is not reachable')
+
+
+@pytest.mark.parametrize('version,state',[
+    ('0015','current'),('0016','current'),('0017','current'),
+    ('0014','migration_required'),('0018','migration_required'),
+])
+def test_explicit_research_schema_compatibility(monkeypatch,version,state):
+    from unittest.mock import MagicMock
+    import psycopg
+    from app import real_research
+    connection=MagicMock()
+    connection.__enter__.return_value.execute.return_value.fetchone.return_value=(version,)
+    monkeypatch.setattr(psycopg,'connect',lambda *a,**kw:connection)
+    monkeypatch.setenv('DATABASE_URL','postgresql://synthetic.invalid/unused')
+    monkeypatch.delenv('DATABASE_URL_FILE',raising=False)
+    assert real_research.schema_state()=={'state':state}

@@ -9,6 +9,7 @@ from psycopg import sql
 import pytest
 from alembic import command
 from alembic.config import Config
+from alembic.script import ScriptDirectory
 from sqlalchemy.exc import IntegrityError
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -46,6 +47,24 @@ def snapshot(conn):
     ).format(sql.Identifier(schema), sql.Identifier(table))).fetchall() for schema, table in tables}
 
 
+def legacy_0013_config(tmp_path):
+    """Copy only ancestors of the REAL 0013 head, never dangling newer children."""
+    current=Config(str(ROOT/'backend/alembic.ini'))
+    graph=ScriptDirectory.from_config(current)
+    ancestors={Path(revision.path).name for revision in graph.iterate_revisions('0013','base')}
+    legacy=tmp_path/'legacy'
+    shutil.copytree(ROOT/'backend/migrations',legacy)
+    for path in (legacy/'versions').glob('*.py'):
+        if path.name not in ancestors:path.unlink()
+    for name in ('0012_real_shadow.py','0013_pilot_maintenance_audit.py'):
+        path=legacy/'versions'/name
+        path.write_text(path.read_text().replace("'real_0012'", "'0012'"))
+    old=Config(str(ROOT/'backend/alembic.ini'))
+    old.set_main_option('script_location',str(legacy))
+    assert ScriptDirectory.from_config(old).get_heads()==['0013']
+    return old
+
+
 @pytest.mark.parametrize('origin', ['clean', 'main_0012', 'real_0013'])
 def test_combined_upgrade_preserves_both_histories(migration_database, tmp_path, origin):
     config = Config(str(ROOT / 'backend/alembic.ini'))
@@ -58,17 +77,7 @@ def test_combined_upgrade_preserves_both_histories(migration_database, tmp_path,
                 VALUES ('migration-sentinel','migration-sentinel','{}','{}')""")
         elif origin == 'real_0013':
             # Reconstruct the actual old graph, including its conflicting 0012 ID.
-            legacy = tmp_path / 'legacy'
-            shutil.copytree(ROOT / 'backend/migrations', legacy)
-            (legacy / 'versions/0012_experiment_governance.py').unlink()
-            (legacy / 'versions/0014_reconcile_real_governance.py').unlink()
-            (legacy / 'versions/0015_grant_fences.py').unlink()
-            (legacy / 'versions/0016_candidates.py').unlink()
-            for name in ('0012_real_shadow.py', '0013_pilot_maintenance_audit.py'):
-                path = legacy / 'versions' / name
-                path.write_text(path.read_text().replace("'real_0012'", "'0012'"))
-            old = Config(str(ROOT / 'backend/alembic.ini'))
-            old.set_main_option('script_location', str(legacy))
+            old = legacy_0013_config(tmp_path)
             command.upgrade(old, 'head')
             assert conn.execute('SELECT version_num FROM alembic_version').fetchone() == ('0013',)
             # Seed the historical schema directly. Current ingestion deliberately
@@ -88,7 +97,7 @@ def test_combined_upgrade_preserves_both_histories(migration_database, tmp_path,
         command.upgrade(config, 'head')
         after = snapshot(conn)
         assert all(after[table] == rows for table, rows in before.items())
-        assert conn.execute('SELECT version_num FROM alembic_version').fetchall() == [('0016',)]
+        assert conn.execute('SELECT version_num FROM alembic_version').fetchall() == [('0017',)]
         assert conn.execute("SELECT to_regclass('discovery.experiments'),to_regclass('paper.shadow_references')").fetchone() == ('discovery.experiments', 'paper.shadow_references')
         if origin == 'real_0013':
             assert conn.execute('SELECT count(*) FROM paper.shadow_outcomes').fetchone()[0] == 1
@@ -96,7 +105,7 @@ def test_combined_upgrade_preserves_both_histories(migration_database, tmp_path,
             # The existing audit-preservation rollback guard remains effective.
             with pytest.raises(IntegrityError, match='null values'):
                 command.downgrade(config, 'base')
-            assert conn.execute('SELECT version_num FROM alembic_version').fetchall() == [('0016',)]
+            assert conn.execute('SELECT version_num FROM alembic_version').fetchall() == [('0017',)]
             assert snapshot(conn) == after
 
 
@@ -129,4 +138,4 @@ def test_fence_upgrade_initializes_scopes_without_rewriting_legacy_acquisitions(
         saved=snapshot(conn)
         with pytest.raises(DBAPIError,match='grant_fence_history_present'):command.downgrade(config,'0014')
         assert snapshot(conn)==saved
-        assert conn.execute('SELECT version_num FROM alembic_version').fetchone()==('0016',)
+        assert conn.execute('SELECT version_num FROM alembic_version').fetchone()==('0017',)

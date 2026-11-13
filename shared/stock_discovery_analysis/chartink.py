@@ -56,13 +56,23 @@ def normalize(payload, scanner, received_at):
         if scanner.mode != 'synthetic_fixture': raise ValueError('synthetic_scanner_required')
         payload = dict(payload)
         enrichment = payload.pop('synthetic_enrichment_v1')
+    columns = payload.get('columns') if isinstance(payload,dict) and 'columns' in payload else None
+    has_columns = isinstance(payload,dict) and 'columns' in payload
+    if has_columns and enrichment is not None:raise ValueError('conflicting_payload_versions')
     required = {'stocks','trigger_prices','triggered_at','scan_name','scan_url','alert_name'}
-    if not isinstance(payload, dict) or not required <= payload.keys() or payload.keys() - required - {'webhook_url'}:
+    if not isinstance(payload, dict) or not required <= payload.keys() or payload.keys() - required - {'webhook_url','columns'}:
         raise ValueError('invalid_payload_fields')
-    if any(not isinstance(v, str) or len(v)>20000 for v in payload.values()):
+    if any(not isinstance(v, str) or len(v)>20000 for k,v in payload.items() if k!='columns'):
         raise ValueError('invalid_payload_values')
     if any(payload[k] != getattr(scanner,k) for k in ('scan_name','scan_url','alert_name')):
         raise ValueError('scanner_identity_mismatch')
+    if has_columns:
+        from .chartink_columns import provider_test
+        if provider_test(payload):
+            envelope=_envelope(payload,scanner,received_at,[])
+            envelope.update(version='chartink-provider-test-v1',delivery_kind='provider_test',
+                adapter_version='chartink-columns-v1',completeness='provider_test_not_market_delivery')
+            return envelope
     symbols = [normalize_symbol(s) for s in payload['stocks'].split(',')]
     prices = payload['trigger_prices'].split(',')
     if not 1 <= len(symbols) <= MAX_SYMBOLS or len(prices) != len(symbols) or len(set(symbols)) != len(symbols):
@@ -74,6 +84,25 @@ def normalize(payload, scanner, received_at):
             raise ValueError('invalid_trigger_price')
     if not re.fullmatch(r'(?:[1-9]|1[0-2]):[0-5][0-9] [ap]m',payload['triggered_at']):
         raise ValueError('invalid_trigger_time')
+    envelope=_envelope(payload,scanner,received_at,symbols)
+    safe=envelope['payload']
+    if has_columns:
+        from .chartink_columns import adapt,ADAPTER
+        envelope.update(version='chartink-event-columns-v1',adapter_version=ADAPTER,
+            enrichment=adapt(columns,symbols))
+    if enrichment is not None:
+        from .chartink_enrichment import normalize_fields
+        if not isinstance(enrichment, dict) or set(enrichment) - set(symbols):
+            raise ValueError('invalid_enrichment_symbols')
+        envelope['enrichment'] = {symbol: normalize_fields(row) for symbol,row in enrichment.items()}
+        safe['synthetic_enrichment_v1'] = enrichment
+        envelope['payload_hash'] = digest(safe)
+        envelope['version'] = 'chartink-event-synthetic-enriched-v1'
+    envelope['event_id'] = digest([scanner.key,envelope['session_date'],safe])
+    return envelope
+
+
+def _envelope(payload,scanner,received_at,symbols):
     # webhook_url may contain the bearer capability: never retain or export it.
     safe = {k:v for k,v in payload.items() if k != 'webhook_url'}
     session = received_at.astimezone(IST).date().isoformat()
@@ -84,15 +113,7 @@ def normalize(payload, scanner, received_at):
         payload_hash=digest(safe),payload=safe,symbols=sorted(symbols),
         completeness='partial_unverified',mode=scanner.mode,
         historical_pit_qualified=False,evaluation_eligible=False)
-    if enrichment is not None:
-        from .chartink_enrichment import normalize_fields
-        if not isinstance(enrichment, dict) or set(enrichment) - set(symbols):
-            raise ValueError('invalid_enrichment_symbols')
-        envelope['enrichment'] = {symbol: normalize_fields(row) for symbol,row in enrichment.items()}
-        safe['synthetic_enrichment_v1'] = enrichment
-        envelope['payload_hash'] = digest(safe)
-        envelope['version'] = 'chartink-event-synthetic-enriched-v1'
-    envelope['event_id'] = digest([scanner.key,session,safe])
+    envelope['event_id']=digest([scanner.key,session,safe])
     return envelope
 
 

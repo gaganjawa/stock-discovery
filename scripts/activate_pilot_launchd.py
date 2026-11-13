@@ -45,7 +45,7 @@ def preflight(reviewed, *, schema=schema_version, stored_check=None):
     if not all(Path(p).exists() for p in paths):raise ValueError('launch_path_missing')
     if 'DATABASE_URL' in data['EnvironmentVariables']:raise ValueError('inline_database_secret_forbidden')
     version = schema(data['EnvironmentVariables']['DATABASE_URL_FILE'])
-    if version not in (REQUIRED_SCHEMA,'0016'):raise ValueError('database_migration_required')
+    if version not in (REQUIRED_SCHEMA,'0016','0017'):raise ValueError('database_migration_required')
     if label==STORED_LABEL:
         from worker.stored_operations import check_deployment
         manifest=data['EnvironmentVariables'].get('STK_STORED_DEPLOYMENT_FILE')
