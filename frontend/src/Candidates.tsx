@@ -1,22 +1,27 @@
 import {useEffect,useState} from 'react'
 
 type Research={status:string;analyzed_at?:string;listing_id?:string;identity_status?:string;company_name?:string;reasons?:string[];research_priority?:string;qualification_limitations?:string[];market_data?:{bars:number;latest_session:string;warmup_complete:boolean;freshness:{status:string}};technical?:{metrics:Record<string,string|null>}}
-type Candidate={chartink_snapshot?:{values:Record<string,string|null>;metrics:Record<string,string>;field_states:Record<string,string>};watchlist_key:string;source_label?:string;candidate_id:string;symbol:string;session_date:string;scanner:{scan_name:string;version:string};source_url:string;match_status:string;completeness:string;timestamp_basis:string;mode:string;research_status:string;error_code?:string;research:Research|null}
-type Page={inbox?:Record<string,number>;failed_events?:{event_id:string;error_code:string}[];rows:Candidate[];total:number;session_date:string|null;delivery_status:string}
+type SwingReview={status:string;rank:number|null;price_checks_met:number|null;checks:Record<string,boolean|null>;reasons:string[]}
+type Candidate={swing_review?:SwingReview;chartink_snapshot?:{values:Record<string,string|null>;metrics:Record<string,string>;field_states:Record<string,string>};watchlist_key:string;source_label?:string;candidate_id:string;symbol:string;session_date:string;scanner:{scan_name:string;version:string};source_url:string;match_status:string;completeness:string;timestamp_basis:string;mode:string;research_status:string;error_code?:string;research:Research|null}
+type Page={evaluated_at?:string;ranking_scope?:string;inbox?:Record<string,number>;failed_events?:{event_id:string;error_code:string}[];rows:Candidate[];total:number;session_date:string|null;delivery_status:string}
 
 export function Candidates({onSelect,onUnauthorized,onSaved}:{onSelect:(id:string)=>void;onUnauthorized:()=>void;onSaved:()=>void}){
- const [data,setData]=useState<Page|null>(null),[error,setError]=useState(''),[session,setSession]=useState(''),[offset,setOffset]=useState(0),[entries,setEntries]=useState<Record<string,unknown>>({}),[message,setMessage]=useState(''),[version,setVersion]=useState(0)
+ const [data,setData]=useState<Page|null>(null),[error,setError]=useState(''),[session,setSession]=useState(''),[offset,setOffset]=useState(0),[entries,setEntries]=useState<Record<string,unknown>>({}),[message,setMessage]=useState(''),[version,setVersion]=useState(0),[review,setReview]=useState(false)
+ const pageSize=review?20:100
  async function request(url:string,init?:RequestInit){const r=await fetch('/v1/real-research/'+url,init);if(r.status===401)onUnauthorized();if(!r.ok)throw Error('Candidates request failed: '+r.status);return r.json()}
  useEffect(()=>{let active=true
-  async function refresh(){try{const [d,w]=await Promise.all([request('candidates?limit=100&offset='+offset+(session?'&session='+session:'')),request('watchlist')]);if(active){setData(d);setEntries(w.entries);setError('')}}catch(e){if(active){setData(null);setError(String(e))}}}
+  async function refresh(){try{const [d,w]=await Promise.all([request((review?'candidates/swing-review':'candidates')+'?limit='+pageSize+'&offset='+offset+(session?'&session='+session:'')),request('watchlist')]);if(active){setData(d);setEntries(w.entries);setError('')}}catch(e){if(active){setData(null);setError(String(e))}}}
   setData(null);refresh();const timer=setInterval(refresh,15000)
   return()=>{active=false;clearInterval(timer)}
- },[session,offset,version])
+ },[session,offset,version,review])
  async function save(id:string){try{const w=await request('watchlist/'+encodeURIComponent(id),{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({status:'Researching',note:'',review_date:null})});setEntries(w.entries);setMessage('Candidate saved to watchlist');onSaved()}catch(e){setError(String(e))}}
  async function retry(id:string){try{await request('candidates/'+id+'/retry',{method:'POST'});setVersion(v=>v+1);setMessage('Stored research queued. Live acquisition remains disabled.')}catch(e){setError(String(e))}}
  return <section aria-label="Scanner candidates">
   <h3>Candidates</h3><p>Chartink discovers matches. Stock Discovery independently researches permitted stored evidence. Partial alerts do not describe the complete scanner universe; no delivery is not a zero-candidate day.</p>
   <label>Candidate session <input type="date" value={session} onChange={e=>{setSession(e.target.value);setOffset(0)}}/></label> <button onClick={()=>{setSession('');setOffset(0);setVersion(v=>v+1)}}>Latest candidates</button>
+  <label><input type="checkbox" checked={review} onChange={e=>{setReview(e.target.checked);setOffset(0)}}/>Review stored swing prices</label>
+  {review&&<p>Research order within this page of up to 20 candidates: more current price checks met first; equal scores share a rank. This is not a full-universe ranking or a BUY signal. Volume confirmation remains unavailable. Each refresh rechecks stored evidence; no live data is fetched.</p>}
+  {data?.evaluated_at&&<p>Price review at {data.evaluated_at}</p>}
   {error&&<p role="alert">{error}</p>}{message&&<p role="status">{message}</p>}
   {!data&&!error&&<p>Loading candidate inbox…</p>}
   {data&&<><p>Inbox: {data.inbox?.pending??0} pending · {data.inbox?.failed??0} failed</p>{data.failed_events?.map(e=><p key={e.event_id}>{e.error_code}<button onClick={()=>retry('events/'+e.event_id)}>Retry failed delivery</button></p>)}<p data-testid="candidate-summary">{data.total} candidates · {data.session_date??'No session'} · {data.delivery_status.replaceAll('_',' ')}</p>
@@ -26,10 +31,10 @@ export function Candidates({onSelect,onUnauthorized,onSaved}:{onSelect:(id:strin
     <td><strong>{c.symbol}</strong><br/>{c.source_label?c.source_label+' (Chartink label; identity independently checked)':r?.company_name??'Company name unavailable'}<br/>{r?.identity_status?.replaceAll('_',' ')??'Identity pending'}<br/>{r?.listing_id}</td>
     <td>{c.match_status.replaceAll('_',' ')}<br/>{c.completeness.replaceAll('_',' ')}<br/>{c.timestamp_basis.replaceAll('_',' ')}</td>
     <td>{c.chartink_snapshot&&<details><summary>Chartink-derived snapshot metrics</summary><p>Unverified snapshot; not a prediction or qualified historical evidence.</p>{Object.entries(c.chartink_snapshot.field_states).map(([k,state])=><p key={k}>{k}: {c.chartink_snapshot?.values[k]??state}</p>)}{Object.entries(c.chartink_snapshot.metrics).map(([k,v])=><p key={k}>{k}: {v}</p>)}</details>}{c.research_status}<br/>Analysis at {r?.analyzed_at??'Pending'}<br/>{r?.market_data?`${r.market_data.bars} bars · ${r.market_data.latest_session??'No price session'} · ${r.market_data.freshness.status}`:'History unavailable or not checked'}<details><summary>Technical observations</summary>{Object.entries(r?.technical?.metrics??{}).map(([k,v])=><p key={k}>{k}: {v??'Unavailable'}</p>)}</details></td>
-    <td>{r?.research_priority?.replaceAll('_',' ')??'Not rankable'}<details><summary>Evidence limitations</summary>{[...r?.reasons??[],...r?.qualification_limitations??[],c.error_code??''].filter(Boolean).map((s,i)=><p key={i}>{s.replaceAll('_',' ')}</p>)}<p>No approved live request budget. Historical point-in-time eligibility and trading qualification remain blocked.</p></details></td>
+    <td>{c.swing_review&&<div aria-label={'Swing price review for '+c.symbol}><strong>{c.swing_review.rank===null?'Unranked':'Page research rank '+c.swing_review.rank}</strong><p>{c.swing_review.price_checks_met===null?'Price checks unavailable':c.swing_review.price_checks_met+' of 2 price checks met'}</p>{Object.entries(c.swing_review.checks).map(([k,v])=><p key={k}>{k.replaceAll('_',' ')}: {v===null?'Unavailable':v?'Met':'Not met'}</p>)}{c.swing_review.reasons.map(reason=><p key={reason}>{reason.replaceAll('_',' ')}</p>)}</div>}{r?.research_priority?.replaceAll('_',' ')??'Not rankable'}<details><summary>Evidence limitations</summary>{[...r?.reasons??[],...r?.qualification_limitations??[],c.error_code??''].filter(Boolean).map((s,i)=><p key={i}>{s.replaceAll('_',' ')}</p>)}<p>No approved live request budget. Historical point-in-time eligibility and trading qualification remain blocked.</p></details></td>
     <td>{r?.listing_id&&<button onClick={()=>onSelect(r.listing_id!)}>Open {c.symbol} research</button>}{entries[key]||entries[c.watchlist_key]?<p>Saved to watchlist</p>:<button onClick={()=>save(key)}>Save {c.symbol} to watchlist</button>}{c.research_status!=='pending'&&<button onClick={()=>retry(c.candidate_id)}>Retry stored research</button>}</td>
    </tr>})}</tbody></table></div>
-   <button disabled={offset===0} onClick={()=>setOffset(Math.max(0,offset-100))}>Previous candidates</button><button disabled={offset+100>=data.total} onClick={()=>setOffset(offset+100)}>More candidates</button>
+   <button disabled={offset===0} onClick={()=>setOffset(Math.max(0,offset-pageSize))}>Previous candidates</button><button disabled={offset+pageSize>=data.total} onClick={()=>setOffset(offset+pageSize)}>More candidates</button>
   </>}
  </section>
 }

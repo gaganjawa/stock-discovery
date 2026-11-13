@@ -53,6 +53,7 @@ def analyze(conn, config, symbol, session, *, clock=now):
         adjusted=detail['adjusted_research']
         ids=set(base['source_revision_ids'])|set(detail['market_readiness']['input_revision_ids'])
         base.update(source_revision_ids=sorted(ids),market_data=dict(bars=len(detail['price_series']),
+            latest_close=detail['price_series'][-1]['close'] if detail['price_series'] else None,
             latest_session=detail['market_readiness']['latest_bar'],warmup_complete=detail['market_readiness']['warmup_complete'],
             freshness=adjusted['freshness']),technical=adjusted,
             reasons=adjusted['unavailable_reasons'],qualification_limitations=detail['publication_blockers'],
