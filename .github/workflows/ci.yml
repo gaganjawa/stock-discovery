@@ -111,6 +111,23 @@ jobs:
           docker compose -f deploy/chartink/compose.yaml config --quiet
           docker run --rm -e RECEIVER_DOMAIN=receiver.invalid -v "$PWD/deploy/chartink/Caddyfile:/etc/caddy/Caddyfile:ro" caddy:2.10.2-alpine@sha256:4c6e91c6ed0e2fa03efd5b44747b625fec79bc9cd06ac5235a779726618e530d caddy validate --config /etc/caddy/Caddyfile
           python -m pytest backend/tests/integration/test_chartink_delivery.py -q
+      - name: STK-099 isolated hosted application and HTTPS browser
+        env:
+          PYTHONPATH: backend:shared:worker
+          STK099_STACK_BROWSER: "1"
+        run: |
+          docker tag "$(docker compose images -q api)" stk099-api:acceptance
+          docker tag "$(docker compose images -q worker)" stk099-worker:acceptance
+          docker tag "$(docker compose images -q web)" stk099-web:acceptance
+          python scripts/stk099_rehearsal.py /tmp/stk099-hosted-acceptance --context ''
+      - name: Preserve sanitized STK-099 resource results
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: stk099-hosted-resource-results
+          path: /tmp/stk099-hosted-acceptance/result.json
+          if-no-files-found: ignore
+          retention-days: 7
       - name: Container diagnostics
         if: failure()
         run: docker compose logs --no-color --tail=100

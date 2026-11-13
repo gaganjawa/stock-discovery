@@ -7,3 +7,6 @@
 **/dist
 **/__pycache__
 **/.pytest_cache
+
+# Private backups and unrelated workspace files must never enter build context.
+backups

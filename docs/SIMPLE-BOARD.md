@@ -361,6 +361,23 @@ acceptance passed locally; real enriched provider JSON and public activation rem
 unverified. Full exact-head CI/owner review pending. No paid deployment or original
 data mutation. [Operations and acceptance](STK-097-webhook-readiness.md).
 
+
+11 November — **STK-099 / D3-03 + D3-04 + D3-09 + D3-12**: BookMyHost full-app
+Compose overlay, private HTTPS, restricted same-host PostgreSQL notification bridge,
+durable cursor recovery and verified non-overwriting migration tooling implemented.
+595 PostgreSQL checks/zero skips and isolated full-stack/browser acceptance passed;
+Mac schema-0016 restore preserved all 6,728 current rows, 70 tables and three sequences.
+Read-only VPS preflight passes static budget; x86_64 representative load, encrypted
+off-server recovery/alerts, owner review/cutover and genuine Mac-off delivery remain
+gates. Production unchanged; no readiness percentage or real-research activation.
+[Architecture, measurements and exact cutover/rollback](STK-099-bookmyhost.md).
+
+12 November — **STK-099 / D3-03 + D3-04 + D3-09 + D3-12**, PR #48 review fixes:
+watchlist export fails closed with audited empty opt-in; hosted rehearsal checks
+readable configuration and actual evidence/permission paths; API paper operations
+and audited queue/governance writes receive specific grants with mutation guards.
+1,053 local unit checks pass; exact-head PostgreSQL/hosted/browser CI evidence is
+recorded in PR #48. Production remains unchanged; release gates remain open.
 13 November — **STK-095 / D3-03 + D3-04 + D3-09**, customized webhook rejection:
 owner-supplied provider Test webhook verifies the 14-column row-array shape.
 Versioned strict adapter, isolated test receipts (zero candidate/research/session

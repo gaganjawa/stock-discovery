@@ -93,6 +93,10 @@ def main() -> None:
         view=ViewConfig.model_validate_json(args.stored_research_view.read_text())
         schedule_handlers=handlers(config,view)
         pilot_lock=singleton('STK-083-INFY-stored-research')
+    if args.candidate_intake and setting("CANDIDATE_SOURCE_DATABASE_URL"):
+        from .candidate_events import serve
+        serve(once=args.once)
+        return
     while True:
         if args.candidate_intake:
             from .candidates import cycle
