@@ -110,3 +110,102 @@ def test_observed_provider_test_and_columns_delivery_persistence_feed_and_worker
         health=client.get('/candidate-health',headers=headers).json()
         assert health['provider_test_events']==health['candidate_delivery_events']==1
     finally:app.dependency_overrides.clear()
+
+
+@pytest.fixture
+def columns_receiver(isolated_url,tmp_path,monkeypatch):
+    monkeypatch.setenv('CHARTINK_RECEIVER_ENABLED','true')
+    monkeypatch.setenv('CHARTINK_WEBHOOK_SECRET','w'*40)
+    monkeypatch.setenv('CHARTINK_PULL_SECRET','p'*40)
+    monkeypatch.setenv('CHARTINK_REJECTION_DIAGNOSTICS','true')
+    monkeypatch.setattr(chartink_diagnostics,'FILE',tmp_path/'shapes.json')
+    config=scanner().model_copy(update={'mode':'provider_alert'})
+    path=tmp_path/'scanner';path.write_text(config.model_dump_json())
+    monkeypatch.setenv('CHARTINK_SCANNER_CONFIG',str(path))
+    def connection():
+        with psycopg.connect(isolated_url,autocommit=True) as conn:yield conn
+    app.dependency_overrides[db]=connection
+    try:
+        with TestClient(app) as client:
+            yield client,'/hooks/chartink/'+'w'*40,config
+    finally:app.dependency_overrides.clear()
+
+
+def batch_payload(config,count):
+    from test_chartink_columns import candidate_payload
+    p=candidate_payload()
+    p['columns'][0].update(sector='Synthetic diversified industrial manufacturing sector',
+        industry='Synthetic diversified industrial manufacturing industry')
+    p.update({k:getattr(config,k) for k in ('scan_name','scan_url','alert_name')})
+    symbols=['SYN'+str(i).zfill(3) for i in range(count)]
+    p.update(stocks=','.join(symbols),trigger_prices=','.join(['100']*count),
+        columns=[{**p['columns'][0],'symbol':symbol} for symbol in symbols])
+    return p
+
+
+@pytest.mark.parametrize('count',[35,40,50,150])
+def test_columns_batches_commit_replay_and_authenticated_feed(columns_receiver,isolated_url,count):
+    from stock_discovery_analysis import candidate_store as store
+    from stock_discovery_analysis.chartink import MAX_BYTES
+    client,url,config=columns_receiver
+    payload=batch_payload(config,count)
+    assert len(json.dumps(payload).encode())<MAX_BYTES
+    result=client.post(url,json=payload)
+    assert result.status_code==202,result.text
+    assert client.post(url,json=payload).json()['duplicate']
+    assert client.get('/candidate-feed').status_code==401
+    events=client.get('/candidate-feed',headers={'Authorization':'Bearer '+'p'*40}).json()['events']
+    assert len(events)==1
+    envelope=events[0]['envelope']
+    assert len(envelope['symbols'])==len(envelope['enrichment'])==count
+    stored_bytes=len(json.dumps(envelope).encode())
+    assert stored_bytes<=store.MAX_EVENT_BYTES
+    if count>=40:assert stored_bytes>MAX_BYTES
+    assert 'webhook_url' not in envelope['payload'] and 'REDACTED' not in json.dumps(envelope)
+    with psycopg.connect(isolated_url,autocommit=True) as conn:
+        assert conn.execute('SELECT envelope FROM discovery.candidate_events').fetchone()[0]==envelope
+        assert conn.execute('SELECT deliveries FROM discovery.candidate_event_state').fetchone()==(2,)
+        assert store.materialize_one(conn)
+        assert conn.execute('SELECT count(*) FROM discovery.candidates').fetchone()==(count,)
+
+
+def test_request_storage_and_inbox_capacity_failures(columns_receiver,isolated_url,monkeypatch):
+    from stock_discovery_analysis import candidate_store as store
+    client,url,config=columns_receiver
+    # Real transport bound, before persistence.
+    assert client.post(url,json=batch_payload(config,500)).status_code==413
+    payload=batch_payload(config,40)
+    with monkeypatch.context() as limits:
+        limits.setattr(store,'MAX_EVENT_BYTES',65536)
+        response=client.post(url,json=payload)
+        assert response.status_code==413 and 'storage limit' in response.text
+    with monkeypatch.context() as limits:
+        limits.setattr(store,'MAX_EVENTS',0)
+        assert client.post(url,json=payload).status_code==503
+    with psycopg.connect(isolated_url,autocommit=True) as conn:
+        assert conn.execute('SELECT count(*) FROM discovery.candidate_events').fetchone()==(0,)
+        assert conn.execute('SELECT count(*) FROM discovery.candidate_event_state').fetchone()==(0,)
+        with pytest.raises(ValueError,match='event_too_large'):
+            store.accept(conn,{'oversized':'x'*store.MAX_EVENT_BYTES})
+    assert client.post(url,json=payload).status_code==202
+    with monkeypatch.context() as limits:
+        limits.setattr(store,'MAX_EVENTS',1)
+        assert client.post(url,json=payload).json()['duplicate']
+        assert client.post(url,json=batch_payload(config,50)).status_code==503
+
+
+def test_decimal_overflow_is_durable_private_422(columns_receiver,isolated_url,capsys):
+    client,url,config=columns_receiver
+    payload=batch_payload(config,1)
+    payload['columns'][0]['AVG_VOLUME20']='1e-1000000'
+    response=client.post(url,json=payload)
+    assert response.status_code==422 and response.json()['detail']=='invalid_enrichment_number'
+    with psycopg.connect(isolated_url,autocommit=True) as conn:
+        assert conn.execute('SELECT reason FROM discovery.candidate_rejections').fetchone()==('invalid_enrichment_number',)
+        assert conn.execute('SELECT count(*) FROM discovery.candidate_events').fetchone()==(0,)
+    assert client.get('/candidate-health').status_code==401
+    record=client.get('/candidate-health',headers={'Authorization':'Bearer '+'p'*40}).json()['rejection_diagnostics']['records'][0]
+    assert record['reason']=='invalid_enrichment_number'
+    assert record['shape']['fields']['columns']['sampled_shapes'][0]['fields']['AVG_VOLUME20']['type']=='string'
+    for value in ('1e-1000000','SYN000','REDACTED','w'*40):assert value not in json.dumps(record)
+    assert capsys.readouterr().out==''

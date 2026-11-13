@@ -65,3 +65,26 @@ def test_malformed_candidate_columns_fail_closed(change):
 def test_near_test_templates_cannot_bypass_validation(change):
     p=provider_payload();change(p)
     with pytest.raises(ValueError):normalize(p,scanner(),NOW)
+
+
+@pytest.mark.parametrize('field',['AVG_VOLUME20','PREV20_HIGH','close','ema30'])
+@pytest.mark.parametrize('value',['1e-1000000','0e1000000','1e-29','1.1234567890123456789012345678'])
+def test_decimal_bounds_cover_all_derived_denominators(field,value):
+    p=candidate_payload();p['columns'][0][field]=value
+    with pytest.raises(ValueError,match='^invalid_enrichment_number$'):
+        normalize(p,scanner(),NOW)
+
+
+def test_decimal_arithmetic_exception_is_sanitized():
+    from decimal import localcontext,Overflow
+    p=candidate_payload();p['columns'][0]['AVG_VOLUME20']='1e-28'
+    with localcontext() as context:
+        context.Emax=20;context.traps[Overflow]=True
+        with pytest.raises(ValueError,match='^invalid_enrichment_number$'):
+            normalize(p,scanner(),NOW)
+
+
+def test_bounded_decimal_extremes_compute_finite_metrics():
+    p=candidate_payload();p['columns'][0]['AVG_VOLUME20']='1e-28'
+    e=normalize(p,scanner(),NOW)
+    assert e['enrichment']['SYN095']['metrics']['relative_volume']=='1.00E+30'

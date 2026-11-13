@@ -145,3 +145,27 @@ resume a stale copy to make an old worker appear healthy. If consumer code itsel
 must be rolled back, stop it and report the blocked cursor; preserve the backlog
 until a compatible consumer is restored. There is no database/schema rollback.
 Production volumes, credentials and exact webhook URL stay unchanged.
+
+
+### PR #49 P2 follow-up — bounded envelopes and decimal arithmetic
+
+The HTTP body remains limited to 65,536 bytes. Expanded normalized envelopes
+have a separate 1,048,576-byte serialized JSON limit, checked before database
+writes; the inbox still holds at most 10,000 events. This bounds serialized
+envelope retention to approximately 9.77 GiB (database/index overhead additional).
+Storage overflow returns HTTP 413; a full inbox returns HTTP 503. Duplicates at
+inbox capacity remain replayable. Neither failure inserts partial event/state rows.
+
+Enrichment numbers allow at most 28 coefficient digits and decimal exponents
+from -28 through 12, in addition to existing per-field value ranges. Excess
+precision/exponents and any DecimalException during conversion, comparison or
+derived arithmetic become `invalid_enrichment_number` (HTTP 422 with a durable
+hash/reason rejection and opt-in structure-only diagnostics). All four derived
+metrics share this boundary, including CSV and synthetic enrichment callers.
+No raw value is included in the error. Trigger prices have no derived arithmetic.
+
+Regression coverage includes real PostgreSQL/HTTP batches of 35, 40, 50 and
+150 candidates, oversized 500-row transport, bounded storage/full-inbox failures,
+replay at capacity, authenticated feed, materialization and decimal rejection
+privacy. Batch values remain invented software fixtures, not live-market evidence.
+The existing deployment/rollback procedure applies; no migration or grant change.

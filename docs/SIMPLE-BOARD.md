@@ -368,3 +368,8 @@ writes), opt-in private shape diagnostics and HTTP/DB/feed regressions prepared
 in PR #49, separate from STK-099. Genuine alert compatibility/deployment remain
 unverified; compatible consumers must precede receiver rollout. No production
 change. [Evidence and gated deployment/rollback](STK-095-webhook-rejection.md).
+
+13 November — **STK-095 / D3-03 + D3-04 + D3-09**, PR #49 P2 follow-up:
+separate bounded transport/storage capacities and guard all enrichment decimal
+arithmetic. Added batch/capacity and private durable rejection regressions.
+No production changes; exact-commit CI evidence is tracked on PR #49.
