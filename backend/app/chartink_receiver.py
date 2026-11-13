@@ -6,7 +6,6 @@ Public deployment/TLS is a separate owner-authorized operation.
 import asyncio
 import hashlib
 import hmac
-import json
 import os
 from datetime import datetime, timezone
 from pathlib import Path
@@ -17,6 +16,8 @@ from stock_discovery_analysis.chartink import Scanner, normalize, MAX_BYTES
 from stock_discovery_analysis import candidate_store as store
 from .research import db
 from .security import LoginLimiter
+from . import chartink_diagnostics
+from stock_discovery_analysis.chartink_diagnostics import decode_payload
 
 app=FastAPI(title='Candidate receiver',docs_url=None,redoc_url=None,openapi_url=None)
 limiter=LoginLimiter()
@@ -43,13 +44,15 @@ def ingest(conn, body):
     try:
         scanner=Scanner.model_validate_json(Path(os.environ['CHARTINK_SCANNER_CONFIG']).read_text())
     except (KeyError,OSError,ValueError):raise HTTPException(503,'Scanner configuration unavailable') from None
+    payload=None
     try:
-        payload=json.loads(body)
+        payload=decode_payload(body)
         envelope=normalize(payload,scanner,datetime.now(timezone.utc))
-    except (ValueError,UnicodeError) as exc:
+    except (ValueError,UnicodeError,RecursionError) as exc:
         code=str(exc) if str(exc) in {'invalid_payload_fields','invalid_payload_values','scanner_identity_mismatch',
             'invalid_symbol','invalid_symbol_price_count','invalid_trigger_price','invalid_trigger_time',
-            'scanner_authorization_expired','timezone_required'} else 'invalid_json'
+            'scanner_authorization_expired','timezone_required','duplicate_payload_field'} else 'invalid_json'
+        chartink_diagnostics.record(payload,code)
         store.reject(conn,hashlib.sha256(body).hexdigest(),code)
         raise HTTPException(422,code) from None
     try:return store.accept(conn,envelope)
@@ -115,4 +118,5 @@ def operational_health(after:int=Query(0,ge=0),conn=Depends(db)):
     return dict(database='available',stored_events=count,capacity=store.MAX_EVENTS,
         high_water=high,events_after_cursor=lag,oldest_unpulled_at=oldest,
         last_receipt_at=last,rejection_records=rejected,
-        coverage='unknown_partial_alerts',cursor_ahead=after>high)
+        coverage='unknown_partial_alerts',cursor_ahead=after>high,
+        rejection_diagnostics=chartink_diagnostics.read())
