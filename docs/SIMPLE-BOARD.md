@@ -430,3 +430,12 @@ candidate/research materialization. Local validation: 1,160 application/worker,
 37 script and 14 PostgreSQL/HTTPS checks pass, including two-database replay and
 cursor continuity. Exact-head CI and production Test acceptance remain pending;
 provider Test data never establishes genuine-alert or real-market readiness.
+
+13 November — **STK-094 / D3-03 + D3-05 + D3-09**, stored candidate swing review:
+connect existing identity/Upstox descriptive-price validation to current price-check
+ranking within a bounded UI page. Missing/stale/delayed inputs stay unranked;
+volume and complete strategy signals remain unavailable. 1,168 unit, 12 disposable
+PostgreSQL/API and two browser checks plus frontend build pass. Production read-only
+check: three provider Tests, cursor/high-water 3, no genuine alert yet. STK-095 Test
+acceptance remains passed; no production changes. Owner review/CI pending.
+[Slice, limits and next price-refresh integration](STK-094-candidate-swing-review.md).

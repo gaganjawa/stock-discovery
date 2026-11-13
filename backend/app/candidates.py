@@ -25,6 +25,16 @@ def candidates(response:Response,session:date|None=None,scanner:str|None=Query(N
     return result
 
 
+@router.get('/swing-review')
+def swing_review(response:Response,session:date|None=None,scanner:str|None=Query(None,max_length=64),
+                 limit:int=Query(20,ge=1,le=20),offset:int=Query(0,ge=0,le=5000000),conn=Depends(db)):
+    from stock_discovery_analysis.candidate_swing import page
+    response.headers['Cache-Control']='no-store'
+    try:config=view_config()
+    except HTTPException:config=None
+    return page(conn,config,store.rows(conn,session=session,scanner_key=scanner,limit=limit,offset=offset))
+
+
 @router.post('/{candidate_id}/retry',status_code=202)
 def retry(candidate_id:str,response:Response,conn=Depends(db)):
     response.headers['Cache-Control']='no-store'
