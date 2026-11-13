@@ -58,7 +58,8 @@ def test_rejection_shape_is_private_and_original_format_commits_and_replays(isol
     finally:app.dependency_overrides.clear()
 
 
-def test_observed_provider_test_and_columns_delivery_persistence_feed_and_worker(isolated_url,tmp_path,monkeypatch):
+@pytest.mark.parametrize('triggered_at',['11:45 am','7:43 pm','12:00 am'])
+def test_observed_provider_test_and_columns_delivery_persistence_feed_and_worker(isolated_url,tmp_path,monkeypatch,triggered_at):
     from test_chartink_columns import provider_payload,candidate_payload
     from stock_discovery_analysis import candidate_store as store
     from stock_discovery_analysis.chartink import normalize
@@ -79,13 +80,19 @@ def test_observed_provider_test_and_columns_delivery_persistence_feed_and_worker
     try:
         client=TestClient(app);url='/hooks/chartink/'+'w'*40
         probe=identity(provider_payload())
+        probe['triggered_at']=triggered_at
         response=client.post(url,json=probe)
         assert response.status_code==202 and response.json()['delivery_kind']=='provider_test'
         assert client.post(url,json=probe).json()['duplicate']
+        invalid={**probe,'triggered_at':'13:43 pm'}
+        rejected=client.post(url,json=invalid)
+        assert rejected.status_code==422 and rejected.json()['detail']=='invalid_provider_test_payload'
         headers={'Authorization':'Bearer '+'p'*40}
         health=client.get('/candidate-health',headers=headers).json()
         assert health['provider_test_events']==1 and health['candidate_delivery_events']==0
         with psycopg.connect(isolated_url,autocommit=True) as conn:
+            assert conn.execute('SELECT deliveries FROM discovery.candidate_event_state').fetchone()==(2,)
+            assert conn.execute('SELECT reason FROM discovery.candidate_rejections').fetchone()==('invalid_provider_test_payload',)
             assert store.materialize_one(conn)
             for table in ('candidate_sessions','candidates','candidate_matches','candidate_research_runs'):
                 assert conn.execute('SELECT count(*) FROM discovery.'+table).fetchone()==(0,)

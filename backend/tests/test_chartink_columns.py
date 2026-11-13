@@ -19,8 +19,10 @@ def candidate_payload():
     return p
 
 
-def test_observed_provider_test_is_not_candidate_evidence():
+@pytest.mark.parametrize('triggered_at',['11:45 am','7:43 pm','1:00 am','12:00 am','12:59 pm','11:59 pm'])
+def test_observed_provider_test_is_not_candidate_evidence(triggered_at):
     p=provider_payload();s=scanner().model_copy(update={'mode':'provider_alert'})
+    p['triggered_at']=triggered_at
     e=normalize(p,s,NOW)
     assert e['version']=='chartink-provider-test-v1' and e['symbols']==[]
     assert e['delivery_kind']=='provider_test' and 'enrichment' not in e
@@ -28,6 +30,14 @@ def test_observed_provider_test_is_not_candidate_evidence():
     assert 'webhook_url' not in e['payload'] and 'REDACTED' not in json.dumps(e)
     assert normalize(e['payload'],s,NOW)==e
     assert normalize(p,s,NOW.replace(minute=1))['event_id']==e['event_id']
+
+
+@pytest.mark.parametrize('triggered_at',['','00:43 pm','13:43 pm','7:60 pm','07:43 pm',
+    '7:43 PM','7:43 pm\n','2026-11-13 7:43 pm','7:43 pm extra'])
+def test_provider_test_rejects_malformed_trigger_time(triggered_at):
+    p=provider_payload();p['triggered_at']=triggered_at
+    with pytest.raises(ValueError,match='^invalid_provider_test_payload$'):
+        normalize(p,scanner(),NOW)
 
 
 def test_columns_version_alignment_provenance_and_dedupe():

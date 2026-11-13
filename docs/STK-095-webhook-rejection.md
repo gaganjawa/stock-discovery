@@ -55,7 +55,7 @@ original column provenance. Event hashes include the columns, exclude webhook_ur
 and preserve existing same-session replay deduplication. The original six-field
 `chartink-event-v1` and synthetic fixture extension remain compatible.
 
-Only the **exact observed provider test template**, after scanner identity and
+Only the **observed provider test template**, after scanner identity and
 expiry checks, emits `chartink-provider-test-v1` with delivery_kind=provider_test,
 empty symbols and provider_test_not_market_delivery completeness. The immutable
 receipt uses the existing inbox and authenticated feed. Materialization marks it
@@ -64,6 +64,21 @@ Near-matches cannot bypass normal validation. HTTP 202 reports delivery_kind;
 health separately counts provider_test_events and candidate_delivery_events.
 Stored event/high-water counts include test receipts for correct cursor recovery;
 they do not prove genuine market delivery.
+
+The owner captured a second provider Test on 13 November with `triggered_at`
+`7:43 pm`; the earlier capture used `11:45 am`. This clock is variable, so Test
+recognition validates the same bounded 12-hour time grammar as real alerts.
+The three placeholder symbols, prices, exact column keys, numeric values and
+types remain required. Malformed times and near-matches remain rejected.
+This change must reach the consumer before the receiver because replay
+revalidates the stored envelope with the same adapter. No schema change or
+cursor reset is required. It does not establish genuine-alert acceptance.
+
+Release configuration must copy all three identity fields from the verified
+provider payload. In the owner's observed payload, `alert_name` includes the
+`Alert for ` prefix; the alert dashboard display name is not a substitute.
+Correcting that label preserves the scanner key, version, rules, receiver URL,
+credentials and cursor; it does not remove strict equality checks.
 
 ## Privacy-safe diagnostics
 
