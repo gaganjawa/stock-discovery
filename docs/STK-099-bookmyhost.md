@@ -146,6 +146,89 @@ A schema downgrade must fail atomically if retained rows exceed the old bound.
 For application recovery restore verified current backups into new isolated targets
 first; never resume a stale Mac copy. Keep the established volume and cursor history.
 
+### Executable operator steps for the authorized window
+
+Keep this runbook and all reviewed files in the immutable release directory.
+Resolve these values from the approved deployment record before executing commands;
+source identities must come from that independent record, not from the manifest.
+Prepare images, private configuration ownership, roles and grant files using the
+reviewed release's existing preparation tools. Verify the frozen export and
+watchlist hashes and retain the pre-migration backup manifests.
+
+```sh
+# Set absolute, persistent paths and exact reviewed values in the operator shell.
+: "${RELEASE_DIR:?reviewed checkout}" "${COMPOSE_ENV:?approved persistent env file}"
+: "${BASE_COMPOSE:?existing receiver compose file}" "${DB_CONTAINER:?existing container}"
+: "${BACKUP_DIR:?private persistent backup directory}"
+: "${APP_SOURCE_CLUSTER:?independently verified Mac source cluster}"
+: "${INBOX_SOURCE_CLUSTER:?independently verified inbox cluster}"
+: "${APP_OWNER_URL_FILE:?existing app owner URL secret file}"
+cd "$RELEASE_DIR"
+dc() {
+  docker compose --env-file "$COMPOSE_ENV" -p stock-discovery-chartink \
+    -f "$BASE_COMPOSE" -f "$RELEASE_DIR/deploy/bookmyhost/compose.yaml" \
+    --profile receiver "$@"
+}
+dc config --quiet
+# After separately approved write freeze, use fresh filenames; never overwrite.
+# Obtain both dumps with stk099_transfer.py backup --expected-cluster SOURCE_ID.
+# Run these restores on the isolated rehearsal cluster/container, never a live target.
+: "${ISOLATED_DB_CONTAINER:?isolated restore container}"
+python3 scripts/stk099_transfer.py restore --container "$ISOLATED_DB_CONTAINER" \
+  --owner chartink_owner --database stk099_app_restore --restore-owner stk_app_owner \
+  --dump "$BACKUP_DIR/app.dump" --expected-source-database stk_real001_private \
+  --expected-source-cluster "$APP_SOURCE_CLUSTER"
+python3 scripts/stk099_transfer.py restore --container "$ISOLATED_DB_CONTAINER" \
+  --owner chartink_owner --database stk099_inbox_restore --restore-owner chartink_owner \
+  --dump "$BACKUP_DIR/inbox.dump" --expected-source-database chartink_inbox \
+  --expected-source-cluster "$INBOX_SOURCE_CLUSTER"
+```
+
+Verify fingerprints immediately after restore, before migration changes the
+schema/version fingerprint. Rehearse `alembic upgrade 0017` against both isolated
+copies using their isolated owner URL files. Verify old rows, sequences and cursors
+separately after migration; do not compare a schema-0016 full fingerprint unchanged
+against schema 0017. Restore checks must include encrypted off-server copies.
+
+Only after the preceding evidence and explicit owner production authorization:
+
+```sh
+# Keep the existing receiver image; quiesce its writes during migration.
+# The existing migrate service uses the inbox owner secret.
+dc run --rm --no-deps migrate python -m alembic -c /app/backend/alembic.ini upgrade 0017
+dc run --rm --no-deps -v "$APP_OWNER_URL_FILE:/run/app-migration-url:ro" \
+  -e DATABASE_URL_FILE=/run/app-migration-url migrate \
+  python -m alembic -c /app/backend/alembic.ini upgrade 0017
+for target in chartink_inbox stk_real001_private; do
+  docker exec "$DB_CONTAINER" psql -X -U chartink_owner -d "$target" \
+    -v ON_ERROR_STOP=1 -c "SELECT current_database(),version_num FROM alembic_version" \
+    -c "SELECT convalidated,pg_get_constraintdef(oid) FROM pg_constraint WHERE conrelid='discovery.candidate_events'::regclass AND conname='candidate_events_envelope_check'"
+done
+```
+
+Require 0017 and the validated 1048576-byte CHECK in both results. Verify existing
+row/sequence/cursor fingerprints, apply reviewed database-specific least-privilege
+grants and test them before continuing. The existing receiver must be running and
+healthy on its recorded old image. Resume only that existing image if it was
+quiesced; do not recreate it from the new Compose image definition yet.
+
+```sh
+# Confirm one consumer; the previous Mac consumer must already be quiesced.
+dc up -d --no-deps --no-build --wait api
+dc up -d --no-deps --no-build --wait worker
+# STOP HERE to verify old-v1 replay, committed cursor and worker health.
+# Then activate the reviewed receiver image last.
+dc up -d --no-deps --no-build --wait receiver
+dc up -d --no-deps --no-build --wait web proxy
+```
+
+Record old/new image IDs and configuration hashes privately. Receiver rollback
+uses its recorded old image with the same receiver-only `--no-deps` operation;
+retain schema 0017 and the compatible consumer. Restore recovery always begins
+on new isolated targets with explicit source expectations and fingerprint checks.
+Do not drop/overwrite production targets or resume stale Mac state. Any switch
+from restored copies needs a separately reviewed owner-authorized recovery plan.
+
 ## Monitoring and rollback
 
 Use existing host monitoring to inspect `dc ps`, Docker health/OOM/restart counts,

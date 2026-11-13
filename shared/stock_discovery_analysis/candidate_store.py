@@ -5,14 +5,19 @@ No network or model clients live here. A crash rolls the claim back for replay.
 """
 from datetime import datetime, timezone
 from psycopg.types.json import Jsonb
-from .chartink import digest, MAX_BYTES
-import json
+from .chartink import digest
 
 MAX_EVENTS = 10000
+# Separate from the 64 KiB transport cap: typed enrichment expands each row.
+# Combined with MAX_EVENTS this bounds retained serialized envelope data.
+MAX_EVENT_BYTES = 1024 * 1024
 
 
 def accept(conn, envelope):
-    if len(json.dumps(envelope).encode())>MAX_BYTES: raise ValueError('event_too_large')
+    # Use the exact jsonb text representation checked by migration 0017. Python
+    # JSON differs for Unicode escapes, numeric exponents and object formatting.
+    size=conn.execute('SELECT octet_length(%s::jsonb::text)',(Jsonb(envelope),)).fetchone()[0]
+    if size>MAX_EVENT_BYTES: raise ValueError('event_too_large')
     with conn.transaction():
         # Also serializes feed sequence assignment/commit, avoiding cursor gaps.
         conn.execute("SELECT pg_advisory_xact_lock(94001)")
@@ -75,6 +80,11 @@ def materialize_one(conn):
         eid,e=row
         try:
             with conn.transaction():
+                if e.get('version')=='chartink-provider-test-v1':
+                    if e.get('delivery_kind')!='provider_test' or e['symbols']:
+                        raise ValueError('invalid_provider_test_envelope')
+                    conn.execute("UPDATE discovery.candidate_event_state SET status='completed',error_code=NULL WHERE event_id=%s",(eid,))
+                    return eid  # Never create a session, candidate, match or research run.
                 conn.execute('''INSERT INTO discovery.candidate_sessions VALUES (%s,%s,%s)
                   ON CONFLICT(scanner_key,session_date) DO UPDATE SET completeness=CASE
                     WHEN excluded.completeness='partial_unverified' THEN candidate_sessions.completeness ELSE excluded.completeness END''',

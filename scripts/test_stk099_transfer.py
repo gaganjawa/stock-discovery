@@ -52,3 +52,19 @@ class TransferGuards(unittest.TestCase):
             db=DB();db.exists=True
             with self.assertRaisesRegex(RuntimeError,'exists'):restore(db,dump,manifest,'owner',**args)
             self.assertEqual(len(db.calls),1)
+
+    def test_backup_supports_only_reviewed_pre_and_post_migration_schemas(self):
+        from stk099_transfer import backup
+        class DB:
+            name='synthetic';owner='synthetic'
+            def __init__(self,revision):self.revision=revision
+            def sql(self,*args):return 'synthetic-cluster'
+            def snapshot(self):return {'revision':self.revision,'tables':{},'sequences':{}}
+            def run(self,args,stdout):stdout.write(b'synthetic-dump')
+        with tempfile.TemporaryDirectory() as tmp:
+            for revision in ('0016','0017'):
+                manifest=backup(DB(revision),Path(tmp)/revision,'synthetic-cluster')
+                self.assertEqual(manifest['snapshot']['revision'],revision)
+            for revision in ('0015','0018'):
+                with self.assertRaisesRegex(ValueError,'supported_schema'):
+                    backup(DB(revision),Path(tmp)/revision,'synthetic-cluster')

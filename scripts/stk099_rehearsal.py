@@ -41,7 +41,7 @@ def run(directory,context):
                webhook='w'*40,pull='p'*40,owner_access='o'*40)
     for name,value in files.items():(secrets/name).write_text(value)
     scanner=Scanner(scan_name='Synthetic EOD',scan_url='synthetic-eod',alert_name='Synthetic',version='1',
-                    rules='Isolated STK-099 fixture only',rights_reference='SYNTHETIC',enabled_until='2028-01-01T00:00:00Z',mode='synthetic_fixture')
+                    rules='Isolated STK-099 fixture only',rights_reference='SYNTHETIC',enabled_until='2028-01-01T00:00:00Z',mode='provider_alert')
     (secrets/'scanner.json').write_text(scanner.model_dump_json())
     # Minimal stored-only view: no grants, policy or provider credentials.
     view=ViewConfig(sources=dict(grant_file='/run/private/grants.json',retention_days=30),listing_ids=('NSE:SYN097',))
@@ -110,6 +110,12 @@ def run(directory,context):
         payload=dict(stocks='SYN097',trigger_prices='100',triggered_at='6:00 pm',scan_name=scanner.scan_name,scan_url=scanner.scan_url,alert_name=scanner.alert_name)
         status,_=request('/hooks/chartink/'+'w'*40,payload,{'Content-Type':'application/json'});assert status==202
         assert db.sql('SELECT count(*) FROM discovery.candidate_events')=='1'
+        # New provider-test format must never materialize candidates/research.
+        probe_payload=json.loads((ROOT/'backend/tests/fixtures/chartink_provider_test_v1.json').read_text())
+        probe_payload.update({k:getattr(scanner,k) for k in ('scan_name','scan_url','alert_name')})
+        status,receipt=request('/hooks/chartink/'+'w'*40,probe_payload,{'Content-Type':'application/json'})
+        assert status==202 and json.loads(receipt)['delivery_kind']=='provider_test'
+        assert json.loads(request('/hooks/chartink/'+'w'*40,probe_payload,{'Content-Type':'application/json'})[1])['duplicate']
         dc('up','-d','--no-deps','worker')
         appdb=Database(container,'chartink_owner','stk_real001_private',context)
         def wait_rows(n):
@@ -118,6 +124,8 @@ def run(directory,context):
                 time.sleep(.3)
             raise AssertionError('worker_timeout')
         wait_rows(1)
+        assert appdb.sql('SELECT version_num FROM alembic_version')=='0017'
+        assert db.sql('SELECT version_num FROM alembic_version')=='0017'
         assert json.loads(request('/hooks/chartink/'+'w'*40,payload,{'Content-Type':'application/json'})[1])['duplicate']
         if os.getenv('STK099_STACK_BROWSER')=='1':
             subprocess.run(['node',str(ROOT/'scripts/stk099_hosted_browser.cjs')],check=True,timeout=90,
@@ -125,14 +133,23 @@ def run(directory,context):
                      'STK_PLAYWRIGHT':str(ROOT/'frontend/node_modules/@playwright/test')})
         ids=dc('ps','-q').decode().split()
         samples=[]
-        for index in range(10):
-            data={**payload,'stocks':','.join(f'SYN{index:02d}{j:02d}' for j in range(10)),'trigger_prices':','.join(['100']*10)}
+        for index,count in enumerate((35,40,50,150)):
+            symbols=[f'SYN{index:02d}{j:03d}' for j in range(count)]
+            row={k:100 for k in probe_payload['columns'][0]}
+            row.update(sector='Synthetic',industry='Invented',marketcapname='Test',rsi14=60)
+            data={**payload,'stocks':','.join(symbols),'trigger_prices':','.join(['100']*count),
+                  'columns':[{**row,'symbol':symbol} for symbol in symbols]}
+            assert len(json.dumps(data).encode())<65536
             assert request('/hooks/chartink/'+'w'*40,data,{'Content-Type':'application/json'})[0]==202
             samples.append(subprocess.check_output(docker+['stats','--no-stream','--format','{{json .}}',*ids],text=True))
-        wait_rows(101)
-        assert appdb.sql("SELECT count(*) FROM discovery.candidate_research_runs WHERE result->'reasons' = '[\"nse_identity_missing_or_ambiguous\"]'::jsonb")=='101'
-        dc('restart','worker');wait_rows(101)
-        assert appdb.sql('SELECT count(*) FROM discovery.candidate_research_runs')=='101'
+        wait_rows(276)
+        assert appdb.sql("SELECT count(*) FROM discovery.candidate_research_runs WHERE result->'reasons' = '[\"nse_identity_missing_or_ambiguous\"]'::jsonb")=='276'
+        cursor_before=appdb.sql('SELECT receiver_id,cursor FROM discovery.candidate_receivers ORDER BY 1')
+        dc('restart','worker');wait_rows(276)
+        assert appdb.sql('SELECT receiver_id,cursor FROM discovery.candidate_receivers ORDER BY 1')==cursor_before
+        assert appdb.sql("SELECT count(*) FROM discovery.candidate_events WHERE envelope->>'version'='chartink-provider-test-v1'")=='1'
+        assert appdb.sql('SELECT count(*) FROM discovery.candidate_matches')=='276'
+        assert appdb.sql('SELECT count(*) FROM discovery.candidate_research_runs')=='276'
         inspect=json.loads(subprocess.check_output(docker+['inspect',*ids]))
         for item in inspect:
             assert not item['State']['OOMKilled']
@@ -157,9 +174,9 @@ def run(directory,context):
         restored=Database(container,'chartink_owner','stk099_restore_check',context)
         restore(restored,dump,manifest,'stk_app_owner', expected_source=appdb.name,
                 expected_source_cluster=db.sql('SELECT system_identifier FROM pg_control_system()'))
-        assert db.sql('SELECT count(*) FROM discovery.candidate_events')=='11'
+        assert db.sql('SELECT count(*) FROM discovery.candidate_events')=='6'
         result=dict(synthetic_only=True,project=project,startup_seconds=round(startup_seconds,2),
-                    research_probe=probe,research_path='stored_identity_lookup_no_evidence',candidates=101,events=11,duplicate_deduplicated=True,worker_restart=True,
+                    research_probe=probe,research_path='stored_identity_lookup_no_evidence',candidates=276,events=6,provider_test_isolated=True,large_batches=[35,40,50,150],duplicate_deduplicated=True,worker_restart=True,
                     authenticated_https=True,network_isolation=True,restore_all_tables_and_sequences=True,
                     browser_verified=os.getenv('STK099_STACK_BROWSER')=='1',
                     resource_samples=[json.loads(line) for sample in samples for line in sample.splitlines()],

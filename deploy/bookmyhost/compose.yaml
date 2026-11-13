@@ -56,7 +56,7 @@ services:
     logging: *logs
     depends_on: {database: {condition: service_healthy}}
     healthcheck:
-      test: [CMD, python, -c, "import urllib.request; from stock_discovery_analysis.runtime import setting; import psycopg; c=psycopg.connect(setting('DATABASE_URL'),connect_timeout=3); assert c.execute('SELECT version_num FROM alembic_version').fetchall()==[('0016',)]; urllib.request.urlopen('http://127.0.0.1:8000/healthz',timeout=3)"]
+      test: [CMD, python, -c, "import urllib.request; from stock_discovery_analysis.runtime import setting; import psycopg; c=psycopg.connect(setting('DATABASE_URL'),connect_timeout=3); assert c.execute('SELECT version_num FROM alembic_version').fetchall()==[('0017',)]; urllib.request.urlopen('http://127.0.0.1:8000/healthz',timeout=3)"]
       interval: 30s
       timeout: 8s
       retries: 3

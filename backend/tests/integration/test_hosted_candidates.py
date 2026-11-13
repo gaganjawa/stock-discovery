@@ -241,3 +241,50 @@ def test_hosted_research_executes_evidence_and_permission_paths(isolated_url,tmp
         assert analyze(conn,config,'ABSENT','2026-11-12',clock=lambda:NOW)['reasons']==['nse_identity_missing_or_ambiguous']
         assert result['acquisition']['provider_requests']==result['acquisition']['model_requests']==0
         conn.execute('RESET ROLE');conn.execute('ROLLBACK')
+
+
+def test_columns_provider_test_interrupted_bridge_and_old_receiver_replay(tmp_path,monkeypatch):
+    """STK-095/STK-099: two databases, same cursor, mixed envelope generations."""
+    from test_chartink_columns import provider_payload
+    from test_chartink_rejection_diagnostics import batch_payload
+    from psycopg.types.json import Jsonb
+    config=scanner().model_copy(update={'mode':'provider_alert'})
+    path=tmp_path/'scanner';path.write_text(config.model_dump_json())
+    monkeypatch.setenv('CHARTINK_SCANNER_CONFIG',str(path))
+    identity='https://synthetic.invalid'
+    with contextmanager(isolated_url.__wrapped__)() as remote,contextmanager(isolated_url.__wrapped__)() as local:
+        with psycopg.connect(remote,autocommit=True) as source,psycopg.connect(local,autocommit=True) as dest:
+            probe=provider_payload();probe.update({k:getattr(config,k) for k in ('scan_name','scan_url','alert_name')})
+            test=normalize(probe,config,datetime.now(timezone.utc));store.accept(source,test)
+            assert bridge(dest,source,identity)==1
+            assert store.materialize_one(dest)==test['event_id']
+            for table in ('candidates','candidate_sessions','candidate_matches','candidate_research_runs'):
+                assert dest.execute('SELECT count(*) FROM discovery.'+table).fetchone()==(0,)
+            cursor=dest.execute('SELECT receiver_id,cursor FROM discovery.candidate_receivers').fetchone()
+            large=normalize(batch_payload(config,150),config,datetime.now(timezone.utc))
+            store.accept(source,large)
+            with pytest.raises(RuntimeError),dest.transaction():
+                assert bridge(dest,source,identity)==1
+                raise RuntimeError('simulated process loss before commit')
+            assert dest.execute('SELECT receiver_id,cursor FROM discovery.candidate_receivers').fetchone()==cursor
+            assert len(store.feed(dest)['events'])==1
+            assert bridge(dest,source,identity)==1
+            assert store.accept(source,large)['duplicate']
+            assert bridge(dest,source,identity)==0
+            assert store.materialize_one(dest)==large['event_id']
+            assert dest.execute('SELECT count(*) FROM discovery.candidates').fetchone()==(150,)
+            # Model an old receiver after image rollback: documented v1 receipt,
+            # no NOTIFY, schema 0017 retained. Existing compatible worker catches up.
+            payload=batch_payload(config,1);payload.pop('columns');payload['stocks']='ROLLBACK095'
+            old=normalize(payload,config,datetime.now(timezone.utc))
+            assert old['version']=='chartink-event-v1'
+            source.execute('INSERT INTO discovery.candidate_events(event_id,received_at,envelope) VALUES (%s,%s,%s)',
+                (old['event_id'],old['received_at'],Jsonb(old)))
+            source.execute('INSERT INTO discovery.candidate_event_state(event_id) VALUES (%s)',(old['event_id'],))
+            assert bridge(dest,source,identity)==1
+            assert store.materialize_one(dest)==old['event_id']
+            assert bridge(dest,source,identity)==0
+            assert dest.execute('SELECT count(*) FROM discovery.candidates').fetchone()==(151,)
+            assert dest.execute('SELECT receiver_id,cursor FROM discovery.candidate_receivers').fetchone()==(cursor[0],3)
+            assert source.execute('SELECT version_num FROM alembic_version').fetchone()==('0017',)
+            assert dest.execute('SELECT version_num FROM alembic_version').fetchone()==('0017',)

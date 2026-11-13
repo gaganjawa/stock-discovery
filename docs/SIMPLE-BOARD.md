@@ -378,3 +378,27 @@ readable configuration and actual evidence/permission paths; API paper operation
 and audited queue/governance writes receive specific grants with mutation guards.
 1,053 local unit checks pass; exact-head PostgreSQL/hosted/browser CI evidence is
 recorded in PR #48. Production remains unchanged; release gates remain open.
+13 November — **STK-095 / D3-03 + D3-04 + D3-09**, customized webhook rejection:
+owner-supplied provider Test webhook verifies the 14-column row-array shape.
+Versioned strict adapter, isolated test receipts (zero candidate/research/session
+writes), opt-in private shape diagnostics and HTTP/DB/feed regressions prepared
+in PR #49, separate from STK-099. Genuine alert compatibility/deployment remain
+unverified; compatible consumers must precede receiver rollout. No production
+change. [Evidence and gated deployment/rollback](STK-095-webhook-rejection.md).
+
+13 November — **STK-095 / D3-03 + D3-04 + D3-09**, PR #49 P2 follow-up:
+separate bounded transport/storage capacities and guard all enrichment decimal
+arithmetic. Added batch/capacity and private durable rejection regressions.
+No production changes; exact-commit CI evidence is tracked on PR #49.
+
+13 November — **STK-095 / D3-03 + D3-04 + D3-09**, PR #49 migration follow-up:
+add schema 0017 for bounded 1 MiB JSONB envelopes; Python checks identical PostgreSQL
+size semantics. Both receiver inbox and private import database require migration
+before activation. Preservation, exact boundaries and failed downgrade regressions
+added; replay pages stay within the worker response cap. No production changes.
+
+13 November — **STK-095 / D3-03 + D3-04 + D3-09**, PR #49 schema audit:
+classified all 20 PostgreSQL failures; corrected explicit API/worker compatibility,
+current-head assertions and historical fixture ancestry. Unknown schema versions
+remain blocked; receiver least-privilege expanded-event regressions added.
+Exact-head CI acceptance is tracked on PR #49; production remains untouched.
