@@ -1,6 +1,5 @@
 """STK-014/074/079: rehearse the retained REAL 0013 -> 0015 recovery on invented rows only."""
 import json
-import shutil
 from pathlib import Path
 
 import psycopg
@@ -9,7 +8,7 @@ from alembic import command
 from alembic.config import Config
 from psycopg.types.json import Jsonb
 
-from test_migration_reconciliation import migration_database as _migration_database, snapshot, ROOT, URL
+from test_migration_reconciliation import migration_database as _migration_database, snapshot, ROOT, URL, legacy_0013_config
 from test_adjusted_research_storage import EARLIER
 from test_real_market import grant, NOW
 from stock_discovery_analysis.real_views import company, ViewConfig
@@ -29,15 +28,7 @@ def migration_database(monkeypatch):
 
 
 def legacy_0013(tmp_path):
-    legacy = tmp_path / 'legacy'
-    shutil.copytree(ROOT / 'backend/migrations', legacy)
-    for name in ('0012_experiment_governance.py', '0014_reconcile_real_governance.py', '0015_grant_fences.py', '0016_candidates.py'):
-        (legacy / 'versions' / name).unlink()
-    for name in ('0012_real_shadow.py', '0013_pilot_maintenance_audit.py'):
-        path = legacy / 'versions' / name
-        path.write_text(path.read_text().replace("'real_0012'", "'0012'"))
-    old = Config(str(ROOT / 'backend/alembic.ini'))
-    old.set_main_option('script_location', str(legacy))
+    old = legacy_0013_config(tmp_path)
     command.upgrade(old, 'head')
 
 
@@ -98,7 +89,7 @@ def test_retained_0013_upgrade_restores_fenced_reads_without_rewriting(migration
             company(conn, config('disabled'), LISTING, clock=lambda: NOW)
         before = snapshot(conn)
         command.upgrade(Config(str(ROOT / 'backend/alembic.ini')), 'head')
-        assert conn.execute('SELECT version_num FROM alembic_version').fetchone() == ('0016',)
+        assert conn.execute('SELECT version_num FROM alembic_version').fetchone() == ('0017',)
         after = snapshot(conn)
         assert all(after[t] == rows for t, rows in before.items())
         assert conn.execute('SELECT kind,state,generation FROM discovery.grant_fences ORDER BY kind').fetchall() == [

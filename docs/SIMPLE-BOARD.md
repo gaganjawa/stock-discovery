@@ -379,3 +379,9 @@ add schema 0017 for bounded 1 MiB JSONB envelopes; Python checks identical Postg
 size semantics. Both receiver inbox and private import database require migration
 before activation. Preservation, exact boundaries and failed downgrade regressions
 added; replay pages stay within the worker response cap. No production changes.
+
+13 November — **STK-095 / D3-03 + D3-04 + D3-09**, PR #49 schema audit:
+classified all 20 PostgreSQL failures; corrected explicit API/worker compatibility,
+current-head assertions and historical fixture ancestry. Unknown schema versions
+remain blocked; receiver least-privilege expanded-event regressions added.
+Exact-head CI acceptance is tracked on PR #49; production remains untouched.

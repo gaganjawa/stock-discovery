@@ -199,3 +199,33 @@ Boundary regressions exercise 1 MiB minus one byte, exactly 1 MiB and one byte
 above, plus preservation across upgrade/repeat/downgrade/re-upgrade and an atomic
 failed downgrade with retained large rows. The full validator's intentional
 failure revision now descends from 0017. No production migration was performed.
+
+
+### Schema-0017 compatibility audit (CI run 43395208379)
+
+The complete failure log reports **20 failed, 584 passed**. All failures were:
+
+| Root cause | Tests affected | Count |
+| --- | --- | --- |
+| API schema classifier still accepted only 0015/0016, masking fenced-read 403 as migration 503 | daily-insight denial; direct authenticated read-fence denial | 2 |
+| Stored worker readiness still accepted only 0015/0016, preventing calendar/grant checks | readiness; seven calendar/rights cases; expiry warning; supervised cycle; unrelated grant; original grant expiry; due job | 13 |
+| Current-head assertions remained 0016 | clean and main-0012 reconciliation; grant-fence migration rollback | 3 |
+| Historical fixture copied 0017 but deleted its 0016 parent | retained REAL-0013 recovery; REAL-0013 reconciliation | 2 |
+
+API and worker now explicitly accept 0017 because it changes only the candidate
+CHECK bound, leaving research/read-fence tables and grants intact. Versions older
+than the supported fence schema and unknown future versions remain blocked. The
+stored-deployment manifest's required_schema=0015 is its unchanged minimum fence
+contract, not the latest Alembic head. The private launcher already recognizes
+0017; the migration rehearsal requires exactly 0017; audit metadata still names
+0015 as the minimum fence requirement. No other runtime schema allowlists were
+found in API, shared research, worker or deployment code.
+
+Historical fixtures now derive only the REAL-0013 ancestor graph and verify its
+sole head before applying it, so later migrations cannot leave dangling parents.
+Current-head assertions expect 0017; pre-0015 denial checks and historical row
+preservation assertions remain intact. Added unknown-schema readiness/API checks
+and expanded-envelope accept/replay/feed checks under the unchanged restricted
+receiver grants, including denial of private evidence and constraint removal.
+Migration 0016 and all production data remain unchanged. PR #48 must incorporate
+these API/worker compatibility changes along with 0017 before coordinated release.
