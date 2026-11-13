@@ -9,12 +9,12 @@ from .schedule_store import finish, fenced_row
 VERSION='candidate-price-refresh-v1'
 
 
-def enqueue(conn, config_hash, symbols, day, now, target_session=None):
+def enqueue(conn, config_hash, symbols, day, now, target_session=None, scanner_keys=()):
     ids=[]
     with conn.transaction():
         for symbol in sorted(set(symbols)):
             payload=dict(code_version=VERSION,schedule_hash=config_hash,symbol=symbol,
-                         refresh_day=day,target_session=target_session,scope_id=VERSION,mode='live_paper')
+                         refresh_day=day,target_session=target_session,scanner_keys=list(scanner_keys),scope_id=VERSION,mode='live_paper')
             jid=digest(payload)
             conn.execute('INSERT INTO discovery.occurrences VALUES (%s,%s) ON CONFLICT DO NOTHING',
                          (jid,Jsonb(dict(occurrence_id=jid,kind=VERSION,**payload))))

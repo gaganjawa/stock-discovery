@@ -246,3 +246,31 @@ def test_new_candidate_after_clock_never_triggers_early_acquisition(isolated_url
         result=run(conn,config,p,'2026-10-19T11:00:00Z')
         assert result['status']=='idle' and result['selection']['eligible_symbols']==0
         assert not p.requests
+
+
+def test_daily_refresh_uses_one_coherent_window_for_analysis(isolated_url,tmp_path):
+    with psycopg.connect(isolated_url,autocommit=True) as conn:
+        config,_=prepare(conn,tmp_path);p=Provider()
+        assert run(conn,config,p)['status']=='ingested'
+        later='2026-10-20T12:00:00Z'
+        assert run(conn,config,p,later)['status']=='ingested'
+        view=ViewConfig(sources=SourceConfig(grant_file=config.market.grant_file,retention_days=365),listing_ids=('NSE:INE009A01021',))
+        research=analyze(conn,view,'INFY',NOW[:10],clock=lambda:later)
+        assert research['status']=='completed',research['reasons']
+        assert research['market_data']['bars']==41
+
+
+def test_partial_refresh_cannot_reuse_superseded_complete_batch(isolated_url,tmp_path):
+    with psycopg.connect(isolated_url,autocommit=True) as conn:
+        config,_=prepare(conn,tmp_path);p=Provider()
+        assert run(conn,config,p)['status']=='ingested'
+        old=conn.execute('SELECT count(*) FROM discovery.revisions').fetchone()[0]
+        p.partial=True;later='2026-10-20T12:00:00Z'
+        assert run(conn,config,p,later)['status']=='partial'
+        view=ViewConfig(sources=SourceConfig(grant_file=config.market.grant_file,retention_days=365),listing_ids=('NSE:INE009A01021',))
+        r=analyze(conn,view,'INFY',NOW[:10],clock=lambda:later)
+        assert r['status']=='blocked' and r['reasons']==['price_batch_superseded_or_unavailable']
+        assert conn.execute('SELECT count(*) FROM discovery.revisions').fetchone()[0]>old
+        refresh=store.rows(conn)['rows'][0]['price_refresh']
+        assert refresh['status']=='retry_wait' and refresh['coverage']=='partial'
+        assert refresh['reason']=='readiness' and refresh['attempts']==1

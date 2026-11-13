@@ -12,6 +12,7 @@ await p.getByRole('button',{name:'Sign in',exact:true}).click();
 await p.getByRole('region',{name:'Research workbench',exact:true}).getByRole('button',{name:'Candidates',exact:true}).click();
 const c=p.getByRole('region',{name:'Scanner candidates'});
 await expect(c).toContainText('INFY');await expect(c).toContainText('41 bars');
+await expect(c.getByLabel('Price refresh for INFY')).toContainText('Price refresh: completed');
 await c.getByRole('checkbox',{name:'Review stored swing prices'}).check();
 const review=c.getByLabel('Swing price review for INFY');
 await expect(review).toContainText('Page research rank 1');

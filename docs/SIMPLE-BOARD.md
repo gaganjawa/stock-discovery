@@ -446,5 +446,9 @@ ledger and dated calendars. Durable jobs coalesce duplicate symbols, recover aft
 interruptions and atomically queue stored re-analysis after complete ingestion.
 1,177 unit, 47 affected PostgreSQL/API tests and a real refresh-to-ranked-UI browser
 flow pass using invented provider responses. No production activation or migration;
-ordinary genuine-alert acceptance remains pending. Owner-review PR follows.
+ordinary genuine-alert acceptance remains pending. PR #53 review reproduced and fixed
+second-day batch ambiguity without changing immutable history. Latest validation:
+1,177 unit and 80 affected PostgreSQL/API tests plus actual browser acceptance pass.
+Candidates now expose refresh state, retry/failure details and timestamps. Owner merge
+approval and new-head CI remain required before production activation.
 [Implementation, operation and recovery evidence](STK-014-candidate-price-refresh.md).

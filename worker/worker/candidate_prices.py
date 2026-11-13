@@ -80,7 +80,7 @@ def cycle(conn, config, *, clock=now, factory=Upstox, pause=time.sleep):
         known={symbol for symbol,status,result in prior if status!='completed'
                or target is None or (result or {}).get('latest_session','')>=target}
         jobs.enqueue(conn,key,[s for s in symbols if s not in known][:config.max_symbols],
-                     day.isoformat(),started,target_session=target)
+                     day.isoformat(),started,target_session=target,scanner_keys=config.scanner_keys)
         job=jobs.claim(conn,key,clock())
         if job is None:return dict(status='idle',provider_requests=0,selection=selection,queue=jobs.status(conn,key))
         calls=0
@@ -117,6 +117,7 @@ def cycle(conn, config, *, clock=now, factory=Upstox, pause=time.sleep):
             summary=dict(status='ingested' if complete else 'partial',symbol=job['payload']['symbol'],
                 candles=records[0]['candles'] if len(records)==1 else 0,
                 latest_session=records[0]['to_date'] if len(records)==1 else None,
+                price_stream_id=records[0].get('price_stream_id') if len(records)==1 else None,
                 missing_sessions=records[0]['missing_sessions'] if len(records)==1 else [],
                 provider_requests=calls,selection=selection,actionable=False)
             if not complete:

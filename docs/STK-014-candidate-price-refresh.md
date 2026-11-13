@@ -87,7 +87,29 @@ full swing qualification limits remain unchanged; refreshed descriptive price ch
 do not authorize BUY, publication or trading. Genuine ordinary-alert acceptance
 remains separate from these fictional test cases.
 
+## Review correction and operational visibility
+
+Review reproduced a P2 defect on the second daily refresh: an older retained bar
+outside the new complete response window caused `batch_identity_missing_or_ambiguous`.
+Completed refresh receipts now retain the ingested stream identity. Candidate
+analysis selects that one coherent response, while preserving all immutable history
+and the existing grant, provenance, calendar and freshness checks. A later partial
+batch cannot reuse superseded evidence: it reports
+`price_batch_superseded_or_unavailable` with no fabricated indicator values.
+
+The authenticated candidate response and UI expose the latest scoped refresh state,
+sanitized failure reason, attempt count, update/retry timestamps and partial coverage.
+Ranking remains page-scoped and descriptive; existing watchlist behavior is unchanged.
+
 ## Validation
+
+Review validation: 1,177 unit tests, 80 affected PostgreSQL/API tests (14 refresh and
+66 candidate/analysis/access-fence/market tests), and real Chromium refresh-to-ranked-UI
+acceptance passed. New regressions cover successive coherent windows and a partial
+response superseding the previous complete batch. All provider responses are synthetic;
+no production request, activation, migration or market-alert acceptance is implied.
+
+Original implementation validation:
 
 - 1,177 unit tests passed, including nine new configuration/error-classification cases.
 - 47 affected PostgreSQL/API tests passed, including 12 new refresh cases: duplicates,

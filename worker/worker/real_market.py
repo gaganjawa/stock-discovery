@@ -125,7 +125,7 @@ def ingest_prices(conn, config, *, clock=now, adapter_factory=Upstox):
             received={r.data.starts_at for r in records}
             gaps=[day for day,(opens,closes) in sessions.items() if start.isoformat()<=day<=end.isoformat() and opens not in received]
             reports.append(dict(**identity,listing_id=listing,from_date=start.isoformat(),to_date=end.isoformat(),
-                candles=len(records),missing_sessions=sorted(gaps),storage=stored))
+                candles=len(records),missing_sessions=sorted(gaps),storage=stored,price_stream_id=price_stream.stream_id))
         return dict(status='partial' if any(r['missing_sessions'] for r in reports) else 'ingested',
                     fetched_at=clock(),instruments=reports,actionable=False,mode='live_paper',
                     research_status='not_run',rights_audit=[d.model_dump() for d in audit])

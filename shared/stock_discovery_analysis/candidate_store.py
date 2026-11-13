@@ -160,6 +160,14 @@ def rows(conn, *, session=None, scanner_key=None, limit=100, offset=0):
           match_status='continuing_observed' if continuing else 'new_vs_previous_snapshot' if previous in ('verified_fixture_snapshot','verified_complete_snapshot') else 'new_observed_vs_previous_results' if previous else 'first_observed_unverified',
           comparison_basis='previous_represented_session_not_certified_previous_trading_session',
           scanner=envelope['scanner'],source_url=envelope['source_url'],timestamp_basis=envelope['timestamp_basis'],mode=envelope['mode']))
+        refresh=conn.execute("""SELECT status,error_code,updated_at,attempts,due_at,
+            result->>'status' FROM discovery.schedule_jobs
+            WHERE payload->>'code_version'='candidate-price-refresh-v1'
+            AND payload->>'symbol'=%s AND payload->'scanner_keys' ? %s
+            ORDER BY updated_at DESC,job_id LIMIT 1""",(symbol,key)).fetchone()
+        result[-1]['price_refresh']=(dict(status=refresh[0],reason=refresh[1],
+            updated_at=refresh[2].isoformat(),attempts=refresh[3],next_attempt_at=refresh[4].isoformat(),
+            coverage=refresh[5]) if refresh else None)
     count=conn.execute('SELECT count(*) FROM discovery.candidates WHERE session_date=%s AND (%s::text IS NULL OR scanner_key=%s)',(session,scanner_key,scanner_key)).fetchone()[0]
     return dict(rows=result,total=count,session_date=str(session) if session else None,
                 delivery_status='observed_partial_or_snapshot' if count else 'missing_delivery_not_verified_zero',
