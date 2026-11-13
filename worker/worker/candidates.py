@@ -32,7 +32,9 @@ def pull(conn, url):
         cursor=conn.execute('SELECT cursor FROM discovery.candidate_receivers WHERE receiver_id=%s FOR UPDATE',(receiver_id,)).fetchone()[0]
         secret=setting('CHARTINK_PULL_SECRET')
         if len(secret)<32:raise ValueError('pull_secret_required')
-        request=Request(url.rstrip('/')+'/candidate-feed?limit=25&after='+str(cursor),headers={'Authorization':'Bearer '+secret})
+        # One <=1 MiB envelope fits the existing bounded 2 MiB response reader.
+        # Twenty-five expanded events can exceed it and stall replay forever.
+        request=Request(url.rstrip('/')+'/candidate-feed?limit=1&after='+str(cursor),headers={'Authorization':'Bearer '+secret})
         with build_opener(NoRedirect()).open(request,timeout=15) as response:
             raw=response.read(2*1024*1024+1)
         if len(raw)>2*1024*1024:raise ValueError('receiver_response_too_large')

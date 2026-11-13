@@ -1,5 +1,5 @@
 """STK-095 synthetic enrichment contract; not a verified Chartink wire format."""
-from decimal import Decimal, InvalidOperation
+from decimal import Decimal, DecimalException
 import re
 
 FIELDS = ('stock_name','close','change_pct','volume','market_cap_category','sector',
@@ -13,6 +13,14 @@ ALIASES.update({re.sub('[^a-z0-9]','',k):k for k in FIELDS})
 
 
 def normalize_fields(row, *, atr_period=None):
+    # Every decimal conversion/comparison and derived metric shares this boundary.
+    try:
+        return _normalize_fields(row, atr_period=atr_period)
+    except DecimalException:
+        raise ValueError('invalid_enrichment_number') from None
+
+
+def _normalize_fields(row, *, atr_period=None):
     if not isinstance(row,dict): raise ValueError('invalid_enrichment')
     values={}; provenance={}
     for alias, raw in row.items():
@@ -26,8 +34,11 @@ def normalize_fields(row, *, atr_period=None):
         else:
             if isinstance(raw,bool) or not isinstance(raw,(str,int,float)) or len(str(raw))>32:
                 raise ValueError('invalid_enrichment_number')
-            try: number=Decimal(str(raw))
-            except InvalidOperation: raise ValueError('invalid_enrichment_number') from None
+            number=Decimal(str(raw))
+            if number.is_finite():
+                parts=number.as_tuple()
+                if len(parts.digits)>28 or not -28<=parts.exponent<=12:
+                    raise ValueError('invalid_enrichment_number')
             low=-100 if key=='change_pct' else 0
             high=100 if key=='rsi14' else 1000000000000
             if not number.is_finite() or not low<=number<=high:

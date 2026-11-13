@@ -102,6 +102,15 @@ def test_receiver_role_cannot_read_private_evidence(tmp_path):
                         c.execute(line.replace('chartink_receiver',role))
                 c.execute(sql.SQL('SET LOCAL ROLE {}').format(sql.Identifier(role)))
                 assert c.execute('SELECT count(*) FROM discovery.candidate_events').fetchone()==(0,)
+                # STK-095: expanded rows and exact JSONB size checks need no extra grants.
+                from test_chartink_rejection_diagnostics import batch_payload
+                e=normalize(batch_payload(scanner(),150),scanner(),datetime.now(timezone.utc))
+                assert not store.accept(c,e)['duplicate']
+                assert store.accept(c,e)['duplicate']
+                assert store.feed(c)['events'][0]['envelope']==e
+                assert c.execute('SELECT octet_length(envelope::text)>65536 FROM discovery.candidate_events').fetchone()==(True,)
+                with pytest.raises(psycopg.errors.InsufficientPrivilege):
+                    with c.transaction():c.execute('ALTER TABLE discovery.candidate_events DROP CONSTRAINT candidate_events_envelope_check')
                 with pytest.raises(psycopg.errors.InsufficientPrivilege):
                     with c.transaction():c.execute('SELECT * FROM discovery.revisions LIMIT 1')
                 with pytest.raises(psycopg.errors.InsufficientPrivilege):

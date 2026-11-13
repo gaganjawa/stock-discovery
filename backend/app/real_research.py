@@ -18,7 +18,9 @@ def schema_state():
             version=conn.execute('SELECT version_num FROM alembic_version').fetchone()[0]
     except Exception:
         return dict(state='unavailable')
-    return dict(state='current' if version in (REQUIRED_SCHEMA,'0016') else 'migration_required')
+    # 0016 adds candidate tables; 0017 only widens their bounded envelope CHECK.
+    # Neither changes the 0015 research/read-fence contract. Unknown heads block.
+    return dict(state='current' if version in (REQUIRED_SCHEMA,'0016','0017') else 'migration_required')
 
 
 def safe_code(error):

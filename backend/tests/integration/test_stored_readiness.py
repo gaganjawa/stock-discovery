@@ -213,3 +213,16 @@ def test_due_job_executes_before_later_unsupported_session_blocks_readiness(isol
         after=inspect(conn,s,v,clock=clock)
         assert after['status']=='BLOCKED'
         assert after['reasons']==['next_execution_opening_unverified']
+
+
+@pytest.mark.parametrize('version',['0014','0018'])
+def test_unreviewed_schema_still_blocks_readiness(isolated_url,tmp_path,version):
+    with psycopg.connect(isolated_url,autocommit=True) as conn:
+        s,v=setup_readiness(conn,tmp_path)
+        original=conn.execute('SELECT version_num FROM alembic_version').fetchone()[0]
+        try:
+            conn.execute('UPDATE alembic_version SET version_num=%s',(version,))
+            result=inspect(conn,s,v,clock=lambda:NOW)
+            assert result['status']=='BLOCKED' and not result['recurring_activation_safe']
+            assert 'database_schema_incompatible' in result['reasons']
+        finally:conn.execute('UPDATE alembic_version SET version_num=%s',(original,))

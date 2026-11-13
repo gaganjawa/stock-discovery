@@ -34,6 +34,7 @@ services:
       CHARTINK_WEBHOOK_SECRET_FILE: /run/secrets/webhook
       CHARTINK_PULL_SECRET_FILE: /run/secrets/pull
       CHARTINK_SCANNER_CONFIG: /run/secrets/scanner
+      CHARTINK_REJECTION_DIAGNOSTICS: ${CHARTINK_REJECTION_DIAGNOSTICS:-false}
     secrets: [receiver_url, webhook, pull, scanner]
     command: [uvicorn, app.chartink_receiver:app, --host, 0.0.0.0, --port, '8098', --no-access-log, --no-proxy-headers, --limit-concurrency, '20']
     read_only: true

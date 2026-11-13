@@ -202,7 +202,8 @@ def inspect(conn, schedule, view, *, clock=now, include_analysis=False):
         actionable=False, calendar=calendar, reasons=reasons, warnings=warnings)
     result['database'] = conn.execute('SELECT current_database()').fetchone()[0]
     result['schema'] = conn.execute('SELECT version_num FROM alembic_version').fetchone()[0]
-    if result['schema'] not in ('0015','0016'):
+    # Candidate-only revisions preserve the 0015 research and grant-fence contract.
+    if result['schema'] not in ('0015','0016','0017'):
         reasons.append('database_schema_incompatible')
     else:
         settled = [r[0] for r in conn.execute('''SELECT payload->>'information_cutoff_at'
