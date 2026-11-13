@@ -402,3 +402,22 @@ classified all 20 PostgreSQL failures; corrected explicit API/worker compatibili
 current-head assertions and historical fixture ancestry. Unknown schema versions
 remain blocked; receiver least-privilege expanded-event regressions added.
 Exact-head CI acceptance is tracked on PR #49; production remains untouched.
+
+STK-095 / D3-03 + D3-04 + D3-09 consumer release preparation (13 November): located
+and read-only verified the existing restricted Mac consumer credentials, original
+receiver/cursor identity (0), scanner and pull-secret parity. Added an inactive
+native supervisor with fail-closed rights/schema/grant checks, sanitized heartbeat,
+singleton and bounded shutdown; no production activation. Launcher/monitor tests
+and isolated PostgreSQL replay/recovery pass. A local synthetic restic encrypted
+restore passes; independent off-server recovery/alert receipt is NOT established.
+[Consumer cutover and scoped rights decision](STK-095-consumer-release.md): private
+webhook callbacks are documented; durable retention/replication/recovery scope,
+owner authorization, external recovery/monitoring and production cutover remain
+gates. Existing review-pending rights and schema 0016 remain unchanged.
+
+STK-095 PR #50 review follow-up: bounded preflight SQL, stop-during-preflight,
+explicit cycle-timeout failure and inherited child singleton lock close confirmed
+supervisor failure paths. Added abrupt-parent-death and timeout regressions.
+Provider evidence checklist and external recovery/monitoring deployment worksheet
+are documented; UI/watchlist selection is outside webhook-only release gates.
+No production actions or provider approval were inferred.
