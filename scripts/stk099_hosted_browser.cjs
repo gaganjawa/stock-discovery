@@ -17,7 +17,7 @@ const {chromium, expect} = require(process.env.STK_PLAYWRIGHT);
       .getByRole('button', {name: 'Candidates', exact: true}).click();
     const candidates = page.getByRole('region', {name: 'Scanner candidates'});
     await expect(candidates).toContainText('SYN097');
-    await expect(candidates).toContainText('SYNTHETIC FIXTURE');
+    await expect(candidates).toContainText('Provider alert');
     await candidates.getByRole('button', {name: 'Save SYN097 to watchlist', exact: true}).click();
     await expect(candidates).toContainText('Saved to watchlist');
     await page.reload();

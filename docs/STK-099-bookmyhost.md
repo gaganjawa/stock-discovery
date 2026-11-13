@@ -11,8 +11,8 @@ Retain the existing Compose project `stock-discovery-chartink`, inbox database,
 volume, TLS state, hostname, webhook capability and authenticated feed. Add a
 separate `stk_real001_private` database in the existing PostgreSQL 16 cluster,
 owned by a non-login `stk_app_owner`. Do not combine research tables with the inbox
-or run a second PostgreSQL server on this small host. No schema migration beyond
-0016 is needed. Existing API, frontend and worker images supply the application.
+or run a second PostgreSQL server on this small host. The integrated STK-095 release requires schema 0017 on both databases before
+larger-envelope ingestion; see STK-095-STK-099-integration.md. Existing API, frontend and worker images supply the application.
 
 The receiver commits immutable event rows and an empty `stk_candidates` notification
 in the same transaction. One existing worker process LISTENs on the source database

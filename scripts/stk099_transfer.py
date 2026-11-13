@@ -63,8 +63,8 @@ def backup(db, destination, expected_cluster):
     if db.sql('SELECT system_identifier FROM pg_control_system()') != expected_cluster:
         raise ValueError('source_cluster_mismatch')
     before = db.snapshot()
-    if before['revision'] != '0016':
-        raise ValueError('schema_0016_required')
+    if before['revision'] not in ('0016','0017'):
+        raise ValueError('supported_schema_0016_or_0017_required')
     with destination.open('xb') as output:
         db.run(['pg_dump', '-U', db.owner, '-d', db.name, '-Fc'], stdout=output)
         output.flush(); os.fsync(output.fileno())

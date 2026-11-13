@@ -25,3 +25,19 @@ class TransferGuards(unittest.TestCase):
             dump=Path(tmp)/'dump';dump.write_bytes(b'corrupt')
             with self.assertRaisesRegex(ValueError,'checksum'):
                 restore(DB(),dump,{'sha256':'wrong'},'owner')
+
+    def test_backup_supports_only_reviewed_pre_and_post_migration_schemas(self):
+        from stk099_transfer import backup
+        class DB:
+            name='synthetic';owner='synthetic'
+            def __init__(self,revision):self.revision=revision
+            def sql(self,*args):return 'synthetic-cluster'
+            def snapshot(self):return {'revision':self.revision,'tables':{},'sequences':{}}
+            def run(self,args,stdout):stdout.write(b'synthetic-dump')
+        with tempfile.TemporaryDirectory() as tmp:
+            for revision in ('0016','0017'):
+                manifest=backup(DB(revision),Path(tmp)/revision,'synthetic-cluster')
+                self.assertEqual(manifest['snapshot']['revision'],revision)
+            for revision in ('0015','0018'):
+                with self.assertRaisesRegex(ValueError,'supported_schema'):
+                    backup(DB(revision),Path(tmp)/revision,'synthetic-cluster')
