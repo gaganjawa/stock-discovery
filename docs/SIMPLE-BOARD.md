@@ -421,3 +421,12 @@ supervisor failure paths. Added abrupt-parent-death and timeout regressions.
 Provider evidence checklist and external recovery/monitoring deployment worksheet
 are documented; UI/watchlist selection is outside webhook-only release gates.
 No production actions or provider approval were inferred.
+
+13 November — **STK-095 / D3-03 + D3-04 + D3-09**, release acceptance follow-up:
+the owner's new provider Test capture uses `7:43 pm`; the adapter incorrectly
+pinned the first capture's `11:45 am`. Validate the documented clock grammar
+while preserving exact placeholders, scanner checks, URL redaction and zero
+candidate/research materialization. Local validation: 1,160 application/worker,
+37 script and 14 PostgreSQL/HTTPS checks pass, including two-database replay and
+cursor continuity. Exact-head CI and production Test acceptance remain pending;
+provider Test data never establishes genuine-alert or real-market readiness.

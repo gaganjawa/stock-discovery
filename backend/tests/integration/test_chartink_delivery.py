@@ -19,7 +19,8 @@ from stock_discovery_analysis import candidate_store as store
 from worker.candidates import pull
 
 
-def test_https_delivery_reconnect_and_candidates_api(tmp_path,monkeypatch):
+@pytest.mark.parametrize('provider_test',[False,True])
+def test_https_delivery_reconnect_and_candidates_api(tmp_path,monkeypatch,provider_test):
     from app.chartink_receiver import app as receiver
     from app.main import app
     from app.research import db
@@ -51,29 +52,41 @@ def test_https_delivery_reconnect_and_candidates_api(tmp_path,monkeypatch):
             assert server.started
             payload=normalize(dict(stocks='SYN097',trigger_prices='100',triggered_at='6:00 pm',
                 scan_name=scanner().scan_name,scan_url=scanner().scan_url,alert_name=scanner().alert_name),scanner(),datetime.now(timezone.utc))['payload']
+            if provider_test:
+                from test_chartink_columns import provider_payload
+                payload={**provider_payload(),'triggered_at':'7:43 pm',
+                    **{key:getattr(scanner(),key) for key in ('scan_name','scan_url','alert_name')}}
             import urllib.request,json
+            tls=ssl.create_default_context(cafile=str(cert))
             url=f'https://localhost:{port}'
             request=urllib.request.Request(url+'/hooks/chartink/'+'w'*40,data=json.dumps(payload).encode(),headers={'Content-Type':'application/json'})
-            with urllib.request.urlopen(request,timeout=10) as response:assert response.status==202
+            with urllib.request.urlopen(request,timeout=10,context=tls) as response:assert response.status==202
             with psycopg.connect(remote,autocommit=True) as c:
                 assert c.execute('SELECT count(*) FROM discovery.candidate_events').fetchone()[0]==1
             with psycopg.connect(local,autocommit=True) as c:assert pull(c,url)==1
             with psycopg.connect(local,autocommit=True) as c:
                 assert pull(c,url)==0
                 store.materialize_one(c)
-                assert store.rows(c)['total']==1
-            with urllib.request.urlopen(request,timeout=10) as response:assert json.load(response)['duplicate']
+                assert store.rows(c)['total']==(0 if provider_test else 1)
+                if provider_test:
+                    for table in ('candidate_sessions','candidates','candidate_matches','candidate_research_runs'):
+                        assert c.execute('SELECT count(*) FROM discovery.'+table).fetchone()==(0,)
+                    assert c.execute('SELECT cursor FROM discovery.candidate_receivers').fetchone()==(1,)
+                    assert c.execute('SELECT status FROM discovery.candidate_event_state').fetchone()==('completed',)
+            with urllib.request.urlopen(request,timeout=10,context=tls) as response:assert json.load(response)['duplicate']
             result=TestClient(app).get('/v1/real-research/candidates',headers={'Authorization':'Bearer '+'o'*40})
             assert result.status_code==200
-            assert result.json()['rows'][0]['symbol']=='SYN097'
+            if provider_test:assert result.json()['rows']==[]
+            else:assert result.json()['rows'][0]['symbol']=='SYN097'
             assert not result.json()['actionable']
             assert TestClient(receiver).get('/healthz').json()['database']=='available'
             assert TestClient(receiver).get('/candidate-health').status_code==401
             health=TestClient(receiver).get('/candidate-health?after=0',headers={'Authorization':'Bearer '+'p'*40}).json()
             assert health['events_after_cursor']==1 and health['stored_events']==1
+            assert health['provider_test_events']==int(provider_test)
             assert health['coverage']=='unknown_partial_alerts'
             assert 'w'*40 not in str(health)
-            if os.getenv('STK097_BROWSER')=='1':
+            if os.getenv('STK097_BROWSER')=='1' and not provider_test:
                 monkeypatch.setenv('COOKIE_SECURE','false')
                 monkeypatch.setenv('REAL_WATCHLIST_DIR',str(tmp_path/'watchlist'))
                 import sys

@@ -6,6 +6,7 @@ it produces a delivery-test receipt with zero candidates. Live rows must satisfy
 the independent typed snapshot contract and align with the validated stock list.
 """
 from decimal import Decimal
+import re
 from .chartink_enrichment import normalize_fields
 
 ADAPTER='chartink-columns-v1'
@@ -19,7 +20,10 @@ TEST_OFFSETS={'symbol':4,'close':1,'%_change':2,'volume':3,'marketcapname':5,
 
 def provider_test(payload):
     if payload['stocks']!='SYMBOL 1, SYMBOL 2, SYMBOL 3':return False
-    if payload['trigger_prices']!='2500.00,600.00,3400.00' or payload['triggered_at']!='11:45 am':
+    # The owner observed the same provider template at 11:45 am and 7:43 pm.
+    # Its clock varies; keep the documented time grammar and every placeholder.
+    if (payload['trigger_prices']!='2500.00,600.00,3400.00'
+        or not re.fullmatch(r'(?:[1-9]|1[0-2]):[0-5][0-9] [ap]m',payload['triggered_at'])):
         raise ValueError('invalid_provider_test_payload')
     rows=payload['columns']
     if not isinstance(rows,list) or len(rows)!=3:raise ValueError('invalid_provider_test_payload')
