@@ -133,3 +133,60 @@ def test_wire_grant_arrays_validate_as_json(config,preflight_fixture,tmp_path):
     _,conn=preflight_fixture
     put(tmp_path/'grants',json.dumps([evidence_grant().model_dump(mode='json')]))
     assert m.preflight(config,connect=lambda *a,**k:conn)[1]==12
+
+
+def test_preflight_queries_are_bounded(config,preflight_fixture):
+    _,conn=preflight_fixture
+    def connect(*args,**kwargs):
+        assert 'statement_timeout=15000' in kwargs['options']
+        assert 'lock_timeout=2000' in kwargs['options']
+        return conn
+    m.preflight(config,connect=connect)
+
+
+def test_stop_during_preflight_does_not_launch(config):
+    stop=threading.Event()
+    def check(_):stop.set();return m.environment(config),12
+    m.supervise(config,check=check,stop=stop)
+    assert json.loads((Path(config['state_directory'])/'health.json').read_text())['status']=='stopped'
+
+
+def test_timeout_clean_exit_never_reports_success(config,monkeypatch):
+    stop=threading.Event();states=[]
+    class Child:
+        pid=123;returncode=None
+        def poll(self):return None
+        def wait(self,timeout=None):self.returncode=0;return 0
+    monkeypatch.setattr(m.subprocess,'Popen',lambda *a,**k:Child())
+    monkeypatch.setattr(m.os,'killpg',lambda *a:None)
+    def record(directory,status,**kwargs):
+        states.append(status)
+        if status=='cycle_timed_out':stop.set()
+    monkeypatch.setattr(m,'state',record)
+    m.supervise(config,check=lambda _:(m.environment(config),12),stop=stop,cycle_timeout=0)
+    assert 'cycle_timed_out' in states and 'cycle_completed' not in states
+
+
+def test_orphan_child_keeps_singleton_lock(config,tmp_path):
+    import subprocess,signal,fcntl
+    package=Path(config['repo'])/'worker/worker';(package/'__init__.py').write_text('')
+    pidfile=tmp_path/'pid'
+    (package/'main.py').write_text('import os,time\nfrom pathlib import Path\nPath('+repr(str(pidfile))+').write_text(str(os.getpid()))\ntime.sleep(2)\n')
+    manifest=tmp_path/'config.json';manifest.write_text(json.dumps(config))
+    code='import importlib.util,json; s=importlib.util.spec_from_file_location("c",'+repr(m.__file__)+'); m=importlib.util.module_from_spec(s); s.loader.exec_module(m); c=json.load(open('+repr(str(manifest))+')); m.supervise(c,check=lambda _:(m.environment(c),12))'
+    parent=subprocess.Popen([sys.executable,'-c',code])
+    try:
+        deadline=time.monotonic()+10
+        while not pidfile.exists() and time.monotonic()<deadline:time.sleep(.02)
+        assert pidfile.exists()
+        parent.kill();parent.wait(timeout=5)
+        with (Path(config['state_directory'])/'consumer.lock').open('a') as lock:
+            with pytest.raises(BlockingIOError):fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
+            deadline=time.monotonic()+5
+            while True:
+                try:fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB);break
+                except BlockingIOError:
+                    assert time.monotonic()<deadline
+                    time.sleep(.02)
+    finally:
+        if parent.poll() is None:parent.kill();parent.wait()

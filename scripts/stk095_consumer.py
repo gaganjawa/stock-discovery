@@ -95,7 +95,7 @@ def preflight(config, *, connect=None, clock=lambda: datetime.now(timezone.utc))
         for raw in policies:
             Policy.model_validate_json(json.dumps(raw))
     with (connect or psycopg.connect)(Path(env['DATABASE_URL_FILE']).read_text().strip(),
-            connect_timeout=5, options='-c default_transaction_read_only=on') as conn:
+            connect_timeout=5, options='-c default_transaction_read_only=on -c statement_timeout=15000 -c lock_timeout=2000') as conn:
         database, user = conn.execute('SELECT current_database(),current_user').fetchone()
         if database != config['database'] or user != 'stk_candidate_worker':
             raise ValueError('database_identity_mismatch')
@@ -140,7 +140,7 @@ def state(directory, status, **values):
     temporary.replace(directory/'health.json')
 
 
-def supervise(config, *, check=preflight, stop=None, interval=5):
+def supervise(config, *, check=preflight, stop=None, interval=5, cycle_timeout=180):
     directory = Path(config['state_directory'])
     if not directory.is_absolute() or not directory.is_dir() or directory.stat().st_mode & 0o077:
         raise ValueError('private_state_directory_required')
@@ -150,13 +150,17 @@ def supervise(config, *, check=preflight, stop=None, interval=5):
         while not stop.is_set():
             # Recheck expiration, grants and identity before every bounded cycle.
             env, cursor = check(config)
+            if stop.is_set():
+                break
             state(directory, 'running', cursor=cursor)
             child = subprocess.Popen([config['python'], '-m', 'worker.main', '--candidate-intake', '--once'],
                 cwd=config['repo'], env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
-                start_new_session=True)
-            deadline = time.monotonic() + 180
+                start_new_session=True, pass_fds=(lock.fileno(),))
+            deadline = time.monotonic() + cycle_timeout
+            timed_out = False
             while child.poll() is None:
                 if stop.wait(0.1) or time.monotonic() >= deadline:
+                    timed_out = not stop.is_set()
                     try:
                         os.killpg(child.pid, signal.SIGTERM)
                     except ProcessLookupError:
@@ -166,7 +170,9 @@ def supervise(config, *, check=preflight, stop=None, interval=5):
                     except subprocess.TimeoutExpired:
                         os.killpg(child.pid, signal.SIGKILL); child.wait()
                     break
-            if child.returncode and not stop.is_set():
+            if timed_out:
+                state(directory, 'cycle_timed_out')
+            elif child.returncode and not stop.is_set():
                 state(directory, 'cycle_failed')
             elif not stop.is_set():
                 state(directory, 'cycle_completed')

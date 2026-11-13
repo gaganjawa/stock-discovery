@@ -414,3 +414,10 @@ restore passes; independent off-server recovery/alert receipt is NOT established
 webhook callbacks are documented; durable retention/replication/recovery scope,
 owner authorization, external recovery/monitoring and production cutover remain
 gates. Existing review-pending rights and schema 0016 remain unchanged.
+
+STK-095 PR #50 review follow-up: bounded preflight SQL, stop-during-preflight,
+explicit cycle-timeout failure and inherited child singleton lock close confirmed
+supervisor failure paths. Added abrupt-parent-death and timeout regressions.
+Provider evidence checklist and external recovery/monitoring deployment worksheet
+are documented; UI/watchlist selection is outside webhook-only release gates.
+No production actions or provider approval were inferred.

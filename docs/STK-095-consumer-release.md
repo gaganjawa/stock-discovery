@@ -166,3 +166,95 @@ EOD receipt means delivery unverified, never zero market matches. The pure
 stale/future observations, cursor-ahead, backlog, missing consumer/backup heartbeat
 and recent rejections. Owner must approve the collector credentials/destination,
 external monitor and test outage/alert receipt. No external monitor is activated.
+
+## PR #50 failure-path review closure
+
+Preflight SQL has a 15-second statement timeout and 2-second lock timeout, in
+addition to the connection timeout. A stop arriving during preflight prevents a
+new child. A cycle deadline is always reported as `cycle_timed_out`, even if a
+child's SIGTERM handler returns zero. The child inherits the singleton lock FD:
+if the supervisor is killed abruptly, a replacement cannot overlap that still
+running child. A stuck orphan causes an unavailable consumer, not concurrent
+consumption; alert and verify its PID before owner-authorized termination. Keep
+one canonical state directory and prohibit other consumer launchers.
+
+These changes have real-process abrupt-parent-death/lock-continuity coverage and
+focused clean-exit-on-timeout and stop-during-preflight regressions. Refresh any
+previously staged inactive launcher from the final reviewed PR SHA before cutover;
+do not activate the older staged copy. UI/watchlist selection is explicitly NOT a
+webhook-only release prerequisite. No UI restart or filesystem watchlist change
+belongs in this cutover.
+
+## Exact provider evidence to close the gate
+
+Retain the account-bound provider reply or applicable contract clause, its date,
+version/permalink and reviewer decision in private records. Identify this premium
+account and scanner/alert ID without sharing keys or capability URLs. The evidence
+must answer each item below, not merely confirm that the subscription is paid:
+
+1. May this single-owner, noncommercial application retain the alert symbols,
+   trigger prices and configured column values in raw and normalized form? Specify
+   the permitted retention period and treatment after subscription expiry/revocation.
+2. May it replicate those records between the owner's VPS and Mac and retain
+   encrypted off-server recovery copies? Specify any location/processor restrictions
+   and backup expiry/deletion requirements.
+3. May it replay the same stored alert solely to recover an interrupted consumer,
+   deduplicate delivery and reconstruct its private candidate state? Explicitly
+   distinguish this from historical backtesting or replay for strategy evaluation.
+4. May it calculate private derived candidate/research outputs from those fields,
+   with no redistribution or third-party model transfer? State any attribution or
+   derived-output retention conditions.
+
+Requested wording for clarification (not sent): “Please confirm whether my premium
+account may use my configured alert webhook in my private, noncommercial application
+with the storage, replication, encrypted backup and operational retry/recovery uses
+listed above, and state the applicable retention and expiry/deletion limits. I am
+not requesting redistribution, third-party model transfer or historical backtesting
+permission in this request.” A response approving only receipt does not close the
+storage gate. If finite retention/deletion is required, verify or implement those
+controls before activation: immutable event storage is not itself a deletion policy.
+Record the evidence reference, exact scopes, scanner key and bounded authorization
+expiry only after owner review; do not fabricate an approval file.
+
+## External deployment worksheet — prepared, not activated
+
+The restic/B2 design is approved; actual bucket, application key, password custody,
+monitor host and alert destination are not recorded as approved. Resolve those
+owner inputs before executing these steps. Nothing here authorizes a new purchase,
+account, credential rotation, provider message or upload of private data.
+
+1. On the approved independent recovery host, provision the verified restic binary
+   and mode-0600 repository/password/provider credential files. Keep encryption-key
+   recovery independently accessible to the owner, outside both data hosts and the
+   uploaded bundle. Verify repository identity with `restic cat config`; do not
+   run `init` against an unverified destination. Record the repository ID privately.
+2. Use the already verified complete two-database bundle, including the supplemental
+   consumer configuration. Check its SHA256 manifest before upload. No backup source
+   changes, database restarts or full-stack `operate.py backup` are required here.
+3. Run `restic backup --json --tag stk095 "$VERIFIED_FROZEN_BUNDLE"`, retaining the
+   exact successful summary snapshot ID. Run `restic check --read-data`; stop on
+   either failure. Do not label a snapshot recoverable merely because upload passed.
+4. On the independent host, require an absent restore destination, then restore that
+   exact snapshot. Check every bundle hash. Restore both database dumps into separate
+   disposable targets with `stk099_transfer.py restore`, explicitly supplying the
+   independently recorded expected source database and cluster for each. Compare
+   all rows/sequences/cursors with the saved manifests. Never use a production target.
+5. Save the dated recovery receipt with repository/snapshot identity, checksums and
+   comparison outcome. Test the owner's separate key-recovery route. Schedule only
+   after approval; retain separate prune authority. No destructive retention command
+   is included. A future final maintenance snapshot still needs its own verification.
+6. From an approved host independent of both VPS and Mac, schedule HTTPS `/healthz`
+   checks and authenticated read-only collection at 60-second intervals. Use no webhook
+   capability URL and disclose no symbols/bodies. The collector must supply fresh
+   `observed_at`, `receiver_healthy`, `high_water`, `cursor`, `new_rejections`,
+   `consumer_completed_at`, `backup_restore_verified_at`, `expected_alert_due` and
+   `last_receipt_at` to `stk095_health.py`. Convert ISO UTC health timestamps to epoch
+   seconds; `consumer_completed_at` comes from the last successful `completed_at`,
+   never the latest attempt's `at`. The collector and authenticated transport still
+   need environment-specific wiring and approval; the pure helper alone is not an
+   operating external monitor.
+7. Configure a second, independently hosted missing-heartbeat check for the collector
+   itself. Route only diagnostic codes to the owner-approved destination. Require
+   actual receipt of outage, stale-consumer, backlog, rejection and stale-backup test
+   alerts from fixtures or disposable targets. Never stop production to test an alarm.
+   Record delivery and recovery timestamps before claiming monitoring operational.
