@@ -1,111 +1,147 @@
 # STK-095 / D3-03 + D3-04 + D3-09 — customized webhook rejection
 
-## Evidence and scope
+## Cause and provider evidence
 
 Owner reports an authenticated production rejection at **12 November 2026,
 17:00:04 IST**, reason `invalid_payload_fields`, with zero accepted events.
-This change has not inspected or modified the production database or receiver.
+The historical rejection retained a hash/reason only, so its original fields
+cannot be recovered. This change has not read or changed the production database.
 
-`normalize()` requires stocks, trigger_prices, triggered_at, scan_name, scan_url
-and alert_name; only webhook_url is additionally permitted. Every other top-level
-key fails before identity/value validation. The optional synthetic_enrichment_v1
-transport is expressly invented and restricted to synthetic scanners. STK-095's
-CSV column aliases do not establish a production webhook JSON contract.
+The old adapter requires stocks, trigger_prices, triggered_at, scan_name,
+scan_url and alert_name, with only optional webhook_url. Any other top-level key
+fails before identity/value validation. STK-095's original synthetic_enrichment_v1
+was deliberately invented for synthetic scanners; it was not a provider contract.
 
-Provider evidence checked 12 November:
+Provider evidence:
 
-- [Documented original JSON](https://chartink.com/articles/alerts/webhook-support-for-alerts/)
-  has six string fields and optional webhook_url.
-- [Current provider alert guide](https://chartink.com/articles/alerts/alerts-guide/)
-  confirms customizable Payload Columns, distinct from result columns, but does
-  not document the wire types, alignment or empty-value behavior.
-- Read-only inspection of the owner's existing alert **View JSON** confirms the
-  extra top-level `columns` array and an object beginning with symbol and close.
-  Accessibility exposes only a truncated preview. It is a provider-generated
-  example, not the rejected delivery. No values, screenshot or capability URL
-  were retained in repository evidence. No Test webhook or Update alert action
-  was performed; the dialog was cancelled unchanged.
-- Trigger history exposed no delivered JSON. The owner has no payload structure
-  sample. Existing rejection records contain a hash and reason only, which cannot
-  reconstruct the original body. A public-page source request was denied.
+- [Original documented JSON](https://chartink.com/articles/alerts/webhook-support-for-alerts/)
+  defines the six string fields plus optional webhook_url.
+- [Current alert guide](https://chartink.com/articles/alerts/alerts-guide/)
+  documents customizable Payload Columns, distinct from result columns.
+- Read-only inspection of the owner's View JSON preview on 12 November showed
+  an extra `columns` array, but accessibility exposed a truncated preview. No
+  Test webhook or Update alert action was performed by the agent.
+- On **13 November**, the owner supplied the complete response captured by testing
+  Chartink against an external webhook inspection service. This verifies the
+  container and 14 exact row keys: symbol, close, %_change, volume, marketcapname,
+  sector, industry, EMA10, ema30, sma50, rsi14, AVG_VOLUME20, avg_true_range,
+  PREV20_HIGH. There are three objects aligned with three placeholder stocks.
+  The new fixture preserves that observed test structure and placeholder values,
+  replacing the destination URL and scanner identity. No private capability URL
+  is committed, printed, retained in diagnostics or included in accepted envelopes.
 
-**Conclusion:** `columns` is a demonstrated incompatibility in the provider
-preview. The exact fields/types of the historical failed delivery are still
-unknown. A complete observed-payload regression fixture and production columns
-adapter remain BLOCKED. Do not claim that this diagnostic increment fixes real
-customized delivery or accept arbitrary extra keys to suppress the error.
+**The supplied message is a provider Test webhook, not a genuine market alert.**
+It uses SYMBOL 1–3, numeric placeholders in symbol/text fields, and RSI above 100.
+Previously `columns` caused the first rejection; merely permitting that key would
+still fail symbol, type and range checks. Those gates must not be weakened for
+actual candidates. Live-market column types/null behavior have not yet been
+observed; the adapter applies the existing strict domain contract and will reject
+incompatible live rows with safe diagnostics rather than guess/coerce them.
 
-## Prepared diagnostic implementation
+## Versioned adapter and test-delivery isolation
 
-Opt-in `CHARTINK_REJECTION_DIAGNOSTICS=true` stores at most 20 structure summaries
+`chartink-columns-v1` accepts the observed row-array container with exactly the
+14 verified keys. Actual alerts still require configured scanner identity and
+finite authorization, valid unique NSE-style symbols, matched prices/counts,
+valid trigger time, matching row symbol at every position, bounded types/ranges,
+and no unknown fields or mixed synthetic/provider enrichment. Text snapshot fields
+must be strings or explicitly missing; numeric fields use the existing finite
+bounded-number rules. ATR period remains unverified: avg_true_range is preserved
+as provenance but cannot silently become ATR14. Output stays descriptive and
+unverified, never actionable or point-in-time qualified.
+
+Actual alerts emit `chartink-event-columns-v1`, with typed enrichment and retained
+original column provenance. Event hashes include the columns, exclude webhook_url,
+and preserve existing same-session replay deduplication. The original six-field
+`chartink-event-v1` and synthetic fixture extension remain compatible.
+
+Only the **exact observed provider test template**, after scanner identity and
+expiry checks, emits `chartink-provider-test-v1` with delivery_kind=provider_test,
+empty symbols and provider_test_not_market_delivery completeness. The immutable
+receipt uses the existing inbox and authenticated feed. Materialization marks it
+completed without inserting any session, candidate, match or research row.
+Near-matches cannot bypass normal validation. HTTP 202 reports delivery_kind;
+health separately counts provider_test_events and candidate_delivery_events.
+Stored event/high-water counts include test receipts for correct cursor recovery;
+they do not prove genuine market delivery.
+
+## Privacy-safe diagnostics
+
+Opt-in `CHARTINK_REJECTION_DIAGNOSTICS=true` retains at most 20 structure summaries
 in `/tmp/chartink-rejection-shapes.json`, mode 0600, using a process-shared file
-lock and atomic replacement. No database migration or privilege expansion.
-The existing authenticated `/candidate-health` response exposes the summaries;
-unauthenticated access remains denied. Feature is disabled by default. The file
-is in the existing container tmpfs and disappears on container replacement.
+lock and atomic replacement. The existing authenticated `/candidate-health` route
+returns summaries; unauthenticated access remains denied. Disabled by default,
+with no database migration or permission expansion. Existing container tmpfs is
+used, so records disappear on container replacement.
 
-Schema `chartink-rejection-shape-v1` records only recognized field names, JSON
-value types, object/array counts and bounded sampled structures. It never copies
-scalar values, string contents, stock symbols, request bodies, exception messages,
-headers or URLs. Arbitrary field names could themselves carry secrets or stock
-symbols: unrecognized names are redacted and only their number/type histogram is
-retained. Known labels are limited to the documented base fields, observed columns
-container and existing STK-095 column vocabulary. Four nesting levels, 16 entries
-per object/array sample and 160 visited nodes bound work/output. Counts describe
-structure, never completeness of a trading session.
+Schema `chartink-rejection-shape-v1` retains recognized field names, JSON types,
+object/array counts and bounded sampled structures. It never copies scalar values,
+stock symbols, request bodies, exception messages, headers or URLs. Arbitrary key
+names can carry secrets too: unknown names are redacted and counted by type.
+Four nesting levels, 16 entries per object/array sample and 160 visited nodes bound
+work/output. Counts describe structure, never scanner completeness. Duplicate JSON
+keys and nonstandard NaN/Infinity constants fail closed. Diagnostic write failure
+cannot turn a rejection into acceptance or prevent normal rejection handling.
 
-JSON duplicate keys and nonstandard NaN/Infinity constants now fail closed.
-Diagnostic write failure cannot cause acceptance or change the 422 rejection.
-The normal six-field adapter, scanner identity, decimal checks, authorization,
-capability stripping, hash/idempotency and commit-before-202 behavior stay intact.
-There is no permissive enriched adapter or invented enriched JSON fixture.
+## Verification and limits
 
-## Acceptance
+Tests cover the supplied provider test structure, URL exclusion, identity and
+expiry, exact-test near-matches, original documented format, versioned columns,
+row alignment/counts, unknown/missing keys, malformed values, numeric text fields,
+RSI/finite-number bounds, replay hashes, ambiguous JSON and diagnostic privacy,
+retention/mode/work limits. Invented valid candidate values exercise the observed
+wire structure; they are explicitly not claimed as a genuine market receipt.
 
-Tests cover structural privacy with adversarial key names and secret markers,
-scalars/types, nesting/width bounds, disabled behavior, file modes/retention,
-write failure, duplicate keys and malformed JSON. PostgreSQL integration checks
-rejected columns do not create events, diagnostics require feed authentication,
-and the original documented format returns HTTP 202, commits one durable event,
-deduplicates replay and is retrievable from the authenticated feed. Invented
-values exercise observed *partial* preview structure; they are not represented
-as the real failed delivery. CI evidence belongs in the focused PR.
+Isolated PostgreSQL acceptance covers HTTP 202, durable insertion, authenticated
+feed retrieval, replay deduplication and envelope revalidation. Provider test
+materialization must create zero sessions/candidates/matches/research; a valid
+invented candidate alert must create exactly one candidate/session with typed
+snapshot values. Production delivery and live type compatibility remain deployment
+acceptance gates. Exact-head CI evidence is recorded in PR #49.
 
-## Deployment and rollback — approval required
+## Deployment — explicit approval required
 
-This PR is diagnostic preparation only and must remain draft until the provider
-structure has been verified and a strict versioned adapter is reviewed. Do not
-merge/deploy it as a claim of restored delivery. It is separate from STK-099 PR #48
-and introduces no migration or shared worker change requiring a dependency on it.
+No live service, URL, credential, alert setting, volume or database has changed.
+This PR is separate from STK-099 PR #48, based on main. It changes shared
+normalization/materialization, so **all feed-consuming workers must receive the
+compatible code before the receiver emits new envelope versions**. If PR #48 is
+selected for hosting, its release must incorporate this shared-code change after
+owner review; no STK-099 hosting files are bundled here. Old consumers fail closed
+on new envelopes and can stall their cursor; do not silently skip those receipts.
 
-If the owner explicitly approves a **diagnostics-only receiver deployment**:
+After owner review and explicit deployment approval:
 
-1. Record the existing receiver image ID, reviewed commit, effective Compose files
-   and config hashes privately. Keep the existing project, volumes, credentials,
-   source grants, hostname and exact webhook URL. Build the reviewed API image on
-   an isolated builder, not the running VPS.
-2. Use an approved maintenance window to replace **only the receiver image** and
-   set `CHARTINK_REJECTION_DIAGNOSTICS=true`. Render/review Compose first. Use the
-   existing receiver project with `up -d --no-deps receiver`; do not run migrations,
-   recreate the database/proxy, delete volumes or change alert settings. Delivery
-   during the brief restart has no assumed retry guarantee.
-3. Read `/candidate-health` using the existing private pull authentication mechanism
-   (never put secrets into command arguments or logs). Wait for an ordinary genuine
-   provider delivery. Do not press Test webhook against production without separate
-   authorization. Export only the bounded structure summary privately.
-4. Verify complete field names/types/nesting, per-stock alignment, null/empty
-   semantics and column aliases against provider configuration. Redacted unknown
-   names need private provider confirmation; do not loosen the logger to dump
-   keys/values. Implement an explicitly versioned columns adapter only from that
-   evidence, with exact allowlists, identity/type/size checks and capability
-   exclusion, then add representative value-redacted tests and run isolated
-   HTTP 202 → PostgreSQL → authenticated feed acceptance before release.
-5. Roll back by restoring the recorded receiver image and disabling the diagnostic
-   option with the same receiver-only Compose operation. No database rollback is
-   necessary; accepted events, existing volumes and credential files remain intact.
-   Disable diagnostics after evidence collection. Retain only sanitized structure
-   evidence; tmpfs diagnostics are not a backup or audit of historical bodies.
+1. Record current receiver/consumer image IDs, reviewed commits, effective Compose
+   files and config hashes privately. Preserve the exact receiver project, database,
+   volumes, credentials, webhook URL, hostname and scanner identity. Build immutable
+   reviewed images on an isolated builder, not the live VPS.
+2. Deploy compatible consumer code first using its established launcher and cursor,
+   then verify it reads old v1 events. Do not activate new workers or duplicate a
+   running consumer. The existing schema and least-privilege grants are sufficient.
+3. In an approved maintenance window, replace **only the receiver image** in its
+   existing Compose project. Optionally enable CHARTINK_REJECTION_DIAGNOSTICS=true.
+   Render/review Compose first; use receiver-only `up -d --no-deps receiver`. No
+   migration, database/proxy recreation, volume deletion or credential rotation.
+   Delivery during restart has no assumed retry guarantee.
+4. If separately approved, trigger Chartink's Test webhook against the unchanged
+   app URL. Require HTTP 202, delivery_kind=provider_test, one durable test receipt,
+   deduplicated retry, authenticated feed and no candidate/research/session rows.
+   Do not count this as a genuine market event or Mac-off acceptance.
+5. Observe an ordinary genuine alert. Require scanner identity, exact field/type
+   and symbol alignment checks, durable candidate receipt, one worker result and
+   correct UI source labels. If rejected, inspect only the authenticated bounded
+   shape diagnostics; do not dump values or widen the adapter speculatively.
+6. Disable diagnostics after verification. Keep only sanitized evidence and retain
+   the independently approved backup/monitoring controls. No model/provider-source
+   acquisition or broker operations are introduced.
 
-Alternative: a complete provider-generated example or privately obtained schema
-can unblock adapter implementation without any production deployment. Neither a
-truncated preview nor green tests of the original format proves customized support.
+## Rollback
+
+Restore the recorded receiver image and disable diagnostics using the same
+receiver-only Compose operation. Keep the **compatible consumer** until every new
+version already stored has been consumed: an old consumer cannot validate those
+immutable envelopes. Do not delete events, reset cursors, rewrite the database or
+resume a stale copy to make an old worker appear healthy. If consumer code itself
+must be rolled back, stop it and report the blocked cursor; preserve the backlog
+until a compatible consumer is restored. There is no database/schema rollback.
+Production volumes, credentials and exact webhook URL stay unchanged.

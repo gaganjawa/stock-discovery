@@ -73,6 +73,11 @@ def materialize_one(conn):
         eid,e=row
         try:
             with conn.transaction():
+                if e.get('version')=='chartink-provider-test-v1':
+                    if e.get('delivery_kind')!='provider_test' or e['symbols']:
+                        raise ValueError('invalid_provider_test_envelope')
+                    conn.execute("UPDATE discovery.candidate_event_state SET status='completed',error_code=NULL WHERE event_id=%s",(eid,))
+                    return eid  # Never create a session, candidate, match or research run.
                 conn.execute('''INSERT INTO discovery.candidate_sessions VALUES (%s,%s,%s)
                   ON CONFLICT(scanner_key,session_date) DO UPDATE SET completeness=CASE
                     WHEN excluded.completeness='partial_unverified' THEN candidate_sessions.completeness ELSE excluded.completeness END''',

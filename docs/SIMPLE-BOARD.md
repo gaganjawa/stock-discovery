@@ -361,9 +361,10 @@ acceptance passed locally; real enriched provider JSON and public activation rem
 unverified. Full exact-head CI/owner review pending. No paid deployment or original
 data mutation. [Operations and acceptance](STK-097-webhook-readiness.md).
 
-12 November — **STK-095 / D3-03 + D3-04 + D3-09**, customized webhook rejection:
-strict parser conflicts with provider preview's `columns` array. Prepared opt-in,
-private structure-only diagnostics and original-format persistence regressions in
-a separate PR from STK-099. Complete delivered structure/column types remain
-unverified; enriched adapter and real delivery fix are BLOCKED, not invented.
-No production changes. [Evidence and gated deployment/rollback](STK-095-webhook-rejection.md).
+13 November — **STK-095 / D3-03 + D3-04 + D3-09**, customized webhook rejection:
+owner-supplied provider Test webhook verifies the 14-column row-array shape.
+Versioned strict adapter, isolated test receipts (zero candidate/research/session
+writes), opt-in private shape diagnostics and HTTP/DB/feed regressions prepared
+in PR #49, separate from STK-099. Genuine alert compatibility/deployment remain
+unverified; compatible consumers must precede receiver rollout. No production
+change. [Evidence and gated deployment/rollback](STK-095-webhook-rejection.md).
