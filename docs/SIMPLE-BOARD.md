@@ -373,3 +373,9 @@ change. [Evidence and gated deployment/rollback](STK-095-webhook-rejection.md).
 separate bounded transport/storage capacities and guard all enrichment decimal
 arithmetic. Added batch/capacity and private durable rejection regressions.
 No production changes; exact-commit CI evidence is tracked on PR #49.
+
+13 November — **STK-095 / D3-03 + D3-04 + D3-09**, PR #49 migration follow-up:
+add schema 0017 for bounded 1 MiB JSONB envelopes; Python checks identical PostgreSQL
+size semantics. Both receiver inbox and private import database require migration
+before activation. Preservation, exact boundaries and failed downgrade regressions
+added; replay pages stay within the worker response cap. No production changes.

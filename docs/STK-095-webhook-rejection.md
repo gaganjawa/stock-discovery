@@ -71,7 +71,7 @@ Opt-in `CHARTINK_REJECTION_DIAGNOSTICS=true` retains at most 20 structure summar
 in `/tmp/chartink-rejection-shapes.json`, mode 0600, using a process-shared file
 lock and atomic replacement. The existing authenticated `/candidate-health` route
 returns summaries; unauthenticated access remains denied. Disabled by default,
-with no database migration or permission expansion. Existing container tmpfs is
+without permission expansion; envelope storage requires migration 0017. Existing container tmpfs is
 used, so records disappear on container replacement.
 
 Schema `chartink-rejection-shape-v1` retains recognized field names, JSON types,
@@ -115,23 +115,39 @@ After owner review and explicit deployment approval:
    files and config hashes privately. Preserve the exact receiver project, database,
    volumes, credentials, webhook URL, hostname and scanner identity. Build immutable
    reviewed images on an isolated builder, not the live VPS.
-2. Deploy compatible consumer code first using its established launcher and cursor,
+2. Rehearse migration 0017 on isolated restored copies of **both** databases:
+   the VPS `chartink_inbox` and the existing private application database that
+   imports feed events. Verify private backups and compare retained events,
+   identity sequence, foreign-key references, candidate state and receiver cursors.
+   Use the approved owner migration identity; runtime grants remain unchanged.
+   In the approved maintenance window, quiesce receiver and consumer writes and
+   apply the reviewed image's Alembic `upgrade 0017` separately to each existing
+   database. The existing `migrate` service uses the owner URL secret; run it as
+   a one-off with `--no-deps`, never recreate the database. The private database
+   uses its established migration launcher and owner credential file. Never print
+   URLs or substitute runtime credentials. Verify `alembic_version=0017` and a
+   validated `candidate_events_envelope_check` with bound 1048576 in each target
+   before activating larger-envelope writers. Lock acquisition times out at five
+   seconds; a failure rolls back and requires a quieter window, not dropping fences.
+3. Deploy compatible consumer code using its established launcher and cursor,
    then verify it reads old v1 events. Do not activate new workers or duplicate a
-   running consumer. The existing schema and least-privilege grants are sufficient.
-3. In an approved maintenance window, replace **only the receiver image** in its
+   running consumer. The worker now requests one event per page to stay within
+   its existing 2 MiB response limit even for expanded envelopes.
+4. In an approved maintenance window, replace **only the receiver image** in its
    existing Compose project. Optionally enable CHARTINK_REJECTION_DIAGNOSTICS=true.
    Render/review Compose first; use receiver-only `up -d --no-deps receiver`. No
-   migration, database/proxy recreation, volume deletion or credential rotation.
+   database/proxy recreation, volume deletion or credential rotation. Schema 0017
+   must already be verified on both databases.
    Delivery during restart has no assumed retry guarantee.
-4. If separately approved, trigger Chartink's Test webhook against the unchanged
+5. If separately approved, trigger Chartink's Test webhook against the unchanged
    app URL. Require HTTP 202, delivery_kind=provider_test, one durable test receipt,
    deduplicated retry, authenticated feed and no candidate/research/session rows.
    Do not count this as a genuine market event or Mac-off acceptance.
-5. Observe an ordinary genuine alert. Require scanner identity, exact field/type
+6. Observe an ordinary genuine alert. Require scanner identity, exact field/type
    and symbol alignment checks, durable candidate receipt, one worker result and
    correct UI source labels. If rejected, inspect only the authenticated bounded
    shape diagnostics; do not dump values or widen the adapter speculatively.
-6. Disable diagnostics after verification. Keep only sanitized evidence and retain
+7. Disable diagnostics after verification. Keep only sanitized evidence and retain
    the independently approved backup/monitoring controls. No model/provider-source
    acquisition or broker operations are introduced.
 
@@ -143,14 +159,18 @@ version already stored has been consumed: an old consumer cannot validate those
 immutable envelopes. Do not delete events, reset cursors, rewrite the database or
 resume a stale copy to make an old worker appear healthy. If consumer code itself
 must be rolled back, stop it and report the blocked cursor; preserve the backlog
-until a compatible consumer is restored. There is no database/schema rollback.
+until a compatible consumer is restored. Retain schema 0017 on application
+rollback: the old small-envelope writer remains compatible with its wider bounded
+constraint. Do not downgrade the schema if any retained envelope exceeds 65536
+PostgreSQL JSONB text bytes. A requested downgrade validates the old bound and
+fails atomically if such rows exist; it never deletes or rewrites those rows.
 Production volumes, credentials and exact webhook URL stay unchanged.
 
 
 ### PR #49 P2 follow-up — bounded envelopes and decimal arithmetic
 
 The HTTP body remains limited to 65,536 bytes. Expanded normalized envelopes
-have a separate 1,048,576-byte serialized JSON limit, checked before database
+have a separate 1,048,576-byte PostgreSQL JSONB text limit, checked before database
 writes; the inbox still holds at most 10,000 events. This bounds serialized
 envelope retention to approximately 9.77 GiB (database/index overhead additional).
 Storage overflow returns HTTP 413; a full inbox returns HTTP 503. Duplicates at
@@ -168,4 +188,14 @@ Regression coverage includes real PostgreSQL/HTTP batches of 35, 40, 50 and
 150 candidates, oversized 500-row transport, bounded storage/full-inbox failures,
 replay at capacity, authenticated feed, materialization and decimal rejection
 privacy. Batch values remain invented software fixtures, not live-market evidence.
-The existing deployment/rollback procedure applies; no migration or grant change.
+Migration 0017 replaces only the envelope-size CHECK, transactionally. Migration
+0016 remains unchanged. Python queries `octet_length(%s::jsonb::text)` using the
+same Jsonb serialization as INSERT, matching the database constraint exactly for
+Unicode, escaping and numeric exponent formatting. The constraint remains fully
+validated; immutable triggers, sequences, references, state and grants are untouched.
+Both inbox and private application databases need 0017 before receiving large
+rows. Private launcher schema gates and restored-copy rehearsal recognize 0017.
+Boundary regressions exercise 1 MiB minus one byte, exactly 1 MiB and one byte
+above, plus preservation across upgrade/repeat/downgrade/re-upgrade and an atomic
+failed downgrade with retained large rows. The full validator's intentional
+failure revision now descends from 0017. No production migration was performed.

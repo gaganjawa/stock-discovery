@@ -209,3 +209,29 @@ def test_decimal_overflow_is_durable_private_422(columns_receiver,isolated_url,c
     assert record['shape']['fields']['columns']['sampled_shapes'][0]['fields']['AVG_VOLUME20']['type']=='string'
     for value in ('1e-1000000','SYN000','REDACTED','w'*40):assert value not in json.dumps(record)
     assert capsys.readouterr().out==''
+
+
+def test_large_envelope_backlog_replays_with_bounded_pages(columns_receiver,isolated_url,monkeypatch):
+    import io
+    from datetime import datetime,timezone
+    from urllib.parse import urlsplit,parse_qs
+    from worker import candidates
+    from stock_discovery_analysis.chartink import normalize
+    client,url,config=columns_receiver
+    events=[]
+    for index in range(10):
+        payload=batch_payload(config,150);payload['triggered_at']=f'1:0{index} pm'
+        events.append({'sequence':index+1,'envelope':normalize(payload,config,datetime.now(timezone.utc))})
+    assert len(json.dumps(events).encode())>2*1024*1024
+    class Opener:
+        def open(self,request,timeout):
+            query=parse_qs(urlsplit(request.full_url).query)
+            assert query['limit']==['1']
+            after=int(query['after'][0]);page=events[after:after+1]
+            return io.BytesIO(json.dumps({'events':page,'next_cursor':after+len(page)}).encode())
+    monkeypatch.setattr(candidates,'build_opener',lambda *args:Opener())
+    with psycopg.connect(isolated_url,autocommit=True) as conn:
+        for _ in events:assert candidates.pull(conn,'https://receiver.invalid')==1
+        assert candidates.pull(conn,'https://receiver.invalid')==0
+        assert conn.execute('SELECT count(*) FROM discovery.candidate_events').fetchone()==(10,)
+        assert conn.execute('SELECT cursor FROM discovery.candidate_receivers').fetchone()==(10,)

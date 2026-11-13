@@ -24,6 +24,11 @@ class ActivateTests(unittest.TestCase):
 
     def tearDown(self):self.tmp.cleanup()
 
+    def test_additive_candidate_schema_remains_compatible(self):
+        from activate_pilot_launchd import preflight
+        preflight(self.reviewed,schema=lambda f:'0017')
+
+
     def test_activation_requires_phrase_and_current_schema(self):
         run = Runner()
         with self.assertRaises(PermissionError):activate(self.reviewed, 'yes', home=self.home, run=run, schema=lambda f: '0015', uid=501)

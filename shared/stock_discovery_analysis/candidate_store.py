@@ -6,7 +6,6 @@ No network or model clients live here. A crash rolls the claim back for replay.
 from datetime import datetime, timezone
 from psycopg.types.json import Jsonb
 from .chartink import digest
-import json
 
 MAX_EVENTS = 10000
 # Separate from the 64 KiB transport cap: typed enrichment expands each row.
@@ -15,7 +14,10 @@ MAX_EVENT_BYTES = 1024 * 1024
 
 
 def accept(conn, envelope):
-    if len(json.dumps(envelope).encode())>MAX_EVENT_BYTES: raise ValueError('event_too_large')
+    # Use the exact jsonb text representation checked by migration 0017. Python
+    # JSON differs for Unicode escapes, numeric exponents and object formatting.
+    size=conn.execute('SELECT octet_length(%s::jsonb::text)',(Jsonb(envelope),)).fetchone()[0]
+    if size>MAX_EVENT_BYTES: raise ValueError('event_too_large')
     with conn.transaction():
         # Also serializes feed sequence assignment/commit, avoiding cursor gaps.
         conn.execute("SELECT pg_advisory_xact_lock(94001)")
