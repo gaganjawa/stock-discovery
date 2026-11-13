@@ -13,7 +13,7 @@ import time
 import uvicorn
 
 
-def verify(app):
+def verify(app, *, script=None):
     root=Path(__file__).resolve().parents[1]
     sock=socket.socket();sock.bind(('127.0.0.1',0));api_port=sock.getsockname()[1]
     server=uvicorn.Server(uvicorn.Config(app,access_log=False,log_level='critical'))
@@ -42,7 +42,7 @@ def verify(app):
                 try:
                     urllib.request.urlopen(f'http://127.0.0.1:{web_port}',timeout=1);break
                 except OSError:time.sleep(.1)
-            script="""
+            script=script or """
 const {chromium,expect}=require(process.env.STK_PLAYWRIGHT);
 (async()=>{const b=await chromium.launch();try{const p=await b.newPage();
 await p.goto(process.env.STK_URL+'/#real-research');

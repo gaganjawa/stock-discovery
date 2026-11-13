@@ -125,7 +125,7 @@ def ingest_prices(conn, config, *, clock=now, adapter_factory=Upstox):
             received={r.data.starts_at for r in records}
             gaps=[day for day,(opens,closes) in sessions.items() if start.isoformat()<=day<=end.isoformat() and opens not in received]
             reports.append(dict(**identity,listing_id=listing,from_date=start.isoformat(),to_date=end.isoformat(),
-                candles=len(records),missing_sessions=sorted(gaps),storage=stored))
+                candles=len(records),missing_sessions=sorted(gaps),storage=stored,price_stream_id=price_stream.stream_id))
         return dict(status='partial' if any(r['missing_sessions'] for r in reports) else 'ingested',
                     fetched_at=clock(),instruments=reports,actionable=False,mode='live_paper',
                     research_status='not_run',rights_audit=[d.model_dump() for d in audit])
@@ -160,7 +160,7 @@ def handlers(schedule, config):
     return {'ingest':ingest,'snapshot':blocked,'screen':blocked,'event_poll':blocked,'reassess':blocked}
 
 
-def ingest_calendar(conn, config, *, clock=now):
+def ingest_calendar(conn, config, *, clock=now, adapter_factory=None, pause=None):
     """Explicit bounded refresh of dated sessions for the configured price window."""
     import time
     from zoneinfo import ZoneInfo
@@ -179,7 +179,7 @@ def ingest_calendar(conn, config, *, clock=now):
     lock='REAL-001:'+config.account_ref
     check(conn.execute('SELECT pg_try_advisory_lock(hashtextextended(%s,0))',(lock,)).fetchone()[0],'real_ingestion_busy')
     try:
-        client=Upstox(access=access,token=Path(config.token_file).read_text().strip())
+        client=(adapter_factory or Upstox)(access=access,token=Path(config.token_file).read_text().strip())
         records=[];closed=[]
         for offset in range((end-start).days+1):
             day=(start+timedelta(days=offset)).isoformat()
@@ -187,7 +187,7 @@ def ingest_calendar(conn, config, *, clock=now):
             if data is None:closed.append(day)
             else:
                 records.append(observed_revision(data,listing='NSE',fetched=clock(),previous=latest(conn,data,'NSE')))
-            time.sleep(.65)
+            (pause or time.sleep)(.65)
         _,request=access.require(stream,('store',))
         result=ingest_next(conn,stream,RevisionPages(records),load_grant=lambda:access.load_grant(stream),request=request,audit=access.audit,clock=clock)
         check(not result.get('quarantined'),'calendar_quarantined')

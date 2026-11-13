@@ -69,21 +69,31 @@ def market_readiness(bars,sessions,cutoff):
         historical_pit='unqualified',input_revision_ids=[b.revision_id for b in bars])
 
 
-def company(conn,config,listing,*,clock=now,publication_inputs=False,cutoff_at=None):
+def company(conn,config,listing,*,clock=now,publication_inputs=False,cutoff_at=None,price_stream_id=None):
     from .read_fences import guarded_read
     config=ViewConfig.model_validate(config)
     access=source_access(config.sources,clock)
     with guarded_read(conn,access) as guard:
-        result=_company(conn,config,listing,clock=clock,publication_inputs=publication_inputs,cutoff_at=cutoff_at,access=access)
+        result=_company(conn,config,listing,clock=clock,publication_inputs=publication_inputs,cutoff_at=cutoff_at,access=access,price_stream_id=price_stream_id)
         guard.collect(result[0] if publication_inputs else result)
         return result
 
 
-def _company(conn,config,listing,*,clock,publication_inputs,cutoff_at,access):
+def _company(conn,config,listing,*,clock,publication_inputs,cutoff_at,access,price_stream_id=None):
     config=ViewConfig.model_validate(config)
     check(listing in config.listing_ids,'listing_not_configured')
     cutoff=cutoff_at or clock();check(at(cutoff)<=at(clock()),'future_read_cutoff')
     records=eligible_revisions(conn,listing,cutoff,access)
+    price_batch_issue=False
+    if price_stream_id is not None:
+        selected={r[0] for r in conn.execute("""SELECT revision_id FROM discovery.revisions
+            WHERE stream_id=%s AND listing_id=%s AND kind='candle' AND source_id='upstox'""",
+            (price_stream_id,listing))}
+        current={r.revision_id for r in records if r.data.kind=='candle'}
+        price_batch_issue=not selected or not selected<=current
+        # Use one complete response window, never stitch it to retained older bars.
+        # describe() still verifies the full stream/pages, calendar and freshness.
+        records=[r for r in records if r.data.kind!='candle' or (not price_batch_issue and r.revision_id in selected)]
     identities=[r for r in records if r.data.kind=='instrument']
     check(len(identities)==1,'real_identity_missing_or_ambiguous')
     identity=identities[0]
@@ -125,6 +135,8 @@ def _company(conn,config,listing,*,clock,publication_inputs,cutoff_at,access):
     adjusted_result=describe(conn,listing,bars,sessions,readiness,cutoff,
         historical_request=cutoff_at is not None,provenance=provenance,
         multi_stream=config.adjusted_multi_stream=='approved_v1',freshness_policy=config.descriptive_freshness_policy)
+    if price_batch_issue:
+        adjusted_result=adjusted_result.model_copy(update={'unavailable_reasons':('price_batch_superseded_or_unavailable',)})
     readiness['descriptive_freshness']=adjusted_result.freshness.model_dump(mode='json')
     display_bars=[r for r in bars if r.source_id!='upstox' or adjusted_result.status=='AVAILABLE_DESCRIPTIVE_ONLY']
     observed_features=adjusted_result.metrics

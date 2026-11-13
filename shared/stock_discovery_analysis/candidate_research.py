@@ -49,7 +49,12 @@ def analyze(conn, config, symbol, session, *, clock=now):
                     source_revision_ids=[identity.revision_id])
         # Candidate admission expands ONLY the identity list, never source rights.
         scoped=config.model_copy(update={'listing_ids':(identity.listing_id,)})
-        detail=company(conn,scoped,identity.listing_id,clock=clock)
+        receipt=conn.execute("""SELECT result->>'price_stream_id' FROM discovery.schedule_jobs
+            WHERE payload->>'code_version'='candidate-price-refresh-v1' AND payload->>'symbol'=%s
+            AND status='completed' AND updated_at<=%s AND result->>'price_stream_id' IS NOT NULL
+            ORDER BY updated_at DESC,job_id LIMIT 1""",(symbol,clock())).fetchone()
+        detail=company(conn,scoped,identity.listing_id,clock=clock,
+                       price_stream_id=receipt[0] if receipt else None)
         adjusted=detail['adjusted_research']
         ids=set(base['source_revision_ids'])|set(detail['market_readiness']['input_revision_ids'])
         base.update(source_revision_ids=sorted(ids),market_data=dict(bars=len(detail['price_series']),
