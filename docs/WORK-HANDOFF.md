@@ -3,20 +3,24 @@
 ## CURRENT — 15 November 2026 · STK-099 / D3-12 Private operational pilot
 
 Use [SD ARCH 3.0](SD-ARCH-3.0.md) for requirements and
-[SIMPLE-BOARD](SIMPLE-BOARD.md) as the canonical task board. **Overall planning
+[SIMPLE-BOARD](SIMPLE-BOARD.md) as the canonical task board;
+[PROJECT-HANDOFF](PROJECT-HANDOFF.md) is the persistent product/component context.
+**Overall planning
 baseline is 58%, specified by the owner on 15 November**, superseding the reported
 57%; it is not a calculated release-readiness or profitability metric.
 
-**Code/review state:** main `098ba86ad8d386ed887d769239ec21cdb424cddd` contains PR #53;
-its four required CI jobs passed. PR #52 candidate stored-price analysis, PRs #49–51
-provider-Test fixes and PR #48 hosting foundation are merged. [PR #54](https://github.com/gaganjawa/stock-discovery/pull/54)
-remains open: reviewed implementation head `58d4aaf` passed unit/UI; PostgreSQL was
-still running at this check, no confirmed failure. This documentation follow-up
-needs new exact-head CI. Owner monitors CI; do not wait, merge or cut over.
-[Issue #47](https://github.com/gaganjawa/stock-discovery/issues/47) remains open.
-Its schema-0016 / 6,727-row starting point is historical. Separate continuity
-[PR #55](https://github.com/gaganjawa/stock-discovery/pull/55) is not on main; its
-57% snapshot must retain this newer 58% baseline when reconciled for merge.
+**Code/review state:** PR #54 merged as main
+`fbd841aa9948949dfed655e462ea292b9204b007`. All four required checks passed at its
+final head `bf12c5394a678633f8426f3fe06c9040a246fd03`
+([PR CI](https://github.com/gaganjawa/stock-discovery/actions/runs/43717712492)).
+The [exact-merge main run](https://github.com/gaganjawa/stock-discovery/actions/runs/43718688001)
+was still running at reconciliation; do not infer its result from PR checks.
+PR #53 bounded refresh, PR #52 candidate analysis, PRs #49–51 provider-Test fixes
+and PR #48 hosting foundation are also merged. [Issue #47](https://github.com/gaganjawa/stock-discovery/issues/47)
+remains open; its schema-0016 / 6,727-row starting point is historical.
+[PR #55](https://github.com/gaganjawa/stock-discovery/pull/55) reconciles continuity
+onto merged #54, retains the 58% baseline and requires owner review/new exact-head
+CI. Owner monitors CI; do not wait, merge or cut over.
 
 **Production, last verified 15-Nov 13:01 UTC:** BookMyHost VPS receiver/proxy/inbox
 and Mac application DB/UI/API remain split. Both databases schema **0017**;
@@ -44,7 +48,7 @@ See [exact evidence and limits](STK-099-restored-rehearsal.md). No repeat VPS re
 | Priority | Tickets | Required next outcome |
 |---|---|---|
 | **P0** | STK-014 / STK-094 / STK-095 | Genuine EOD alert → original identity/session/symbols → durable candidate/cursor → complete qualified refresh → re-analysis → authenticated ranked Candidates UI. Provider Tests excluded; ranking remains page-scoped. |
-| **P1** | STK-099 | Owner review of PR #54; encrypted off-server restore, key custody and external alerts; separately authorized Mac-independent cutover and genuine Mac-off acceptance. |
+| **P1** | STK-099 | Encrypted off-server restore, key custody and external alerts using merged PR #54 tooling; separately authorized Mac-independent cutover and genuine Mac-off acceptance. |
 | **P2** | STK-014 / STK-054 / STK-079–081 | Volume-qualified swing inputs, remaining real research/policy gates and complete three-horizon release; no invented BUY, levels, sizing or performance. |
 
 **Verified release gates / owner decisions:** off-server restore/key custody and
@@ -52,16 +56,15 @@ external alert delivery are unverified (no restic executable or Stock Discovery
 backup/monitor units found during VPS preflight). Existing same-host recovery and
 idle-worker load do not establish those gates or active-acquisition capacity.
 Confirm missing private destination/custodian inputs if needed; use existing tools.
-Owner must approve PR merge and separately authorize full cutover. Preserve webhook
+PR #54 is merged; full cutover still needs separate owner authorization. Preserve webhook
 URL, secrets, scanner identity, schema, volumes, cursor and immutable history; no
 new migration or full deployment is implied. Do not reopen approved provider scope.
 
-**Exact next executable task — STK-099:** run
-`gh pr view 54 --repo gaganjawa/stock-discovery --json headRefOid,state,statusCheckRollup`
-once against the pushed head; fix confirmed failures only, with affected checks.
-Owner monitors remaining CI. Independent next work is read-only inspection of existing
-private backup/alert configuration to prepare an isolated off-server restore; record
-any missing destination/key owner decision, without exposing secrets or sending alerts.
+**Exact next executable task — STK-099:** inspect existing private backup/alert
+configuration read-only and prepare the existing restore tooling against an isolated
+off-server recovery target. Record missing destination/key-custodian decisions without
+exposing secrets, making paid requests or sending alert messages. PR #55 remains for
+owner review/new exact-head CI; owner monitors it without waiting or automatic merge.
 After a separately authorized cutover decision, persistently stop both Mac workers,
 verify singleton release, transfer fresh DB/watchlist/cursor/quota state to new VPS
 targets and preserve rollback before activation. Never acquire concurrently against
