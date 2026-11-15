@@ -68,3 +68,39 @@ class TransferGuards(unittest.TestCase):
             for revision in ('0015','0018'):
                 with self.assertRaisesRegex(ValueError,'supported_schema'):
                     backup(DB(revision),Path(tmp)/revision,'synthetic-cluster')
+
+    def test_online_backup_pins_dump_and_fails_on_sequence_change(self):
+        from contextlib import contextmanager
+        from stk099_transfer import backup_online
+        class DB:
+            name='synthetic';owner='synthetic'
+            def __init__(self,changed):self.changed=changed;self.reads=0;self.active=False
+            def sql(self,*args):return 'synthetic-cluster'
+            @contextmanager
+            def exported_snapshot(self):
+                self.active=True
+                try:yield '00000001-00000002-1'
+                finally:self.active=False
+            def snapshot(self,snapshot):
+                assert self.active and snapshot=='00000001-00000002-1'
+                self.reads+=1
+                return {'revision':'0017','tables':{},'sequences':{'seq':2 if self.changed and self.reads>1 else 1}}
+            def run(self,args,stdout):
+                assert self.active and args[-2:]==['--snapshot','00000001-00000002-1']
+                stdout.write(b'synthetic-dump')
+        with tempfile.TemporaryDirectory() as tmp:
+            good=DB(False);target=Path(tmp)/'good.dump'
+            self.assertEqual(backup_online(good,target,'synthetic-cluster')['backup_mode'],'exported_read_only_snapshot')
+            self.assertFalse(good.active)
+            changed=DB(True);target=Path(tmp)/'changed.dump'
+            with self.assertRaisesRegex(ValueError,'sequence_or_schema_changed'):
+                backup_online(changed,target,'synthetic-cluster')
+            self.assertFalse(changed.active)
+            self.assertFalse(target.with_suffix('.manifest.json').exists())
+
+    def test_optional_refresh_credential_is_separate_without_provider_token(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            target=Path(tmp)/'secrets';prepare(target,price_refresh=True)
+            self.assertIn('stk_price_refresh:',(target/'refresh_url').read_text())
+            self.assertNotEqual((target/'refresh_url').read_text(),(target/'worker_url').read_text())
+            self.assertFalse((target/'upstox_token').exists())

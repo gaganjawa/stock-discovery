@@ -50,6 +50,7 @@ jobs:
           docker compose up -d --wait database
           docker compose exec -T database createdb -U stock_discovery stk013_test
           python scripts/validate_migrations.py
+          STK099_TEST_CONTAINER="$(docker compose ps -q database)" STK099_TEST_OWNER=stock_discovery python -m unittest discover -s scripts -p "test_stk099_online_postgres.py"
       - name: Database diagnostics
         if: failure()
         run: docker compose logs --no-color --tail=100 database

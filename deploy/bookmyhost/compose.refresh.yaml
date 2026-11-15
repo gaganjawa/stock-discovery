@@ -1,0 +1,37 @@
+# STK-099 / D3-03/04/12. Explicit opt-in addition to the existing hosting overlay.
+# Worker ceilings remain 256 MiB combined; rehearse representative workload first.
+services:
+  worker:
+    mem_limit: 128m
+  price-refresh:
+    profiles: [price-refresh]
+    image: ${WORKER_IMAGE:?Set tested immutable worker image}
+    command: [python, -m, worker.candidate_prices, --config, /run/refresh/refresh.json]
+    environment:
+      DATABASE_URL_FILE: /run/secrets/refresh_url
+      CANDIDATE_PRICE_HEALTH_FILE: /tmp/price-refresh-health.json
+      PYTHONUNBUFFERED: '1'
+    secrets: [refresh_url, upstox_token]
+    volumes:
+      - ${STK099_REFRESH_DIR:?Reviewed private refresh configuration}:/run/refresh:ro
+    networks: [private, price_egress]
+    read_only: true
+    tmpfs: ["/tmp:size=16m,mode=1777"]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    mem_limit: 128m
+    pids_limit: 64
+    restart: unless-stopped
+    logging: {driver: local, options: {max-size: 5m, max-file: '2'}}
+    depends_on: {database: {condition: service_healthy}}
+    healthcheck:
+      test: [CMD, python, -c, "import json,time; h=json.load(open('/tmp/price-refresh-health.json')); assert h['status']=='healthy' and time.time()-h['at']<960"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
+networks:
+  price_egress: {}
+secrets:
+  refresh_url: {file: '${STK099_SECRETS_DIR}/refresh_url'}
+  upstox_token: {file: '${STK099_SECRETS_DIR}/upstox_token'}

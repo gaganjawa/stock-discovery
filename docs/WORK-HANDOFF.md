@@ -1,5 +1,79 @@
 # Stock Discovery — work checkpoint
 
+## CURRENT — 15 November 2026 · STK-099 / D3-12 Private operational pilot
+
+Use [SD ARCH 3.0](SD-ARCH-3.0.md) for requirements and
+[SIMPLE-BOARD](SIMPLE-BOARD.md) as the canonical task board. **Overall planning
+baseline is 58%, specified by the owner on 15 November**, superseding the reported
+57%; it is not a calculated release-readiness or profitability metric.
+
+**Code/review state:** main `098ba86ad8d386ed887d769239ec21cdb424cddd` contains PR #53;
+its four required CI jobs passed. PR #52 candidate stored-price analysis, PRs #49–51
+provider-Test fixes and PR #48 hosting foundation are merged. [PR #54](https://github.com/gaganjawa/stock-discovery/pull/54)
+remains open: reviewed implementation head `58d4aaf` passed unit/UI; PostgreSQL was
+still running at this check, no confirmed failure. This documentation follow-up
+needs new exact-head CI. Owner monitors CI; do not wait, merge or cut over.
+[Issue #47](https://github.com/gaganjawa/stock-discovery/issues/47) remains open.
+Its schema-0016 / 6,727-row starting point is historical. Separate continuity
+[PR #55](https://github.com/gaganjawa/stock-discovery/pull/55) is not on main; its
+57% snapshot must retain this newer 58% baseline when reconciled for merge.
+
+**Production, last verified 15-Nov 13:01 UTC:** BookMyHost VPS receiver/proxy/inbox
+and Mac application DB/UI/API remain split. Both databases schema **0017**;
+consumer PID **8125**, refresh PID **8129**, one launch each and exactly one refresh
+process. Mac cursor **3**, events **3**, genuine candidates **0**, revisions **2,648**;
+no refresh jobs or provider requests in the preceding 24 hours. Existing restricted
+`stk_price_refresh` worker is active for INFY. No restart/deployment/provider call
+was performed for this documentation follow-up.
+
+Real provider-Test acceptance **passed** (202, durable receipt, deduplicated retry,
+cursor advancement, no candidate/session/research writes). Ordinary genuine-alert
+acceptance is **pending**. Initial Upstox HTTP 200 returned 30 validated bars but
+missed expected 13-Nov; **zero ingested**. One authorized narrow diagnostic also
+omitted that date. Cache age supports lag but does not prove the provider's internal
+cause. Keep incomplete/stale evidence unranked; reuse 900-second readiness retries,
+maximum three attempts per eligible job. No manufactured candidates or extra probes.
+
+**Completed rehearsal, not production cutover:** 14-Nov isolated x86_64 VPS restore
+preserved 70 tables, 6,737 rows, three sequences and existing watchlist. Actual private
+browser, 24 company reads at concurrency four, worker restarts and second recovery
+restore passed. Minimum sampled available RAM 1,008.6 MiB; no OOM. Rehearsal stopped;
+live services unchanged. Prior 21 focused tests remain recorded; none rerun here.
+See [exact evidence and limits](STK-099-restored-rehearsal.md). No repeat VPS rehearsal.
+
+| Priority | Tickets | Required next outcome |
+|---|---|---|
+| **P0** | STK-014 / STK-094 / STK-095 | Genuine EOD alert → original identity/session/symbols → durable candidate/cursor → complete qualified refresh → re-analysis → authenticated ranked Candidates UI. Provider Tests excluded; ranking remains page-scoped. |
+| **P1** | STK-099 | Owner review of PR #54; encrypted off-server restore, key custody and external alerts; separately authorized Mac-independent cutover and genuine Mac-off acceptance. |
+| **P2** | STK-014 / STK-054 / STK-079–081 | Volume-qualified swing inputs, remaining real research/policy gates and complete three-horizon release; no invented BUY, levels, sizing or performance. |
+
+**Verified release gates / owner decisions:** off-server restore/key custody and
+external alert delivery are unverified (no restic executable or Stock Discovery
+backup/monitor units found during VPS preflight). Existing same-host recovery and
+idle-worker load do not establish those gates or active-acquisition capacity.
+Confirm missing private destination/custodian inputs if needed; use existing tools.
+Owner must approve PR merge and separately authorize full cutover. Preserve webhook
+URL, secrets, scanner identity, schema, volumes, cursor and immutable history; no
+new migration or full deployment is implied. Do not reopen approved provider scope.
+
+**Exact next executable task — STK-099:** run
+`gh pr view 54 --repo gaganjawa/stock-discovery --json headRefOid,state,statusCheckRollup`
+once against the pushed head; fix confirmed failures only, with affected checks.
+Owner monitors remaining CI. Independent next work is read-only inspection of existing
+private backup/alert configuration to prepare an isolated off-server restore; record
+any missing destination/key owner decision, without exposing secrets or sending alerts.
+After a separately authorized cutover decision, persistently stop both Mac workers,
+verify singleton release, transfer fresh DB/watchlist/cursor/quota state to new VPS
+targets and preserve rollback before activation. Never acquire concurrently against
+divergent Mac/VPS quota ledgers. Keep the existing receiver running.
+
+## HISTORICAL — preserved execution checkpoints
+
+The dated records below describe their original milestones. Their earlier waits,
+PR states and activation restrictions do not override the CURRENT summary or newer
+owner authorization. Prior test evidence remains unchanged and scoped as originally
+recorded.
+
 ## D3-08 — STK-052/070/071/072 · 17 October 2026
 
 Verified PR #7 merge `d7f3381` against origin/main. [Bounded research and semantic judge](D3-08-bounded-research.md) reuse D3-07 retrieval/contracts/budget reservations, enforce four database-read-only tools and a 120-second default deadline, and persist immutable validation/judge reports. The 54-case paired mock evaluation has provisional synthetic labels, not human calibration or evidence of agent superiority. All outputs remain shadow/non-actionable. No paid call, source activation, deployment or broker action. Preserve unrelated WIP. Owner authorized the connected GitHub account for this PR with Codex commits. Deliver on the ticket branch and stop; D3-09 requires owner confirmation.
