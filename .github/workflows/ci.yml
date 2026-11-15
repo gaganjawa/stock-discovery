@@ -9,7 +9,28 @@ concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 jobs:
+  changes:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    outputs:
+      unit: ${{ steps.select.outputs.unit }}
+      postgres: ${{ steps.select.outputs.postgres }}
+      ui: ${{ steps.select.outputs.ui }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Validate selection and required-gate rules
+        run: python3 -m unittest discover -s scripts -p 'test_ci_selection.py'
+      - name: Select complete affected suites
+        id: select
+        run: python3 scripts/ci_select.py --manifest "$RUNNER_TEMP/ci-selection.json"
+      - name: Validate documentation
+        run: python3 scripts/ci_docs.py --manifest "$RUNNER_TEMP/ci-selection.json"
   unit:
+    needs: changes
+    if: ${{ needs.changes.outputs.unit == 'true' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     env:
@@ -32,6 +53,8 @@ jobs:
           python -m worker.main --once
           python -m unittest discover -s scripts -p "test_*.py"
   postgres:
+    needs: changes
+    if: ${{ needs.changes.outputs.postgres == 'true' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     env:
@@ -58,6 +81,8 @@ jobs:
         if: always()
         run: docker compose down --volumes --remove-orphans
   ui:
+    needs: changes
+    if: ${{ needs.changes.outputs.ui == 'true' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     env:
@@ -144,16 +169,14 @@ jobs:
         run: docker compose down --volumes --remove-orphans
   checks:
     if: ${{ always() }}
-    needs: [unit, postgres, ui]
+    needs: [changes, unit, postgres, ui]
     runs-on: ubuntu-24.04
     timeout-minutes: 2
     steps:
-      - name: Require every mandatory validation gate
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Require every selected validation gate
         env:
-          UNIT_RESULT: ${{ needs.unit.result }}
-          POSTGRES_RESULT: ${{ needs.postgres.result }}
-          UI_RESULT: ${{ needs.ui.result }}
-        run: |
-          test "$UNIT_RESULT" = success
-          test "$POSTGRES_RESULT" = success
-          test "$UI_RESULT" = success
+          CI_NEEDS_JSON: ${{ toJSON(needs) }}
+        run: python3 scripts/ci_select.py --gate

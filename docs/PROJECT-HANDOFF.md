@@ -1,5 +1,16 @@
 # Stock Discovery — project handoff
 
+Current delivery — **STK-081 / D3-13 CI efficiency** (15 November): PR #55 is
+merged as main `549cf2b02a287647635e5dee5f176f5855545625`. Change-based selection
+and a fail-closed stable `checks` gate are implemented for review; workflow/runtime/
+security/infrastructure changes still select full affected suites. Documentation
+replay selects only fast validation. [Measured baseline and validation](STK-081-selective-ci.md)
+separate 8m52s prior hosted documentation CI from 0.0445s local selection/docs logic;
+new hosted timings are pending. No production change; planning baseline **58%**.
+Immediate delivery task: owner review/new-head CI, with owner monitoring and no wait.
+The next product task remains STK-099 off-server recovery preparation; P0 genuine
+candidate acceptance and existing release gates remain unchanged.
+
 Reconciled **15 November 2026** under **STK-081 / D3-13 Three-horizon release**.
 Read [SD ARCH 3.0](SD-ARCH-3.0.md) for requirements and
 [SIMPLE-BOARD](SIMPLE-BOARD.md) for canonical task status. This file is restart
@@ -58,13 +69,13 @@ attempts per job; no genuine candidate means no forced job or diagnostic retry.
 
 ## Merged, in review and acceptance evidence
 
-Main is **`fbd841aa9948949dfed655e462ea292b9204b007`**, merged PR #54.
+PR #54 merged as **`fbd841aa9948949dfed655e462ea292b9204b007`**, before the current main above.
 Its final PR head `bf12c5394a678633f8426f3fe06c9040a246fd03` passed
 [all four required checks](https://github.com/gaganjawa/stock-discovery/actions/runs/43717712492).
 The [exact-merge main run](https://github.com/gaganjawa/stock-discovery/actions/runs/43718688001)
 was still running at reconciliation; no result is inferred from the PR run.
-PR #55 rebases this continuity update onto merged #54 and needs its own new-head CI;
-owner monitors checks without waiting or automatic merge. PR #12/#35 are merged.
+PR #55 is now merged; its final four checks passed in the baseline run linked above.
+This CI optimization needs new exact-head checks. PR #12/#35 are also merged.
 
 | Delivery | State / evidence |
 |---|---|
@@ -128,7 +139,7 @@ is evidence-based; merged package count does not measure product completion.
    swing signals. Current price-only EMA/breakout review does not establish BUY,
    entry/stop/target, position sizing, strategy superiority or profitability.
 
-Owner decisions: review/merge PR #55 when its new-head checks pass; confirm the
+Owner decisions: review this STK-081 CI change when its new-head checks pass; confirm the
 existing backup destination/key custodian and alert destination if absent from
 private configuration; separately authorize full cutover after recovery gates.
 No new provider-rights review is required for already approved descriptive scope.
@@ -140,7 +151,7 @@ unqualified capabilities, not as a blanket stop to independent implementation.
 **STK-099:** inspect existing private backup/alert configuration read-only and
 prepare the merged restore tooling against an isolated off-server recovery target.
 Record missing destination/key-custodian inputs before any paid operation; do not
-expose secrets or send alert messages. PR #55 awaits owner review/new exact-head CI;
+expose secrets or send alert messages. This STK-081 CI change awaits owner review/new exact-head CI;
 owner monitors it without polling/waiting or automatic merge. No full production
 cutover is authorized by the PR #54 merge or this reconciliation.
 
