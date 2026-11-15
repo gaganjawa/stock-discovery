@@ -9,10 +9,11 @@ from pathlib import Path
 import secrets
 
 
-def prepare(directory):
+def prepare(directory, *, price_refresh=False):
     os.umask(0o077)
     directory.mkdir(mode=0o700,parents=False,exist_ok=False)
     roles={'stk_runtime':'app_url','stk_candidate_worker':'worker_url','stk_inbox_reader':'source_url'}
+    if price_refresh:roles['stk_price_refresh']='refresh_url'
     statements=['-- STK-099: new roles only; fail rather than alter existing credentials.',
                 'BEGIN;', 'CREATE ROLE stk_app_owner NOLOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS;']
     for role,name in roles.items():
@@ -29,4 +30,6 @@ def prepare(directory):
 if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('directory',type=Path)
-    prepare(parser.parse_args().directory)
+    parser.add_argument('--price-refresh',action='store_true',help='Prepare separate acquisition login; no provider credentials copied')
+    args=parser.parse_args()
+    prepare(args.directory,price_refresh=args.price_refresh)

@@ -452,3 +452,13 @@ second-day batch ambiguity without changing immutable history. Latest validation
 Candidates now expose refresh state, retry/failure details and timestamps. Owner merge
 approval and new-head CI remain required before production activation.
 [Implementation, operation and recovery evidence](STK-014-candidate-price-refresh.md).
+
+14 November — **STK-099 / STK-014 · D3-03 + D3-04 + D3-09 + D3-12**:
+merged main CI passed. One authorized Upstox diagnostic confirmed upstream missing
+13-Nov data (HTTP 200, raw 12-Nov only, aged cache); no current-data admission.
+A new x86_64 VPS project restored 70 tables / 6,737 rows / three sequences and the
+existing watchlist, passed private browser and 24 concurrent-load reads, worker
+restarts and recovery restore. Minimum sampled headroom 1,008.6 MiB; no OOM.
+Online snapshot backup and opt-in scoped hosted refresh are implemented for review.
+Live services/cursor 3/schema 0017 preserved; no genuine candidates or full cutover.
+[Evidence, limitations and release conditions](STK-099-restored-rehearsal.md).

@@ -1,6 +1,7 @@
 """Opt-in bounded candidate price refresh; no webhook or live service changes."""
 import argparse
 import json
+import os
 import time
 from datetime import timedelta
 from pathlib import Path
@@ -154,6 +155,12 @@ def serve(config, once):
     while True:
         with psycopg.connect(setting('DATABASE_URL'),autocommit=True,connect_timeout=5) as conn:
             result=cycle(conn,config)
+        health=os.environ.get('CANDIDATE_PRICE_HEALTH_FILE')
+        if health:
+            from .pilot_operations import atomic
+            # A service heartbeat, not a declaration that every job succeeded.
+            # Failed cycles never advance it; durable job errors remain in PostgreSQL.
+            atomic(health,dict(status='healthy',at=time.time(),result_status=result['status']))
         print(json.dumps(result),flush=True)
         if once:return
         time.sleep(60)
