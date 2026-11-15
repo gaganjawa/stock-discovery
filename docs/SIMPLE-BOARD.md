@@ -1,5 +1,16 @@
 # Stock Discovery — SD ARCH 3.0 board
 
+Current delivery — **STK-081 / D3-13 CI efficiency** (15 November): PR #55 is
+merged as main `549cf2b02a287647635e5dee5f176f5855545625`. Change-based selection
+and a fail-closed stable `checks` gate are implemented for review; workflow/runtime/
+security/infrastructure changes still select full affected suites. Documentation
+replay selects only fast validation. [Measured baseline and validation](STK-081-selective-ci.md)
+separate 8m52s prior hosted documentation CI from 0.0445s local selection/docs logic;
+new hosted timings are pending. No production change; planning baseline **58%**.
+Immediate delivery task: owner review/new-head CI, with owner monitoring and no wait.
+The next product task remains STK-099 off-server recovery preparation; P0 genuine
+candidate acceptance and existing release gates remain unchanged.
+
 ## CURRENT — 15 November 2026 · STK-099 / D3-03 + D3-04 + D3-09 + D3-12
 
 Requirements: [SD ARCH 3.0](SD-ARCH-3.0.md). This is the canonical task board;
@@ -32,13 +43,13 @@ Upstream incompleteness is confirmed; cache lag is an inference. Existing readin
 retry is 900 seconds, at most three attempts per eligible job. No forced candidates,
 extra speculative provider requests, response stitching or incomplete current data.
 
-**Code and CI:** PR #54 merged as main `fbd841aa9948949dfed655e462ea292b9204b007`.
+**Previous merge evidence:** PR #54 merged as `fbd841aa9948949dfed655e462ea292b9204b007`.
 All four required checks passed at its final head `bf12c53`
 ([run](https://github.com/gaganjawa/stock-discovery/actions/runs/43717712492)).
 Exact-merge main CI was still running at reconciliation
 ([run](https://github.com/gaganjawa/stock-discovery/actions/runs/43718688001)); this
-is separate from the passed PR checks. PR #55 reconciles continuity on this main
-and needs new exact-head CI; owner monitors it without waiting or automatic merge.
+is separate from the passed PR checks. PR #55 is merged with all four final checks passed;
+this CI change needs new exact-head CI; owner monitors it without waiting or automatic merge.
 Prior local 21 focused
 tests and 14-Nov VPS evidence remain valid within their recorded scope. The rehearsal
 preserved 70 tables / 6,737 rows / three sequences and watchlist bytes, with minimum
@@ -60,7 +71,7 @@ state, restore to new VPS targets and retain rollback. Preserve the live receive
 
 **Next executable task — STK-099:** inspect existing private backup/alert
 configuration and prepare an isolated off-server restore using the merged tooling.
-Record any missing destination/key-custodian input for the owner. PR #55 remains
+Record any missing destination/key-custodian input for the owner. This CI change remains
 for owner review and exact-head CI; do not wait, merge or infer cutover approval.
 Do not expose secrets, send alerts or make paid requests without authorization.
 [Rehearsal evidence and release procedure](STK-099-restored-rehearsal.md).

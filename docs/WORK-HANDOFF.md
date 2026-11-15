@@ -1,5 +1,16 @@
 # Stock Discovery — work checkpoint
 
+Current delivery — **STK-081 / D3-13 CI efficiency** (15 November): PR #55 is
+merged as main `549cf2b02a287647635e5dee5f176f5855545625`. Change-based selection
+and a fail-closed stable `checks` gate are implemented for review; workflow/runtime/
+security/infrastructure changes still select full affected suites. Documentation
+replay selects only fast validation. [Measured baseline and validation](STK-081-selective-ci.md)
+separate 8m52s prior hosted documentation CI from 0.0445s local selection/docs logic;
+new hosted timings are pending. No production change; planning baseline **58%**.
+Immediate delivery task: owner review/new-head CI, with owner monitoring and no wait.
+The next product task remains STK-099 off-server recovery preparation; P0 genuine
+candidate acceptance and existing release gates remain unchanged.
+
 ## CURRENT — 15 November 2026 · STK-099 / D3-12 Private operational pilot
 
 Use [SD ARCH 3.0](SD-ARCH-3.0.md) for requirements and
@@ -9,7 +20,7 @@ Use [SD ARCH 3.0](SD-ARCH-3.0.md) for requirements and
 baseline is 58%, specified by the owner on 15 November**, superseding the reported
 57%; it is not a calculated release-readiness or profitability metric.
 
-**Code/review state:** PR #54 merged as main
+**Previous merge evidence:** PR #54 merged as
 `fbd841aa9948949dfed655e462ea292b9204b007`. All four required checks passed at its
 final head `bf12c5394a678633f8426f3fe06c9040a246fd03`
 ([PR CI](https://github.com/gaganjawa/stock-discovery/actions/runs/43717712492)).
@@ -18,9 +29,8 @@ was still running at reconciliation; do not infer its result from PR checks.
 PR #53 bounded refresh, PR #52 candidate analysis, PRs #49–51 provider-Test fixes
 and PR #48 hosting foundation are also merged. [Issue #47](https://github.com/gaganjawa/stock-discovery/issues/47)
 remains open; its schema-0016 / 6,727-row starting point is historical.
-[PR #55](https://github.com/gaganjawa/stock-discovery/pull/55) reconciles continuity
-onto merged #54, retains the 58% baseline and requires owner review/new exact-head
-CI. Owner monitors CI; do not wait, merge or cut over.
+[PR #55](https://github.com/gaganjawa/stock-discovery/pull/55) is merged with all four
+final checks passed; the current CI optimization requires owner review/new-head CI. Owner monitors CI; do not wait, merge or cut over.
 
 **Production, last verified 15-Nov 13:01 UTC:** BookMyHost VPS receiver/proxy/inbox
 and Mac application DB/UI/API remain split. Both databases schema **0017**;
@@ -63,7 +73,7 @@ new migration or full deployment is implied. Do not reopen approved provider sco
 **Exact next executable task — STK-099:** inspect existing private backup/alert
 configuration read-only and prepare the existing restore tooling against an isolated
 off-server recovery target. Record missing destination/key-custodian decisions without
-exposing secrets, making paid requests or sending alert messages. PR #55 remains for
+exposing secrets, making paid requests or sending alert messages. This CI change remains for
 owner review/new exact-head CI; owner monitors it without waiting or automatic merge.
 After a separately authorized cutover decision, persistently stop both Mac workers,
 verify singleton release, transfer fresh DB/watchlist/cursor/quota state to new VPS
