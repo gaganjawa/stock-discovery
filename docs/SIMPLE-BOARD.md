@@ -4,6 +4,9 @@
 
 Requirements: [SD ARCH 3.0](SD-ARCH-3.0.md). This is the canonical task board;
 [current work handoff](WORK-HANDOFF.md) records the next executable task.
+[PROJECT-HANDOFF](PROJECT-HANDOFF.md) supplies persistent product/component context.
+Update this board and PROJECT-HANDOFF in the same PR when project state materially
+changes, retaining dated evidence and test/rehearsal/live distinctions.
 **Overall planning baseline: 58%, owner-specified on 15 November.** This supersedes
 the prior reported 57% and historical 46%/49% estimates; it is not a measured
 release-acceptance percentage, test pass rate or investment-performance claim.
@@ -13,7 +16,7 @@ release-acceptance percentage, test pass rate or investment-performance claim.
 | D3-01–11 foundations | Merged software, including PR #12; quantitative policies, research, publication, paper outcomes and governance have scoped software evidence. | Qualified real evidence, research calibration and forward/policy gates remain capability-specific. |
 | STK-095 Chartink | PRs #49–51 merged; real provider-Test acceptance passed. BookMyHost receiver and Mac consumer live; both production databases schema 0017. | Ordinary genuine-alert acceptance pending; provider Tests never materialize candidates/research. |
 | STK-094 / STK-014 candidates and prices | PR #52 stored-price review and PR #53 bounded refresh/re-analysis merged; one restricted INFY refresh worker active on Mac. | Complete current Upstox batch and genuine candidate → analysis → UI acceptance pending; no volume-qualified BUY/sizing claim. |
-| STK-099 hosting | PR #48 merged; PR #54 adds online snapshot backup and scoped hosted refresh. Actual isolated VPS restore/browser/restart/recovery passed. | PR #54 remains open; no full production cutover. [Issue #47](https://github.com/gaganjawa/stock-discovery/issues/47) remains open. |
+| STK-099 hosting | PR #48 and PR #54 merged; online snapshot backup and scoped hosted refresh are on main. Actual isolated VPS restore/browser/restart/recovery passed. | No full production cutover. [Issue #47](https://github.com/gaganjawa/stock-discovery/issues/47) remains open. |
 | D3-13 release | Descriptive research slices delivered; continuity/runbook work in progress. | Integrated three-horizon live release and genuine prospective outcomes incomplete. |
 
 **Actual deployment, last verified 15-Nov 13:01 UTC:** VPS runs the receiver,
@@ -29,10 +32,14 @@ Upstream incompleteness is confirmed; cache lag is an inference. Existing readin
 retry is 900 seconds, at most three attempts per eligible job. No forced candidates,
 extra speculative provider requests, response stitching or incomplete current data.
 
-**PR #54 validation:** at reviewed implementation head `58d4aaf`, unit and UI CI
-passed; PostgreSQL was still running at this check, with no confirmed failure.
-The documentation follow-up requires its own exact-head checks. Owner monitors CI;
-do not wait, merge or infer acceptance from the earlier head. Prior local 21 focused
+**Code and CI:** PR #54 merged as main `fbd841aa9948949dfed655e462ea292b9204b007`.
+All four required checks passed at its final head `bf12c53`
+([run](https://github.com/gaganjawa/stock-discovery/actions/runs/43717712492)).
+Exact-merge main CI was still running at reconciliation
+([run](https://github.com/gaganjawa/stock-discovery/actions/runs/43718688001)); this
+is separate from the passed PR checks. PR #55 reconciles continuity on this main
+and needs new exact-head CI; owner monitors it without waiting or automatic merge.
+Prior local 21 focused
 tests and 14-Nov VPS evidence remain valid within their recorded scope. The rehearsal
 preserved 70 tables / 6,737 rows / three sequences and watchlist bytes, with minimum
 sampled available RAM 1,008.6 MiB and no OOM. It was isolated stored-data/idle-refresh
@@ -41,7 +48,7 @@ acceptance, not live acquisition, genuine alerts or off-server disaster recovery
 | Priority | Existing tickets | Next outcome |
 |---|---|---|
 | **P0** | STK-014 / STK-094 / STK-095 | Observe the next ordinary genuine EOD alert; verify event/session/symbols, durable candidate/cursor, eligible complete price ingestion, re-analysis and authenticated Candidates UI. |
-| **P1** | STK-099 | Complete PR #54 owner review/CI; verify encrypted off-server recovery, key custody and external alerts with existing tooling, then seek separate full-cutover authorization. |
+| **P1** | STK-099 | Verify encrypted off-server recovery, key custody and external alerts with the merged tooling, then seek separate full-cutover authorization. |
 | **P2** | STK-014 / STK-054 / STK-079–081 | Qualify volume/remaining strategy inputs and advance the full three-horizon release with explicit research/policy/forward-evidence gates. |
 
 Release gates: encrypted off-server restore/key custody and external alert delivery
@@ -51,10 +58,11 @@ remain unverified. Same-host restore does not satisfy those gates. Before any ap
 cutover, stop both Mac workers persistently, preserve fresh DB/watchlist/cursor/quota
 state, restore to new VPS targets and retain rollback. Preserve the live receiver.
 
-**Next executable task:** inspect the pushed PR #54 head/checks once and resolve
-only confirmed failures; owner monitors CI and decides merge. Independently inspect
-existing private backup/alert configuration for the isolated off-server restore gate
-under STK-099. Do not cut over or make paid requests without authorization.
+**Next executable task — STK-099:** inspect existing private backup/alert
+configuration and prepare an isolated off-server restore using the merged tooling.
+Record any missing destination/key-custodian input for the owner. PR #55 remains
+for owner review and exact-head CI; do not wait, merge or infer cutover approval.
+Do not expose secrets, send alerts or make paid requests without authorization.
 [Rehearsal evidence and release procedure](STK-099-restored-rehearsal.md).
 
 ## HISTORICAL — prior board snapshots and evidence

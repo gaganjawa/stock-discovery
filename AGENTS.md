@@ -6,4 +6,5 @@
 - Do not merge PRs or enable automatic merging. Provide the PR link, validation and blockers, then wait for the owner to review, merge and confirm the next package.
 - Preserve unrelated tracked and untracked WIP. Do not stage it with the current task. Do not modify historical evaluation fixtures.
 - Keep the progress board lightweight: one Markdown file, updated at meaningful package milestones. Preserve historical evidence without treating synthetic acceptance as real-market readiness.
+- When a PR materially changes implementation, deployment, acceptance, blockers or priorities, update `docs/SIMPLE-BOARD.md` and `docs/PROJECT-HANDOFF.md` in that same PR. Record the evidence date and distinguish merged code, tests/rehearsals and live acceptance; state "no material project-state change" in the PR when neither document needs an update.
 - No paid APIs, purchases, external deployment or broker orders without explicit authorization. Do not reopen the approved hosting selection.
