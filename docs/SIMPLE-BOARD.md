@@ -1,5 +1,69 @@
 # Stock Discovery — SD ARCH 3.0 board
 
+## CURRENT — 15 November 2026 · STK-099 / D3-03 + D3-04 + D3-09 + D3-12
+
+Requirements: [SD ARCH 3.0](SD-ARCH-3.0.md). This is the canonical task board;
+[current work handoff](WORK-HANDOFF.md) records the next executable task.
+**Overall planning baseline: 58%, owner-specified on 15 November.** This supersedes
+the prior reported 57% and historical 46%/49% estimates; it is not a measured
+release-acceptance percentage, test pass rate or investment-performance claim.
+
+| Component | Current delivery / deployment | Remaining acceptance |
+|---|---|---|
+| D3-01–11 foundations | Merged software, including PR #12; quantitative policies, research, publication, paper outcomes and governance have scoped software evidence. | Qualified real evidence, research calibration and forward/policy gates remain capability-specific. |
+| STK-095 Chartink | PRs #49–51 merged; real provider-Test acceptance passed. BookMyHost receiver and Mac consumer live; both production databases schema 0017. | Ordinary genuine-alert acceptance pending; provider Tests never materialize candidates/research. |
+| STK-094 / STK-014 candidates and prices | PR #52 stored-price review and PR #53 bounded refresh/re-analysis merged; one restricted INFY refresh worker active on Mac. | Complete current Upstox batch and genuine candidate → analysis → UI acceptance pending; no volume-qualified BUY/sizing claim. |
+| STK-099 hosting | PR #48 merged; PR #54 adds online snapshot backup and scoped hosted refresh. Actual isolated VPS restore/browser/restart/recovery passed. | PR #54 remains open; no full production cutover. [Issue #47](https://github.com/gaganjawa/stock-discovery/issues/47) remains open. |
+| D3-13 release | Descriptive research slices delivered; continuity/runbook work in progress. | Integrated three-horizon live release and genuine prospective outcomes incomplete. |
+
+**Actual deployment, last verified 15-Nov 13:01 UTC:** VPS runs the receiver,
+inbox PostgreSQL and proxy. Application database/UI/API and consumer/refresh remain
+Mac-dependent. Consumer PID 8125, refresh PID 8129, one launch each and exactly one
+refresh process; Mac schema **0017**, cursor **3**, events **3**, genuine candidates
+**0**, revisions **2,648**. No refresh jobs or quota requests in the preceding
+24 hours. No production changes were made for this documentation update.
+
+Initial Upstox response contained 30 validated bars but lacked the expected 13-Nov
+session; **zero bars ingested**. The one permitted diagnostic also omitted 13-Nov.
+Upstream incompleteness is confirmed; cache lag is an inference. Existing readiness
+retry is 900 seconds, at most three attempts per eligible job. No forced candidates,
+extra speculative provider requests, response stitching or incomplete current data.
+
+**PR #54 validation:** at reviewed implementation head `58d4aaf`, unit and UI CI
+passed; PostgreSQL was still running at this check, with no confirmed failure.
+The documentation follow-up requires its own exact-head checks. Owner monitors CI;
+do not wait, merge or infer acceptance from the earlier head. Prior local 21 focused
+tests and 14-Nov VPS evidence remain valid within their recorded scope. The rehearsal
+preserved 70 tables / 6,737 rows / three sequences and watchlist bytes, with minimum
+sampled available RAM 1,008.6 MiB and no OOM. It was isolated stored-data/idle-refresh
+acceptance, not live acquisition, genuine alerts or off-server disaster recovery.
+
+| Priority | Existing tickets | Next outcome |
+|---|---|---|
+| **P0** | STK-014 / STK-094 / STK-095 | Observe the next ordinary genuine EOD alert; verify event/session/symbols, durable candidate/cursor, eligible complete price ingestion, re-analysis and authenticated Candidates UI. |
+| **P1** | STK-099 | Complete PR #54 owner review/CI; verify encrypted off-server recovery, key custody and external alerts with existing tooling, then seek separate full-cutover authorization. |
+| **P2** | STK-014 / STK-054 / STK-079–081 | Qualify volume/remaining strategy inputs and advance the full three-horizon release with explicit research/policy/forward-evidence gates. |
+
+Release gates: encrypted off-server restore/key custody and external alert delivery
+remain unverified; no restic executable or Stock Discovery backup/monitor units were
+found on the VPS during preflight. Active-provider load and genuine Mac-off acceptance
+remain unverified. Same-host restore does not satisfy those gates. Before any approved
+cutover, stop both Mac workers persistently, preserve fresh DB/watchlist/cursor/quota
+state, restore to new VPS targets and retain rollback. Preserve the live receiver.
+
+**Next executable task:** inspect the pushed PR #54 head/checks once and resolve
+only confirmed failures; owner monitors CI and decides merge. Independently inspect
+existing private backup/alert configuration for the isolated off-server restore gate
+under STK-099. Do not cut over or make paid requests without authorization.
+[Rehearsal evidence and release procedure](STK-099-restored-rehearsal.md).
+
+## HISTORICAL — prior board snapshots and evidence
+
+The original summaries, package table and dated records below are retained verbatim.
+Their old PR states, absent grants, hosting choice and activation instructions are
+historical; the CURRENT summary above governs present state. No prior test evidence
+is relabelled as live production acceptance.
+
 Updated: **24 October 2026** · Baseline: [SD ARCH 3.0](SD-ARCH-3.0.md)
 REAL-001 local operations: PARTIAL; prospective recommendations BLOCKED. Calendar renews automatically, actual coverage extended through November 7; duplicate worker/restart/history and health controls verified. Inactive launchd preview prepared; persistent activation and genuine overnight acceptance pending. No new financial/model outputs or recommendations. [Operational acceptance](REAL-001-operations.md). Draft PR #12 remains unmerged; stop at this milestone.
 
