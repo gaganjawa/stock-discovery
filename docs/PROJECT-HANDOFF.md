@@ -1,22 +1,18 @@
 # Stock Discovery — project handoff
 
-Current delivery — **STK-099 / D3-12 Private operational pilot** (16 November).
-Main includes PR #56 at `5a78b6846cd88d89e68abf8864b8fe707c50b8b6`.
-Release prerequisites now include opt-in non-interrupting full-schema backup/recovery,
-receiver/hosted monitoring, an alert-delivery drill, and current cutover/rollback
-commands. **15 focused synthetic operations tests pass**; no VPS/browser rehearsal
-repeated. Restic 0.19.1 is installed separately on the VPS; no timers or application
-release were activated. The live receiver image/start time remains unchanged.
-**Off-server restore and external alert delivery remain unverified:** the inspected
-configuration has no destination/credentials/key-custody or alert hook. Owner input
-is required for those existing resources, then one actual restore and observed alert.
-[Exact evidence, prerequisites and executable sequence](STK-099-release-prerequisites.md).
-Planning baseline remains **58%**. No cutover authorization; owner monitors PR CI.
+Current delivery — **STK-095 / D3-03 Revision storage and ingestion** (16 November).
+Confirmed receiver rejection at **17:00:04.603766 IST**: `invalid_columns_fields`.
+The body was not retained; exact missing/extra names and sender provenance remain
+unknown. Bounded private redacted capture and per-row contract diagnostics are
+implemented for review, with receiver-only release/rollback preparation. The
+adapter remains unchanged until a genuine payload proves the required difference.
+Focused synthetic regression and PostgreSQL delivery checks passed; they are not
+live acceptance. **No production change**, migration, cursor update or provider call.
+[Evidence, limits and release procedure](STK-095-private-rejections.md).
+Planning baseline remains **58%**. Owner monitors CI; do not wait or merge.
 
-Reconciled **16 November 2026** under **STK-099 / D3-12 Private operational pilot**.
-Read [SD ARCH 3.0](SD-ARCH-3.0.md) for requirements and
-[SIMPLE-BOARD](SIMPLE-BOARD.md) for canonical task status. This file is restart
-context, not another tracker. Historical acceptance records retain their scope.
+Requirements: [SD ARCH 3.0](SD-ARCH-3.0.md); canonical task status in
+[SIMPLE-BOARD](SIMPLE-BOARD.md). Historical evidence retains its original scope.
 
 ## Objective and horizons
 
@@ -50,9 +46,9 @@ BookMyHost host supersedes the architecture's historical Hetzner selection for
 deployment; do not reopen host selection. See [current STK-099 release prerequisites](STK-099-release-prerequisites.md).
 The original [hosting runbook](STK-099-bookmyhost.md) retains historical evidence.
 
-Read-only evidence at **2026-11-15T13:01Z**: consumer PID **8125**, refresh PID
+Read-only evidence at **2026-11-16T13:42–13:45Z**: consumer PID **8125**, refresh PID
 **8129**, one launch each and exactly one matching refresh process; latest consumer
-completion five seconds old. Mac cursor **3**, events **3**, genuine candidates
+cycle completed normally. Mac cursor **3**, events **3**, genuine candidates
 **0**, revisions **2,648**. No refresh jobs or provider requests in the preceding
 24 hours. Preserve webhook URL, scanner identity, secrets, volumes, event history,
 immutable revisions and cursor. No production change is authorized by this handoff.
@@ -60,6 +56,12 @@ immutable revisions and cursor. No production change is authorized by this hando
 STK-095 real provider Tests passed HTTP 202, durable receipt, deduplicated retry,
 consumer cursor advancement and zero candidate/session/research materialization.
 Genuine market-alert acceptance remains **pending**. Tests do not count as candidates.
+A request reached validation at **16-Nov 11:30:04.603766 UTC** and was rejected with
+`invalid_columns_fields`; its original JSON was not retained. Private capture is
+prepared, not deployed. No specific column incompatibility can yet be established.
+Latest complete stored INFY session is **4-Nov**, stale against 16-Nov; current
+OHLCV qualification remains unavailable. Scanner authorization expires 18-Nov
+12:11:49 UTC. [Exact evidence and scoped release](STK-095-private-rejections.md).
 
 The live INFY refresh scope uses the existing NSE EQ mapping, grants, restricted
 role and account quota ledger. Initial Upstox HTTP 200 returned 30 validated bars
@@ -75,7 +77,7 @@ attempts per job; no genuine candidate means no forced job or diagnostic retry.
 PR #54 merged as **`fbd841aa9948949dfed655e462ea292b9204b007`**; its final
 PR head `bf12c5394a678633f8426f3fe06c9040a246fd03` passed
 [all four required checks](https://github.com/gaganjawa/stock-discovery/actions/runs/43717712492).
-PR #55 continuity and PR #56 CI selection are merged; current base is `5a78b68`.
+PR #55 continuity and PR #56 CI selection are merged; PR #57 operations prerequisites are merged as `0fe2136`.
 The earlier exact-merge CI observations retain their dates in the board/work history;
 this task makes no new CI-success claim from a prior PR run. Current operations
 changes require their own exact-head checks; owner monitors without waiting.
@@ -129,39 +131,35 @@ is evidence-based; merged package count does not measure product completion.
 
 ## Top three priorities and verified gates
 
-1. **P0 — STK-014 / STK-094 / STK-095:** next ordinary EOD alert → durable candidate
+1. **P0 — STK-095 / STK-014 / STK-094:** release reviewed private rejection capture,
+   resolve only the observed genuine column mismatch, then ordinary alert → durable candidate
    identity/session/symbol count and cursor → eligible complete EOD refresh →
    durable re-analysis → authenticated Candidates API/UI. Provider Tests stay
    excluded. Missing/stale/insufficient evidence stays unranked. No manufactured alert.
-2. **P1 — STK-099:** finish encrypted off-server restore, key custody and external
-   alert/host-loss delivery using existing resources. Restic 0.19.1 is now installed
-   separately; online operations mode, private templates and cutover/rollback
-   commands are prepared. No destination/credential/key-custody or alert-hook config
-   was found; actual remote restore/delivery and timers remain unactivated. Full
-   cutover needs separate authorization, including proxy-only ingress interruption
-   because existing Caddy has `admin off`. No hardware upgrade is justified.
-3. **P2 — STK-014 / STK-054 / STK-079–081:** qualify volume and remaining strategy evidence for usable
-   swing signals. Current price-only EMA/breakout review does not establish BUY,
-   entry/stop/target, position sizing, strategy superiority or profitability.
+2. **P1 — STK-014 / STK-094:** qualify the current complete price batch for genuine
+   eligible candidates, then durable re-analysis and authenticated UI. Preserve
+   source/calendar/coverage gates and the INFY acquisition bound.
+3. **P2 — STK-099 / STK-054 / STK-079–081:** retain existing off-server recovery,
+   key custody and external alert provisioning gates; full cutover needs separate
+   authorization. Qualify volume and remaining strategy/research inputs; no BUY,
+   levels, sizing or profitability claims. Infrastructure work is outside this fix.
 
 Owner decisions: identify existing off-server destination, private credential/key
-paths and separate key custodian, plus external alert/host-loss resources; review
-this STK-099 change; separately authorize full cutover only after recovery gates.
+paths and separate key custodian, plus external alert/host-loss resources;
+review/authorize the prepared receiver-only capture release; separately authorize
+full cutover only after recovery gates.
 No new provider-rights review is required for already approved descriptive scope.
 Broader M1/M2, real policy/risk and strategy-promotion approvals apply only to their
 unqualified capabilities, not as a blanket stop to independent implementation.
 
 ## Exact next executable task
 
-**STK-099:** fill the reviewed private operations config once the owner identifies
-existing backup and alert resources. Run one encrypted exact-snapshot backup/restore
-with `scripts/operate.py backup`, one `alert-test` with observed external delivery,
-and `monitor`; enable existing timers only after real verification. No new paid
-resource or application cutover. [Evidence and commands](STK-099-release-prerequisites.md).
-15 focused synthetic operations tests passed; these do not close live release gates.
-VPS read-only check 16-Nov 06:06:20 UTC confirms unchanged receiver image/start time
-and the same three live services. Mac counts above remain dated 15-Nov, not remeasured.
-Owner monitors this PR's CI; do not wait or merge.
+**STK-095:** owner reviews the focused private capture PR/exact-head CI and
+approves its minimal receiver-only release. Use the existing Compose project and
+`--no-deps`; preserve all credentials, history/cursors and workers. Compare the
+next ordinary rejection's exact redacted columns/types against the adapter and
+fix only verified differences. No accepted genuine alert is claimed. Do not wait
+for CI or manufacture a market event. [Release and rollback](STK-095-private-rejections.md).
 
 Before any separately approved cutover: persistently stop both Mac workers, verify
 singleton release, export fresh application state including cursor and quota ledger,
@@ -185,3 +183,49 @@ new hosted timings are pending. No production change; planning baseline **58%**.
 Immediate delivery task: owner review/new-head CI, with owner monitoring and no wait.
 The next product task remains STK-099 off-server recovery preparation; P0 genuine
 candidate acceptance and existing release gates remain unchanged.
+
+## Historical delivery checkpoint — 16-Nov operations
+
+Current delivery — **STK-099 / D3-12 Private operational pilot** (16 November).
+Main includes PR #56 at `5a78b6846cd88d89e68abf8864b8fe707c50b8b6`.
+Release prerequisites now include opt-in non-interrupting full-schema backup/recovery,
+receiver/hosted monitoring, an alert-delivery drill, and current cutover/rollback
+commands. **15 focused synthetic operations tests pass**; no VPS/browser rehearsal
+repeated. Restic 0.19.1 is installed separately on the VPS; no timers or application
+release were activated. The live receiver image/start time remains unchanged.
+**Off-server restore and external alert delivery remain unverified:** the inspected
+configuration has no destination/credentials/key-custody or alert hook. Owner input
+is required for those existing resources, then one actual restore and observed alert.
+[Exact evidence, prerequisites and executable sequence](STK-099-release-prerequisites.md).
+Planning baseline remains **58%**. No cutover authorization; owner monitors PR CI.
+
+Reconciled **16 November 2026** under **STK-099 / D3-12 Private operational pilot**.
+Read [SD ARCH 3.0](SD-ARCH-3.0.md) for requirements and
+[SIMPLE-BOARD](SIMPLE-BOARD.md) for canonical task status. This file is restart
+context, not another tracker. Historical acceptance records retain their scope.
+
+
+Previous next task (superseded by STK-095 failure):
+
+**STK-099:** fill the reviewed private operations config once the owner identifies
+existing backup and alert resources. Run one encrypted exact-snapshot backup/restore
+with `scripts/operate.py backup`, one `alert-test` with observed external delivery,
+and `monitor`; enable existing timers only after real verification. No new paid
+resource or application cutover. [Evidence and commands](STK-099-release-prerequisites.md).
+15 focused synthetic operations tests passed; these do not close live release gates.
+VPS read-only check 16-Nov 06:06:20 UTC confirms unchanged receiver image/start time
+and the same three live services. Mac counts above remain dated 15-Nov, not remeasured.
+Owner monitors this PR's CI; do not wait or merge.
+
+Historical P1/P2 priorities before the confirmed receiver failure:
+
+2. **P1 — STK-099:** finish encrypted off-server restore, key custody and external
+   alert/host-loss delivery using existing resources. Restic 0.19.1 is now installed
+   separately; online operations mode, private templates and cutover/rollback
+   commands are prepared. No destination/credential/key-custody or alert-hook config
+   was found; actual remote restore/delivery and timers remain unactivated. Full
+   cutover needs separate authorization, including proxy-only ingress interruption
+   because existing Caddy has `admin off`. No hardware upgrade is justified.
+3. **P2 — STK-014 / STK-054 / STK-079–081:** qualify volume and remaining strategy evidence for usable
+   swing signals. Current price-only EMA/breakout review does not establish BUY,
+   entry/stop/target, position sizing, strategy superiority or profitability.

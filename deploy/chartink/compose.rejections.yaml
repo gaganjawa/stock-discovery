@@ -1,0 +1,14 @@
+# STK-095 / D3-03. Receiver-only overlay; use after exact-head review and release approval.
+# Set a local immutable sha256 image ID or registry reference pinned by @sha256.
+services:
+  receiver:
+    image: ${CHARTINK_REJECTION_IMAGE:?Set the reviewed immutable receiver image}
+    environment:
+      CHARTINK_REJECTION_DIAGNOSTICS: 'true'
+      CHARTINK_REJECTION_FILE: /var/lib/chartink-rejections/rejections.json
+    volumes:
+      - type: bind
+        source: ${CHARTINK_REJECTION_DIR:?Set the private existing 0700 directory owned by 10001:10001}
+        target: /var/lib/chartink-rejections
+        bind:
+          create_host_path: false

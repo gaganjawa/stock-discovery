@@ -55,18 +55,22 @@ def ingest(conn, body):
             'invalid_provider_test_payload','invalid_columns_count','invalid_columns_fields',
             'column_symbol_mismatch','conflicting_payload_versions','invalid_enrichment_text',
             'invalid_enrichment_number','invalid_enrichment_range'} else 'invalid_json'
-        chartink_diagnostics.record(payload,code)
+        chartink_diagnostics.record(payload,code,body)
         store.reject(conn,hashlib.sha256(body).hexdigest(),code)
         raise HTTPException(422,code) from None
     try:
         receipt=store.accept(conn,envelope)
         return {**receipt,'delivery_kind':envelope.get('delivery_kind','candidate_alert')}
 
-    except OverflowError:raise HTTPException(503,'Candidate inbox capacity reached; operator action required') from None
+    except OverflowError:
+        chartink_diagnostics.record(payload,'inbox_capacity',body)
+        raise HTTPException(503,'Candidate inbox capacity reached; operator action required') from None
     except ValueError as exc:
         if str(exc)=='event_too_large':
+            chartink_diagnostics.record(payload,'event_too_large',body)
             raise HTTPException(413,'Normalized candidate event exceeds storage limit') from None
         if str(exc) in {'scanner_version_content_conflict','event_identity_conflict'}:
+            chartink_diagnostics.record(payload,str(exc),body)
             raise HTTPException(409,'Candidate event conflicts with stored identity') from None
         raise
 
@@ -111,6 +115,9 @@ def retrieve(request:Request,after:int=Query(0,ge=0),limit:int=Query(25,ge=1,le=
 def health(conn=Depends(db)):
     # Internal container check only; reverse proxy does not publish this route.
     conn.execute('SELECT 1 FROM discovery.candidate_events LIMIT 1')
+    diagnostics=chartink_diagnostics.read()
+    if diagnostics.get('enabled') and not diagnostics.get('available'):
+        raise HTTPException(503,'Private rejection capture unavailable')
     return {'database':'available','receiver_enabled':os.environ.get('CHARTINK_RECEIVER_ENABLED')=='true'}
 
 

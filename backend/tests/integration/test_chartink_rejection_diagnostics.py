@@ -7,6 +7,7 @@ from fastapi.testclient import TestClient
 from app.chartink_receiver import app
 from app.research import db
 from app import chartink_diagnostics
+from stock_discovery_analysis.chartink_columns import COLUMNS
 from test_candidates import isolated_url,scanner
 
 pytestmark=pytest.mark.skipif(not os.getenv('STK_TEST_DATABASE_URL'),reason='requires disposable PostgreSQL')
@@ -37,7 +38,15 @@ def test_rejection_shape_is_private_and_original_format_commits_and_replays(isol
         record=private['rejection_diagnostics']['records'][0]
         assert record['reason']=='invalid_columns_fields'
         assert record['shape']['fields']['columns']['type']=='array'
-        for value in ('SYN095','123','private.invalid','w'*40):assert value not in json.dumps(record)
+        for value in ('SYN095','private.invalid','w'*40):assert value not in json.dumps(record)
+        assert '123' not in json.dumps(record['shape'])
+        evidence=json.loads(chartink_diagnostics.FILE.read_text())[0]
+        assert evidence['column_contract']['rows'][0]['missing']==sorted(set(COLUMNS)-{'symbol','close'})
+        assert evidence['column_contract']['rows'][0]['extra']==[]
+        assert evidence['payload']['stocks']=='SYN095'
+        assert evidence['payload']['webhook_url']=='[REDACTED]'
+        assert chartink_diagnostics.FILE.stat().st_mode&0o777==0o600
+        assert client.get('/healthz').status_code==200
         # Original documented format remains durable, deduplicated and authenticated.
         accepted=client.post(url,json=base)
         assert accepted.status_code==202
@@ -186,9 +195,11 @@ def test_request_storage_and_inbox_capacity_failures(columns_receiver,isolated_u
         limits.setattr(store,'MAX_EVENT_BYTES',65536)
         response=client.post(url,json=payload)
         assert response.status_code==413 and 'storage limit' in response.text
+        assert chartink_diagnostics.read()['records'][-1]['reason']=='event_too_large'
     with monkeypatch.context() as limits:
         limits.setattr(store,'MAX_EVENTS',0)
         assert client.post(url,json=payload).status_code==503
+        assert chartink_diagnostics.read()['records'][-1]['reason']=='inbox_capacity'
     with psycopg.connect(isolated_url,autocommit=True) as conn:
         assert conn.execute('SELECT count(*) FROM discovery.candidate_events').fetchone()==(0,)
         assert conn.execute('SELECT count(*) FROM discovery.candidate_event_state').fetchone()==(0,)
@@ -242,3 +253,19 @@ def test_large_envelope_backlog_replays_with_bounded_pages(columns_receiver,isol
         assert candidates.pull(conn,'https://receiver.invalid')==0
         assert conn.execute('SELECT count(*) FROM discovery.candidate_events').fetchone()==(10,)
         assert conn.execute('SELECT cursor FROM discovery.candidate_receivers').fetchone()==(10,)
+
+
+def test_capture_failure_stays_rejected_and_health_reports_failure(columns_receiver,isolated_url,monkeypatch,tmp_path):
+    client,url,config=columns_receiver
+    monkeypatch.setattr(chartink_diagnostics,'FILE',tmp_path/'absent'/'rejections.json')
+    payload=batch_payload(config,1)
+    del payload['columns'][0]['EMA10']
+    response=client.post(url,json=payload)
+    assert response.status_code==422 and response.json()['detail']=='invalid_columns_fields'
+    health=client.get('/healthz')
+    assert health.status_code==503 and health.json()['detail']=='Private rejection capture unavailable'
+    with psycopg.connect(isolated_url,autocommit=True) as conn:
+        assert conn.execute('SELECT count(*) FROM discovery.candidate_events').fetchone()==(0,)
+        assert conn.execute('SELECT count(*) FROM discovery.candidates').fetchone()==(0,)
+        assert conn.execute('SELECT count(*) FROM discovery.candidate_receivers').fetchone()==(0,)
+        assert conn.execute('SELECT reason FROM discovery.candidate_rejections').fetchone()==('invalid_columns_fields',)

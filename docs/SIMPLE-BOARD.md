@@ -1,5 +1,54 @@
 # Stock Discovery — SD ARCH 3.0 board
 
+Current delivery — **STK-095 / D3-03 Revision storage and ingestion** (16 November).
+Confirmed receiver rejection at **17:00:04.603766 IST**: `invalid_columns_fields`.
+The body was not retained; exact missing/extra names and sender provenance remain
+unknown. Bounded private redacted capture and per-row contract diagnostics are
+implemented for review, with receiver-only release/rollback preparation. The
+adapter remains unchanged until a genuine payload proves the required difference.
+Focused synthetic regression and PostgreSQL delivery checks passed; they are not
+live acceptance. **No production change**, migration, cursor update or provider call.
+[Evidence, limits and release procedure](STK-095-private-rejections.md).
+Planning baseline remains **58%**. Owner monitors CI; do not wait or merge.
+
+## CURRENT — 16 November 2026 · STK-095 / D3-03
+
+Requirements: [SD ARCH 3.0](SD-ARCH-3.0.md); this is the canonical task board.
+[PROJECT-HANDOFF](PROJECT-HANDOFF.md) records persistent component context.
+Overall **58%** is a planning baseline, not a measured acceptance percentage.
+
+| Component | Current state | Remaining gate |
+|---|---|---|
+| STK-095 | Receiver/Mac consumer live; provider Tests passed; a candidate-format request was rejected at column validation on 16-Nov. Private capture prepared for review, not deployed. | Capture ordinary rejection privately, fix only verified differences, then genuine durable candidate acceptance. |
+| STK-094 / STK-014 | PR #52/#53 merged; restricted INFY refresh singleton; EMA/breakout and page-scoped Candidates ranking implemented. | Current complete price batch and genuine candidate → analysis → UI. PR #58 stored-price coherence fix is separate review work. |
+| STK-099 | PR #57 merged as `0fe2136`; prior representative restore/resource/recovery evidence retained. | Off-server restore/key custody, external alerts, separate cutover approval and genuine Mac-off acceptance; issue #47 remains open. |
+| D3-13 | Continuity and CI selection merged. | Integrated three-horizon live release and prospective qualification remain incomplete. |
+
+**Actual production evidence, 16-Nov 13:42–13:45 UTC:** schema **0017** on both
+sides, remote high-water/Mac cursor **3**, accepted events **3**, all provider Tests;
+genuine candidates **0**, refresh jobs **0**, revisions **2,648**. Consumer PID 8125,
+refresh PID 8129, one launch each; consumer cycles completed. Latest accepted event
+13-Nov 16:16:04.537076 UTC. Receiver/proxy/database unchanged and healthy.
+`invalid_columns_fields` is the confirmed receiver failure; zero matches, no alert
+generation or consumer failure cannot be inferred. Latest complete stored INFY
+session **4-Nov** is stale; no current OHLCV qualification. Scanner authorization
+expires **18-Nov 12:11:49 UTC**; existing approval window must cover the next alert.
+
+| Priority | Tickets | Next outcome |
+|---|---|---|
+| **P0** | STK-095 | Review private capture, approve receiver-only release, retain next ordinary rejection and compare its exact sanitized fields/types; fix only observed incompatibility and verify genuine acceptance. |
+| **P1** | STK-014 / STK-094 | Genuine eligible candidate → complete EOD refresh → durable analysis → authenticated UI; missing/stale/insufficient data stays unranked. |
+| **P2** | STK-099 / STK-054 / STK-079–081 | Existing off-server/alert provisioning gates remain; volume/strategy/research qualification remains. No infrastructure work in this fix. |
+
+**Verified blocker:** original rejected JSON is unavailable; no evidence supports a
+specific column alias, omitted-field relaxation or successful genuine delivery.
+**Exact next task:** review this capture PR and exact-head CI, authorize its scoped
+receiver release using [the prepared commands](STK-095-private-rejections.md), then
+inspect the next ordinary alert privately. Preserve secrets/URL, schema, event
+history, cursor and Mac workers. No test alert, provider call or full cutover.
+
+## HISTORICAL — superseded 16-Nov operations checkpoint
+
 Current delivery — **STK-099 / D3-12 Private operational pilot** (16 November).
 Main includes PR #56 at `5a78b6846cd88d89e68abf8864b8fe707c50b8b6`.
 Release prerequisites now include opt-in non-interrupting full-schema backup/recovery,
@@ -13,7 +62,7 @@ is required for those existing resources, then one actual restore and observed a
 [Exact evidence, prerequisites and executable sequence](STK-099-release-prerequisites.md).
 Planning baseline remains **58%**. No cutover authorization; owner monitors PR CI.
 
-## CURRENT — 16 November 2026 · STK-099 / D3-12 Private operational pilot
+## HISTORICAL — 16 November 2026 · STK-099 / D3-12 Private operational pilot
 
 Requirements: [SD ARCH 3.0](SD-ARCH-3.0.md). [SIMPLE-BOARD](SIMPLE-BOARD.md)
 is the canonical task board; [PROJECT-HANDOFF](PROJECT-HANDOFF.md) provides product
