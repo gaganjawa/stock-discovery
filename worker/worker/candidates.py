@@ -54,8 +54,12 @@ def validate_page(conn,page,cursor):
         if type(sequence) is not int or sequence<=expected:raise ValueError('invalid_receiver_sequence')
         remote_scanner=Scanner.model_validate(e['scanner'])
         if remote_scanner.key!=scanner.key:raise ValueError('receiver_scanner_not_approved')
-        validated=normalize(e['payload'],remote_scanner,datetime.fromisoformat(e['received_at']))
-        if validated!=e:raise ValueError('receiver_envelope_mismatch')
+        if e.get('version')=='chartink-raw-v1':
+            from stock_discovery_analysis.chartink_intake import validate_receipt
+            validated=validate_receipt(e,scanner)
+        else:
+            validated=normalize(e['payload'],remote_scanner,datetime.fromisoformat(e['received_at']))
+            if validated!=e:raise ValueError('receiver_envelope_mismatch')
         store.accept(conn,validated)
         expected=sequence
     if page['next_cursor']!=expected:raise ValueError('invalid_receiver_cursor')
@@ -77,9 +81,11 @@ def cycle(conn, *, config=None, remote_pull=True):
     # Five events / five companies per tick; independent of research UI requests.
     receiver=os.environ.get('CHARTINK_RECEIVER_URL')
     if receiver and remote_pull:pull(conn,receiver)
+    scanner_path=os.getenv('CHARTINK_SCANNER_CONFIG')
+    approved=Scanner.model_validate_json(Path(scanner_path).read_text()) if scanner_path else None
     events=research=0
     for _ in range(5):
-        if store.materialize_one(conn) is None:break
+        if store.materialize_one(conn,scanner=approved) is None:break
         events+=1
     for _ in range(5):
         if store.research_one(conn,lambda c,s,d:analyze(c,config,s,d)) is None:break

@@ -89,7 +89,7 @@ def test_retained_0013_upgrade_restores_fenced_reads_without_rewriting(migration
             company(conn, config('disabled'), LISTING, clock=lambda: NOW)
         before = snapshot(conn)
         command.upgrade(Config(str(ROOT / 'backend/alembic.ini')), 'head')
-        assert conn.execute('SELECT version_num FROM alembic_version').fetchone() == ('0017',)
+        assert conn.execute('SELECT version_num FROM alembic_version').fetchone() == ('0018',)
         after = snapshot(conn)
         assert all(after[t] == rows for t, rows in before.items())
         assert conn.execute('SELECT kind,state,generation FROM discovery.grant_fences ORDER BY kind').fetchall() == [

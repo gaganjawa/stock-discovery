@@ -274,7 +274,7 @@ def test_columns_provider_test_interrupted_bridge_and_old_receiver_replay(tmp_pa
             assert store.materialize_one(dest)==large['event_id']
             assert dest.execute('SELECT count(*) FROM discovery.candidates').fetchone()==(150,)
             # Model an old receiver after image rollback: documented v1 receipt,
-            # no NOTIFY, schema 0017 retained. Existing compatible worker catches up.
+            # no NOTIFY, schema 0018 retained. Existing compatible worker catches up.
             payload=batch_payload(config,1);payload.pop('columns');payload['stocks']='ROLLBACK095'
             old=normalize(payload,config,datetime.now(timezone.utc))
             assert old['version']=='chartink-event-v1'
@@ -286,5 +286,5 @@ def test_columns_provider_test_interrupted_bridge_and_old_receiver_replay(tmp_pa
             assert bridge(dest,source,identity)==0
             assert dest.execute('SELECT count(*) FROM discovery.candidates').fetchone()==(151,)
             assert dest.execute('SELECT receiver_id,cursor FROM discovery.candidate_receivers').fetchone()==(cursor[0],3)
-            assert source.execute('SELECT version_num FROM alembic_version').fetchone()==('0017',)
-            assert dest.execute('SELECT version_num FROM alembic_version').fetchone()==('0017',)
+            assert source.execute('SELECT version_num FROM alembic_version').fetchone()==('0018',)
+            assert dest.execute('SELECT version_num FROM alembic_version').fetchone()==('0018',)

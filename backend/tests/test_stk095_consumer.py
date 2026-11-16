@@ -56,7 +56,7 @@ def test_plist_is_inactive_and_contains_no_secret(config,tmp_path):
 
 
 class Connection:
-    user='stk_candidate_worker';schema='0017';cursor=(12,);grant=True;privileged=False
+    user='stk_candidate_worker';schema='0018';cursor=(12,);grant=True;privileged=False
     def __enter__(self):return self
     def __exit__(self,*args):pass
     def execute(self,sql,args=None):
@@ -88,7 +88,7 @@ def test_preflight_preserves_existing_cursor(config,preflight_fixture):
 
 
 @pytest.mark.parametrize('field,value,error',[
-    ('user','stock_discovery','database_identity_mismatch'),('schema','0016','schema_0017_required'),
+    ('user','stock_discovery','database_identity_mismatch'),('schema','0016','schema_0018_required'),
     ('cursor',None,'existing_cursor_required'),('grant',False,'required_grant_missing'),
     ('privileged',True,'restricted_role_required')])
 def test_preflight_fails_closed(config,preflight_fixture,field,value,error):

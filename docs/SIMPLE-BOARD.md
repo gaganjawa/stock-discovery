@@ -1,87 +1,60 @@
 # Stock Discovery — SD ARCH 3.0 board
 
-Current delivery — **STK-094 / D3-05 Quant horizon policies + D3-09 UI** (16 November).
-PR #57 is merged at main `0fe21361b590992dd9c96f346fb10ff1891566e7`.
-A confirmed rolling-price integration defect is fixed for review: Candidates, open
-company research and the watchlist now select the same complete refreshed batch.
-Historical/publication reads, source grants, immutable revisions and fail-closed
-qualification are preserved. **169 focused tests passed**, including actual Chromium
-with isolated synthetic provider/DB fixtures. No live application deployment.
-[Defect, tests and dated live evidence](STK-094-candidate-research-continuity.md).
-Read-only 16-Nov evidence: VPS non-Test events **0**; Mac candidates **0**, cursor
-**3**, revisions **2,648**; latest stored INFY session **4-Nov**, no current qualified
-batch. Genuine end-to-end acceptance remains pending. Planning baseline **58%**.
+Current delivery — **STK-095 / STK-014 · D3-03 Revision storage and ingestion**
+(16 November), continuing **PR #59** on main with **PR #58 merged** (`0daf5eb`).
+Authenticated, rate/size-bounded webhook intake now durably stores a private,
+credential-redacted raw receipt before HTTP 202. The existing consumer advances
+its cursor after local durability, then parses asynchronously. Unknown schemas
+are quarantined with diagnostics and authenticated replay; downstream validation,
+source grants, quotas and candidate deduplication remain strict.
+Additive **0018** stores parsed envelopes/diagnostics alongside immutable receipts;
+no production migration or deployment has occurred. Synthetic PostgreSQL and real
+browser acceptance covers raw intake → eligible refresh → research → ranked
+Candidates → watchlist. This is **not genuine market acceptance**.
+[Implementation and release gates](STK-095-private-rejections.md).
+Optional capture failures remain visible in authenticated diagnostics and do not
+fail database/receiver health; best-effort retention cleanup still runs.
+Planning baseline remains **58%**. Owner monitors CI; do not wait or merge.
 
-STK-100 / D3-12 (16-Nov): a separate local read-only Streamlit/SFTP project browser
-is prepared for review. Bounded allowlisted navigation/previews, credential/symlink
-exclusion and existing SSH host-key verification are covered by focused tests.
-Real VPS verification used SFTP metadata only (two visible entries; no file reads,
-commands, writes or service changes). Launch and limits: [VPS browser](../tools/vps_browser/README.md).
-PR #59 is unchanged; no production deployment or change to the 58% baseline.
+STK-100 / D3-12: [local read-only VPS browser](../tools/vps_browser/README.md) is prepared for review in PR #60. Focused tests and SFTP metadata-only checks passed; no production changes or change to the 58% baseline.
 
-## CURRENT — 16 November 2026 · STK-094 / D3-05 + D3-09 Candidate research
+## CURRENT — 16 November 2026 · STK-095 / D3-03
 
-Requirements: [SD ARCH 3.0](SD-ARCH-3.0.md). [SIMPLE-BOARD](SIMPLE-BOARD.md)
-is the canonical task board; [PROJECT-HANDOFF](PROJECT-HANDOFF.md) provides product
-and component context; [WORK-HANDOFF](WORK-HANDOFF.md) records execution continuity.
-Update board and project handoff together on material state changes.
-**58% remains the owner-specified planning baseline**, not measured live readiness.
+Requirements: [SD ARCH 3.0](SD-ARCH-3.0.md); this is the canonical task board.
+[PROJECT-HANDOFF](PROJECT-HANDOFF.md) records persistent component context.
+Overall **58%** is a planning baseline, not a measured acceptance percentage.
 
-| Component | Actual current state | Remaining gate |
+| Component | Current state | Remaining gate |
 |---|---|---|
-| STK-095 | VPS receiver/inbox/proxy and native Mac consumer; schema 0017; real provider-Test acceptance passed. | Ordinary genuine alert; no manufactured candidates. |
-| STK-094 / STK-014 | PR #52/#53 merged; native bounded INFY refresh; stored-price EMA/breakout and page-scoped ranking implemented. Shared current-batch reader fix prepared for review; synthetic candidate → research → watchlist acceptance passed. | Complete current qualified price batch and genuine candidate → analysis → UI. |
-| STK-099 | PR #48/#54 merged; 14-Nov representative VPS restore/resource/recovery evidence retained. PR #57 operations tooling/checklist merged; no activation. Infrastructure work deferred by current owner direction. | Off-server restore/key custody, external alert/host-loss test, separate release authorization, genuine Mac-off acceptance. [Issue #47](https://github.com/gaganjawa/stock-discovery/issues/47) remains open. |
-| D3-13 | PR #55 continuity and #56 CI selection merged. | Integrated three-horizon live release, real research/policy/forward-evidence gates remain capability-specific. |
+| STK-095 | Receiver/Mac consumer live; provider Tests passed; a candidate-format request was rejected at column validation on 16-Nov. Durable raw intake, worker quarantine/replay and schema 0018 prepared in PR #59, not deployed. | Approve additive migration/compatible consumer and receiver release; verify genuine candidate acceptance. |
+| STK-094 / STK-014 | PR #52/#53 merged; restricted INFY refresh singleton; EMA/breakout and page-scoped Candidates ranking implemented. | Current complete price batch and genuine candidate → analysis → UI. PR #58 stored-price coherence fix is merged. |
+| STK-099 | PR #57 merged as `0fe2136`; prior representative restore/resource/recovery evidence retained. | Off-server restore/key custody, external alerts, separate cutover approval and genuine Mac-off acceptance; issue #47 remains open. |
+| D3-13 | Continuity and CI selection merged. | Integrated three-horizon live release and prospective qualification remain incomplete. |
 
-**Live VPS, 16-Nov 06:06:20 UTC:** receiver/proxy/database still running; receiver
-and database healthy, receiver image and start time unchanged. Restic 0.19.1 was
-installed at a separate versioned tools path. No application service restart,
-migration, cursor update, volume change, provider request or cutover occurred.
-**Current application evidence, 16-Nov 06:41–06:49 UTC:** both DBs schema 0017;
-VPS three provider-Test events, zero non-Test events and high-water **3**; Mac cursor
-**3**, events **3**, candidates **0**, revisions **2,648**, refresh jobs **0** and
-zero provider quota requests in preceding 24h. Consumer PID 8125 and refresh PID
-8129 remained running with one launch each. Latest stored INFY price session is
-**4-Nov**; other 11 stored listings end **23-Oct**. No complete current OHLCV batch
-or live candidate/UI acceptance is claimed. No production writes or restarts.
-
-Initial Upstox HTTP 200 gave 30 validated bars but omitted expected 13-Nov; **zero
-ingested**. The one authorized diagnostic also omitted it. Upstream incompleteness
-is observed; cache lag remains an inference. Existing retries: 900 seconds, at most
-three per eligible job. Missing/stale/insufficient evidence stays unranked.
-
-**Reused acceptance:** 14-Nov isolated VPS restore preserved 70 tables / 6,737 rows /
-three sequences and watchlist bytes; browser, 24 company reads at concurrency four,
-worker restart and second recovery passed. Minimum available RAM 1,008.6 MiB,
-no OOM. This was stored-data/idle-refresh rehearsal, not off-server recovery or
-live acquisition. No repeat VPS/browser rehearsal. The prior 15 operations tests used
-synthetic transports/databases; they do not prove external delivery or remote restore.
+**Actual production evidence, 16-Nov 13:42–13:45 UTC:** schema **0017** on both
+sides, remote high-water/Mac cursor **3**, accepted events **3**, all provider Tests;
+genuine candidates **0**, refresh jobs **0**, revisions **2,648**. Consumer PID 8125,
+refresh PID 8129, one launch each; consumer cycles completed. Latest accepted event
+13-Nov 16:16:04.537076 UTC. Receiver/proxy/database unchanged and healthy.
+`invalid_columns_fields` is the confirmed receiver failure; zero matches, no alert
+generation or consumer failure cannot be inferred. Latest complete stored INFY
+session **4-Nov** is stale; no current OHLCV qualification. Scanner authorization
+expires **18-Nov 12:11:49 UTC**; existing approval window must cover the next alert.
 
 | Priority | Tickets | Next outcome |
 |---|---|---|
-| **P0** | STK-014 / STK-094 / STK-095 | Next ordinary EOD alert → identity/session/symbols → durable candidate/cursor → complete eligible refresh → re-analysis → authenticated Candidates UI. Provider Tests excluded. |
-| **P1** | STK-014 / STK-094 | Review shared-batch research fix, then expose per-candidate refresh eligibility and out-of-universe reasons; preserve bounded approved acquisition scope. |
-| **P2** | STK-014 / STK-054 / STK-079–081 | Qualify volume and remaining strategy/research inputs for daily usable swing and all three horizons; no invented BUY, levels, sizing or performance. |
+| **P0** | STK-095 | Review PR #59, approve schema 0018 and compatible worker/receiver/API/UI release; verify next genuine delivery, quarantine/replay if needed, then candidate acceptance. |
+| **P1** | STK-014 / STK-094 | Genuine eligible candidate → complete EOD refresh → durable analysis → authenticated UI; missing/stale/insufficient data stays unranked. |
+| **P2** | STK-099 / STK-054 / STK-079–081 | Existing off-server/alert provisioning gates remain; volume/strategy/research qualification remains. No infrastructure work in this fix. |
 
-**Application acceptance gaps:** no genuine alert yet, no current complete stored
-INFY price batch, adjusted volume basis remains unqualified. Existing acquisition
-scope is INFY. No additional owner authorization was needed for this software fix.
-Infrastructure gates remain recorded in [STK-099](STK-099-release-prerequisites.md)
-but are outside this task and do not block independent application implementation.
+**Verified blocker:** original rejected JSON is unavailable; no evidence supports a
+specific column alias, omitted-field relaxation or successful genuine delivery.
+**Exact next task:** review PR #59 and exact-head CI, authorize additive 0018 and
+the compatible application/consumer then receiver release. Use the
+[release sequence](STK-095-private-rejections.md), then verify the next ordinary alert. Preserve secrets/URL, event history, cursor
+and singleton workers; only the approved additive schema change is permitted. No test alert, provider call or full cutover.
 
-**Current synthetic validation:** four new PostgreSQL/API/negative cases including
-real Chromium candidate → open research → save/review watchlist passed; 165 affected
-unit/integration regressions passed. These do not establish genuine market acceptance.
-
-**Exact next executable task — STK-014:** after review/merge of the current
-STK-094 fix, expose per-candidate refresh eligibility/out-of-universe reasons using
-the existing worker configuration and job contracts. Observe the next ordinary
-eligible EOD alert independently; do not manufacture events or expand provider scope.
-Volume-qualified swing checks remain subsequent work. Owner monitors this PR's CI;
-do not wait, merge, deploy, interrupt live workers or start infrastructure work.
-
-## HISTORICAL — prior 16-Nov operations delivery
+## HISTORICAL — superseded 16-Nov operations checkpoint
 
 Current delivery — **STK-099 / D3-12 Private operational pilot** (16 November).
 Main includes PR #56 at `5a78b6846cd88d89e68abf8864b8fe707c50b8b6`.
@@ -95,6 +68,66 @@ configuration has no destination/credentials/key-custody or alert hook. Owner in
 is required for those existing resources, then one actual restore and observed alert.
 [Exact evidence, prerequisites and executable sequence](STK-099-release-prerequisites.md).
 Planning baseline remains **58%**. No cutover authorization; owner monitors PR CI.
+
+## HISTORICAL — 16 November 2026 · STK-099 / D3-12 Private operational pilot
+
+Requirements: [SD ARCH 3.0](SD-ARCH-3.0.md). [SIMPLE-BOARD](SIMPLE-BOARD.md)
+is the canonical task board; [PROJECT-HANDOFF](PROJECT-HANDOFF.md) provides product
+and component context; [WORK-HANDOFF](WORK-HANDOFF.md) records execution continuity.
+Update board and project handoff together on material state changes.
+**58% remains the owner-specified planning baseline**, not measured live readiness.
+
+| Component | Actual current state | Remaining gate |
+|---|---|---|
+| STK-095 | VPS receiver/inbox/proxy and native Mac consumer; schema 0017; real provider-Test acceptance passed. | Ordinary genuine alert; no manufactured candidates. |
+| STK-094 / STK-014 | PR #52/#53 merged; native bounded INFY refresh; stored-price EMA/breakout and page-scoped ranking implemented. | Complete current qualified price batch and genuine candidate → analysis → UI. |
+| STK-099 | PR #48/#54 merged; 14-Nov representative VPS restore/resource/recovery evidence retained. Current operations tooling and cutover/rollback checklist prepared for review. | Off-server restore/key custody, external alert/host-loss test, separate release authorization, genuine Mac-off acceptance. [Issue #47](https://github.com/gaganjawa/stock-discovery/issues/47) remains open. |
+| D3-13 | PR #55 continuity and #56 CI selection merged. | Integrated three-horizon live release, real research/policy/forward-evidence gates remain capability-specific. |
+
+**Live VPS, 16-Nov 06:06:20 UTC:** receiver/proxy/database still running; receiver
+and database healthy, receiver image and start time unchanged. Restic 0.19.1 was
+installed at a separate versioned tools path. No application service restart,
+migration, cursor update, volume change, provider request or cutover occurred.
+**Last Mac evidence remains 15-Nov 13:01 UTC:** schema 0017, cursor **3**, events
+**3**, genuine candidates **0**, revisions **2,648**, consumer PID 8125 and refresh
+PID 8129, one launch each/one refresh process, no refresh jobs or quota requests in
+preceding 24h. Those counts were not remeasured in this operations task.
+
+Initial Upstox HTTP 200 gave 30 validated bars but omitted expected 13-Nov; **zero
+ingested**. The one authorized diagnostic also omitted it. Upstream incompleteness
+is observed; cache lag remains an inference. Existing retries: 900 seconds, at most
+three per eligible job. Missing/stale/insufficient evidence stays unranked.
+
+**Reused acceptance:** 14-Nov isolated VPS restore preserved 70 tables / 6,737 rows /
+three sequences and watchlist bytes; browser, 24 company reads at concurrency four,
+worker restart and second recovery passed. Minimum available RAM 1,008.6 MiB,
+no OOM. This was stored-data/idle-refresh rehearsal, not off-server recovery or
+live acquisition. No repeat VPS/browser rehearsal. Current 15 operations tests use
+synthetic transports/databases; they do not prove external delivery or remote restore.
+
+| Priority | Tickets | Next outcome |
+|---|---|---|
+| **P0** | STK-014 / STK-094 / STK-095 | Next ordinary EOD alert → identity/session/symbols → durable candidate/cursor → complete eligible refresh → re-analysis → authenticated Candidates UI. Provider Tests excluded. |
+| **P1** | STK-099 | Supply existing backup destination/private credentials, independent key custody and alert/host-loss resource; perform one encrypted off-server restore and actual alert delivery, then request separate cutover authorization. |
+| **P2** | STK-014 / STK-054 / STK-079–081 | Qualify volume and remaining strategy/research inputs for daily usable swing and all three horizons; no invented BUY, levels, sizing or performance. |
+
+**Verified blockers / release gates:** no backup repository/credentials/custodial-key
+configuration or alert hook found in inspected locations; no Stock Discovery timers
+or root cron entries. Restic executable availability is now resolved. Off-server
+restore, key custody, external alert/host-loss delivery, active-provider capacity and
+genuine Mac-off evidence remain unverified. Existing Caddy uses `admin off`; proxy
+replacement needs a separately authorized brief ingress window. No host upgrade is
+justified by the retained rehearsal. No new paid resources or provider-rights review.
+
+**Exact next executable task:** owner identifies existing off-server and alert
+resources/private paths (never secret values); fill reviewed private operations
+config and run `python3 scripts/operate.py backup`, `alert-test`, and `monitor`.
+Record exact snapshot/restored fingerprints and actual delivery ID/time; enable
+existing timers only afterward. Full cutover remains **NOT READY / unauthorized**.
+The [current release checklist and rollback commands](STK-099-release-prerequisites.md)
+supersede historical 0016 migration/receiver upgrade steps. Preserve schema 0017,
+credentials, webhook, original cursor identity, volumes and fresh rollback state.
+PR checks and owner review are pending; do not wait for CI, merge or cut over.
 
 ## HISTORICAL — superseded 15-Nov current checkpoint
 
@@ -643,3 +676,81 @@ restarts and recovery restore. Minimum sampled headroom 1,008.6 MiB; no OOM.
 Online snapshot backup and opt-in scoped hosted refresh are implemented for review.
 Live services/cursor 3/schema 0017 preserved; no genuine candidates or full cutover.
 [Evidence, limitations and release conditions](STK-099-restored-rehearsal.md).
+
+## Retained PR #58 reconciliation evidence
+
+Current delivery — **STK-094 / D3-05 Quant horizon policies + D3-09 UI** (16 November).
+PR #57 is merged at main `0fe21361b590992dd9c96f346fb10ff1891566e7`.
+A confirmed rolling-price integration defect is fixed for review: Candidates, open
+company research and the watchlist now select the same complete refreshed batch.
+Historical/publication reads, source grants, immutable revisions and fail-closed
+qualification are preserved. **169 focused tests passed**, including actual Chromium
+with isolated synthetic provider/DB fixtures. No live application deployment.
+[Defect, tests and dated live evidence](STK-094-candidate-research-continuity.md).
+Read-only 16-Nov evidence: VPS non-Test events **0**; Mac candidates **0**, cursor
+**3**, revisions **2,648**; latest stored INFY session **4-Nov**, no current qualified
+batch. Genuine end-to-end acceptance remains pending. Planning baseline **58%**.
+
+## CURRENT — 16 November 2026 · STK-094 / D3-05 + D3-09 Candidate research
+
+Requirements: [SD ARCH 3.0](SD-ARCH-3.0.md). [SIMPLE-BOARD](SIMPLE-BOARD.md)
+is the canonical task board; [PROJECT-HANDOFF](PROJECT-HANDOFF.md) provides product
+and component context; [WORK-HANDOFF](WORK-HANDOFF.md) records execution continuity.
+Update board and project handoff together on material state changes.
+**58% remains the owner-specified planning baseline**, not measured live readiness.
+
+| Component | Actual current state | Remaining gate |
+|---|---|---|
+| STK-095 | VPS receiver/inbox/proxy and native Mac consumer; schema 0017; real provider-Test acceptance passed. | Ordinary genuine alert; no manufactured candidates. |
+| STK-094 / STK-014 | PR #52/#53 merged; native bounded INFY refresh; stored-price EMA/breakout and page-scoped ranking implemented. Shared current-batch reader fix prepared for review; synthetic candidate → research → watchlist acceptance passed. | Complete current qualified price batch and genuine candidate → analysis → UI. |
+| STK-099 | PR #48/#54 merged; 14-Nov representative VPS restore/resource/recovery evidence retained. PR #57 operations tooling/checklist merged; no activation. Infrastructure work deferred by current owner direction. | Off-server restore/key custody, external alert/host-loss test, separate release authorization, genuine Mac-off acceptance. [Issue #47](https://github.com/gaganjawa/stock-discovery/issues/47) remains open. |
+| D3-13 | PR #55 continuity and #56 CI selection merged. | Integrated three-horizon live release, real research/policy/forward-evidence gates remain capability-specific. |
+
+**Live VPS, 16-Nov 06:06:20 UTC:** receiver/proxy/database still running; receiver
+and database healthy, receiver image and start time unchanged. Restic 0.19.1 was
+installed at a separate versioned tools path. No application service restart,
+migration, cursor update, volume change, provider request or cutover occurred.
+**Current application evidence, 16-Nov 06:41–06:49 UTC:** both DBs schema 0017;
+VPS three provider-Test events, zero non-Test events and high-water **3**; Mac cursor
+**3**, events **3**, candidates **0**, revisions **2,648**, refresh jobs **0** and
+zero provider quota requests in preceding 24h. Consumer PID 8125 and refresh PID
+8129 remained running with one launch each. Latest stored INFY price session is
+**4-Nov**; other 11 stored listings end **23-Oct**. No complete current OHLCV batch
+or live candidate/UI acceptance is claimed. No production writes or restarts.
+
+Initial Upstox HTTP 200 gave 30 validated bars but omitted expected 13-Nov; **zero
+ingested**. The one authorized diagnostic also omitted it. Upstream incompleteness
+is observed; cache lag remains an inference. Existing retries: 900 seconds, at most
+three per eligible job. Missing/stale/insufficient evidence stays unranked.
+
+**Reused acceptance:** 14-Nov isolated VPS restore preserved 70 tables / 6,737 rows /
+three sequences and watchlist bytes; browser, 24 company reads at concurrency four,
+worker restart and second recovery passed. Minimum available RAM 1,008.6 MiB,
+no OOM. This was stored-data/idle-refresh rehearsal, not off-server recovery or
+live acquisition. No repeat VPS/browser rehearsal. The prior 15 operations tests used
+synthetic transports/databases; they do not prove external delivery or remote restore.
+
+| Priority | Tickets | Next outcome |
+|---|---|---|
+| **P0** | STK-014 / STK-094 / STK-095 | Next ordinary EOD alert → identity/session/symbols → durable candidate/cursor → complete eligible refresh → re-analysis → authenticated Candidates UI. Provider Tests excluded. |
+| **P1** | STK-014 / STK-094 | Review shared-batch research fix, then expose per-candidate refresh eligibility and out-of-universe reasons; preserve bounded approved acquisition scope. |
+| **P2** | STK-014 / STK-054 / STK-079–081 | Qualify volume and remaining strategy/research inputs for daily usable swing and all three horizons; no invented BUY, levels, sizing or performance. |
+
+**Application acceptance gaps:** no genuine alert yet, no current complete stored
+INFY price batch, adjusted volume basis remains unqualified. Existing acquisition
+scope is INFY. No additional owner authorization was needed for this software fix.
+Infrastructure gates remain recorded in [STK-099](STK-099-release-prerequisites.md)
+but are outside this task and do not block independent application implementation.
+
+**Current synthetic validation:** four new PostgreSQL/API/negative cases including
+real Chromium candidate → open research → save/review watchlist passed; 165 affected
+unit/integration regressions passed. These do not establish genuine market acceptance.
+
+**Exact next executable task — STK-014:** after review/merge of the current
+STK-094 fix, expose per-candidate refresh eligibility/out-of-universe reasons using
+the existing worker configuration and job contracts. Observe the next ordinary
+eligible EOD alert independently; do not manufacture events or expand provider scope.
+Volume-qualified swing checks remain subsequent work. Owner monitors this PR's CI;
+do not wait, merge, deploy, interrupt live workers or start infrastructure work.
+
+## HISTORICAL — prior 16-Nov operations delivery

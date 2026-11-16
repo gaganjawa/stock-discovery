@@ -67,7 +67,7 @@ def test_0017_preserves_events_sequences_references_and_state(isolated_url,monke
         tables=('candidate_events','candidate_event_state','candidate_sessions','candidates',
             'candidate_matches','candidate_research_runs','candidate_receivers')
         def snapshot():
-            return {table:conn.execute('SELECT * FROM discovery.'+table+' ORDER BY 1').fetchall() for table in tables}
+            return {table:conn.execute('SELECT '+('event_id,status,error_code,deliveries' if table=='candidate_event_state' else '*')+' FROM discovery.'+table+' ORDER BY 1').fetchall() for table in tables}
         before=snapshot()
         seq_before=conn.execute('SELECT last_value,is_called FROM discovery.candidate_events_sequence_seq').fetchone()
         for action,target in [(command.upgrade,'0017'),(command.upgrade,'head'),
@@ -84,7 +84,7 @@ def test_0017_preserves_events_sequences_references_and_state(isolated_url,monke
         # Reinstating the smaller bound must fail, never delete/rewrite retained data.
         with pytest.raises(DBAPIError):command.downgrade(config,'0016')
         assert snapshot()==retained
-        assert conn.execute('SELECT version_num FROM alembic_version').fetchone()==('0017',)
+        assert conn.execute('SELECT version_num FROM alembic_version').fetchone()==('0018',)
         constraint=conn.execute("SELECT pg_get_constraintdef(oid),convalidated FROM pg_constraint WHERE conrelid='discovery.candidate_events'::regclass AND conname='candidate_events_envelope_check'").fetchone()
         assert '1048576' in constraint[0] and constraint[1]
         assert store.accept(conn,large)['duplicate']

@@ -17,12 +17,38 @@ from stock_discovery_analysis.real_access import SourceConfig
 pytestmark=pytest.mark.skipif(not os.getenv('STK_TEST_DATABASE_URL'),reason='disposable PostgreSQL required')
 
 
-def prepare(conn,path):
+def prepare(conn,path, *, raw_intake=False, monkeypatch=None):
     gf=path/'grants';gf.write_text(json.dumps([grant().model_dump(mode='json')]))
     token=path/'token';token.write_text('invented-token')
     scan=scanner();day=NOW[:10]
     event=fixture_snapshot(scan,['INFY'],day,datetime.fromisoformat(NOW.replace('Z','+00:00')))
-    store.accept(conn,event);store.accept(conn,event);drain(conn)
+    if raw_intake:
+        from app import chartink_receiver
+        from app.research import db
+        from fastapi.testclient import TestClient
+        scanfile=path/'scanner';scanfile.write_text(scan.model_dump_json())
+        monkeypatch.setenv('CHARTINK_RECEIVER_ENABLED','true')
+        monkeypatch.setenv('CHARTINK_WEBHOOK_SECRET','w'*40)
+        monkeypatch.setenv('CHARTINK_PULL_SECRET','p'*40)
+        monkeypatch.setenv('CHARTINK_SCANNER_CONFIG',str(scanfile))
+        class Clock:
+            @staticmethod
+            def now(tz):return datetime.fromisoformat(NOW.replace('Z','+00:00'))
+        monkeypatch.setattr(chartink_receiver,'datetime',Clock)
+        def connection():yield conn
+        chartink_receiver.app.dependency_overrides[db]=connection
+        try:
+            client=TestClient(chartink_receiver.app);url='/hooks/chartink/'+'w'*40
+            assert client.post('/hooks/chartink/invalid',json=event['payload']).status_code==401
+            receipt=client.post(url,json=event['payload'])
+            assert receipt.status_code==202 and receipt.json()['delivery_kind']=='unclassified'
+            assert client.post(url,json=event['payload']).json()['duplicate']
+            assert conn.execute('SELECT count(*) FROM discovery.candidates').fetchone()==(0,)
+            event=conn.execute('SELECT envelope FROM discovery.candidate_events').fetchone()[0]
+        finally:chartink_receiver.app.dependency_overrides.clear()
+    else:
+        store.accept(conn,event);store.accept(conn,event)
+    drain(conn)
     conn.execute("UPDATE discovery.candidates SET research_status='blocked',result='{}'")
     config=RefreshConfig(market=dict(account_ref='test',grant_file=str(gf),token_file=str(token),
         symbols=('INFY',),retention_days=365,lookback_days=40),scanner_keys=(scan.key,))
