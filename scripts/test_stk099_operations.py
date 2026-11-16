@@ -42,7 +42,7 @@ class OnlineOperationsTests(unittest.TestCase):
 
     def backup(self,db,path,cluster):
         path.write_bytes(b'synthetic-dump')
-        manifest={'source':db.name,'cluster':cluster,'sha256':transfer.checksum(path),'snapshot':{'revision':'0017','tables':{'discovery.test':{'rows':1}},'sequences':{}}}
+        manifest={'source':db.name,'cluster':cluster,'sha256':transfer.checksum(path),'snapshot':{'revision':'0018','tables':{'discovery.test':{'rows':1}},'sequences':{}}}
         path.with_suffix('.manifest.json').write_text(json.dumps(manifest));return manifest
 
     def restic(self,*args):
@@ -75,6 +75,18 @@ class OnlineOperationsTests(unittest.TestCase):
         self.assertTrue(any(x[:3]==('--no-cache','restore','bbbbbbbb') for x in self.transport))
         self.assertEqual(list((self.state/'stage').iterdir()),[])
         self.assertFalse(any('prune' in x or 'forget' in x for x in self.transport))
+
+    def test_unsupported_schema_never_uploads_or_claims_recovery(self):
+        original=self.backup
+        for revision in ('0017','0019'):
+            with self.subTest(revision=revision):
+                def unsupported(*args):
+                    result=original(*args);result['snapshot']['revision']=revision;return result
+                with self.context(),patch.object(transfer,'backup_online',side_effect=unsupported),self.assertRaisesRegex(ValueError,'schema_0018_required'):
+                    operate.backup_cycle(self.state)
+                self.assertFalse(any(args[0]=='backup' for args in self.transport))
+                self.assertFalse((self.state/'last-backup.json').exists())
+                shutil.rmtree(self.state/'stage')
 
     def test_same_cluster_recovery_is_rejected_before_backup(self):
         self.config['recovery']['cluster']='111';self.write_config()
@@ -125,10 +137,10 @@ class MonitoringTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as root:
             state=Path(root)
             rows=[{'Service':name,'State':'running','Health':'healthy'} for name in ('database','receiver','proxy')]
-            with patch.dict(os.environ,{'STK_MONITOR_MODE':'receiver'},clear=True),patch.object(operate,'run',return_value=json.dumps(rows).encode()),patch.object(operate,'command',return_value=b'0017\n') as query,patch.object(operate,'notify'):
+            with patch.dict(os.environ,{'STK_MONITOR_MODE':'receiver'},clear=True),patch.object(operate,'run',return_value=json.dumps(rows).encode()),patch.object(operate,'command',return_value=b'0018\n') as query,patch.object(operate,'notify'):
                 self.assertFalse(operate.monitor(state))
             codes=json.loads((state/'monitor.json').read_text())['codes']
-            self.assertIn('backup_unverified',codes);self.assertIn('external_alert_unconfigured',codes)
+            self.assertNotIn('receiver_schema_unexpected',codes);self.assertIn('backup_unverified',codes);self.assertIn('external_alert_unconfigured',codes)
             self.assertFalse(any(x.startswith(('api_','worker_','web_','queue_')) for x in codes))
             self.assertEqual(query.call_args.kwargs['input'],b'SELECT version_num FROM public.alembic_version;')
 

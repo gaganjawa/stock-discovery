@@ -1,5 +1,13 @@
 # Stock Discovery — project handoff
 
+STK-099 / D3-12 (17-Nov): full VPS cutover **NO-GO** pending verified encrypted
+off-server restore, external alert/dead-host delivery and separate owner approval.
+Current capacity does not establish a need to upgrade; prior representative resource
+and recovery evidence is reused. Operations schema checks aligned to 0018.
+[Current release gates and exact next sequence](STK-099-release-prerequisites.md).
+No production changes; 58% baseline and genuine acceptance PENDING are unchanged.
+
+
 ## Current — STK-014 / STK-094 · D3-03 + D3-09 candidate qualification
 
 16-Nov: STK-095 hybrid release `2c39f61e` is active on Mac + VPS, both databases
