@@ -1,5 +1,20 @@
 """STK-014 / STK-094: public qualification facts, never acquisition authorization."""
 
+from datetime import date, datetime
+import re
+
+
+def valid_session(value):
+    if not isinstance(value,str):return False
+    try:
+        if re.fullmatch(r"\d{4}-\d{2}-\d{2}",value):
+            date.fromisoformat(value)
+        elif re.fullmatch(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z",value):
+            datetime.fromisoformat(value.replace("Z","+00:00"))
+        else:return False
+    except ValueError:return False
+    return True
+
 
 def qualification(row, *, current=False):
     research=row.get('research') or {}
@@ -11,7 +26,20 @@ def qualification(row, *, current=False):
     freshness=(market.get('freshness') or {}).get('status','not_checked')
     available=(research.get('status')=='completed'
                and technical.get('status')=='AVAILABLE_DESCRIPTIVE_ONLY')
-    qualified=current and available and freshness=='current'
+    coverage=technical.get('session_coverage')
+    coverage_ready=(coverage is None or (
+        coverage.get('warmup_complete') is True
+        and coverage.get('latest_session_present') is True
+        and not coverage.get('missing_sessions')
+        and not coverage.get('unverified_bar_sessions')
+        and coverage.get('duplicate_bars') is False))
+    # Reasons are data-readiness failures; descriptive limitations (e.g. volume)
+    # live separately and continue to block signals, not qualified price evidence.
+    qualified=(current and available and identity and not denied and freshness=='current'
+               and market.get('warmup_complete') is True
+               and valid_session(market.get('latest_session'))
+               and not reasons and not technical.get('unavailable_reasons')
+               and coverage_ready)
     job=row.get('price_refresh') or {}
     status=job.get('status')
     refresh_state={'queued':'pending','running':'pending','retry_wait':'pending',
