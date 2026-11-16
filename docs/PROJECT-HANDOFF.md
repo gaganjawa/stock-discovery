@@ -19,6 +19,8 @@ Planning baseline remains **58%**. Owner monitors CI; do not wait or merge.
 Requirements: [SD ARCH 3.0](SD-ARCH-3.0.md); canonical task status in
 [SIMPLE-BOARD](SIMPLE-BOARD.md). Historical evidence retains its original scope.
 
+STK-100 / D3-12: [local read-only VPS browser](../tools/vps_browser/README.md) is prepared for review in PR #60. Focused tests and SFTP metadata-only checks passed; no production changes or change to the 58% baseline.
+
 ## Objective and horizons
 
 Automatically discover eligible NSE cash equities, validate immutable market and
