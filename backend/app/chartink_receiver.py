@@ -104,9 +104,9 @@ def retrieve(request:Request,after:int=Query(0,ge=0),limit:int=Query(25,ge=1,le=
 def health(conn=Depends(db)):
     # Internal container check only; reverse proxy does not publish this route.
     conn.execute('SELECT 1 FROM discovery.candidate_events LIMIT 1')
-    diagnostics=chartink_diagnostics.read()
-    if diagnostics.get('enabled') and not diagnostics.get('available'):
-        raise HTTPException(503,'Private rejection capture unavailable')
+    # Best-effort retention housekeeping; optional capture availability is exposed
+    # only by authenticated operational diagnostics, never a database health gate.
+    chartink_diagnostics.read()
     return {'database':'available','receiver_enabled':os.environ.get('CHARTINK_RECEIVER_ENABLED')=='true'}
 
 

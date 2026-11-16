@@ -13,6 +13,26 @@ from test_candidates import isolated_url,scanner
 pytestmark=pytest.mark.skipif(not os.getenv('STK_TEST_DATABASE_URL'),reason='requires disposable PostgreSQL')
 
 
+def test_optional_capture_failure_does_not_fail_durable_intake_health(columns_receiver,isolated_url,tmp_path,monkeypatch):
+    client,url,config=columns_receiver
+    monkeypatch.setattr(chartink_diagnostics,'_last_write_failed',False)
+    monkeypatch.setattr(chartink_diagnostics,'FILE',tmp_path/'missing-private-directory'/'rejections.json')
+    chartink_diagnostics.record(None,'event_too_large',b'synthetic-rejected-body')
+    response=client.post(url,json=batch_payload(config,1))
+    assert response.status_code==202 and response.json()['delivery_kind']=='unclassified'
+    health=client.get('/healthz')
+    assert health.status_code==200
+    assert health.json()=={'database':'available','receiver_enabled':True}
+    assert client.get('/candidate-health').status_code==401
+    operational=client.get('/candidate-health',headers={'Authorization':'Bearer '+'p'*40})
+    assert operational.status_code==200
+    assert operational.json()['rejection_diagnostics']=={'enabled':True,'available':False}
+    assert operational.json()['stored_events']==1
+    with psycopg.connect(isolated_url,autocommit=True) as conn:
+        assert conn.execute('SELECT event_id FROM discovery.candidate_events').fetchone()==(response.json()['event_id'],)
+        assert conn.execute('SELECT status,parsed_envelope FROM discovery.candidate_event_state').fetchone()==('pending',None)
+
+
 def test_raw_schema_drift_is_durable_quarantined_and_replayable(columns_receiver,isolated_url,monkeypatch):
     from stock_discovery_analysis import candidate_store as store,chartink_columns
     client,url,config=columns_receiver

@@ -12,6 +12,8 @@ no production migration or deployment has occurred. Synthetic PostgreSQL and rea
 browser acceptance covers raw intake → eligible refresh → research → ranked
 Candidates → watchlist. This is **not genuine market acceptance**.
 [Implementation and release gates](STK-095-private-rejections.md).
+Optional capture failures remain visible in authenticated diagnostics and do not
+fail database/receiver health; best-effort retention cleanup still runs.
 Planning baseline remains **58%**. Owner monitors CI; do not wait or merge.
 
 ## CURRENT — 16 November 2026 · STK-095 / D3-03
