@@ -102,8 +102,8 @@ def preflight(config, *, connect=None, clock=lambda: datetime.now(timezone.utc))
         role = conn.execute('SELECT rolsuper,rolbypassrls,rolcreatedb,rolcreaterole FROM pg_roles WHERE rolname=current_user').fetchone()
         if any(role):
             raise ValueError('restricted_role_required')
-        if conn.execute('SELECT version_num FROM alembic_version').fetchone() != ('0017',):
-            raise ValueError('schema_0017_required')
+        if conn.execute('SELECT version_num FROM alembic_version').fetchone() != ('0018',):
+            raise ValueError('schema_0018_required')
         receiver_id = digest(env['CHARTINK_RECEIVER_URL'])
         if receiver_id != config['receiver_id']:
             raise ValueError('receiver_identity_mismatch')

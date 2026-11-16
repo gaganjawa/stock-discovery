@@ -122,18 +122,19 @@ def test_receiver_auth_rejection_limits_and_durable_ack(isolated_url,tmp_path,mo
         assert c.post(url,json=p).status_code==503
         monkeypatch.setenv('CHARTINK_RECEIVER_ENABLED','true')
         assert c.post('/hooks/chartink/bad',json=p).status_code==401
-        assert c.post(url,json={**p,'scan_url':'wrong'}).status_code==422
+        assert c.post(url,json={**p,'scan_url':'wrong'}).status_code==202
         assert c.post(url,content=b'x'*65537,headers={'Content-Type':'application/json'}).status_code==413
         assert c.post(url,content='{}').status_code==415
         assert c.post(url,json=p).status_code==202
         assert c.post(url,json=p).json()['duplicate']
         assert c.get('/candidate-feed').status_code==401
         feed=c.get('/candidate-feed',headers={'Authorization':'Bearer '+'p'*40})
-        assert feed.status_code==200 and len(feed.json()['events'])==1
+        assert feed.status_code==200 and len(feed.json()['events'])==2
         assert 'w'*40 not in feed.text
         with psycopg.connect(isolated_url,autocommit=True) as conn:
-            assert conn.execute('SELECT count(*) FROM discovery.candidate_rejections').fetchone()==(1,)
-            assert conn.execute('SELECT status FROM discovery.candidate_event_state').fetchone()==('pending',)
+            assert conn.execute('SELECT count(*) FROM discovery.candidate_rejections').fetchone()==(0,)
+            drain(conn)
+            assert conn.execute("SELECT error_code FROM discovery.candidate_event_state WHERE status='failed'").fetchone()==('scanner_identity_mismatch',)
             conn.execute('UPDATE discovery.candidate_rate SET attempts=60')
         assert c.post(url,json=p).status_code==429
     finally:app.dependency_overrides.clear()

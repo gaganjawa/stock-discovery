@@ -1,14 +1,17 @@
 # Stock Discovery — SD ARCH 3.0 board
 
-Current delivery — **STK-095 / D3-03 Revision storage and ingestion** (16 November).
-Confirmed receiver rejection at **17:00:04.603766 IST**: `invalid_columns_fields`.
-The body was not retained; exact missing/extra names and sender provenance remain
-unknown. Bounded private redacted capture and per-row contract diagnostics are
-implemented for review, with receiver-only release/rollback preparation. The
-adapter remains unchanged until a genuine payload proves the required difference.
-Focused synthetic regression and PostgreSQL delivery checks passed; they are not
-live acceptance. **No production change**, migration, cursor update or provider call.
-[Evidence, limits and release procedure](STK-095-private-rejections.md).
+Current delivery — **STK-095 / STK-014 · D3-03 Revision storage and ingestion**
+(16 November), continuing **PR #59** on main with **PR #58 merged** (`0daf5eb`).
+Authenticated, rate/size-bounded webhook intake now durably stores a private,
+credential-redacted raw receipt before HTTP 202. The existing consumer advances
+its cursor after local durability, then parses asynchronously. Unknown schemas
+are quarantined with diagnostics and authenticated replay; downstream validation,
+source grants, quotas and candidate deduplication remain strict.
+Additive **0018** stores parsed envelopes/diagnostics alongside immutable receipts;
+no production migration or deployment has occurred. Synthetic PostgreSQL and real
+browser acceptance covers raw intake → eligible refresh → research → ranked
+Candidates → watchlist. This is **not genuine market acceptance**.
+[Implementation and release gates](STK-095-private-rejections.md).
 Planning baseline remains **58%**. Owner monitors CI; do not wait or merge.
 
 ## CURRENT — 16 November 2026 · STK-095 / D3-03
@@ -19,8 +22,8 @@ Overall **58%** is a planning baseline, not a measured acceptance percentage.
 
 | Component | Current state | Remaining gate |
 |---|---|---|
-| STK-095 | Receiver/Mac consumer live; provider Tests passed; a candidate-format request was rejected at column validation on 16-Nov. Private capture prepared for review, not deployed. | Capture ordinary rejection privately, fix only verified differences, then genuine durable candidate acceptance. |
-| STK-094 / STK-014 | PR #52/#53 merged; restricted INFY refresh singleton; EMA/breakout and page-scoped Candidates ranking implemented. | Current complete price batch and genuine candidate → analysis → UI. PR #58 stored-price coherence fix is separate review work. |
+| STK-095 | Receiver/Mac consumer live; provider Tests passed; a candidate-format request was rejected at column validation on 16-Nov. Durable raw intake, worker quarantine/replay and schema 0018 prepared in PR #59, not deployed. | Approve additive migration/compatible consumer and receiver release; verify genuine candidate acceptance. |
+| STK-094 / STK-014 | PR #52/#53 merged; restricted INFY refresh singleton; EMA/breakout and page-scoped Candidates ranking implemented. | Current complete price batch and genuine candidate → analysis → UI. PR #58 stored-price coherence fix is merged. |
 | STK-099 | PR #57 merged as `0fe2136`; prior representative restore/resource/recovery evidence retained. | Off-server restore/key custody, external alerts, separate cutover approval and genuine Mac-off acceptance; issue #47 remains open. |
 | D3-13 | Continuity and CI selection merged. | Integrated three-horizon live release and prospective qualification remain incomplete. |
 
@@ -36,16 +39,16 @@ expires **18-Nov 12:11:49 UTC**; existing approval window must cover the next al
 
 | Priority | Tickets | Next outcome |
 |---|---|---|
-| **P0** | STK-095 | Review private capture, approve receiver-only release, retain next ordinary rejection and compare its exact sanitized fields/types; fix only observed incompatibility and verify genuine acceptance. |
+| **P0** | STK-095 | Review PR #59, approve schema 0018 and compatible worker/receiver/API/UI release; verify next genuine delivery, quarantine/replay if needed, then candidate acceptance. |
 | **P1** | STK-014 / STK-094 | Genuine eligible candidate → complete EOD refresh → durable analysis → authenticated UI; missing/stale/insufficient data stays unranked. |
 | **P2** | STK-099 / STK-054 / STK-079–081 | Existing off-server/alert provisioning gates remain; volume/strategy/research qualification remains. No infrastructure work in this fix. |
 
 **Verified blocker:** original rejected JSON is unavailable; no evidence supports a
 specific column alias, omitted-field relaxation or successful genuine delivery.
-**Exact next task:** review this capture PR and exact-head CI, authorize its scoped
-receiver release using [the prepared commands](STK-095-private-rejections.md), then
-inspect the next ordinary alert privately. Preserve secrets/URL, schema, event
-history, cursor and Mac workers. No test alert, provider call or full cutover.
+**Exact next task:** review PR #59 and exact-head CI, authorize additive 0018 and
+the compatible application/consumer then receiver release. Use the
+[release sequence](STK-095-private-rejections.md), then verify the next ordinary alert. Preserve secrets/URL, event history, cursor
+and singleton workers; only the approved additive schema change is permitted. No test alert, provider call or full cutover.
 
 ## HISTORICAL — superseded 16-Nov operations checkpoint
 

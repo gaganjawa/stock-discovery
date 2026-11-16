@@ -83,7 +83,7 @@ def test_https_delivery_reconnect_and_candidates_api(tmp_path,monkeypatch,provid
             assert TestClient(receiver).get('/candidate-health').status_code==401
             health=TestClient(receiver).get('/candidate-health?after=0',headers={'Authorization':'Bearer '+'p'*40}).json()
             assert health['events_after_cursor']==1 and health['stored_events']==1
-            assert health['provider_test_events']==int(provider_test)
+            assert health['provider_test_events']==0 and health['unclassified_events']==1
             assert health['coverage']=='unknown_partial_alerts'
             assert 'w'*40 not in str(health)
             if os.getenv('STK097_BROWSER')=='1' and not provider_test:

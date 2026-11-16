@@ -62,10 +62,10 @@ class TransferGuards(unittest.TestCase):
             def snapshot(self):return {'revision':self.revision,'tables':{},'sequences':{}}
             def run(self,args,stdout):stdout.write(b'synthetic-dump')
         with tempfile.TemporaryDirectory() as tmp:
-            for revision in ('0016','0017'):
+            for revision in ('0016','0017','0018'):
                 manifest=backup(DB(revision),Path(tmp)/revision,'synthetic-cluster')
                 self.assertEqual(manifest['snapshot']['revision'],revision)
-            for revision in ('0015','0018'):
+            for revision in ('0015','0019'):
                 with self.assertRaisesRegex(ValueError,'supported_schema'):
                     backup(DB(revision),Path(tmp)/revision,'synthetic-cluster')
 

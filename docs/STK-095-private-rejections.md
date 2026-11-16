@@ -1,144 +1,110 @@
-# STK-095 · D3-03 Revision storage and ingestion — private rejection evidence
+# STK-095 / STK-014 · D3-03 — durable intake and asynchronous parsing
 
-## Confirmed production failure
+## Evidence and current implementation
 
-Read-only inspection on **16 November 2026, 13:42–13:45 UTC** found one retained
-`invalid_columns_fields` rejection at **11:30:04.603766 UTC / 17:00:04.603766 IST**.
-This code follows authentication, scanner identity, symbol/price and time checks,
-and column-array length validation. It means a row is not an object or its key set
-differs from the exact `chartink-columns-v1` contract. It does **not** identify the
-missing/extra keys or prove a genuine provider sender. Diagnostics were disabled,
-receiver/proxy logging was disabled, and the database retained only a body hash,
-reason and timestamp. The rejected original JSON cannot be reconstructed.
+On 16-Nov at **11:30:04.603766 UTC / 17:00:04.603766 IST**, production rejected a
+request with `invalid_columns_fields`. It reached authentication/scanner/row-count
+validation, but the original JSON was not retained. Exact genuine field differences
+remain unknown. Last read-only production evidence (13:42–13:45 UTC): both databases
+schema **0017**, remote high-water/Mac cursor **3**, three accepted provider Tests,
+zero genuine candidates/refresh jobs, 2,648 price revisions. Latest complete stored
+INFY session **4-Nov** is stale. Scanner approval expires **18-Nov 12:11:49 UTC**.
+No production changes or provider requests were made in this PR.
 
-Both databases were schema **0017**. Remote high-water and Mac cursor **3**;
-three accepted events were provider Tests, genuine accepted events/candidates and
-refresh jobs **zero**. Latest accepted receipt: 13-Nov **16:16:04.537076 UTC**.
-Scanner: `Stock Discovery - EOD Swing Candidates v1`, slug
-`stock-discovery-eod-swing-candidates-v1`, version 1. Scanner authorization expires
-**18-Nov 12:11:49 UTC**; check the existing approval window before the next delivery.
-No scanner change is included here. Consumer PID 8125, refresh PID 8129, one launch
-each; latest consumer cycle completed normally. Existing INFY data remains stale:
-latest complete stored session **4-Nov**, not current complete OHLCV acceptance.
+PR #59 now supersedes its initial capture-only implementation:
 
-## Implemented capture and boundaries
+- Authenticate, rate-limit, enforce existing JSON transport and **64 KiB** request
+  bound, save immutable `chartink-raw-v1` in existing `candidate_events`, then return
+  **202 / delivery_kind=unclassified**. The receipt means durable intake, not a
+  validated candidate or classified provider Test. Capacity/database failures never
+  acknowledge success. Existing inbox count/size bounds and deduplication apply.
+- Preserve raw JSON text/unknown fields for replay, original body SHA-256/length,
+  receipt time and scanner snapshot. Redact credential properties (including nested
+  values/escaped names), webhook URL, URLs, Bearer/Basic strings and configured
+  capabilities. Redaction intentionally prevents byte-for-byte reconstruction;
+  malformed syntax is retained in redacted form with its original syntax error.
+  Syntax checking at intake serves privacy only; it never validates known columns.
+- Pull the receipt to the existing Mac database and commit it with the existing
+  cursor. The existing worker parses under its approved scanner configuration.
+  Unknown schema/invalid identity/values/expired authorization are quarantined in
+  existing failed-event state, with bounded reason/time/field/type diagnostics.
+  A poison receipt does not block following valid events. No new queue or worker.
+- **0018**, an additive migration, adds bounded `parsed_envelope` and `diagnostics`
+  columns to event state. Immutable raw events stay unchanged. Validated result and
+  candidate materialization commit together; interruption rolls the claim back.
+  Existing legacy envelopes remain supported. Replay uses the existing authenticated
+  event retry; no cursor reset. Completed deliveries cannot be replay-reset.
+- Candidates reads the stored validated result. UI displays quarantine diagnostics
+  and queues replay without claiming candidate creation or enabled acquisition.
+  Existing source grants, price jobs, quotas, calendars, research and watchlist remain
+  authoritative. Provider Tests classify asynchronously and create no candidates.
+- Initial PR #59's optional 0600 private archive remains bounded diagnostic support
+  for **storage rejection**, not the durable replay source. Its existing 20-record,
+  128 KiB-record/1 MiB-archive, 24-hour limits remain. Normal raw receipts live in the
+  private database, never a public log or Candidates API response. Feed access uses
+  the existing separate pull credential. Do not enable payload/access logging.
 
-Opt-in receiver-local archive, independent of PostgreSQL/schema/cursor:
+## Focused evidence (all synthetic, no market/provider calls)
 
-- Private directory owned by runtime UID/GID **10001:10001**, mode **0700**;
-  archive, lock and temporary file **0600**. Unsafe ownership, symlinks and hardlinks
-  fail closed for capture. No HTTP endpoint returns the archive.
-- At most **20 records**, **128 KiB per record**, **1 MiB archive**, **24 hours**.
-  Atomic replacement can temporarily use an additional 1 MiB. Existing 30-second
-  container health checks prune expiry and interrupted temporary writes; age cleanup
-  resumes at the first health check after downtime. No new service/timer.
-- Redacted decoded JSON, UTC timestamp, reason, SHA-256/body length and per-row
-  missing/extra column names plus JSON value types. Column report covers at most
-  200 rows and explicitly marks truncation. Oversize records retain bounded summary
-  metadata and `capture_omitted=record_size_limit`, not an apparently complete payload.
-- Redact `webhook_url`, credential-named values, configured webhook/pull/database
-  secrets (including secret files), URLs, Bearer/Basic credentials, credential
-  assignments and token-shaped strings. Unknown field **values** are redacted;
-  unknown names/types remain private after redaction. Redaction takes precedence
-  over exact names. Known market/scanner fields remain available for comparison.
-- Invalid JSON/duplicate-key bodies retain metadata only; unparseable raw bytes
-  cannot be reliably redacted. Unauthenticated, oversized and other transport
-  rejections are not buffered outside the existing 64 KiB request limit.
-- Authenticated health still returns only the existing whitelisted structure
-  summary plus time/availability. Capture failure leaves the request rejected and
-  makes internal `/healthz` return **503 Private rejection capture unavailable**.
-  No payload, exception text or secret is emitted to public logs.
+Passed targeted PostgreSQL checks cover durable unknown schemas, exact column
+quarantine, later-valid-event isolation, duplicate receipts, legacy-to-raw candidate
+deduplication, interruption/restart, cursor preservation, parser-upgrade replay,
+provider-Test exclusion and immutable migration history. The 0018 downgrade guard
+refuses to discard retained parsed/quarantine evidence. Schema-version compatibility
+checks were updated only where needed by the migration and existing transfer tool.
 
-The production column adapter is **unchanged**: no genuine payload was retained to
-justify accepting an alternate key set. Capture resolves the verified diagnostic
-gap; it does not establish that the next genuine request will be accepted.
+The actual local browser passed authenticated raw webhook → candidate → bounded
+mock Upstox acquisition through the real adapter/calendar/grant/quota contracts →
+immutable price revisions → analysis → ranked Candidates → opened company research
+→ saved/reviewed watchlist. Current views share the same coherent price batch.
+Volume remains unavailable, page rank is not global rank, and no BUY is invented.
+Focused UI tests cover quarantine diagnostics and replay; frontend build passed.
+These results do not certify a genuine Chartink event or current live Upstox coverage.
 
-## Focused validation
+## Required release sequence — approval pending, do not execute yet
 
-Isolated synthetic fixtures exercise exact missing/extra fields/types, nested
-redaction and secret-file tokens, no HTTP disclosure, malformed JSON, concurrent
-writers, retention count/bytes/expiry, crash cleanup, unsafe file paths, and capture
-failure. PostgreSQL integration exercises rejected requests with zero event/
-candidate/cursor creation, durable accepted original/columns envelopes, replay,
-provider-Test zero materialization and consumer delivery. These are regression
-checks, not genuine market acceptance. Focused unit and PostgreSQL delivery checks
-passed on 16-Nov; the storage/capacity capture additions passed the affected
-PostgreSQL rerun. Compose overlay validation and Markdown/link checks passed.
-Exact-head CI belongs to the PR; the owner monitors without an agent wait.
+This is now a compatible **application/consumer plus receiver** release, not the
+superseded receiver-only capture rollout. No VPS application cutover is involved.
 
-## Minimal release preparation — do not execute without release approval
+1. Owner reviews PR #59 and its exact-head CI, then authorizes deployment and the
+   justified additive **0018** production migrations. Build reviewed merged artifacts,
+   record actual digests and preserve current image/code/config rollback references.
+2. Use existing state-preserving backup procedures; preserve both original database
+   identities, event/history/price revisions, scanner, secrets, watchlist and cursor.
+   Apply 0018 with the migration owner under a short bounded lock timeout. No table
+   recreation, destructive migration, role replacement or cursor mutation.
+3. Install compatible application/API/UI and Mac consumer code using the existing
+   controlled singleton stop/restart procedure. No second active consumer. Existing
+   restricted table grants cover additive columns. Consumer preflight requires 0018;
+   refresh supports 0017/0018 and retains its configured account/grants/quotas/scope.
+4. Only then replace the VPS receiver using project `stock-discovery-chartink`,
+   existing `/opt/stock-discovery/deploy/chartink/compose.yaml` and current approved
+   release overlay, with **`up -d --no-deps --no-build --pull never receiver`**.
+   Preserve URL/credentials, proxy, database volumes and scanner. The optional private
+   capture overlay requires a dedicated UID/GID 10001, 0700 directory; files are 0600.
+5. Record actual images, schema versions, singleton health, raw/parsed/quarantined
+   counts, remote high-water and local cursor before/after. Receiver health reports
+   raw receipts as unclassified; classification belongs to asynchronous local state.
 
-Only the receiver image and its private capture mount change. Keep the existing
-project, base Compose, release overlay, env/secrets, URL, proxy, database volume,
-scanner, Mac consumer and refresh worker. No migration, UI restart or full app release.
-Require merged reviewed commit and its passing exact-head CI. Build/package that
-commit's `backend/Dockerfile` for the VPS architecture using the existing release
-process; record commit, image ID/digest and transferred image verification. No image
-has been built, transferred or deployed by this documentation change.
+Rollback must preserve schema 0018, raw receipts and parsed evidence. Restore the
+previous receiver image (last observed
+`sha256:f9e0103a16bc01a03faed376921960d70646ada9423fc280ddec88ff82111b4c`)
+using the original Compose inputs and `--no-deps`. Keep a compatible consumer to
+drain already-retained raw receipts; rolling back to a consumer that cannot read
+raw envelopes can stall it, and must never be disguised by resetting the cursor.
+Do not downgrade 0018 after parse/quarantine evidence exists. Stop the affected
+consumer if necessary, preserve its cursor and fix forward. No rollback is licensed
+to delete new events or restore an older database over them.
 
-Observed rollback receiver image:
-`sha256:f9e0103a16bc01a03faed376921960d70646ada9423fc280ddec88ff82111b4c`.
-Preserve it locally on the VPS; verify it still exists before replacing anything.
-Existing project is `stock-discovery-chartink`; base and current release files:
+## Exact remaining production acceptance
 
-- `/opt/stock-discovery/deploy/chartink/compose.yaml`
-- `/var/backups/stock-discovery/stk095-hotfix-20261113/receiver-release.yaml`
-
-After authorization, copy the reviewed `compose.rejections.yaml` to a private
-release directory, set `STK095_OVERLAY` to its absolute path, set
-`CHARTINK_REJECTION_DIR` to an approved dedicated persistent directory and
-`CHARTINK_REJECTION_IMAGE` to the verified new immutable image. These are required
-release inputs, not invented existing paths. Retain the exact existing private
-Compose environment (`CHARTINK_SECRETS_DIR`, receiver domain and enabled flag);
-never print it or use unredacted `docker compose config` in logs.
-
-```sh
-# Run as the existing VPS release operator, after approval and image verification.
-test -n "$CHARTINK_REJECTION_DIR"
-test -n "$CHARTINK_REJECTION_IMAGE"
-test -f "$STK095_OVERLAY"
-# Stop if this path already exists with unexpected contents/owner/mode.
-# For a new dedicated directory only:
-install -d -m 0700 -o 10001 -g 10001 "$CHARTINK_REJECTION_DIR"
-export CHARTINK_REJECTION_DIR CHARTINK_REJECTION_IMAGE
-
-docker compose -p stock-discovery-chartink \
-  -f /opt/stock-discovery/deploy/chartink/compose.yaml \
-  -f /var/backups/stock-discovery/stk095-hotfix-20261113/receiver-release.yaml \
-  -f "$STK095_OVERLAY" config --quiet
-
-docker compose -p stock-discovery-chartink \
-  -f /opt/stock-discovery/deploy/chartink/compose.yaml \
-  -f /var/backups/stock-discovery/stk095-hotfix-20261113/receiver-release.yaml \
-  -f "$STK095_OVERLAY" up -d --no-deps --no-build --pull never receiver
-```
-
-Before and after: record receiver image/health, proxy/database container IDs and
-start times, schema version, event counts/high-water and Mac cursor. Confirm 0700/
-0600 capture ownership, diagnostics availability and unchanged secret-file mounts.
-Do not print URL/capability or archive values. Do not send a manufactured alert.
-The ordinary next rejected delivery can be inspected privately via SSH: compare
-`column_contract` with `chartink_columns.COLUMNS`, retaining only sanitized exact
-field/type findings in a regression fixture. Fix only that observed difference.
-
-Rollback uses the **original** Compose inputs without the capture overlay:
-
-```sh
-docker compose -p stock-discovery-chartink \
-  -f /opt/stock-discovery/deploy/chartink/compose.yaml \
-  -f /var/backups/stock-discovery/stk095-hotfix-20261113/receiver-release.yaml \
-  up -d --no-deps --no-build --pull never receiver
-```
-
-Verify old image and health and unchanged event/cursor state. Capture bind data is
-not in a database volume and must not enter Git, artifacts or public logs. If the
-new receiver is rolled back/stopped, its age-pruning health hook stops too: the
-release operator must remove expired capture archive/temp files within the private
-directory or run the reviewed pruner offline under UID 10001. Never prune inbox,
-secret files or application volumes.
-
-Genuine acceptance requires the ordinary provider delivery, exact scanner/event
-identity, HTTP 202/durable receipt, deduplicated real retry if observed, consumer
-cursor advancement, matching symbols/candidates, refresh eligibility and qualified
-analysis/API/UI evidence. If no retry occurs, report retry acceptance separately as
-pending. Provider Tests remain excluded. **Live ingestion fix/acceptance is pending**.
+After separately approved release, observe an ordinary genuine Chartink delivery:
+HTTP 202/durable raw identity → cursor commits local copy → strict parse or explicit
+quarantine → original symbol count/candidates → eligible refresh → complete current
+qualified EOD batch → durable analysis → authenticated Candidates and watchlist.
+If quarantined, use the private retained payload to establish the actual difference,
+add its sanitized regression, deploy only the verified parser fix and replay the
+same receipt. Verify deduplicated retry if an actual retry occurs; otherwise report
+that live observation pending. Do not manufacture an alert or backdate candidates.
+Existing live price incompleteness may still keep indicators unavailable/unranked.
+**No genuine market acceptance or production activation is claimed.**

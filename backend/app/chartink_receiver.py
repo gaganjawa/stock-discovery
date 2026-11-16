@@ -4,7 +4,6 @@ Run with --no-access-log: Chartink supports a URL, not documented auth headers.
 Public deployment/TLS is a separate owner-authorized operation.
 """
 import asyncio
-import hashlib
 import hmac
 import os
 from datetime import datetime, timezone
@@ -12,12 +11,11 @@ from pathlib import Path
 from fastapi import FastAPI, Request, HTTPException, Depends, Query, Response
 from starlette.concurrency import run_in_threadpool
 from stock_discovery_analysis.runtime import setting
-from stock_discovery_analysis.chartink import Scanner, normalize, MAX_BYTES
+from stock_discovery_analysis.chartink import Scanner, MAX_BYTES
 from stock_discovery_analysis import candidate_store as store
 from .research import db
 from .security import LoginLimiter
 from . import chartink_diagnostics
-from stock_discovery_analysis.chartink_diagnostics import decode_payload
 
 app=FastAPI(title='Candidate receiver',docs_url=None,redoc_url=None,openapi_url=None)
 limiter=LoginLimiter()
@@ -44,33 +42,24 @@ def ingest(conn, body):
     try:
         scanner=Scanner.model_validate_json(Path(os.environ['CHARTINK_SCANNER_CONFIG']).read_text())
     except (KeyError,OSError,ValueError):raise HTTPException(503,'Scanner configuration unavailable') from None
-    payload=None
+    from stock_discovery_analysis.chartink_intake import capture
     try:
-        payload=decode_payload(body)
-        envelope=normalize(payload,scanner,datetime.now(timezone.utc))
-    except (ValueError,UnicodeError,RecursionError) as exc:
-        code=str(exc) if str(exc) in {'invalid_payload_fields','invalid_payload_values','scanner_identity_mismatch',
-            'invalid_symbol','invalid_symbol_price_count','invalid_trigger_price','invalid_trigger_time',
-            'scanner_authorization_expired','timezone_required','duplicate_payload_field',
-            'invalid_provider_test_payload','invalid_columns_count','invalid_columns_fields',
-            'column_symbol_mismatch','conflicting_payload_versions','invalid_enrichment_text',
-            'invalid_enrichment_number','invalid_enrichment_range'} else 'invalid_json'
-        chartink_diagnostics.record(payload,code,body)
-        store.reject(conn,hashlib.sha256(body).hexdigest(),code)
-        raise HTTPException(422,code) from None
+        envelope=capture(body,scanner,datetime.now(timezone.utc),
+            secrets=(setting('CHARTINK_WEBHOOK_SECRET'),setting('CHARTINK_PULL_SECRET')))
+    except OSError:raise HTTPException(503,'Receiver is not configured') from None
     try:
         receipt=store.accept(conn,envelope)
-        return {**receipt,'delivery_kind':envelope.get('delivery_kind','candidate_alert')}
+        return {**receipt,'delivery_kind':envelope.get('delivery_kind','unclassified')}
 
     except OverflowError:
-        chartink_diagnostics.record(payload,'inbox_capacity',body)
+        chartink_diagnostics.record(None,'inbox_capacity',body)
         raise HTTPException(503,'Candidate inbox capacity reached; operator action required') from None
     except ValueError as exc:
         if str(exc)=='event_too_large':
-            chartink_diagnostics.record(payload,'event_too_large',body)
+            chartink_diagnostics.record(None,'event_too_large',body)
             raise HTTPException(413,'Normalized candidate event exceeds storage limit') from None
         if str(exc) in {'scanner_version_content_conflict','event_identity_conflict'}:
-            chartink_diagnostics.record(payload,str(exc),body)
+            chartink_diagnostics.record(None,str(exc),body)
             raise HTTPException(409,'Candidate event conflicts with stored identity') from None
         raise
 
@@ -128,9 +117,10 @@ def operational_health(after:int=Query(0,ge=0),conn=Depends(db)):
       max(received_at),count(*) FILTER (WHERE sequence>%s),
       min(received_at) FILTER (WHERE sequence>%s) FROM discovery.candidate_events''',(after,after)).fetchone()
     tests=conn.execute("SELECT count(*) FROM discovery.candidate_events WHERE envelope->>'version'='chartink-provider-test-v1'").fetchone()[0]
+    unclassified=conn.execute("SELECT count(*) FROM discovery.candidate_events WHERE envelope->>'version'='chartink-raw-v1'").fetchone()[0]
     rejected=conn.execute('SELECT count(*) FROM discovery.candidate_rejections').fetchone()[0]
     return dict(database='available',stored_events=count,capacity=store.MAX_EVENTS,
-        provider_test_events=tests,candidate_delivery_events=count-tests,
+        provider_test_events=tests,candidate_delivery_events=count-tests-unclassified,unclassified_events=unclassified,
         high_water=high,events_after_cursor=lag,oldest_unpulled_at=oldest,
         last_receipt_at=last,rejection_records=rejected,
         coverage='unknown_partial_alerts',cursor_ahead=after>high,

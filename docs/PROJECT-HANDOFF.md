@@ -1,14 +1,17 @@
 # Stock Discovery — project handoff
 
-Current delivery — **STK-095 / D3-03 Revision storage and ingestion** (16 November).
-Confirmed receiver rejection at **17:00:04.603766 IST**: `invalid_columns_fields`.
-The body was not retained; exact missing/extra names and sender provenance remain
-unknown. Bounded private redacted capture and per-row contract diagnostics are
-implemented for review, with receiver-only release/rollback preparation. The
-adapter remains unchanged until a genuine payload proves the required difference.
-Focused synthetic regression and PostgreSQL delivery checks passed; they are not
-live acceptance. **No production change**, migration, cursor update or provider call.
-[Evidence, limits and release procedure](STK-095-private-rejections.md).
+Current delivery — **STK-095 / STK-014 · D3-03 Revision storage and ingestion**
+(16 November), continuing **PR #59** on main with **PR #58 merged** (`0daf5eb`).
+Authenticated, rate/size-bounded webhook intake now durably stores a private,
+credential-redacted raw receipt before HTTP 202. The existing consumer advances
+its cursor after local durability, then parses asynchronously. Unknown schemas
+are quarantined with diagnostics and authenticated replay; downstream validation,
+source grants, quotas and candidate deduplication remain strict.
+Additive **0018** stores parsed envelopes/diagnostics alongside immutable receipts;
+no production migration or deployment has occurred. Synthetic PostgreSQL and real
+browser acceptance covers raw intake → eligible refresh → research → ranked
+Candidates → watchlist. This is **not genuine market acceptance**.
+[Implementation and release gates](STK-095-private-rejections.md).
 Planning baseline remains **58%**. Owner monitors CI; do not wait or merge.
 
 Requirements: [SD ARCH 3.0](SD-ARCH-3.0.md); canonical task status in
@@ -57,8 +60,8 @@ STK-095 real provider Tests passed HTTP 202, durable receipt, deduplicated retry
 consumer cursor advancement and zero candidate/session/research materialization.
 Genuine market-alert acceptance remains **pending**. Tests do not count as candidates.
 A request reached validation at **16-Nov 11:30:04.603766 UTC** and was rejected with
-`invalid_columns_fields`; its original JSON was not retained. Private capture is
-prepared, not deployed. No specific column incompatibility can yet be established.
+`invalid_columns_fields`; its original JSON was not retained. Durable raw intake and asynchronous quarantine/replay are
+prepared in PR #59, not deployed. No specific column incompatibility can yet be established.
 Latest complete stored INFY session is **4-Nov**, stale against 16-Nov; current
 OHLCV qualification remains unavailable. Scanner authorization expires 18-Nov
 12:11:49 UTC. [Exact evidence and scoped release](STK-095-private-rejections.md).
@@ -131,8 +134,8 @@ is evidence-based; merged package count does not measure product completion.
 
 ## Top three priorities and verified gates
 
-1. **P0 — STK-095 / STK-014 / STK-094:** release reviewed private rejection capture,
-   resolve only the observed genuine column mismatch, then ordinary alert → durable candidate
+1. **P0 — STK-095 / STK-014 / STK-094:** release durable intake and asynchronous parsing,
+   quarantine/replay only verified schema differences, then ordinary alert → durable candidate
    identity/session/symbol count and cursor → eligible complete EOD refresh →
    durable re-analysis → authenticated Candidates API/UI. Provider Tests stay
    excluded. Missing/stale/insufficient evidence stays unranked. No manufactured alert.
@@ -146,7 +149,7 @@ is evidence-based; merged package count does not measure product completion.
 
 Owner decisions: identify existing off-server destination, private credential/key
 paths and separate key custodian, plus external alert/host-loss resources;
-review/authorize the prepared receiver-only capture release; separately authorize
+review/authorize the prepared schema-0018 application/consumer/receiver release; separately authorize
 full cutover only after recovery gates.
 No new provider-rights review is required for already approved descriptive scope.
 Broader M1/M2, real policy/risk and strategy-promotion approvals apply only to their
@@ -154,12 +157,14 @@ unqualified capabilities, not as a blanket stop to independent implementation.
 
 ## Exact next executable task
 
-**STK-095:** owner reviews the focused private capture PR/exact-head CI and
-approves its minimal receiver-only release. Use the existing Compose project and
-`--no-deps`; preserve all credentials, history/cursors and workers. Compare the
-next ordinary rejection's exact redacted columns/types against the adapter and
-fix only verified differences. No accepted genuine alert is claimed. Do not wait
-for CI or manufacture a market event. [Release and rollback](STK-095-private-rejections.md).
+**STK-095 / STK-014:** review existing PR #59 and exact-head CI; authorize the
+additive 0018 migration and compatible application/consumer release before the
+receiver emits raw envelopes. Preserve the existing cursor and singleton workers.
+Then verify the next ordinary genuine event through durable receipt, parsing,
+qualified refresh, analysis, Candidates and watchlist. Unknown schemas stay
+quarantined; use the existing authenticated retry after a verified parser fix.
+[Release gates and rollback](STK-095-private-rejections.md). No deployment or
+migration is authorized by this handoff. No manufactured market acceptance.
 
 Before any separately approved cutover: persistently stop both Mac workers, verify
 singleton release, export fresh application state including cursor and quota ledger,

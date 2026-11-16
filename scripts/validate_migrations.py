@@ -78,7 +78,7 @@ def run_validation(timings):
         shutil.copytree(ROOT / 'backend/migrations', migrations)
         (migrations / 'versions/9999_failure.py').write_text('''from alembic import op
 revision = '9999'
-down_revision = '0017'
+down_revision = '0018'
 def upgrade():
     op.execute('CREATE TABLE research.should_rollback (id integer)')
     op.execute('SELECT 1 / 0')
@@ -96,7 +96,7 @@ def downgrade():
             raise AssertionError('Intentional migration failure did not fail')
     with psycopg.connect(url, autocommit=True) as db:
         assert db.execute("SELECT to_regclass('research.should_rollback')").fetchone()[0] is None
-        assert db.execute('SELECT version_num FROM alembic_version').fetchone()[0] == '0017'
+        assert db.execute('SELECT version_num FROM alembic_version').fetchone()[0] == '0018'
         db.execute('DROP TABLE public.migration_test_sentinel')
     timings['Migration rollback verification'] = perf_counter() - started
     print('PASS: upgrade, repeat upgrade, constraints, downgrade, re-upgrade and atomic failure rollback')
