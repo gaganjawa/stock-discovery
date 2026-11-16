@@ -21,7 +21,7 @@ def candidates(response:Response,session:date|None=None,scanner:str|None=Query(N
         row['research']=permitted_result(conn,config,row['research'])
         if row['research']:row['research_status']=row['research']['status']
     result['inbox']={s:n for s,n in conn.execute('SELECT status,count(*) FROM discovery.candidate_event_state GROUP BY status')}
-    result['failed_events']=[dict(event_id=e,error_code=c) for e,c in conn.execute("SELECT event_id,error_code FROM discovery.candidate_event_state WHERE status='failed' LIMIT 20")]
+    result['failed_events']=[dict(event_id=e,error_code=c,quarantined=d is not None,diagnostics=d) for e,c,d in conn.execute("SELECT event_id,error_code,diagnostics FROM discovery.candidate_event_state WHERE status='failed' LIMIT 20")]
     return result
 
 

@@ -50,7 +50,7 @@ def retry_reason(exc):
 def cycle(conn, config, *, clock=now, factory=Upstox, pause=time.sleep):
     config=RefreshConfig.model_validate(config)
     check(conn.autocommit,'dedicated_autocommit_connection_required')
-    check(conn.execute('SELECT version_num FROM alembic_version').fetchone()==('0017',),'schema_0017_required')
+    check(conn.execute('SELECT version_num FROM alembic_version').fetchone() in (('0017',),('0018',)),'schema_0017_or_0018_required')
     # Same account lock as existing ingestion; separate processes cannot overlap.
     lock='REAL-001:'+config.market.account_ref
     if not conn.execute('SELECT pg_try_advisory_lock(hashtextextended(%s,0))',(lock,)).fetchone()[0]:

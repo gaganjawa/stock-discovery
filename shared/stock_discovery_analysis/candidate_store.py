@@ -69,7 +69,7 @@ def feed(conn, after=0, limit=25):
     return dict(events=[dict(sequence=s,envelope=e) for s,e in rows],next_cursor=rows[-1][0] if rows else after)
 
 
-def materialize_one(conn):
+def materialize_one(conn, *, scanner=None):
     with conn.transaction():
         # Multiple deliveries can touch the same candidate; single bounded writer.
         if not conn.execute('SELECT pg_try_advisory_xact_lock(94003)').fetchone()[0]: return None
@@ -78,8 +78,13 @@ def materialize_one(conn):
           ORDER BY e.sequence FOR UPDATE OF s SKIP LOCKED LIMIT 1''').fetchone()
         if not row:return None
         eid,e=row
+        raw=e if e.get('version')=='chartink-raw-v1' else None
         try:
             with conn.transaction():
+                if raw is not None:
+                    from .chartink_intake import parse
+                    e=parse(raw,scanner=scanner)
+                    conn.execute('UPDATE discovery.candidate_event_state SET parsed_envelope=%s,diagnostics=NULL WHERE event_id=%s',(Jsonb(e),eid))
                 if e.get('version')=='chartink-provider-test-v1':
                     if e.get('delivery_kind')!='provider_test' or e['symbols']:
                         raise ValueError('invalid_provider_test_envelope')
@@ -100,7 +105,10 @@ def materialize_one(conn):
                 conn.execute("UPDATE discovery.candidate_event_state SET status='completed',error_code=NULL WHERE event_id=%s",(eid,))
                 return eid
         except Exception as exc:
-            conn.execute("UPDATE discovery.candidate_event_state SET status='failed',error_code=%s WHERE event_id=%s",(type(exc).__name__[:60],eid))
+            from .chartink_intake import diagnostics, REASONS
+            reason=str(exc) if isinstance(exc,ValueError) and str(exc) in REASONS else type(exc).__name__[:60]
+            detail=diagnostics(raw,reason) if raw is not None else None
+            conn.execute("UPDATE discovery.candidate_event_state SET status='failed',error_code=%s,diagnostics=%s WHERE event_id=%s",(reason,Jsonb(detail) if detail else None,eid))
             return eid
 
 
@@ -145,16 +153,17 @@ def rows(conn, *, session=None, scanner_key=None, limit=100, offset=0):
       EXISTS(SELECT FROM discovery.candidates p WHERE p.scanner_key=c.scanner_key AND p.symbol=c.symbol
         AND p.session_date=(SELECT max(session_date) FROM discovery.candidate_sessions WHERE scanner_key=c.scanner_key AND session_date<c.session_date)),
       (SELECT completeness FROM discovery.candidate_sessions WHERE scanner_key=c.scanner_key AND session_date<c.session_date ORDER BY session_date DESC LIMIT 1),
-      (SELECT e.envelope FROM discovery.candidate_matches m JOIN discovery.candidate_events e USING(event_id)
+      (SELECT coalesce(es.parsed_envelope,e.envelope) FROM discovery.candidate_matches m JOIN discovery.candidate_events e USING(event_id) JOIN discovery.candidate_event_state es USING(event_id)
        WHERE m.candidate_id=c.candidate_id ORDER BY e.sequence LIMIT 1)
       FROM discovery.candidates c JOIN discovery.candidate_sessions s USING(scanner_key,session_date)
       WHERE c.session_date=%s AND (%s::text IS NULL OR c.scanner_key=%s)
       ORDER BY c.symbol,c.candidate_id LIMIT %s OFFSET %s''',(session,scanner_key,scanner_key,limit,offset)).fetchall()
     result=[]
     for cid,key,day,symbol,first,last,status,research,error,complete,continuing,previous,envelope in records:
-        label=conn.execute('''SELECT e.envelope->'labels'->>%s FROM discovery.candidate_matches m JOIN discovery.candidate_events e USING(event_id) WHERE m.candidate_id=%s AND e.envelope->'labels' ? %s ORDER BY e.sequence DESC LIMIT 1''',(symbol,cid,symbol)).fetchone()
-        snapshot=conn.execute('''SELECT e.envelope FROM discovery.candidate_matches m JOIN discovery.candidate_events e USING(event_id) WHERE m.candidate_id=%s ORDER BY e.received_at DESC,e.event_id DESC LIMIT 1''',(cid,)).fetchone()[0]
-        result.append(dict(chartink_snapshot=snapshot.get('enrichment',{}).get(symbol),watchlist_key='CHARTINK:'+key+':'+symbol,source_label=label[0] if label else None,candidate_id=cid,scanner_key=key,session_date=day.isoformat(),symbol=symbol,
+        snapshot=conn.execute("SELECT coalesce(es.parsed_envelope,e.envelope) FROM discovery.candidate_matches m JOIN discovery.candidate_events e USING(event_id) JOIN discovery.candidate_event_state es USING(event_id) WHERE m.candidate_id=%s ORDER BY e.received_at DESC,e.event_id DESC LIMIT 1",(cid,)).fetchone()[0]
+        label=conn.execute("SELECT coalesce(es.parsed_envelope,e.envelope)->'labels'->>%s FROM discovery.candidate_matches m JOIN discovery.candidate_events e USING(event_id) JOIN discovery.candidate_event_state es USING(event_id) WHERE m.candidate_id=%s AND coalesce(es.parsed_envelope,e.envelope)->'labels' ? %s ORDER BY e.sequence DESC LIMIT 1",(symbol,cid,symbol)).fetchone()
+        label=label[0] if label else None
+        result.append(dict(chartink_snapshot=snapshot.get('enrichment',{}).get(symbol),watchlist_key='CHARTINK:'+key+':'+symbol,source_label=label,candidate_id=cid,scanner_key=key,session_date=day.isoformat(),symbol=symbol,
           first_observed_at=first.isoformat(),last_observed_at=last.isoformat(),research_status=status,
           research=research,error_code=error,completeness=complete,
           match_status='continuing_observed' if continuing else 'new_vs_previous_snapshot' if previous in ('verified_fixture_snapshot','verified_complete_snapshot') else 'new_observed_vs_previous_results' if previous else 'first_observed_unverified',
@@ -175,10 +184,10 @@ def rows(conn, *, session=None, scanner_key=None, limit=100, offset=0):
 
 
 def retry_event(conn,eid):
-    return conn.execute("UPDATE discovery.candidate_event_state SET status='pending',error_code=NULL WHERE event_id=%s AND status='failed' RETURNING event_id",(eid,)).fetchone() is not None
+    return conn.execute("UPDATE discovery.candidate_event_state SET status='pending',error_code=NULL,diagnostics=NULL WHERE event_id=%s AND status='failed' RETURNING event_id",(eid,)).fetchone() is not None
 
 
 def asof_candidates(conn,scanner_key,cutoff):
     """Only matches actually received by T; never a complete historical universe."""
-    records=conn.execute("SELECT envelope FROM discovery.candidate_events WHERE received_at<=%s AND envelope->>'scanner_key'=%s ORDER BY received_at,sequence LIMIT 10000",(cutoff,scanner_key)).fetchall()
+    records=conn.execute("SELECT coalesce(s.parsed_envelope,e.envelope) FROM discovery.candidate_events e JOIN discovery.candidate_event_state s USING(event_id) WHERE e.received_at<=%s AND e.envelope->>'scanner_key'=%s AND (e.envelope->>'version'<>'chartink-raw-v1' OR s.parsed_envelope IS NOT NULL) ORDER BY e.received_at,e.sequence LIMIT 10000",(cutoff,scanner_key)).fetchall()
     return dict(events=[r[0] for r in records],cutoff=cutoff,complete=False,evaluation_eligible=False)

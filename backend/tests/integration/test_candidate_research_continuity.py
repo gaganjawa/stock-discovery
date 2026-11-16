@@ -15,9 +15,10 @@ LATER='2026-10-20T12:00:00Z'
 LISTING='NSE:INE009A01021'
 
 
-def test_rolling_refresh_keeps_candidate_and_open_research_on_same_batch(isolated_url,tmp_path,monkeypatch):
+@pytest.mark.parametrize('raw_intake',[False,True])
+def test_rolling_refresh_keeps_candidate_and_open_research_on_same_batch(isolated_url,tmp_path,monkeypatch,raw_intake):
     with psycopg.connect(isolated_url,autocommit=True) as conn:
-        config,_=prepare(conn,tmp_path);provider=Provider()
+        config,_=prepare(conn,tmp_path,raw_intake=raw_intake,monkeypatch=monkeypatch);provider=Provider()
         view=ViewConfig(sources=SourceConfig(grant_file=config.market.grant_file,retention_days=365),listing_ids=(LISTING,))
         assert run(conn,config,provider)['status']=='ingested'
         assert run(conn,config,provider,LATER)['status']=='ingested'

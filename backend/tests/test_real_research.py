@@ -100,8 +100,8 @@ def test_missing_database_file_is_a_clear_503_not_a_crash(monkeypatch,tmp_path):
 
 
 @pytest.mark.parametrize('version,state',[
-    ('0015','current'),('0016','current'),('0017','current'),
-    ('0014','migration_required'),('0018','migration_required'),
+    ('0015','current'),('0016','current'),('0017','current'),('0018','current'),
+    ('0014','migration_required'),('0019','migration_required'),
 ])
 def test_explicit_research_schema_compatibility(monkeypatch,version,state):
     from unittest.mock import MagicMock
