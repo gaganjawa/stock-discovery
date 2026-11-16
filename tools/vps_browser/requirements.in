@@ -1,0 +1,3 @@
+# Optional local operator UI only; not part of production backend images.
+streamlit>=1.54,<2
+paramiko>=4,<5

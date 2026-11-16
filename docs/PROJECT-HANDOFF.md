@@ -17,6 +17,13 @@ Read [SD ARCH 3.0](SD-ARCH-3.0.md) for requirements and
 [SIMPLE-BOARD](SIMPLE-BOARD.md) for canonical task status. This file is restart
 context, not another tracker. Historical acceptance records retain their scope.
 
+STK-100 / D3-12 (16-Nov): a separate local read-only Streamlit/SFTP project browser
+is prepared for review. Bounded allowlisted navigation/previews, credential/symlink
+exclusion and existing SSH host-key verification are covered by focused tests.
+Real VPS verification used SFTP metadata only (two visible entries; no file reads,
+commands, writes or service changes). Launch and limits: [VPS browser](../tools/vps_browser/README.md).
+PR #59 is unchanged; no production deployment or change to the 58% baseline.
+
 ## Objective and horizons
 
 Automatically discover eligible NSE cash equities, validate immutable market and

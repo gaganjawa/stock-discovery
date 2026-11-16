@@ -12,6 +12,13 @@ Read-only 16-Nov evidence: VPS non-Test events **0**; Mac candidates **0**, curs
 **3**, revisions **2,648**; latest stored INFY session **4-Nov**, no current qualified
 batch. Genuine end-to-end acceptance remains pending. Planning baseline **58%**.
 
+STK-100 / D3-12 (16-Nov): a separate local read-only Streamlit/SFTP project browser
+is prepared for review. Bounded allowlisted navigation/previews, credential/symlink
+exclusion and existing SSH host-key verification are covered by focused tests.
+Real VPS verification used SFTP metadata only (two visible entries; no file reads,
+commands, writes or service changes). Launch and limits: [VPS browser](../tools/vps_browser/README.md).
+PR #59 is unchanged; no production deployment or change to the 58% baseline.
+
 ## CURRENT — 16 November 2026 · STK-094 / D3-05 + D3-09 Candidate research
 
 Requirements: [SD ARCH 3.0](SD-ARCH-3.0.md). [SIMPLE-BOARD](SIMPLE-BOARD.md)
