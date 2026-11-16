@@ -1,19 +1,18 @@
 # Stock Discovery — project handoff
 
-Current delivery — **STK-099 / D3-12 Private operational pilot** (16 November).
-Main includes PR #56 at `5a78b6846cd88d89e68abf8864b8fe707c50b8b6`.
-Release prerequisites now include opt-in non-interrupting full-schema backup/recovery,
-receiver/hosted monitoring, an alert-delivery drill, and current cutover/rollback
-commands. **15 focused synthetic operations tests pass**; no VPS/browser rehearsal
-repeated. Restic 0.19.1 is installed separately on the VPS; no timers or application
-release were activated. The live receiver image/start time remains unchanged.
-**Off-server restore and external alert delivery remain unverified:** the inspected
-configuration has no destination/credentials/key-custody or alert hook. Owner input
-is required for those existing resources, then one actual restore and observed alert.
-[Exact evidence, prerequisites and executable sequence](STK-099-release-prerequisites.md).
-Planning baseline remains **58%**. No cutover authorization; owner monitors PR CI.
+Current delivery — **STK-094 / D3-05 Quant horizon policies + D3-09 UI** (16 November).
+PR #57 is merged at main `0fe21361b590992dd9c96f346fb10ff1891566e7`.
+A confirmed rolling-price integration defect is fixed for review: Candidates, open
+company research and the watchlist now select the same complete refreshed batch.
+Historical/publication reads, source grants, immutable revisions and fail-closed
+qualification are preserved. **169 focused tests passed**, including actual Chromium
+with isolated synthetic provider/DB fixtures. No live application deployment.
+[Defect, tests and dated live evidence](STK-094-candidate-research-continuity.md).
+Read-only 16-Nov evidence: VPS non-Test events **0**; Mac candidates **0**, cursor
+**3**, revisions **2,648**; latest stored INFY session **4-Nov**, no current qualified
+batch. Genuine end-to-end acceptance remains pending. Planning baseline **58%**.
 
-Reconciled **16 November 2026** under **STK-099 / D3-12 Private operational pilot**.
+Reconciled **16 November 2026** under **STK-094 / D3-05 Quant horizon policies + D3-09 UI**.
 Read [SD ARCH 3.0](SD-ARCH-3.0.md) for requirements and
 [SIMPLE-BOARD](SIMPLE-BOARD.md) for canonical task status. This file is restart
 context, not another tracker. Historical acceptance records retain their scope.
@@ -50,12 +49,13 @@ BookMyHost host supersedes the architecture's historical Hetzner selection for
 deployment; do not reopen host selection. See [current STK-099 release prerequisites](STK-099-release-prerequisites.md).
 The original [hosting runbook](STK-099-bookmyhost.md) retains historical evidence.
 
-Read-only evidence at **2026-11-15T13:01Z**: consumer PID **8125**, refresh PID
-**8129**, one launch each and exactly one matching refresh process; latest consumer
-completion five seconds old. Mac cursor **3**, events **3**, genuine candidates
-**0**, revisions **2,648**. No refresh jobs or provider requests in the preceding
-24 hours. Preserve webhook URL, scanner identity, secrets, volumes, event history,
-immutable revisions and cursor. No production change is authorized by this handoff.
+Read-only **16-Nov 06:41–06:49 UTC** evidence: VPS schema 0017, three provider-Test
+events, zero non-Test events, high-water 3. Mac schema 0017, cursor **3**, events
+**3**, candidates **0**, revisions **2,648**, no refresh jobs and zero provider quota
+requests in preceding 24h. Consumer PID **8125** and refresh PID **8129** remained
+running with one launch each. Latest stored INFY candle session is **4-Nov**; other
+11 stored listings end **23-Oct**. This is not complete current OHLCV qualification.
+Webhook, secrets, scanner identity, volumes, history and cursor were not modified.
 
 STK-095 real provider Tests passed HTTP 202, durable receipt, deduplicated retry,
 consumer cursor advancement and zero candidate/session/research materialization.
@@ -75,9 +75,11 @@ attempts per job; no genuine candidate means no forced job or diagnostic retry.
 PR #54 merged as **`fbd841aa9948949dfed655e462ea292b9204b007`**; its final
 PR head `bf12c5394a678633f8426f3fe06c9040a246fd03` passed
 [all four required checks](https://github.com/gaganjawa/stock-discovery/actions/runs/43717712492).
-PR #55 continuity and PR #56 CI selection are merged; current base is `5a78b68`.
+PR #55 continuity, PR #56 CI selection and PR #57 operations prerequisites are
+merged; current base is `0fe2136`. The current STK-094 shared-batch research fix is
+for review, with 169 focused passing tests and synthetic browser continuity evidence.
 The earlier exact-merge CI observations retain their dates in the board/work history;
-this task makes no new CI-success claim from a prior PR run. Current operations
+this task makes no new CI-success claim from a prior PR run. Current application
 changes require their own exact-head checks; owner monitors without waiting.
 
 | Delivery | State / evidence |
@@ -122,7 +124,7 @@ is evidence-based; merged package count does not measure product completion.
 | D3-05 quantitative policies | Three-horizon engines; descriptive EMA/breakout integration | Qualified current coverage/volume, complete strategy inputs and real policy approval; no invented levels/sizing |
 | D3-06 evidence ingestion | Adapters, extraction, immutable evidence/facts and event plumbing; bounded real-source probes recorded | Complete qualified original filings/news, availability clocks and production coverage |
 | D3-07/08 research and judge | Retrieval, bounded investigation, deterministic validation, runtime integration and development evaluations | Independent research-quality/holdout calibration (M2); actionable financial research not qualified |
-| D3-09 UI/publication | Authenticated workbench, 12 configured listings, comparison, private watchlist, Candidates status and page-scoped ranking | Genuine candidate → qualified current analysis visibility; full-universe ranking/publication not established |
+| D3-09 UI/publication | Authenticated workbench, 12 configured listings, comparison, private watchlist, Candidates status and page-scoped ranking; shared refreshed-batch continuity fix tested for review | Genuine candidate → qualified current analysis visibility; full-universe ranking/publication not established |
 | D3-10/11 outcomes/governance | Paper/risk arithmetic, replay, immutable history, registered experiments and scorecards implemented/tested | Qualified real forward observations, benchmarks, matured horizon cohorts and policy/promotion gates |
 | D3-12 operations | Receiver live, controlled Mac workers; hosting foundation merged; representative VPS rehearsal passed | Off-server recovery/alerts, full cutover and genuine Mac-off acceptance |
 | D3-13 release | Stored/descriptive slices and runbooks delivered | Integrated three-horizon live release, measured limits and prospective acceptance incomplete |
@@ -133,35 +135,33 @@ is evidence-based; merged package count does not measure product completion.
    identity/session/symbol count and cursor → eligible complete EOD refresh →
    durable re-analysis → authenticated Candidates API/UI. Provider Tests stay
    excluded. Missing/stale/insufficient evidence stays unranked. No manufactured alert.
-2. **P1 — STK-099:** finish encrypted off-server restore, key custody and external
-   alert/host-loss delivery using existing resources. Restic 0.19.1 is now installed
-   separately; online operations mode, private templates and cutover/rollback
-   commands are prepared. No destination/credential/key-custody or alert-hook config
-   was found; actual remote restore/delivery and timers remain unactivated. Full
-   cutover needs separate authorization, including proxy-only ingress interruption
-   because existing Caddy has `admin off`. No hardware upgrade is justified.
+2. **P1 — STK-014 / STK-094:** review the shared-batch research fix, then expose
+   per-candidate refresh eligibility/out-of-universe reasons using existing contracts.
+   Infrastructure work is deferred; missing backup resources do not block this work.
 3. **P2 — STK-014 / STK-054 / STK-079–081:** qualify volume and remaining strategy evidence for usable
    swing signals. Current price-only EMA/breakout review does not establish BUY,
    entry/stop/target, position sizing, strategy superiority or profitability.
 
-Owner decisions: identify existing off-server destination, private credential/key
-paths and separate key custodian, plus external alert/host-loss resources; review
-this STK-099 change; separately authorize full cutover only after recovery gates.
+Owner decisions: review/merge the STK-094 software fix after exact-head checks.
+No new authorization is required for its isolated application tests. Existing
+infrastructure provisioning/release gates remain in the STK-099 runbook; no
+provisioning, alert activation or cutover is part of this application task.
 No new provider-rights review is required for already approved descriptive scope.
 Broader M1/M2, real policy/risk and strategy-promotion approvals apply only to their
 unqualified capabilities, not as a blanket stop to independent implementation.
 
 ## Exact next executable task
 
-**STK-099:** fill the reviewed private operations config once the owner identifies
-existing backup and alert resources. Run one encrypted exact-snapshot backup/restore
-with `scripts/operate.py backup`, one `alert-test` with observed external delivery,
-and `monitor`; enable existing timers only after real verification. No new paid
-resource or application cutover. [Evidence and commands](STK-099-release-prerequisites.md).
-15 focused synthetic operations tests passed; these do not close live release gates.
-VPS read-only check 16-Nov 06:06:20 UTC confirms unchanged receiver image/start time
-and the same three live services. Mac counts above remain dated 15-Nov, not remeasured.
-Owner monitors this PR's CI; do not wait or merge.
+**Exact next executable task — STK-014:** after review/merge of the current
+STK-094 fix, expose per-candidate refresh eligibility/out-of-universe reasons using
+the existing worker configuration and job contracts. Observe the next ordinary
+eligible EOD alert independently; do not manufacture events or expand provider scope.
+Volume-qualified swing checks remain subsequent work. Owner monitors this PR's CI;
+do not wait, merge, deploy, interrupt live workers or start infrastructure work.
+
+The [continuity acceptance](STK-094-candidate-research-continuity.md) records the
+reproduced failure, fix, 169 tests and exact live/synthetic distinction. No complete
+current price, volume-qualified swing signal or genuine live UI acceptance is claimed.
 
 Before any separately approved cutover: persistently stop both Mac workers, verify
 singleton release, export fresh application state including cursor and quota ledger,
@@ -185,3 +185,18 @@ new hosted timings are pending. No production change; planning baseline **58%**.
 Immediate delivery task: owner review/new-head CI, with owner monitoring and no wait.
 The next product task remains STK-099 off-server recovery preparation; P0 genuine
 candidate acceptance and existing release gates remain unchanged.
+
+## Historical delivery checkpoint — 16 November operations
+
+Current delivery — **STK-099 / D3-12 Private operational pilot** (16 November).
+Main includes PR #56 at `5a78b6846cd88d89e68abf8864b8fe707c50b8b6`.
+Release prerequisites now include opt-in non-interrupting full-schema backup/recovery,
+receiver/hosted monitoring, an alert-delivery drill, and current cutover/rollback
+commands. **15 focused synthetic operations tests pass**; no VPS/browser rehearsal
+repeated. Restic 0.19.1 is installed separately on the VPS; no timers or application
+release were activated. The live receiver image/start time remains unchanged.
+**Off-server restore and external alert delivery remain unverified:** the inspected
+configuration has no destination/credentials/key-custody or alert hook. Owner input
+is required for those existing resources, then one actual restore and observed alert.
+[Exact evidence, prerequisites and executable sequence](STK-099-release-prerequisites.md).
+Planning baseline remains **58%**. No cutover authorization; owner monitors PR CI.

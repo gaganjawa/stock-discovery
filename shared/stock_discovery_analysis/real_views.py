@@ -84,6 +84,19 @@ def _company(conn,config,listing,*,clock,publication_inputs,cutoff_at,access,pri
     check(listing in config.listing_ids,'listing_not_configured')
     cutoff=cutoff_at or clock();check(at(cutoff)<=at(clock()),'future_read_cutoff')
     records=eligible_revisions(conn,listing,cutoff,access)
+    identities=[r for r in records if r.data.kind=='instrument']
+    check(len(identities)==1,'real_identity_missing_or_ambiguous')
+    identity=identities[0]
+    # STK-094: Candidates, company detail and watchlist share the same current
+    # complete refresh window. Retained older bars are not part of this vintage.
+    # Never choose a current receipt for historical or publication-input reads.
+    if price_stream_id is None and cutoff_at is None and not publication_inputs:
+        receipt=conn.execute("""SELECT result->>'price_stream_id' FROM discovery.schedule_jobs
+            WHERE payload->>'code_version'='candidate-price-refresh-v1'
+            AND payload->>'symbol'=%s AND status='completed' AND updated_at<=%s
+            AND result->>'price_stream_id' IS NOT NULL
+            ORDER BY updated_at DESC,job_id LIMIT 1""",(identity.data.symbol,cutoff)).fetchone()
+        price_stream_id=receipt[0] if receipt else None
     price_batch_issue=False
     if price_stream_id is not None:
         selected={r[0] for r in conn.execute("""SELECT revision_id FROM discovery.revisions
@@ -94,9 +107,6 @@ def _company(conn,config,listing,*,clock,publication_inputs,cutoff_at,access,pri
         # Use one complete response window, never stitch it to retained older bars.
         # describe() still verifies the full stream/pages, calendar and freshness.
         records=[r for r in records if r.data.kind!='candle' or (not price_batch_issue and r.revision_id in selected)]
-    identities=[r for r in records if r.data.kind=='instrument']
-    check(len(identities)==1,'real_identity_missing_or_ambiguous')
-    identity=identities[0]
     bars=sorted((r for r in records if r.data.kind=='candle'),key=lambda r:r.data.ends_at)
     check(len({r.data.ends_at for r in bars})==len(bars),'ambiguous_price_sources')
     check(len(bars)<=5000,'price_read_limit')
