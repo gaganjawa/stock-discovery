@@ -147,8 +147,8 @@ def transfer_backup_cycle(state):
         name = identifier(source['database'])
         db = Database(source['container'], source['owner'], name)
         manifest = backup_online(db, stage / (name + '.dump'), source['cluster'])
-        if manifest['snapshot']['revision'] != '0017':
-            raise ValueError('schema_0017_required')
+        if manifest['snapshot']['revision'] != '0018':
+            raise ValueError('schema_0018_required')
         records.append(dict(database=name, cluster=source['cluster'], restore_owner=source['restore_owner']))
         # Globals are recovery material only, never automatically executed.
         with (stage / (name + '.roles.sql')).open('xb') as out:
@@ -161,7 +161,7 @@ def transfer_backup_cycle(state):
         path.chmod(0o600)
     files = {path.name: checksum(path) for path in stage.iterdir() if path.is_file()}
     evidence = dict(at=time.time(), code_version=os.environ['CODE_VERSION'], scope=config['scope'],
-                    schema='0017', databases=records, files=files, repository_id=repository_id)
+                    schema='0018', databases=records, files=files, repository_id=repository_id)
     save(stage / 'manifest.json', evidence)
     summaries = [json.loads(line) for line in restic('backup', '--json', '--tag', 'stock-discovery', str(stage)).splitlines()]
     snapshot = next(row['snapshot_id'] for row in summaries if row.get('message_type') == 'summary')
@@ -247,7 +247,7 @@ def monitor(state):
         if mode == 'receiver':
             version = command('psql -X -U "$POSTGRES_USER" -d "$POSTGRES_DB" -At -v ON_ERROR_STOP=1',
                               input=b'SELECT version_num FROM public.alembic_version;').decode().strip()
-            if version != '0017': codes.append('receiver_schema_unexpected')
+            if version != '0018': codes.append('receiver_schema_unexpected')
         else:
             database = 'stk_real001_private' if mode == 'hosted' else ''
             queries = [("research.jobs", "(status='queued' AND created_at<now()-interval '15 minutes') OR (status='running' AND lease_until<now())")]

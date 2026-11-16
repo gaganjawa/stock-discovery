@@ -1,5 +1,47 @@
 # STK-099 / D3-12 Private operational pilot — release prerequisites
 
+## 17-Nov STK-099 / D3-12 — full VPS release preparation: NO-GO
+
+Base includes merged PR #61 (`2c8f286`). Existing hybrid production is schema
+0018 on both databases. Operations backup/receiver monitoring now require 0018;
+older and unknown schemas fail closed. No production deployment in this PR.
+
+Read-only VPS observation: 1,967 MiB RAM total, 1,396 MiB available, 4 MiB swap
+used; 13 GiB disk free. Receiver/proxy/database used 49.47/15.29/33.86 MiB.
+Reuse the representative 14-Nov restore/browser/recovery evidence, not another
+rehearsal. Its minimum available RAM was 1,008.6 MiB. The 2 GB host is not proven
+insufficient; active acquisition load remains unmeasured. Enforce existing
+384 MiB headroom, <256 MiB swap and 6 GiB disk gates. If exceeded, stop and request
+4 GiB RAM / 2 vCPU; no upgrade or forced deployment is authorized here.
+
+Required gates remain open: no operations.env or Stock Discovery timers found;
+/etc/stock-discovery contains only the existing Chartink configuration files.
+No encrypted off-server restore or independently delivered external failure alert
+has been verified. Existing private destination/repository ID, credential-file
+paths, independent encryption-key custody, external alert hook/delivery destination
+and external dead-host monitor must be supplied. Do not invent or provision them.
+
+Next executable sequence: configure the existing operations templates privately;
+run the existing `operate.py backup`, `alert-test`, and `monitor` procedure below;
+record exact restored snapshot, table/sequence/watchlist equality and external
+alert receipt. Then pin latest-main AMD64 application/worker/frontend artifacts,
+prepare existing hosted/refresh Compose inputs and preserve both database identities,
+scanner, grants, webhook and cursor using the existing transfer runbook. Capture a
+fresh final recovery point. Request explicit cutover approval before stopping Mac
+writers, restoring the application on VPS or switching proxy routes. Start exactly
+one VPS consumer/refresh pair only after Mac writers are stopped. Verify authenticated
+Candidates/company/watchlist, recovery and actual Mac-off HTTPS operation.
+
+Rollback retains 0018 and all newly received evidence. Stop affected VPS workers,
+keep inbox receipt available, and transfer current application data into a new Mac
+recovery database with verified fingerprints before resuming one compatible Mac
+worker pair. Never reset cursor or restore old backups over new receipts.
+Genuine Chartink acceptance and full VPS Mac-off acceptance remain PENDING.
+See [existing cutover commands](STK-099-bookmyhost.md) and
+[representative evidence](STK-099-restored-rehearsal.md).
+
+## Historical prerequisite evidence (schema 0017)
+
 Current evidence: **16 November 2026**. **Cutover: NOT READY / not authorized.**
 Use this sequence for the current schema-0017 deployment. The migration and receiver
 upgrade sequence in the original BookMyHost runbook is historical. This increment
