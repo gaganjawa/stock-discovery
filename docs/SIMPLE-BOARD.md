@@ -1,5 +1,30 @@
 # Stock Discovery — SD ARCH 3.0 board
 
+## Current — STK-014 / STK-094 · D3-03 + D3-09 candidate qualification
+
+16-Nov: STK-095 hybrid release `2c39f61e` is active on Mac + VPS, both databases
+at **0018**. Read-only evidence after activation: cursor/high-water **3/3**, three
+provider Tests, zero raw receipts, failed/quarantined events, candidates or refresh
+jobs. Genuine acceptance remains **PENDING**; authorization expires 18-Nov
+12:11:49 UTC. No alert/provider requests or production writes in this change.
+
+Qualification visibility reuses identity/grant fences, refresh jobs, stored research,
+EMA/breakout checks and page-scoped ranking. Both candidate views expose research
+eligibility, refresh history, blockers and price-session limitations. Cached analysis
+is labeled separately from a current stored-price review; neither certifies a BUY.
+A prior refresh job does not certify current private acquisition scope, credentials
+or quota; absent jobs remain explicitly unverified. Empty and quarantined inbox
+states do not imply scanner zero matches.
+
+Focused unit, disposable PostgreSQL and browser acceptance covers synthetic INFY,
+unmapped identity, revoked permission, stale/incomplete prices, duplicates,
+provider-Test exclusion and Candidates/company/watchlist continuity. Production is
+unchanged by this PR. Next: review this change, then observe the next genuine alert
+and trace its retained receipt. Current worker admission and volume-qualified
+signals remain separate gates. Planning baseline stays **58%**; owner monitors CI.
+
+## Historical — pre-release PR #59 preparation
+
 Current delivery — **STK-095 / STK-014 · D3-03 Revision storage and ingestion**
 (16 November), continuing **PR #59** on main with **PR #58 merged** (`0daf5eb`).
 Authenticated, rate/size-bounded webhook intake now durably stores a private,

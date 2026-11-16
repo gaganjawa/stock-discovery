@@ -73,6 +73,14 @@ def test_rolling_refresh_keeps_candidate_and_open_research_on_same_batch(isolate
         reviewed=client.get(base+'candidates/swing-review',headers=headers).json()
         assert reviewed['ranking_scope']=='displayed_page_only'
         assert reviewed['rows'][0]['swing_review']['rank']==1
+        q=reviewed['rows'][0]['qualification']
+        assert q['identity']=='verified_nse_eq' and q['source_permission']=='permitted_stored_research'
+        assert q['research_state']=='completed' and q['refresh_state']=='completed'
+        assert q['latest_qualified_price_session']==candidate['market_data']['latest_session']
+        assert q['signal']=='unqualified' and not q['actionable']
+        cached=client.get(base+'candidates',headers=headers).json()['rows'][0]['qualification']
+        assert cached['evidence_basis']=='last_stored_analysis'
+        assert cached['latest_qualified_price_session'] is None
         if os.getenv('STK094_CONTINUITY_BROWSER')=='1':
             import sys
             sys.path.insert(0,str(Path(__file__).resolve().parents[3]/'scripts'))
@@ -91,6 +99,8 @@ def test_rolling_refresh_keeps_candidate_and_open_research_on_same_batch(isolate
         assert client.get(base+'companies/'+LISTING,headers=headers).status_code==403
         denied=client.get(base+'candidates/swing-review',headers=headers).json()['rows'][0]
         assert denied['swing_review']['rank'] is None and 'technical' not in denied['research']
+        assert denied['qualification']['source_permission']=='denied'
+        assert denied['qualification']['latest_qualified_price_session'] is None
         denied=client.get(base+'workbench',headers=headers).json()['rows'][0]
         assert denied['state']=='denied' and 'detail' not in denied
         with psycopg.connect(isolated_url,autocommit=True) as conn:

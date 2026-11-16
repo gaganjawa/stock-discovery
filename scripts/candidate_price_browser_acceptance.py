@@ -32,6 +32,11 @@ await expect(c.getByLabel('Price refresh for INFY')).toContainText('Price refres
 await c.getByRole('checkbox',{name:'Review stored swing prices'}).check();
 const review=c.getByLabel('Swing price review for INFY');
 await expect(review).toContainText('Page research rank 1');
+const qualification=c.getByLabel('Qualification for INFY');
+await expect(qualification).toContainText('permitted stored research');
+await expect(qualification).toContainText('eligible stored research');
+await expect(qualification).toContainText('current stored review');
+await expect(qualification).toContainText('signal unqualified');
 await expect(review).toContainText('relative volume: Unavailable');
 await expect(c).toContainText('not a full-universe ranking or a BUY signal');
 console.log('PASS candidate refresh -> stored analysis -> actual ranked UI');

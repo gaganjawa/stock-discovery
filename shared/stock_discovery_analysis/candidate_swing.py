@@ -2,6 +2,7 @@
 from decimal import Decimal, InvalidOperation
 from .candidate_research import analyze
 from .publication_store import now
+from .candidate_eligibility import qualification
 
 
 def review(research):
@@ -36,6 +37,7 @@ def page(conn, config, candidates, *, clock=now):
         row['research']=research
         row['research_status']=research['status']
         row['swing_review']=review(research)
+        row['qualification']=qualification(row,current=True)
     candidates['rows'].sort(key=lambda row:(
         -(row['swing_review']['price_checks_met'] if row['swing_review']['price_checks_met'] is not None else -1),
         row['symbol'],row['candidate_id']))
