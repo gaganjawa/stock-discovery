@@ -75,6 +75,9 @@ def test_alerts_partial_retry_and_current_stored_research(isolated_url,tmp_path)
         assert good['listing_id']==listing and good['acquisition']['provider_requests']==0
         assert good['source_revision_ids'] and not good['evaluation_eligible']
         assert blocked['status']=='blocked' and blocked['reasons']==['nse_identity_missing_or_ambiguous']
+        from stock_discovery_analysis.candidate_eligibility import qualification
+        assert qualification(results['MISSING'])['blockers']==['nse_identity_missing_or_ambiguous']
+        assert qualification(results['MISSING'])['universe']=='not_verified'
         assert all(r['completeness']=='partial_unverified' for r in results.values())
         store.accept(conn,event(['TEST','MISSING']));drain(conn)
         assert store.research_one(conn,run) is None and len(calls)==2

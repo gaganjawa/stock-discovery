@@ -3,6 +3,7 @@ from datetime import date
 from fastapi import APIRouter, Depends, Response, Query, HTTPException
 from stock_discovery_analysis import candidate_store as store
 from stock_discovery_analysis.candidate_research import permitted_result
+from stock_discovery_analysis.candidate_eligibility import qualification
 from .auth import require_auth
 from .research import db
 from .real_research import view_config
@@ -20,6 +21,11 @@ def candidates(response:Response,session:date|None=None,scanner:str|None=Query(N
     for row in result['rows']:
         row['research']=permitted_result(conn,config,row['research'])
         if row['research']:row['research_status']=row['research']['status']
+        row['qualification']=qualification(row)
+    return inbox(conn,result)
+
+
+def inbox(conn,result):
     result['inbox']={s:n for s,n in conn.execute('SELECT status,count(*) FROM discovery.candidate_event_state GROUP BY status')}
     result['failed_events']=[dict(event_id=e,error_code=c,quarantined=d is not None,diagnostics=d) for e,c,d in conn.execute("SELECT event_id,error_code,diagnostics FROM discovery.candidate_event_state WHERE status='failed' LIMIT 20")]
     return result
@@ -32,7 +38,7 @@ def swing_review(response:Response,session:date|None=None,scanner:str|None=Query
     response.headers['Cache-Control']='no-store'
     try:config=view_config()
     except HTTPException:config=None
-    return page(conn,config,store.rows(conn,session=session,scanner_key=scanner,limit=limit,offset=offset))
+    return inbox(conn,page(conn,config,store.rows(conn,session=session,scanner_key=scanner,limit=limit,offset=offset)))
 
 
 @router.post('/{candidate_id}/retry',status_code=202)
