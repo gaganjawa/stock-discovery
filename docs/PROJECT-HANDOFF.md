@@ -79,7 +79,7 @@ PR head `bf12c5394a678633f8426f3fe06c9040a246fd03` passed
 [all four required checks](https://github.com/gaganjawa/stock-discovery/actions/runs/43717712492).
 PR #55 continuity and PR #56 CI selection are merged; PR #57 operations prerequisites are merged as `0fe2136`.
 The earlier exact-merge CI observations retain their dates in the board/work history;
-this task makes no new CI-success claim from a prior PR run. Current operations
+this task makes no new CI-success claim from a prior PR run. Current application
 changes require their own exact-head checks; owner monitors without waiting.
 
 | Delivery | State / evidence |
@@ -124,7 +124,7 @@ is evidence-based; merged package count does not measure product completion.
 | D3-05 quantitative policies | Three-horizon engines; descriptive EMA/breakout integration | Qualified current coverage/volume, complete strategy inputs and real policy approval; no invented levels/sizing |
 | D3-06 evidence ingestion | Adapters, extraction, immutable evidence/facts and event plumbing; bounded real-source probes recorded | Complete qualified original filings/news, availability clocks and production coverage |
 | D3-07/08 research and judge | Retrieval, bounded investigation, deterministic validation, runtime integration and development evaluations | Independent research-quality/holdout calibration (M2); actionable financial research not qualified |
-| D3-09 UI/publication | Authenticated workbench, 12 configured listings, comparison, private watchlist, Candidates status and page-scoped ranking | Genuine candidate → qualified current analysis visibility; full-universe ranking/publication not established |
+| D3-09 UI/publication | Authenticated workbench, 12 configured listings, comparison, private watchlist, Candidates status and page-scoped ranking; shared refreshed-batch continuity fix tested for review | Genuine candidate → qualified current analysis visibility; full-universe ranking/publication not established |
 | D3-10/11 outcomes/governance | Paper/risk arithmetic, replay, immutable history, registered experiments and scorecards implemented/tested | Qualified real forward observations, benchmarks, matured horizon cohorts and policy/promotion gates |
 | D3-12 operations | Receiver live, controlled Mac workers; hosting foundation merged; representative VPS rehearsal passed | Off-server recovery/alerts, full cutover and genuine Mac-off acceptance |
 | D3-13 release | Stored/descriptive slices and runbooks delivered | Integrated three-horizon live release, measured limits and prospective acceptance incomplete |
@@ -229,3 +229,60 @@ Historical P1/P2 priorities before the confirmed receiver failure:
 3. **P2 — STK-014 / STK-054 / STK-079–081:** qualify volume and remaining strategy evidence for usable
    swing signals. Current price-only EMA/breakout review does not establish BUY,
    entry/stop/target, position sizing, strategy superiority or profitability.
+
+## Retained PR #58 reconciliation evidence
+
+Current delivery — **STK-094 / D3-05 Quant horizon policies + D3-09 UI** (16 November).
+PR #57 is merged at main `0fe21361b590992dd9c96f346fb10ff1891566e7`.
+A confirmed rolling-price integration defect is fixed for review: Candidates, open
+company research and the watchlist now select the same complete refreshed batch.
+Historical/publication reads, source grants, immutable revisions and fail-closed
+qualification are preserved. **169 focused tests passed**, including actual Chromium
+with isolated synthetic provider/DB fixtures. No live application deployment.
+[Defect, tests and dated live evidence](STK-094-candidate-research-continuity.md).
+Read-only 16-Nov evidence: VPS non-Test events **0**; Mac candidates **0**, cursor
+**3**, revisions **2,648**; latest stored INFY session **4-Nov**, no current qualified
+batch. Genuine end-to-end acceptance remains pending. Planning baseline **58%**.
+
+Reconciled **16 November 2026** under **STK-094 / D3-05 Quant horizon policies + D3-09 UI**.
+Read [SD ARCH 3.0](SD-ARCH-3.0.md) for requirements and
+[SIMPLE-BOARD](SIMPLE-BOARD.md) for canonical task status. This file is restart
+context, not another tracker. Historical acceptance records retain their scope.
+
+Read-only **16-Nov 06:41–06:49 UTC** evidence: VPS schema 0017, three provider-Test
+events, zero non-Test events, high-water 3. Mac schema 0017, cursor **3**, events
+**3**, candidates **0**, revisions **2,648**, no refresh jobs and zero provider quota
+requests in preceding 24h. Consumer PID **8125** and refresh PID **8129** remained
+running with one launch each. Latest stored INFY candle session is **4-Nov**; other
+11 stored listings end **23-Oct**. This is not complete current OHLCV qualification.
+Webhook, secrets, scanner identity, volumes, history and cursor were not modified.
+
+PR #55 continuity, PR #56 CI selection and PR #57 operations prerequisites are
+merged; current base is `0fe2136`. The current STK-094 shared-batch research fix is
+for review, with 169 focused passing tests and synthetic browser continuity evidence.
+
+2. **P1 — STK-014 / STK-094:** review the shared-batch research fix, then expose
+   per-candidate refresh eligibility/out-of-universe reasons using existing contracts.
+   Infrastructure work is deferred; missing backup resources do not block this work.
+3. **P2 — STK-014 / STK-054 / STK-079–081:** qualify volume and remaining strategy evidence for usable
+   swing signals. Current price-only EMA/breakout review does not establish BUY,
+   entry/stop/target, position sizing, strategy superiority or profitability.
+
+Owner decisions: review/merge the STK-094 software fix after exact-head checks.
+No new authorization is required for its isolated application tests. Existing
+infrastructure provisioning/release gates remain in the STK-099 runbook; no
+provisioning, alert activation or cutover is part of this application task.
+
+**Exact next executable task — STK-014:** after review/merge of the current
+STK-094 fix, expose per-candidate refresh eligibility/out-of-universe reasons using
+the existing worker configuration and job contracts. Observe the next ordinary
+eligible EOD alert independently; do not manufacture events or expand provider scope.
+Volume-qualified swing checks remain subsequent work. Owner monitors this PR's CI;
+do not wait, merge, deploy, interrupt live workers or start infrastructure work.
+
+The [continuity acceptance](STK-094-candidate-research-continuity.md) records the
+reproduced failure, fix, 169 tests and exact live/synthetic distinction. No complete
+current price, volume-qualified swing signal or genuine live UI acceptance is claimed.
+
+## Historical delivery checkpoint — 16 November operations
+

@@ -669,3 +669,82 @@ restarts and recovery restore. Minimum sampled headroom 1,008.6 MiB; no OOM.
 Online snapshot backup and opt-in scoped hosted refresh are implemented for review.
 Live services/cursor 3/schema 0017 preserved; no genuine candidates or full cutover.
 [Evidence, limitations and release conditions](STK-099-restored-rehearsal.md).
+
+## Retained PR #58 reconciliation evidence
+
+Current delivery — **STK-094 / D3-05 Quant horizon policies + D3-09 UI** (16 November).
+PR #57 is merged at main `0fe21361b590992dd9c96f346fb10ff1891566e7`.
+A confirmed rolling-price integration defect is fixed for review: Candidates, open
+company research and the watchlist now select the same complete refreshed batch.
+Historical/publication reads, source grants, immutable revisions and fail-closed
+qualification are preserved. **169 focused tests passed**, including actual Chromium
+with isolated synthetic provider/DB fixtures. No live application deployment.
+[Defect, tests and dated live evidence](STK-094-candidate-research-continuity.md).
+Read-only 16-Nov evidence: VPS non-Test events **0**; Mac candidates **0**, cursor
+**3**, revisions **2,648**; latest stored INFY session **4-Nov**, no current qualified
+batch. Genuine end-to-end acceptance remains pending. Planning baseline **58%**.
+
+## CURRENT — 16 November 2026 · STK-094 / D3-05 + D3-09 Candidate research
+
+Requirements: [SD ARCH 3.0](SD-ARCH-3.0.md). [SIMPLE-BOARD](SIMPLE-BOARD.md)
+is the canonical task board; [PROJECT-HANDOFF](PROJECT-HANDOFF.md) provides product
+and component context; [WORK-HANDOFF](WORK-HANDOFF.md) records execution continuity.
+Update board and project handoff together on material state changes.
+**58% remains the owner-specified planning baseline**, not measured live readiness.
+
+| Component | Actual current state | Remaining gate |
+|---|---|---|
+| STK-095 | VPS receiver/inbox/proxy and native Mac consumer; schema 0017; real provider-Test acceptance passed. | Ordinary genuine alert; no manufactured candidates. |
+| STK-094 / STK-014 | PR #52/#53 merged; native bounded INFY refresh; stored-price EMA/breakout and page-scoped ranking implemented. Shared current-batch reader fix prepared for review; synthetic candidate → research → watchlist acceptance passed. | Complete current qualified price batch and genuine candidate → analysis → UI. |
+| STK-099 | PR #48/#54 merged; 14-Nov representative VPS restore/resource/recovery evidence retained. PR #57 operations tooling/checklist merged; no activation. Infrastructure work deferred by current owner direction. | Off-server restore/key custody, external alert/host-loss test, separate release authorization, genuine Mac-off acceptance. [Issue #47](https://github.com/gaganjawa/stock-discovery/issues/47) remains open. |
+| D3-13 | PR #55 continuity and #56 CI selection merged. | Integrated three-horizon live release, real research/policy/forward-evidence gates remain capability-specific. |
+
+**Live VPS, 16-Nov 06:06:20 UTC:** receiver/proxy/database still running; receiver
+and database healthy, receiver image and start time unchanged. Restic 0.19.1 was
+installed at a separate versioned tools path. No application service restart,
+migration, cursor update, volume change, provider request or cutover occurred.
+**Current application evidence, 16-Nov 06:41–06:49 UTC:** both DBs schema 0017;
+VPS three provider-Test events, zero non-Test events and high-water **3**; Mac cursor
+**3**, events **3**, candidates **0**, revisions **2,648**, refresh jobs **0** and
+zero provider quota requests in preceding 24h. Consumer PID 8125 and refresh PID
+8129 remained running with one launch each. Latest stored INFY price session is
+**4-Nov**; other 11 stored listings end **23-Oct**. No complete current OHLCV batch
+or live candidate/UI acceptance is claimed. No production writes or restarts.
+
+Initial Upstox HTTP 200 gave 30 validated bars but omitted expected 13-Nov; **zero
+ingested**. The one authorized diagnostic also omitted it. Upstream incompleteness
+is observed; cache lag remains an inference. Existing retries: 900 seconds, at most
+three per eligible job. Missing/stale/insufficient evidence stays unranked.
+
+**Reused acceptance:** 14-Nov isolated VPS restore preserved 70 tables / 6,737 rows /
+three sequences and watchlist bytes; browser, 24 company reads at concurrency four,
+worker restart and second recovery passed. Minimum available RAM 1,008.6 MiB,
+no OOM. This was stored-data/idle-refresh rehearsal, not off-server recovery or
+live acquisition. No repeat VPS/browser rehearsal. The prior 15 operations tests used
+synthetic transports/databases; they do not prove external delivery or remote restore.
+
+| Priority | Tickets | Next outcome |
+|---|---|---|
+| **P0** | STK-014 / STK-094 / STK-095 | Next ordinary EOD alert → identity/session/symbols → durable candidate/cursor → complete eligible refresh → re-analysis → authenticated Candidates UI. Provider Tests excluded. |
+| **P1** | STK-014 / STK-094 | Review shared-batch research fix, then expose per-candidate refresh eligibility and out-of-universe reasons; preserve bounded approved acquisition scope. |
+| **P2** | STK-014 / STK-054 / STK-079–081 | Qualify volume and remaining strategy/research inputs for daily usable swing and all three horizons; no invented BUY, levels, sizing or performance. |
+
+**Application acceptance gaps:** no genuine alert yet, no current complete stored
+INFY price batch, adjusted volume basis remains unqualified. Existing acquisition
+scope is INFY. No additional owner authorization was needed for this software fix.
+Infrastructure gates remain recorded in [STK-099](STK-099-release-prerequisites.md)
+but are outside this task and do not block independent application implementation.
+
+**Current synthetic validation:** four new PostgreSQL/API/negative cases including
+real Chromium candidate → open research → save/review watchlist passed; 165 affected
+unit/integration regressions passed. These do not establish genuine market acceptance.
+
+**Exact next executable task — STK-014:** after review/merge of the current
+STK-094 fix, expose per-candidate refresh eligibility/out-of-universe reasons using
+the existing worker configuration and job contracts. Observe the next ordinary
+eligible EOD alert independently; do not manufacture events or expand provider scope.
+Volume-qualified swing checks remain subsequent work. Owner monitors this PR's CI;
+do not wait, merge, deploy, interrupt live workers or start infrastructure work.
+
+## HISTORICAL — prior 16-Nov operations delivery
+
