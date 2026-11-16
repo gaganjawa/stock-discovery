@@ -215,7 +215,7 @@ def test_due_job_executes_before_later_unsupported_session_blocks_readiness(isol
         assert after['reasons']==['next_execution_opening_unverified']
 
 
-@pytest.mark.parametrize('version',['0014','0018'])
+@pytest.mark.parametrize('version',['0014','0019'])
 def test_unreviewed_schema_still_blocks_readiness(isolated_url,tmp_path,version):
     with psycopg.connect(isolated_url,autocommit=True) as conn:
         s,v=setup_readiness(conn,tmp_path)

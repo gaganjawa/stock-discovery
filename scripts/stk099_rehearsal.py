@@ -114,7 +114,9 @@ def run(directory,context):
         probe_payload=json.loads((ROOT/'backend/tests/fixtures/chartink_provider_test_v1.json').read_text())
         probe_payload.update({k:getattr(scanner,k) for k in ('scan_name','scan_url','alert_name')})
         status,receipt=request('/hooks/chartink/'+'w'*40,probe_payload,{'Content-Type':'application/json'})
-        assert status==202 and json.loads(receipt)['delivery_kind']=='provider_test'
+        assert status==202 and json.loads(receipt)['delivery_kind']=='unclassified'
+        probe_id=json.loads(receipt)['event_id']
+        assert db.sql("SELECT envelope->>'version' FROM discovery.candidate_events WHERE event_id='"+probe_id+"'")== 'chartink-raw-v1'
         assert json.loads(request('/hooks/chartink/'+'w'*40,probe_payload,{'Content-Type':'application/json'})[1])['duplicate']
         dc('up','-d','--no-deps','worker')
         appdb=Database(container,'chartink_owner','stk_real001_private',context)
@@ -124,8 +126,13 @@ def run(directory,context):
                 time.sleep(.3)
             raise AssertionError('worker_timeout')
         wait_rows(1)
-        assert appdb.sql('SELECT version_num FROM alembic_version')=='0017'
-        assert db.sql('SELECT version_num FROM alembic_version')=='0017'
+        for _ in range(100):
+            if appdb.sql("SELECT count(*) FROM discovery.candidate_event_state WHERE event_id='"+probe_id+"' AND status='completed' AND parsed_envelope->>'delivery_kind'='provider_test'")=='1':break
+            time.sleep(.3)
+        else:raise AssertionError('provider_test_classification_timeout')
+        assert appdb.sql("SELECT count(*) FROM discovery.candidate_matches WHERE event_id='"+probe_id+"'")=='0'
+        assert appdb.sql('SELECT version_num FROM alembic_version')=='0018'
+        assert db.sql('SELECT version_num FROM alembic_version')=='0018'
         assert json.loads(request('/hooks/chartink/'+'w'*40,payload,{'Content-Type':'application/json'})[1])['duplicate']
         if os.getenv('STK099_STACK_BROWSER')=='1':
             subprocess.run(['node',str(ROOT/'scripts/stk099_hosted_browser.cjs')],check=True,timeout=90,
@@ -147,7 +154,7 @@ def run(directory,context):
         cursor_before=appdb.sql('SELECT receiver_id,cursor FROM discovery.candidate_receivers ORDER BY 1')
         dc('restart','worker');wait_rows(276)
         assert appdb.sql('SELECT receiver_id,cursor FROM discovery.candidate_receivers ORDER BY 1')==cursor_before
-        assert appdb.sql("SELECT count(*) FROM discovery.candidate_events WHERE envelope->>'version'='chartink-provider-test-v1'")=='1'
+        assert appdb.sql("SELECT count(*) FROM discovery.candidate_event_state WHERE status='completed' AND parsed_envelope->>'version'='chartink-provider-test-v1'")=='1'
         assert appdb.sql('SELECT count(*) FROM discovery.candidate_matches')=='276'
         assert appdb.sql('SELECT count(*) FROM discovery.candidate_research_runs')=='276'
         inspect=json.loads(subprocess.check_output(docker+['inspect',*ids]))
