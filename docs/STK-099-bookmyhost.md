@@ -1,5 +1,7 @@
 # STK-099 — D3-03/04/09/12 BookMyHost application hosting
 
+**Current schema-0017 release procedure:** use [STK-099 release prerequisites](STK-099-release-prerequisites.md). Both live DBs are already 0017; do not rerun the historical migration or replace the working receiver. Prior implementation and rehearsal evidence below is retained.
+
 This increment prepares working code and isolated acceptance. **Production cutover
 is not performed.** Issue #47 requires owner-approved host rehearsal and recovery
 before changing live services. BookMyHost is the owner's explicitly selected,
@@ -98,7 +100,7 @@ data: copying an IN grant to an unapproved host territory does not grant rights.
 Old pilot-health receipts are historical, not evidence that a Mac refresh job still
 runs. No Mac scheduler/provider credential is needed by the stored-only worker.
 
-## Authoritative release sequence (explicit owner authorization required)
+## Historical release sequence — superseded for current schema-0017 deployment
 
 Use the reviewed integration handoff at
 [4d7dbad](https://github.com/gaganjawa/stock-discovery/blob/4d7dbadbcd5194dc1201cb11039261d2e4df6a11/docs/STK-095-STK-099-integration.md).

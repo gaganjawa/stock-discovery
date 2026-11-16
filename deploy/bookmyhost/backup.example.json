@@ -1,0 +1,21 @@
+{
+  "scope": "receiver",
+  "off_server_confirmed": false,
+  "separate_key_custody_confirmed": false,
+  "repository_id": "REQUIRED_EXISTING_REPOSITORY_ID",
+  "bundle_sha256": "REQUIRED_REVIEWED_RECOVERY_BUNDLE_SHA256",
+  "sources": [
+    {
+      "database": "chartink_inbox",
+      "container": "stock-discovery-chartink-database-1",
+      "owner": "chartink_owner",
+      "cluster": "7706856885194760225",
+      "restore_owner": "chartink_owner"
+    }
+  ],
+  "recovery": {
+    "container": "REQUIRED_ISOLATED_RECOVERY_CONTAINER",
+    "owner": "chartink_owner",
+    "cluster": "REQUIRED_INDEPENDENT_RECOVERY_CLUSTER"
+  }
+}

@@ -1,17 +1,19 @@
 # Stock Discovery — project handoff
 
-Current delivery — **STK-081 / D3-13 CI efficiency** (15 November): PR #55 is
-merged as main `549cf2b02a287647635e5dee5f176f5855545625`. Change-based selection
-and a fail-closed stable `checks` gate are implemented for review; workflow/runtime/
-security/infrastructure changes still select full affected suites. Documentation
-replay selects only fast validation. [Measured baseline and validation](STK-081-selective-ci.md)
-separate 8m52s prior hosted documentation CI from 0.0445s local selection/docs logic;
-new hosted timings are pending. No production change; planning baseline **58%**.
-Immediate delivery task: owner review/new-head CI, with owner monitoring and no wait.
-The next product task remains STK-099 off-server recovery preparation; P0 genuine
-candidate acceptance and existing release gates remain unchanged.
+Current delivery — **STK-099 / D3-12 Private operational pilot** (16 November).
+Main includes PR #56 at `5a78b6846cd88d89e68abf8864b8fe707c50b8b6`.
+Release prerequisites now include opt-in non-interrupting full-schema backup/recovery,
+receiver/hosted monitoring, an alert-delivery drill, and current cutover/rollback
+commands. **15 focused synthetic operations tests pass**; no VPS/browser rehearsal
+repeated. Restic 0.19.1 is installed separately on the VPS; no timers or application
+release were activated. The live receiver image/start time remains unchanged.
+**Off-server restore and external alert delivery remain unverified:** the inspected
+configuration has no destination/credentials/key-custody or alert hook. Owner input
+is required for those existing resources, then one actual restore and observed alert.
+[Exact evidence, prerequisites and executable sequence](STK-099-release-prerequisites.md).
+Planning baseline remains **58%**. No cutover authorization; owner monitors PR CI.
 
-Reconciled **15 November 2026** under **STK-081 / D3-13 Three-horizon release**.
+Reconciled **16 November 2026** under **STK-099 / D3-12 Private operational pilot**.
 Read [SD ARCH 3.0](SD-ARCH-3.0.md) for requirements and
 [SIMPLE-BOARD](SIMPLE-BOARD.md) for canonical task status. This file is restart
 context, not another tracker. Historical acceptance records retain their scope.
@@ -45,7 +47,8 @@ Current production is split: BookMyHost VPS Caddy/receiver and inbox PostgreSQL;
 Mac application PostgreSQL, UI/API, one Chartink consumer and one restricted
 `stk_price_refresh` worker. Both databases are schema **0017**. The purchased
 BookMyHost host supersedes the architecture's historical Hetzner selection for
-deployment; do not reopen host selection. See [STK-099](STK-099-bookmyhost.md).
+deployment; do not reopen host selection. See [current STK-099 release prerequisites](STK-099-release-prerequisites.md).
+The original [hosting runbook](STK-099-bookmyhost.md) retains historical evidence.
 
 Read-only evidence at **2026-11-15T13:01Z**: consumer PID **8125**, refresh PID
 **8129**, one launch each and exactly one matching refresh process; latest consumer
@@ -69,13 +72,13 @@ attempts per job; no genuine candidate means no forced job or diagnostic retry.
 
 ## Merged, in review and acceptance evidence
 
-PR #54 merged as **`fbd841aa9948949dfed655e462ea292b9204b007`**, before the current main above.
-Its final PR head `bf12c5394a678633f8426f3fe06c9040a246fd03` passed
+PR #54 merged as **`fbd841aa9948949dfed655e462ea292b9204b007`**; its final
+PR head `bf12c5394a678633f8426f3fe06c9040a246fd03` passed
 [all four required checks](https://github.com/gaganjawa/stock-discovery/actions/runs/43717712492).
-The [exact-merge main run](https://github.com/gaganjawa/stock-discovery/actions/runs/43718688001)
-was still running at reconciliation; no result is inferred from the PR run.
-PR #55 is now merged; its final four checks passed in the baseline run linked above.
-This CI optimization needs new exact-head checks. PR #12/#35 are also merged.
+PR #55 continuity and PR #56 CI selection are merged; current base is `5a78b68`.
+The earlier exact-merge CI observations retain their dates in the board/work history;
+this task makes no new CI-success claim from a prior PR run. Current operations
+changes require their own exact-head checks; owner monitors without waiting.
 
 | Delivery | State / evidence |
 |---|---|
@@ -130,30 +133,35 @@ is evidence-based; merged package count does not measure product completion.
    identity/session/symbol count and cursor → eligible complete EOD refresh →
    durable re-analysis → authenticated Candidates API/UI. Provider Tests stay
    excluded. Missing/stale/insufficient evidence stays unranked. No manufactured alert.
-2. **P1 — STK-099:** use merged PR #54 tooling to verify encrypted off-server restore,
-   key custody and external alerts using existing tooling. No restic executable or
-   Stock Discovery backup/monitor units were found on the VPS; same-host recovery
-   does not establish off-server disaster recovery. Full cutover needs separate
-   owner release authorization. No hardware upgrade is justified by the tested load.
+2. **P1 — STK-099:** finish encrypted off-server restore, key custody and external
+   alert/host-loss delivery using existing resources. Restic 0.19.1 is now installed
+   separately; online operations mode, private templates and cutover/rollback
+   commands are prepared. No destination/credential/key-custody or alert-hook config
+   was found; actual remote restore/delivery and timers remain unactivated. Full
+   cutover needs separate authorization, including proxy-only ingress interruption
+   because existing Caddy has `admin off`. No hardware upgrade is justified.
 3. **P2 — STK-014 / STK-054 / STK-079–081:** qualify volume and remaining strategy evidence for usable
    swing signals. Current price-only EMA/breakout review does not establish BUY,
    entry/stop/target, position sizing, strategy superiority or profitability.
 
-Owner decisions: review this STK-081 CI change when its new-head checks pass; confirm the
-existing backup destination/key custodian and alert destination if absent from
-private configuration; separately authorize full cutover after recovery gates.
+Owner decisions: identify existing off-server destination, private credential/key
+paths and separate key custodian, plus external alert/host-loss resources; review
+this STK-099 change; separately authorize full cutover only after recovery gates.
 No new provider-rights review is required for already approved descriptive scope.
 Broader M1/M2, real policy/risk and strategy-promotion approvals apply only to their
 unqualified capabilities, not as a blanket stop to independent implementation.
 
 ## Exact next executable task
 
-**STK-099:** inspect existing private backup/alert configuration read-only and
-prepare the merged restore tooling against an isolated off-server recovery target.
-Record missing destination/key-custodian inputs before any paid operation; do not
-expose secrets or send alert messages. This STK-081 CI change awaits owner review/new exact-head CI;
-owner monitors it without polling/waiting or automatic merge. No full production
-cutover is authorized by the PR #54 merge or this reconciliation.
+**STK-099:** fill the reviewed private operations config once the owner identifies
+existing backup and alert resources. Run one encrypted exact-snapshot backup/restore
+with `scripts/operate.py backup`, one `alert-test` with observed external delivery,
+and `monitor`; enable existing timers only after real verification. No new paid
+resource or application cutover. [Evidence and commands](STK-099-release-prerequisites.md).
+15 focused synthetic operations tests passed; these do not close live release gates.
+VPS read-only check 16-Nov 06:06:20 UTC confirms unchanged receiver image/start time
+and the same three live services. Mac counts above remain dated 15-Nov, not remeasured.
+Owner monitors this PR's CI; do not wait or merge.
 
 Before any separately approved cutover: persistently stop both Mac workers, verify
 singleton release, export fresh application state including cursor and quota ledger,
@@ -164,3 +172,16 @@ For every PR that materially changes state, update this handoff and SIMPLE-BOARD
 in that same PR, retaining dated evidence and test/rehearsal/live distinctions.
 Follow [AGENTS.md](../AGENTS.md): existing STK IDs and D3 names, isolated related
 changes, owner review/merge, preserved WIP; no new services or automation required.
+
+## Historical delivery checkpoint — 15 November
+
+Current delivery — **STK-081 / D3-13 CI efficiency** (15 November): PR #55 is
+merged as main `549cf2b02a287647635e5dee5f176f5855545625`. Change-based selection
+and a fail-closed stable `checks` gate are implemented for review; workflow/runtime/
+security/infrastructure changes still select full affected suites. Documentation
+replay selects only fast validation. [Measured baseline and validation](STK-081-selective-ci.md)
+separate 8m52s prior hosted documentation CI from 0.0445s local selection/docs logic;
+new hosted timings are pending. No production change; planning baseline **58%**.
+Immediate delivery task: owner review/new-head CI, with owner monitoring and no wait.
+The next product task remains STK-099 off-server recovery preparation; P0 genuine
+candidate acceptance and existing release gates remain unchanged.

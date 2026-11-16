@@ -1,5 +1,80 @@
 # Stock Discovery — work checkpoint
 
+Current delivery — **STK-099 / D3-12 Private operational pilot** (16 November).
+Main includes PR #56 at `5a78b6846cd88d89e68abf8864b8fe707c50b8b6`.
+Release prerequisites now include opt-in non-interrupting full-schema backup/recovery,
+receiver/hosted monitoring, an alert-delivery drill, and current cutover/rollback
+commands. **15 focused synthetic operations tests pass**; no VPS/browser rehearsal
+repeated. Restic 0.19.1 is installed separately on the VPS; no timers or application
+release were activated. The live receiver image/start time remains unchanged.
+**Off-server restore and external alert delivery remain unverified:** the inspected
+configuration has no destination/credentials/key-custody or alert hook. Owner input
+is required for those existing resources, then one actual restore and observed alert.
+[Exact evidence, prerequisites and executable sequence](STK-099-release-prerequisites.md).
+Planning baseline remains **58%**. No cutover authorization; owner monitors PR CI.
+
+## CURRENT — 16 November 2026 · STK-099 / D3-12 Private operational pilot
+
+Requirements: [SD ARCH 3.0](SD-ARCH-3.0.md). [SIMPLE-BOARD](SIMPLE-BOARD.md)
+is the canonical task board; [PROJECT-HANDOFF](PROJECT-HANDOFF.md) provides product
+and component context; [WORK-HANDOFF](WORK-HANDOFF.md) records execution continuity.
+Update board and project handoff together on material state changes.
+**58% remains the owner-specified planning baseline**, not measured live readiness.
+
+| Component | Actual current state | Remaining gate |
+|---|---|---|
+| STK-095 | VPS receiver/inbox/proxy and native Mac consumer; schema 0017; real provider-Test acceptance passed. | Ordinary genuine alert; no manufactured candidates. |
+| STK-094 / STK-014 | PR #52/#53 merged; native bounded INFY refresh; stored-price EMA/breakout and page-scoped ranking implemented. | Complete current qualified price batch and genuine candidate → analysis → UI. |
+| STK-099 | PR #48/#54 merged; 14-Nov representative VPS restore/resource/recovery evidence retained. Current operations tooling and cutover/rollback checklist prepared for review. | Off-server restore/key custody, external alert/host-loss test, separate release authorization, genuine Mac-off acceptance. [Issue #47](https://github.com/gaganjawa/stock-discovery/issues/47) remains open. |
+| D3-13 | PR #55 continuity and #56 CI selection merged. | Integrated three-horizon live release, real research/policy/forward-evidence gates remain capability-specific. |
+
+**Live VPS, 16-Nov 06:06:20 UTC:** receiver/proxy/database still running; receiver
+and database healthy, receiver image and start time unchanged. Restic 0.19.1 was
+installed at a separate versioned tools path. No application service restart,
+migration, cursor update, volume change, provider request or cutover occurred.
+**Last Mac evidence remains 15-Nov 13:01 UTC:** schema 0017, cursor **3**, events
+**3**, genuine candidates **0**, revisions **2,648**, consumer PID 8125 and refresh
+PID 8129, one launch each/one refresh process, no refresh jobs or quota requests in
+preceding 24h. Those counts were not remeasured in this operations task.
+
+Initial Upstox HTTP 200 gave 30 validated bars but omitted expected 13-Nov; **zero
+ingested**. The one authorized diagnostic also omitted it. Upstream incompleteness
+is observed; cache lag remains an inference. Existing retries: 900 seconds, at most
+three per eligible job. Missing/stale/insufficient evidence stays unranked.
+
+**Reused acceptance:** 14-Nov isolated VPS restore preserved 70 tables / 6,737 rows /
+three sequences and watchlist bytes; browser, 24 company reads at concurrency four,
+worker restart and second recovery passed. Minimum available RAM 1,008.6 MiB,
+no OOM. This was stored-data/idle-refresh rehearsal, not off-server recovery or
+live acquisition. No repeat VPS/browser rehearsal. Current 15 operations tests use
+synthetic transports/databases; they do not prove external delivery or remote restore.
+
+| Priority | Tickets | Next outcome |
+|---|---|---|
+| **P0** | STK-014 / STK-094 / STK-095 | Next ordinary EOD alert → identity/session/symbols → durable candidate/cursor → complete eligible refresh → re-analysis → authenticated Candidates UI. Provider Tests excluded. |
+| **P1** | STK-099 | Supply existing backup destination/private credentials, independent key custody and alert/host-loss resource; perform one encrypted off-server restore and actual alert delivery, then request separate cutover authorization. |
+| **P2** | STK-014 / STK-054 / STK-079–081 | Qualify volume and remaining strategy/research inputs for daily usable swing and all three horizons; no invented BUY, levels, sizing or performance. |
+
+**Verified blockers / release gates:** no backup repository/credentials/custodial-key
+configuration or alert hook found in inspected locations; no Stock Discovery timers
+or root cron entries. Restic executable availability is now resolved. Off-server
+restore, key custody, external alert/host-loss delivery, active-provider capacity and
+genuine Mac-off evidence remain unverified. Existing Caddy uses `admin off`; proxy
+replacement needs a separately authorized brief ingress window. No host upgrade is
+justified by the retained rehearsal. No new paid resources or provider-rights review.
+
+**Exact next executable task:** owner identifies existing off-server and alert
+resources/private paths (never secret values); fill reviewed private operations
+config and run `python3 scripts/operate.py backup`, `alert-test`, and `monitor`.
+Record exact snapshot/restored fingerprints and actual delivery ID/time; enable
+existing timers only afterward. Full cutover remains **NOT READY / unauthorized**.
+The [current release checklist and rollback commands](STK-099-release-prerequisites.md)
+supersede historical 0016 migration/receiver upgrade steps. Preserve schema 0017,
+credentials, webhook, original cursor identity, volumes and fresh rollback state.
+PR checks and owner review are pending; do not wait for CI, merge or cut over.
+
+## HISTORICAL — superseded 15-Nov current checkpoint
+
 Current delivery — **STK-081 / D3-13 CI efficiency** (15 November): PR #55 is
 merged as main `549cf2b02a287647635e5dee5f176f5855545625`. Change-based selection
 and a fail-closed stable `checks` gate are implemented for review; workflow/runtime/
